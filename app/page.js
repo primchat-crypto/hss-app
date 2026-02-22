@@ -91,10 +91,27 @@ export default function App(){
         if(session?.user){setUser(session.user);setEmail(session.user.email||"");
           // Load profile from DB
           const{data:prof}=await sb.from("profiles").select("*").eq("id",session.user.id).single();
-          if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"");setPlan(prof.plan||"free")}
+          let loadedPlan="free",loadedNick="",loadedBday="--";
+          if(prof){loadedNick=prof.nick||"";loadedBday=prof.bday||"--";setNick(loadedNick);setBday(loadedBday);setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"");loadedPlan=prof.plan||"free";setPlan(loadedPlan)}
           // Load assessment from DB
           const{data:assess}=await sb.from("assessments").select("*").eq("user_id",session.user.id).order("created_at",{ascending:false}).limit(1).single();
-          if(assess){if(assess.answers)setAns(assess.answers);if(assess.scores){setScores(assess.scores);setVedic(assess.vedic);setSc("results")}}
+          if(assess&&assess.scores){
+            setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);setSc("results");
+            // Load saved AI results if available
+            if(assess.ai_results){setAi(assess.ai_results)}
+            // Auto-trigger AI for sections that aren't loaded yet
+            setTimeout(()=>{
+              const s=assess.scores;const v=assess.vedic;const savedAi=assess.ai_results||{};
+              if(!savedAi.identity)loadAI("identity",s,v);
+              if(!savedAi.core)loadAI("core",s,v);
+              const fs=PLANS[loadedPlan].f;
+              if(fs.includes("12d")&&!savedAi["12d"])loadAI("12d",s,v);
+              if(fs.includes("shadow")&&!savedAi.shadow)loadAI("shadow",s,v);
+              if(fs.includes("weekly")&&!savedAi.weekly)loadAI("weekly",s,v);
+              if(fs.includes("energy")&&!savedAi.energy)loadAI("energy",s,v);
+              if(fs.includes("job")&&!savedAi.job)loadAI("job",s,v);
+            },300);
+          }
         }
         // Listen for auth changes (Google redirect)
         sb.auth.onAuthStateChange(async(ev,session)=>{
@@ -170,13 +187,13 @@ export default function App(){
 
   const shareProfile=()=>{if(!scores||!nick)return;const data=btoa(unescape(encodeURIComponent(JSON.stringify({n:nick,s:scores}))));navigator.clipboard?.writeText(`${window.location.origin}?p=${data}`);alert("คัดลอกลิงก์แล้ว!")};
 
-  // Login/Signup Modal rendered inline (not as function component — prevents input remount)
+  // Login/Signup Modal rendered inline with stable input refs
   const loginModalJSX=loginModal&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,padding:20}} onClick={()=>{setLoginModal(false);setAuthErr("")}}><div onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:16,padding:24,maxWidth:360,width:"100%"}}>
   <div style={{fontSize:16,fontWeight:800,marginBottom:4}}>{authMode==="login"?"🔐 เข้าสู่ระบบ":"✨ สมัครสมาชิก"}</div>
   <div style={{fontSize:12,color:"#64748B",marginBottom:16}}>{authMode==="login"?"เข้าสู่ระบบเพื่อซื้อแพ็คเกจ":"สร้างบัญชีใหม่ (ไม่ต้องใช้เบอร์โทร)"}</div>
   {authErr&&<div style={{padding:"8px 12px",borderRadius:8,background:"#FEF2F2",border:"1px solid #FECACA",color:"#DC2626",fontSize:12,marginBottom:12}}>{authErr}</div>}
-  <div style={{marginBottom:12}}><label style={{fontSize:12,fontWeight:600,color:"#64748B",display:"block",marginBottom:4}}>อีเมล</label><input ref={authEmailRef} defaultValue="" placeholder="your@email.com" type="email" autoComplete="email" style={{width:"100%",padding:"10px 14px",fontSize:14,border:"2px solid #E2E8F0",borderRadius:10,outline:"none",boxSizing:"border-box"}}/></div>
-  <div style={{marginBottom:16}}><label style={{fontSize:12,fontWeight:600,color:"#64748B",display:"block",marginBottom:4}}>รหัสผ่าน {authMode==="signup"&&<span style={{fontWeight:400,color:"#94A3B8"}}>(อย่างน้อย 6 ตัว)</span>}</label><input ref={authPwRef} defaultValue="" type="password" placeholder={authMode==="signup"?"ตั้งรหัสผ่าน":"รหัสผ่าน"} autoComplete={authMode==="signup"?"new-password":"current-password"} onKeyDown={e=>{if(e.key==="Enter"){authMode==="login"?doLogin():doSignup()}}} style={{width:"100%",padding:"10px 14px",fontSize:14,border:"2px solid #E2E8F0",borderRadius:10,outline:"none",boxSizing:"border-box"}}/></div>
+  <div style={{marginBottom:12}}><label style={{fontSize:12,fontWeight:600,color:"#64748B",display:"block",marginBottom:4}}>อีเมล</label><input key="auth-email-input" ref={authEmailRef} defaultValue="" placeholder="your@email.com" type="email" autoComplete="email" style={{width:"100%",padding:"10px 14px",fontSize:14,border:"2px solid #E2E8F0",borderRadius:10,outline:"none",boxSizing:"border-box"}}/></div>
+  <div style={{marginBottom:16}}><label style={{fontSize:12,fontWeight:600,color:"#64748B",display:"block",marginBottom:4}}>รหัสผ่าน</label><input key="auth-pw-input" ref={authPwRef} defaultValue="" type="password" placeholder={authMode==="signup"?"ตั้งรหัสผ่าน (อย่างน้อย 6 ตัว)":"รหัสผ่าน"} autoComplete={authMode==="signup"?"new-password":"current-password"} onKeyDown={e=>{if(e.key==="Enter"){authMode==="login"?doLogin():doSignup()}}} style={{width:"100%",padding:"10px 14px",fontSize:14,border:"2px solid #E2E8F0",borderRadius:10,outline:"none",boxSizing:"border-box"}}/></div>
   <Btn onClick={authMode==="login"?doLogin:doSignup} ok={!authLoading}>{authLoading?"กำลังดำเนินการ...":authMode==="login"?"เข้าสู่ระบบ →":"สมัครสมาชิก →"}</Btn>
   <div style={{textAlign:"center",marginTop:12}}><button onClick={()=>{setAuthMode(authMode==="login"?"signup":"login");setAuthErr("")}} style={{background:"none",border:"none",fontSize:12,color:"#6366F1",fontWeight:600,cursor:"pointer"}}>{authMode==="login"?"ยังไม่มีบัญชี? สมัครสมาชิก":"มีบัญชีแล้ว? เข้าสู่ระบบ"}</button></div>
   <div style={{display:"flex",alignItems:"center",gap:8,margin:"12px 0"}}><div style={{flex:1,height:1,background:"#E2E8F0"}}/><span style={{fontSize:11,color:"#94A3B8"}}>หรือ</span><div style={{flex:1,height:1,background:"#E2E8F0"}}/></div>
