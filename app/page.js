@@ -20,37 +20,96 @@ const DIMS=Object.keys(DM);
 const TS=[{id:"dawn",l:"🌅 เช้ามืด (04:00–06:00)",d:"พระอาทิตย์กำลังจะขึ้น"},{id:"morning",l:"☀️ ช่วงสาย (09:00–11:00)",d:"พระอาทิตย์อยู่สูง"},{id:"noon",l:"🌞 เที่ยง/บ่ายต้น (12:00–14:00)",d:"พระอาทิตย์เหนือศีรษะ"},{id:"evening",l:"🌇 เย็น/พลบค่ำ (17:00–19:00)",d:"พระอาทิตย์ตก"},{id:"night",l:"🌙 ดึก (22:00–24:00)",d:"เที่ยงคืน"}];
 const PV=["กรุงเทพมหานคร","เชียงใหม่","ชลบุรี","นครราชสีมา","ภูเก็ต","ขอนแก่น","สงขลา","เชียงราย","นนทบุรี","สมุทรปราการ","ปทุมธานี","อุดรธานี","นครศรีธรรมราช","สุราษฎร์ธานี","ระยอง","กระบี่","ลำปาง","พิษณุโลก","อุบลราชธานี","อื่นๆ"];
 
-// Vedic Transit Calculator (Sidereal)
+// Vedic Transit Calculator (Sidereal) + Day Lord System
 const RASHI=["เมษ","พฤษภ","มิถุน","กรกฎ","สิงห์","กันย์","ตุลย์","พิจิก","ธนู","มกร","กุมภ์","มีน"];
 const NAKSHATRA=["อัศวินี","ภรณี","กฤตติกา","โรหิณี","มฤคศิรา","อารทรา","ปุนรวสุ","ปุษยะ","อาศเลษา","มฆะ","ปุรวผลคุนี","อุตตรผลคุนี","หัสตะ","จิตรา","สวาติ","วิศาขะ","อนุราธะ","เชษฐา","มูละ","ปุรวษาฒะ","อุตตรษาฒะ","ศรวณะ","ธนิษฐา","ศตภิษา","ปุรวภัทร","อุตตรภัทร","เรวตี"];
 const DAYNAME=["อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัสบดี","ศุกร์","เสาร์"];
 
-// Moon transit: ~27.3 days per full cycle, ~2.27 days per rashi
-// Reference: 1 Jan 2024 00:00 UTC, Moon in Virgo (Kanya=5 index)
+// Day Lord (เจ้าวัน) — หัวใจของ Vedic weekly forecast
+// แต่ละวันถูกปกครองโดยดาว ซึ่งส่งผลต่อโทนพลังงานวันนั้น
+const DAY_LORD=[
+  {day:0,lord:"อาทิตย์",icon:"☀️",planet:"su",governs:"ตัวตน ความมั่นใจ แรงบันดาลใจ ความเป็นผู้นำ",goodFor:"ตัดสินใจ เริ่มต้นสิ่งใหม่ แสดงตัวตน",avoid:"พึ่งพาคนอื่น ลังเล ซ่อนตัว"},
+  {day:1,lord:"จันทร์",icon:"🌙",planet:"mo",governs:"อารมณ์ จิตใจ ความรู้สึก สัญชาตญาณ",goodFor:"ดูแลตัวเอง พักผ่อน ทำงานสร้างสรรค์",avoid:"ตัดสินใจใหญ่ เผชิญหน้ารุนแรง"},
+  {day:2,lord:"อังคาร",icon:"🔥",planet:"ma",governs:"พลังกาย การลงมือทำ ความกล้า ความเด็ดขาด",goodFor:"ออกกำลังกาย เริ่มโปรเจกต์ แก้ปัญหาตรงๆ",avoid:"ใจร้อน ทะเลาะ เสี่ยงเกินไป"},
+  {day:3,lord:"พุธ",icon:"🧠",planet:"me",governs:"สื่อสาร การคิดวิเคราะห์ การเรียนรู้ การค้า",goodFor:"ประชุม เขียนงาน เจรจา เรียนรู้สิ่งใหม่",avoid:"ตัดสินใจด้วยอารมณ์ ละเลยรายละเอียด"},
+  {day:4,lord:"พฤหัส",icon:"📚",planet:"ju",governs:"ปัญญา ศีลธรรม การขยายตัว โชคลาภ ครูอาจารย์",goodFor:"วางแผนระยะยาว ปรึกษาผู้รู้ ลงทุน",avoid:"มองข้ามคุณธรรม ละโมบ"},
+  {day:5,lord:"ศุกร์",icon:"💎",planet:"ve",governs:"ความสัมพันธ์ ความสุข ศิลปะ ความงาม",goodFor:"สร้างสัมพันธ์ งานสร้างสรรค์ ผ่อนคลาย",avoid:"ตึงเครียด ทำงานหนักเกินไป"},
+  {day:6,lord:"เสาร์",icon:"⚙️",planet:"sa",governs:"ระเบียบวินัย ความอดทน การทำงานหนัก กรรม",goodFor:"ทำงานที่ค้างไว้ จัดระเบียบ สร้างวินัย",avoid:"เริ่มสิ่งใหม่ คาดหวังผลเร็ว"}
+];
+
+// Natal planet strength (approximate from birthday seed)
+const natalPlanetStr=(bday)=>{
+  const m=parseInt(bday?.split("-")?.[1])||6;
+  const d=parseInt(bday?.split("-")?.[2])||15;
+  const s=(m*31+d)%100;
+  return {
+    su:Math.min(10,(22+((s*7)%18))/4),  // อาทิตย์
+    mo:Math.min(10,(18+((s*3)%22))/4),  // จันทร์
+    ma:Math.min(10,(19+((s*11)%21))/4), // อังคาร
+    me:Math.min(10,(20+((s%20)))/4),    // พุธ
+    ju:Math.min(10,(21+((s*13)%19))/4), // พฤหัส
+    ve:Math.min(10,(20+((s*5)%20))/4),  // ศุกร์
+    sa:Math.min(10,(17+((s*17)%23))/4), // เสาร์
+  };
+};
+
+// Day Lord compatibility with natal chart
+// ถ้าเจ้าวันแข็งในดวงกำเนิด → วันนั้นพลังดี / ถ้าอ่อน → วันนั้นต้องระวัง
+const dayLordCompat=(dayOfWeek,natalStr)=>{
+  const dl=DAY_LORD[dayOfWeek];
+  const str=natalStr[dl.planet]||5;
+  let quality,mod;
+  if(str>=8){quality="แข็งมาก — วันนี้เจ้าวัน"+dl.lord+"หนุนเต็มที่";mod=15}
+  else if(str>=6){quality="ดี — "+dl.lord+"ส่งพลังปานกลาง";mod=8}
+  else if(str>=4){quality="กลาง — "+dl.lord+"ทำงานปกติ";mod=0}
+  else if(str>=2){quality="อ่อน — "+dl.lord+"ต้องใช้แรงมากขึ้น";mod=-8}
+  else{quality="ท้าทาย — "+dl.lord+"กดดัน ต้องระวัง";mod=-15}
+  return{...dl,str,quality,mod,goodFor:dl.goodFor,avoid:dl.avoid};
+};
+
+// Moon transit
 const moonTransit=(date)=>{const ref=new Date("2024-01-01T00:00:00Z");const days=(date-ref)/(86400000);const cycle=days/27.3217;const pos=((cycle%1)*12+5)%12;return Math.floor(pos)};
-
-// Mars transit: ~687 days full cycle, ~57 days per rashi
-// Reference: 1 Jan 2024, Mars in Scorpio (Vrischika=7)
+// Mars transit
 const marsTransit=(date)=>{const ref=new Date("2024-01-01T00:00:00Z");const days=(date-ref)/(86400000);const cycle=days/686.97;const pos=((cycle%1)*12+7)%12;return Math.floor(pos)};
-
-// Saturn transit (slow, ~2.5 years per rashi)
-// Reference: 2024 Saturn in Aquarius (Kumbha=10)
+// Saturn transit
 const saturnTransit=(date)=>{const ref=new Date("2024-01-01T00:00:00Z");const days=(date-ref)/(86400000);const pos=((days/10766)*12+10)%12;return Math.floor(pos)};
-
-// Natal Moon from birthday (approximate sidereal)
+// Natal Moon
 const natalMoon=(bday)=>{const d=new Date(bday+"T12:00:00Z");return moonTransit(d)};
-
-// Nakshatra from rashi position (approximate)
+// Nakshatra
 const getNak=(rashiIdx,dayOffset)=>NAKSHATRA[(rashiIdx*2+(dayOffset%3))%27];
 
-// Aspect relationship between transit and natal
+// Aspect relationship
 const transitAspect=(transitR,natalR)=>{const diff=((transitR-natalR)%12+12)%12;if(diff===0)return{rel:"ร่วม",quality:"กลาง-ระวัง",mod:0};if(diff===4||diff===8)return{rel:"ตรีโกณ",quality:"ดีมาก",mod:15};if(diff===3||diff===9)return{rel:"จตุโกณ",quality:"กดดัน",mod:-15};if(diff===6)return{rel:"ตรงข้าม",quality:"ตึงเครียด",mod:-10};if(diff===1||diff===7)return{rel:"อนุโกณ",quality:"พอใช้",mod:5};if(diff===5)return{rel:"ตรีโกณรอง",quality:"ดี",mod:10};return{rel:"ปกติ",quality:"เป็นกลาง",mod:0}};
 
-// Mars dignity in rashi
-const marsDignity=(r)=>{if(r===0)return{d:"เกษตร",mod:10};if(r===7)return{d:"เกษตร",mod:10};if(r===9)return{d:"อุจจ์",mod:15};if(r===3)return{d:"นิจ",mod:-15};if(r===1||r===5)return{d:"มิตร",mod:5};return{d:"ปกติ",mod:0}};
+// Mars dignity
+const marsDignity=(r)=>{if(r===0||r===7)return{d:"เกษตร",mod:10};if(r===9)return{d:"อุจจ์",mod:15};if(r===3)return{d:"นิจ",mod:-15};if(r===1||r===5)return{d:"มิตร",mod:5};return{d:"ปกติ",mod:0}};
 
-// Generate 7-day transit data
-const gen7DayTransit=(bday)=>{const nm=natalMoon(bday);const today=new Date();const days=[];for(let i=0;i<7;i++){const d=new Date(today);d.setDate(d.getDate()+i);const mr=moonTransit(d);const mar=marsTransit(d);const sar=saturnTransit(d);const moonAsp=transitAspect(mr,nm);const marsD=marsDignity(mar);const nak=getNak(mr,i);days.push({date:`${d.getDate()}/${d.getMonth()+1}`,dayName:DAYNAME[d.getDay()],moonR:RASHI[mr],moonNak:nak,marsR:RASHI[mar],saturnR:RASHI[sar],moonAspect:moonAsp,marsDig:marsD,natalMoonR:RASHI[nm]})}return days};
+// Generate 7-day transit + Day Lord data
+const gen7DayTransit=(bday)=>{
+  const nm=natalMoon(bday);
+  const nps=natalPlanetStr(bday);
+  const today=new Date();
+  const days=[];
+  for(let i=0;i<7;i++){
+    const d=new Date(today);d.setDate(d.getDate()+i);
+    const mr=moonTransit(d);const mar=marsTransit(d);const sar=saturnTransit(d);
+    const moonAsp=transitAspect(mr,nm);const marsD=marsDignity(mar);
+    const nak=getNak(mr,i);
+    const dlc=dayLordCompat(d.getDay(),nps);
+    // Composite energy score: Moon 40% + Mars 25% + DayLord 35%
+    const moonE=Math.max(30,Math.min(95,65+moonAsp.mod));
+    const marsE=Math.max(30,Math.min(95,65+marsD.mod));
+    const dlE=Math.max(30,Math.min(95,65+dlc.mod));
+    const compositeE=Math.round(moonE*0.4+marsE*0.25+dlE*0.35);
+    days.push({
+      date:`${d.getDate()}/${d.getMonth()+1}`,dayName:DAYNAME[d.getDay()],
+      moonR:RASHI[mr],moonNak:nak,marsR:RASHI[mar],saturnR:RASHI[sar],
+      moonAspect:moonAsp,marsDig:marsD,natalMoonR:RASHI[nm],
+      dayLord:dlc,compositeE,
+    });
+  }
+  return days;
+};
 
 // Vedic scoring
 const calcV=(bd,ts)=>{const m=parseInt(bd?.split("-")?.[1])||6;const d=parseInt(bd?.split("-")?.[2])||15;const s=(m*31+d)%100;const tb={dawn:5,morning:3,noon:0,evening:2,night:-2}[ts]||0;const ps={me:Math.min(40,20+(s%20)+tb),mo:Math.min(40,18+((s*3)%22)+tb),su:Math.min(40,22+((s*7)%18)+tb),ma:Math.min(40,19+((s*11)%21)+tb),ju:Math.min(40,21+((s*13)%19)+tb),sa:Math.min(40,17+((s*17)%23)+tb),ra:Math.min(40,15+((s*19)%25)+tb)};const f=(p,i)=>Math.min(100,p+Math.min(25,10+((s+i)%15))+Math.min(20,8+((s*2+i)%12))+Math.min(15,5+((s*3+i)%10)));return{"Cognitive Processing":f(ps.me,1)/10,"Emotional Regulation":f(ps.mo,2)/10,"Identity Stability":f(Math.round((ps.su+ps.sa)/2),3)/10,"Energy Management":f(ps.ma,4)/10,"Decision System":f(Math.round((ps.ju+ps.sa)/2),5)/10,"Responsibility Load":f(ps.sa,6)/10,"Motivation Driver":f(ps.su,7)/10,"Boundary System":f(Math.round((ps.sa+ps.mo)/2),8)/10,"Stress Response":f(ps.sa,9)/10,"Shadow Pattern":f(ps.ra,10)/10,"Growth Orientation":f(ps.ju,11)/10,"Integration Level":f(Math.round(Object.values(ps).reduce((a,b)=>a+b,0)/7),12)/10}};
@@ -108,24 +167,29 @@ export default function App(){
     if(type==="12d")r=await GPT.call(`วิเคราะห์12มิติ"${nick}"Vedic:\n${Object.entries(s).map(([k,sv])=>`${k}:ดวง${v[k]?.toFixed(1)}จริง${sv.toFixed(1)}`).join("\n")}\nจุดแข็ง4+ดาวหนุน จุดพัฒนา4+action ถ้าgap>2→highlight`,`f12_${nick}`);
     if(type==="shadow")r=await GPT.call(`Shadow"${nick}"Vedic(ราหู/เกตุ):\nShadow:ดวง${v["Shadow Pattern"]?.toFixed(1)}จริง${s["Shadow Pattern"]?.toFixed(1)}\nStress:${s["Stress Response"]?.toFixed(1)} Boundary:${s["Boundary System"]?.toFixed(1)}\n⚡Trigger 🔄Pattern 💡วิธีแก้ตามดาว`,`sh_${nick}`);
     if(type==="weekly"){const t=await GPT.call(`โหราศาสตร์พระเวท คำแนะนำสัปดาห์"${nick}":\nแข็ง:${so.slice(0,3).map(([k])=>k).join(",")} อ่อน:${so.slice(-2).map(([k])=>k).join(",")}\nตอบJSONไม่มีbacktick:{"do":["ควรทำ1","ควรทำ2","ควรทำ3"],"dont":["เลี่ยง1","เลี่ยง2","เลี่ยง3"]}`,`wk_${nick}`);r=pJ(t)}
-    if(type==="energy"){const tr=gen7DayTransit(bday);const trTxt=tr.map(d=>`${d.dayName} ${d.date}: จันทร์${d.moonR}(นักษัตร${d.moonNak}) ${d.moonAspect.rel}จากกำเนิด(${d.moonAspect.quality}) อังคาร${d.marsR}(${d.marsDig.d}) เสาร์${d.saturnR}`).join("\n");const t=await GPT.call(`คุณเป็นนักโหราศาสตร์พระเวท(Jyotish) วิเคราะห์พลังงาน7วันจาก Transit จริง
+    if(type==="energy"){const tr=gen7DayTransit(bday);const trTxt=tr.map(d=>`${d.dayName} ${d.date}: เจ้าวัน=${d.dayLord.icon}${d.dayLord.lord}(กำลัง${d.dayLord.str.toFixed(1)},${d.dayLord.quality}) | จันทร์${d.moonR}(${d.moonNak},${d.moonAspect.rel}=${d.moonAspect.quality}) | อังคาร${d.marsR}(${d.marsDig.d}) | เสาร์${d.saturnR} | compositeBase=${d.compositeE}%`).join("\n");const t=await GPT.call(`นักโหราศาสตร์พระเวท(Jyotish) วิเคราะห์พลังงาน7วัน 3ชั้น: Moon+Mars+DayLord
 
 เจ้าชะตา "${nick}" จันทร์กำเนิดราศี${tr[0].natalMoonR}
-Emotional Score: ${s["Emotional Regulation"]?.toFixed(1)}/10
-Energy Score: ${s["Energy Management"]?.toFixed(1)}/10
+Emotional:${s["Emotional Regulation"]?.toFixed(1)}/10 Energy:${s["Energy Management"]?.toFixed(1)}/10
 
-Transit 7 วัน:
+=== Transit 7 วัน (คำนวณจากดาวจริง) ===
 ${trTxt}
 
-หลัก Vedic:
-- จันทร์ transit ตรีโกณจากกำเนิด = อารมณ์ดี พลังใจสูง
-- จันทร์ transit จตุโกณ/ตรงข้าม = กดดัน อารมณ์แปรปรวน
-- อังคารอุจจ์/เกษตร = พลังกายแรง กระตือรือร้น
-- อังคารนิจ = เหนื่อยง่าย ต้องพักมากขึ้น
-- เสาร์ transit เพิ่ม background กดดันถ้าอยู่เรือนไม่ดี
+=== หลัก Vedic 3 ชั้น ===
+ชั้น1 จันทร์Transit(40%): ตรีโกณจากกำเนิด=อารมณ์ดี พลังใจสูง / จตุโกณ=กดดัน / ตรงข้าม=ตึง / ร่วม=เข้มข้น
+ชั้น2 อังคารTransit(25%): อุจจ์/เกษตร=พลังกายแรง / นิจ=เหนื่อยง่าย / ปกติ=ปานกลาง
+ชั้น3 เจ้าวัน(35%): ดาวเจ้าวันแข็งในดวงกำเนิด=วันดี / อ่อน=วันท้าทาย
+- วันอาทิตย์(อาทิตย์ปกครอง)=ดีสำหรับเริ่มต้น ตัดสินใจ
+- วันจันทร์(จันทร์)=อารมณ์อ่อนไหว ดูแลตัวเอง
+- วันอังคาร(อังคาร)=ลงมือทำ แต่ระวังใจร้อน
+- วันพุธ(พุธ)=สื่อสาร เรียนรู้ วิเคราะห์
+- วันพฤหัสบดี(พฤหัส)=วางแผน ปรึกษา ตัดสินใจใหญ่
+- วันศุกร์(ศุกร์)=ผ่อนคลาย สร้างสัมพันธ์ สร้างสรรค์
+- วันเสาร์(เสาร์)=ทำงานค้าง สร้างวินัย อดทน
 
-ตอบ JSON เท่านั้น ไม่มี backtick ไม่มีคำอธิบาย:
-[{"day":"${tr[0].dayName}","date":"${tr[0].date}","energy":40-95,"mood":"emoji+สั้น","tip":"คำแนะนำ1ประโยค","transit":"จันทร์${tr[0].moonR}+อังคาร${tr[0].marsR}"},{"day":"${tr[1].dayName}","date":"${tr[1].date}","energy":...,"mood":"...","tip":"...","transit":"..."},{"day":"${tr[2].dayName}","date":"${tr[2].date}","energy":...,"mood":"...","tip":"...","transit":"..."},{"day":"${tr[3].dayName}","date":"${tr[3].date}","energy":...,"mood":"...","tip":"...","transit":"..."},{"day":"${tr[4].dayName}","date":"${tr[4].date}","energy":...,"mood":"...","tip":"...","transit":"..."},{"day":"${tr[5].dayName}","date":"${tr[5].date}","energy":...,"mood":"...","tip":"...","transit":"..."},{"day":"${tr[6].dayName}","date":"${tr[6].date}","energy":...,"mood":"...","tip":"...","transit":"..."}]`,`en_${nick}_${new Date().toISOString().slice(0,10)}`);r=pJ(t)}
+ใช้ compositeBase เป็นฐาน แล้วปรับตาม Emotional/Energy score ของเจ้าชะตา
+ตอบ JSON เท่านั้น ไม่มี backtick:
+[{"day":"${tr[0].dayName}","date":"${tr[0].date}","energy":${tr[0].compositeE},"mood":"emoji+2คำไทย","tip":"คำแนะนำ1ประโยค(อ้างดาว)","transit":"${tr[0].dayLord.icon}${tr[0].dayLord.lord}+จันทร์${tr[0].moonR}+อังคาร${tr[0].marsR}","goodFor":"${tr[0].dayLord.goodFor}"},{"day":"${tr[1].dayName}","date":"${tr[1].date}","energy":${tr[1].compositeE},"mood":"...","tip":"...","transit":"${tr[1].dayLord.icon}${tr[1].dayLord.lord}+จันทร์${tr[1].moonR}+อังคาร${tr[1].marsR}","goodFor":"${tr[1].dayLord.goodFor}"},{"day":"${tr[2].dayName}","date":"${tr[2].date}","energy":${tr[2].compositeE},"mood":"...","tip":"...","transit":"${tr[2].dayLord.icon}${tr[2].dayLord.lord}+จันทร์${tr[2].moonR}+อังคาร${tr[2].marsR}","goodFor":"${tr[2].dayLord.goodFor}"},{"day":"${tr[3].dayName}","date":"${tr[3].date}","energy":${tr[3].compositeE},"mood":"...","tip":"...","transit":"${tr[3].dayLord.icon}${tr[3].dayLord.lord}+จันทร์${tr[3].moonR}+อังคาร${tr[3].marsR}","goodFor":"${tr[3].dayLord.goodFor}"},{"day":"${tr[4].dayName}","date":"${tr[4].date}","energy":${tr[4].compositeE},"mood":"...","tip":"...","transit":"${tr[4].dayLord.icon}${tr[4].dayLord.lord}+จันทร์${tr[4].moonR}+อังคาร${tr[4].marsR}","goodFor":"${tr[4].dayLord.goodFor}"},{"day":"${tr[5].dayName}","date":"${tr[5].date}","energy":${tr[5].compositeE},"mood":"...","tip":"...","transit":"${tr[5].dayLord.icon}${tr[5].dayLord.lord}+จันทร์${tr[5].moonR}+อังคาร${tr[5].marsR}","goodFor":"${tr[5].dayLord.goodFor}"},{"day":"${tr[6].dayName}","date":"${tr[6].date}","energy":${tr[6].compositeE},"mood":"...","tip":"...","transit":"${tr[6].dayLord.icon}${tr[6].dayLord.lord}+จันทร์${tr[6].moonR}+อังคาร${tr[6].marsR}","goodFor":"${tr[6].dayLord.goodFor}"}]`,`en_${nick}_${new Date().toISOString().slice(0,10)}`);r=pJ(t)}
     if(type==="job"){const t=await GPT.call(`อาชีพ+โหราศาสตร์"${nick}"แข็ง:${so.slice(0,4).map(([k,v2])=>`${k}(${v2.toFixed(1)})`).join(",")}\nJSON:[{"title":"ตำแหน่ง1","match":88,"reason":"เหตุผลไทย"},{"title":"ตำแหน่ง2","match":82,"reason":"..."},{"title":"ตำแหน่ง3","match":78,"reason":"..."}]`,`job_${nick}`);r=pJ(t)}
   }catch{}setAi(p=>({...p,[type]:r}));setAiL(p=>({...p,[type]:false}))};
 
@@ -213,7 +277,7 @@ ${trTxt}
 
   <Sec fKey="weekly" title="Do & Don't สัปดาห์นี้" icon="📋">{aiL.weekly?<Spin/>:ai.weekly&&typeof ai.weekly==="object"?<><div style={{fontSize:11,fontWeight:700,color:"#10B981",marginBottom:3}}>✅ ควรทำ</div>{(ai.weekly.do||[]).map((t,i)=><div key={i} style={{padding:"5px 8px",borderRadius:6,background:"#ECFDF5",border:"1px solid #A7F3D0",fontSize:11,marginBottom:2}}>{t}</div>)}<div style={{fontSize:11,fontWeight:700,color:"#EF4444",marginBottom:3,marginTop:6}}>❌ ควรเลี่ยง</div>{(ai.weekly.dont||[]).map((t,i)=><div key={i} style={{padding:"5px 8px",borderRadius:6,background:"#FFF1F2",border:"1px solid #FECDD3",fontSize:11,marginBottom:2}}>{t}</div>)}</>:<Spin/>}</Sec>
 
-  <Sec fKey="energy" title="7-Day Energy Forecast" icon="🌙">{aiL.energy?<Spin/>:ai.energy&&Array.isArray(ai.energy)?<>{ai.energy.map((d,i)=><div key={i} style={{padding:"8px 10px",borderRadius:8,marginBottom:3,background:i===0?"#EEF2FF":"#F8FAFC",border:i===0?"2px solid #6366F1":"1px solid #F1F5F9"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:12,fontWeight:700}}>{i===0?"📍 ":""}{d.day}</span>{d.date&&<span style={{fontSize:9,color:"#94A3B8"}}>{d.date}</span>}</div><span style={{fontSize:13,fontWeight:700,color:d.energy>70?"#10B981":d.energy>50?"#F59E0B":"#EF4444"}}>{d.energy}%</span></div><div style={{fontSize:10,color:"#64748B"}}>{d.mood}</div>{d.transit&&<div style={{fontSize:9,color:"#A78BFA",marginTop:2}}>🪐 {d.transit}</div>}{d.tip&&<div style={{fontSize:10,color:"#374151",marginTop:2,background:"#fff",borderRadius:4,padding:"3px 6px"}}>💡 {d.tip}</div>}</div>)}<div style={{marginTop:6,padding:8,background:"#F5F3FF",borderRadius:8,fontSize:10,color:"#6366F1"}}>🔮 คำนวณจาก Transit จันทร์+อังคาร เทียบกับดวงกำเนิดของคุณ</div></>:<Spin/>}</Sec>
+  <Sec fKey="energy" title="7-Day Energy Forecast" icon="🌙">{aiL.energy?<Spin/>:ai.energy&&Array.isArray(ai.energy)?<>{ai.energy.map((d,i)=><div key={i} style={{padding:"10px 12px",borderRadius:10,marginBottom:4,background:i===0?"linear-gradient(135deg,#EEF2FF,#F5F3FF)":"#F8FAFC",border:i===0?"2px solid #6366F1":"1px solid #F1F5F9"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:3}}><div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:13,fontWeight:700}}>{i===0?"📍 ":""}{d.day}</span><span style={{fontSize:9,color:"#94A3B8",background:"#fff",padding:"1px 6px",borderRadius:4}}>{d.date}</span></div><div style={{display:"flex",alignItems:"center",gap:4}}><div style={{width:32,height:6,borderRadius:3,background:"#E2E8F0",overflow:"hidden"}}><div style={{height:"100%",width:`${d.energy}%`,background:d.energy>70?"#10B981":d.energy>50?"#F59E0B":"#EF4444",borderRadius:3}}/></div><span style={{fontSize:13,fontWeight:700,color:d.energy>70?"#10B981":d.energy>50?"#F59E0B":"#EF4444"}}>{d.energy}%</span></div></div><div style={{fontSize:11,color:"#374151",marginBottom:2}}>{d.mood}</div>{d.transit&&<div style={{fontSize:9,color:"#7C3AED",marginBottom:2}}>🪐 {d.transit}</div>}{d.goodFor&&<div style={{fontSize:10,color:"#059669",background:"#ECFDF5",borderRadius:4,padding:"3px 6px",marginBottom:2}}>✅ เหมาะทำ: {d.goodFor}</div>}{d.tip&&<div style={{fontSize:10,color:"#374151",background:"#fff",borderRadius:4,padding:"3px 6px",border:"1px solid #F1F5F9"}}>💡 {d.tip}</div>}</div>)}<div style={{marginTop:8,padding:10,background:"linear-gradient(135deg,#F5F3FF,#EEF2FF)",borderRadius:10,border:"1px solid #DDD6FE"}}><div style={{fontSize:11,fontWeight:700,color:"#4338CA",marginBottom:3}}>🔮 วิธีคำนวณ (Vedic Jyotish)</div><div style={{fontSize:10,color:"#64748B",lineHeight:1.6}}>ชั้น 1: จันทร์ Transit เทียบจันทร์กำเนิด (40%) — อารมณ์ พลังใจ<br/>ชั้น 2: อังคาร Transit + สภาพดาว (25%) — พลังกาย แรงขับ<br/>ชั้น 3: เจ้าวัน × กำลังในดวงกำเนิด (35%) — โทนพลังงานวัน</div></div></>:<Spin/>}</Sec>
 
   <Sec fKey="job" title="Job Matching AI" icon="💼">{aiL.job?<Spin/>:ai.job&&Array.isArray(ai.job)?ai.job.map((j,i)=><div key={i} style={{padding:8,borderRadius:8,background:"#F8FAFC",marginBottom:3}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}><span style={{fontSize:12,fontWeight:700}}>{j.title}</span><span style={{fontSize:9,fontWeight:700,color:"#4338CA",background:"#EEF2FF",padding:"2px 6px",borderRadius:6}}>{j.match}%</span></div><div style={{fontSize:10,color:"#64748B"}}>{j.reason}</div></div>):<Spin/>}</Sec>
 
