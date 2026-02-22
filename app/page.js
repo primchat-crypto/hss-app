@@ -4,7 +4,7 @@ import{createClient}from"@supabase/supabase-js";
 
 const SB_URL=process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SB_KEY=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const sb=(SB_URL&&SB_KEY)?createClient(SB_URL,SB_KEY):null;
+const sb=(SB_URL&&SB_KEY)?createClient(SB_URL,SB_KEY,{auth:{persistSession:true,storageKey:"hss-auth",storage:typeof window!=="undefined"?window.localStorage:undefined}}):null;
 
 const BRAND="Human System Studio";
 const PLANS={free:{name:"Free",price:0,tag:"🟢",c:"#10B981",f:["identity","core5"]},deep:{name:"Deep Insight",price:99,tag:"🟡",c:"#F59E0B",badge:"ยอดนิยม",f:["identity","core5","12d","shadow","weekly","energy"]},all:{name:"All Access",price:249,tag:"🔵",c:"#3B82F6",badge:"คุ้มที่สุด",f:["identity","core5","12d","shadow","weekly","energy","job","dasha","pdf","share"]}};
@@ -87,43 +87,69 @@ export default function App(){
   const authEmailRef=useRef(null);const authPwRef=useRef(null);
   const nickRef=useRef(null);const emailRef=useRef(null);
 
-  // Init: check Supabase session + load from DB or localStorage
+  // Init: check Supabase session + handle payment redirect
   useEffect(()=>{
     const init=async()=>{
+      // 1. Detect Stripe payment redirect → save to localStorage (survives session loss)
+      const params=new URLSearchParams(window.location.search);
+      if(params.get("payment")==="success"&&params.get("plan")){
+        localStorage.setItem("hss_paid_plan",params.get("plan"));
+        localStorage.setItem("hss_paid_at",Date.now().toString());
+        window.history.replaceState({},"",window.location.pathname);
+      }
+      // Check for recently paid plan (valid for 1 hour)
+      const paidPlan=localStorage.getItem("hss_paid_plan");
+      const paidAt=parseInt(localStorage.getItem("hss_paid_at")||"0");
+      const hasPaid=paidPlan&&(Date.now()-paidAt<3600000);
+
       if(sb){
         const{data:{session}}=await sb.auth.getSession();
-        if(session?.user){setUser(session.user);setEmail(session.user.email||"");
+        if(session?.user){
+          setUser(session.user);setEmail(session.user.email||"");
           const{data:prof}=await sb.from("profiles").select("*").eq("id",session.user.id).single();
-          if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"");setPlan(prof.plan||"free")}
+          const finalPlan=hasPaid?paidPlan:(prof?.plan||"free");
+          if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"");setPlan(finalPlan)}
           const{data:assess}=await sb.from("assessments").select("*").eq("user_id",session.user.id).order("created_at",{ascending:false}).limit(1).single();
           if(assess&&assess.scores){
             setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);setSc("results");
             if(assess.ai_results&&Object.keys(assess.ai_results).length>0){setAi(assess.ai_results)}
           }
+          // Save paid plan to DB + clear
+          if(hasPaid){
+            setPlan(paidPlan);ST.set("plan",paidPlan);
+            sb.from("profiles").update({plan:paidPlan,updated_at:new Date().toISOString()}).eq("id",session.user.id);
+            localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at");
+          }
+        } else if(hasPaid){
+          // Session lost after Stripe redirect → ask user to login again
+          setLoginModal(true);setAuthMode("login");setAuthErr("✅ ชำระเงินสำเร็จแล้ว! กรุณาเข้าสู่ระบบเพื่อปลดล็อก");
         }
-        sb.auth.onAuthStateChange(async(ev,session)=>{
-          if(ev==="SIGNED_IN"&&session?.user){setUser(session.user);setEmail(session.user.email||"");setLoginModal(false);
-            if(pendingPlan)upgradePlan(pendingPlan);setPendingPlan(null)}
+        sb.auth.onAuthStateChange(async(ev,sess)=>{
+          if(ev==="SIGNED_IN"&&sess?.user){
+            setUser(sess.user);setEmail(sess.user.email||"");setLoginModal(false);
+            // Activate paid plan after re-login
+            const pp=localStorage.getItem("hss_paid_plan");
+            const ppAt=parseInt(localStorage.getItem("hss_paid_at")||"0");
+            if(pp&&(Date.now()-ppAt<3600000)){
+              setPlan(pp);ST.set("plan",pp);
+              sb.from("profiles").update({plan:pp,updated_at:new Date().toISOString()}).eq("id",sess.user.id);
+              localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at");
+              // Reload user data
+              const{data:prof}=await sb.from("profiles").select("*").eq("id",sess.user.id).single();
+              if(prof){setNick(prof.nick||"");setBday(prof.bday||"--")}
+              const{data:assess}=await sb.from("assessments").select("*").eq("user_id",sess.user.id).order("created_at",{ascending:false}).limit(1).single();
+              if(assess&&assess.scores){setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);setSc("results");if(assess.ai_results)setAi(assess.ai_results)}
+            } else if(pendingPlan){upgradePlan(pendingPlan);setPendingPlan(null)}
+          }
           if(ev==="SIGNED_OUT"){setUser(null)}
         });
       } else {
         const sc2=ST.get("scores");const vd=ST.get("vedic");const p=ST.get("profile");const pl=ST.get("plan");const a=ST.get("answers");
-        if(p){setNick(p.nick||"");setEmail(p.email||"");setBday(p.bday||"--");setBtime(p.btime||"");setTSlot(p.tSlot||"");setProv(p.prov||"")}if(a)setAns(a);if(pl)setPlan(pl);if(sc2&&vd){setScores(sc2);setVedic(vd);setSc("results")}
+        if(p){setNick(p.nick||"");setEmail(p.email||"");setBday(p.bday||"--");setBtime(p.btime||"");setTSlot(p.tSlot||"");setProv(p.prov||"")}if(a)setAns(a);
+        if(hasPaid){setPlan(paidPlan);localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at")}else if(pl)setPlan(pl);
+        if(sc2&&vd){setScores(sc2);setVedic(vd);setSc("results")}
       }
     };init();
-  },[]);
-
-  // Detect payment success from Stripe redirect
-  useEffect(()=>{
-    if(typeof window==="undefined")return;
-    const params=new URLSearchParams(window.location.search);
-    const payment=params.get("payment");const planParam=params.get("plan");
-    if(payment==="success"&&planParam){
-      // Clean URL
-      window.history.replaceState({},"",window.location.pathname);
-      // Activate the plan
-      setTimeout(()=>activatePlan(planParam),500);
-    }
   },[]);
 
   // Auto-trigger AI when scores+nick become available (after login reload)
