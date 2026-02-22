@@ -113,6 +113,19 @@ export default function App(){
     };init();
   },[]);
 
+  // Detect payment success from Stripe redirect
+  useEffect(()=>{
+    if(typeof window==="undefined")return;
+    const params=new URLSearchParams(window.location.search);
+    const payment=params.get("payment");const planParam=params.get("plan");
+    if(payment==="success"&&planParam){
+      // Clean URL
+      window.history.replaceState({},"",window.location.pathname);
+      // Activate the plan
+      setTimeout(()=>activatePlan(planParam),500);
+    }
+  },[]);
+
   // Auto-trigger AI when scores+nick become available (after login reload)
   const aiTriggered=useRef(false);
   useEffect(()=>{
@@ -183,7 +196,10 @@ export default function App(){
 
   const doLogout=async()=>{if(sb)await sb.auth.signOut();setUser(null);setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0);setPlan("free");localStorage.clear()};
 
-  const upgradePlan=p=>{setPlan(p);ST.set("plan",p);savePlan(p);const fs=PLANS[p].f;const loads=[];if(fs.includes("12d")&&!ai["12d"])loads.push(loadAI("12d"));if(fs.includes("shadow")&&!ai.shadow)loads.push(loadAI("shadow"));if(fs.includes("weekly")&&!ai.weekly)loads.push(loadAI("weekly"));if(fs.includes("energy")&&!ai.energy)loads.push(loadAI("energy"));if(fs.includes("job")&&!ai.job)loads.push(loadAI("job"));Promise.all(loads)};
+  const upgradePlan=async(p)=>{
+    // Redirect to Stripe Checkout
+    try{const r=await fetch("/api/stripe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:p,userId:user?.id||"",email:user?.email||email})});const d=await r.json();if(d.url)window.location.href=d.url;else alert(d.error||"เกิดข้อผิดพลาด")}catch{alert("ไม่สามารถเชื่อมต่อ Stripe ได้")}};
+  const activatePlan=(p)=>{setPlan(p);ST.set("plan",p);savePlan(p);const fs=PLANS[p].f;if(fs.includes("12d")&&!ai["12d"])loadAI("12d");if(fs.includes("shadow")&&!ai.shadow)loadAI("shadow");if(fs.includes("weekly")&&!ai.weekly)loadAI("weekly");if(fs.includes("energy")&&!ai.energy)loadAI("energy");if(fs.includes("job")&&!ai.job)loadAI("job")};
 
   const exportPDF=()=>{if(!scores)return;const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);const w=window.open("","_blank");
     // Spider chart SVG for PDF
