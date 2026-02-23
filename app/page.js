@@ -128,7 +128,7 @@ export default function App(){
           // Activate paid plan
           if(hasPaid){
             setPlan(paidPlan);ST.set("plan",paidPlan);
-            sb.from("profiles").update({plan:paidPlan,updated_at:new Date().toISOString()}).eq("id",session.user.id);
+            await sb.from("profiles").update({plan:paidPlan,updated_at:new Date().toISOString()}).eq("id",session.user.id);
             localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at");
           } else {
             setPlan(prof?.plan||lsPlan||"free");
@@ -160,15 +160,19 @@ export default function App(){
             const ppAt=parseInt(localStorage.getItem("hss_paid_at")||"0");
             if(pp&&(Date.now()-ppAt<3600000)){
               setPlan(pp);ST.set("plan",pp);
-              sb.from("profiles").update({plan:pp,updated_at:new Date().toISOString()}).eq("id",sess.user.id);
+              await sb.from("profiles").update({plan:pp,updated_at:new Date().toISOString()}).eq("id",sess.user.id);
               localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at");
             }
             // Load user data from DB
             const{data:prof}=await sb.from("profiles").select("*").eq("id",sess.user.id).single();
-            if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");if(!pp)setPlan(prof.plan||"free")}
+            if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"");if(!pp)setPlan(prof.plan||"free")}
             const{data:assess}=await sb.from("assessments").select("*").eq("user_id",sess.user.id).order("created_at",{ascending:false}).limit(1).single();
-            if(assess?.scores){setScores(assess.scores);setVedic(assess.vedic);setSc("results");if(assess.ai_results)setAi(assess.ai_results)}
-            else if(hasLocalData)setSc("results");
+            if(assess?.scores){setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);setSc("results");if(assess.ai_results)setAi(assess.ai_results)}
+            else{
+              // Try localStorage
+              const ls=ST.get("scores");const lv=ST.get("vedic");
+              if(ls&&lv){setScores(ls);setVedic(lv);setSc("results")}
+            }
           }
           if(ev==="SIGNED_OUT"){setUser(null)}
         });
@@ -281,26 +285,42 @@ export default function App(){
       const wp=localStorage.getItem("hss_want_plan");
       if(wp){localStorage.removeItem("hss_want_plan");goStripe(wp)}
       else{
+        // Load profile & results FIRST
+        const{data:prof}=await sb.from("profiles").select("*").eq("id",data.user.id).single();
+        if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"")}
+        const{data:assess}=await sb.from("assessments").select("*").eq("user_id",data.user.id).order("created_at",{ascending:false}).limit(1).single();
+        if(assess&&assess.scores){setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);setSc("results");if(assess.ai_results)setAi(assess.ai_results)}
         // Check if there's a paid plan waiting to activate
         const paidPlan=localStorage.getItem("hss_paid_plan");
         const paidAt=parseInt(localStorage.getItem("hss_paid_at")||"0");
         if(paidPlan&&(Date.now()-paidAt<3600000)){
           setPlan(paidPlan);ST.set("plan",paidPlan);
-          sb.from("profiles").update({plan:paidPlan,updated_at:new Date().toISOString()}).eq("id",data.user.id);
+          await sb.from("profiles").update({plan:paidPlan,updated_at:new Date().toISOString()}).eq("id",data.user.id);
           localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at");
+          if(assess?.scores)setSc("results");
+        } else {
+          setPlan(prof?.plan||"free");
         }
-        // Load profile & results
-        const{data:prof}=await sb.from("profiles").select("*").eq("id",data.user.id).single();
-        if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"");if(!paidPlan)setPlan(prof.plan||"free")}
-        const{data:assess}=await sb.from("assessments").select("*").eq("user_id",data.user.id).order("created_at",{ascending:false}).limit(1).single();
-        if(assess&&assess.scores){setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);setSc("results");if(assess.ai_results)setAi(assess.ai_results)}
+        // If has scores from localStorage but not DB, still show results
+        if(!assess?.scores){
+          const ls=ST.get("scores");const lv=ST.get("vedic");
+          if(ls&&lv){setScores(ls);setVedic(lv);setSc("results")}
+        }
       }
     }setAuthLoading(false)};
 
   const doGoogle=async()=>{if(!sb)return;setAuthLoading(true);
     await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}})};
 
-  const doLogout=async()=>{if(sb)await sb.auth.signOut();setUser(null);setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0);setPlan("free");localStorage.clear()};
+  const doLogout=async()=>{
+    // Save payment data before clearing
+    const pp=localStorage.getItem("hss_paid_plan");const pa=localStorage.getItem("hss_paid_at");
+    if(sb)await sb.auth.signOut();
+    setUser(null);setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0);setPlan("free");
+    // Clear localStorage but restore payment data
+    localStorage.clear();
+    if(pp){localStorage.setItem("hss_paid_plan",pp);localStorage.setItem("hss_paid_at",pa)}
+  };
 
   const activatePlan=(p)=>{setPlan(p);ST.set("plan",p);savePlan(p);const fs=PLANS[p].f;if(fs.includes("12d")&&!ai["12d"])loadAI("12d");if(fs.includes("shadow")&&!ai.shadow)loadAI("shadow");if(fs.includes("weekly")&&!ai.weekly)loadAI("weekly");if(fs.includes("energy")&&!ai.energy)loadAI("energy");if(fs.includes("job")&&!ai.job)loadAI("job")};
 
@@ -445,13 +465,13 @@ ${wk} ${en} ${jb} ${dashaHTML}
   {!has("job")?<Locked planNeeded="all" title="Job Matching AI" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>💼 AI แนะนำอาชีพจาก 12D Profile + Vedic</div>{[{t:"Data Analyst",m:88},{t:"Project Manager",m:82},{t:"UX Researcher",m:78}].map((j,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 10px",borderRadius:6,background:"#F8FAFC",marginBottom:3,fontSize:12}}><span>{i+1}. {j.t}</span><span style={{fontWeight:700,color:"#4338CA"}}>Match {j.m}%</span></div>)}<div style={{display:"flex",gap:4,marginTop:4}}><div style={{padding:"5px 10px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:10,fontWeight:700}}>🔍 ค้นหาใน LinkedIn</div></div></Locked>:<Sec fKey="job" title="Job Matching AI" icon="💼">{aiL.job?<Spin/>:ai.job&&Array.isArray(ai.job)?ai.job.map((j,i)=><div key={i} style={{padding:10,borderRadius:8,background:"#F8FAFC",marginBottom:4}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}><span style={{fontSize:13,fontWeight:700}}>{j.titleTH||j.title}</span><span style={{fontSize:10,fontWeight:700,color:"#4338CA",background:"#EEF2FF",padding:"2px 6px",borderRadius:6}}>{j.match}%</span></div>{j.dims&&<div style={{fontSize:10,color:"#6366F1",marginBottom:2}}>📊 {j.dims}</div>}<div style={{fontSize:11,color:"#64748B",lineHeight:1.5}}>{j.reason}</div><a href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(j.title)}&location=Thailand`} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:6,padding:"5px 12px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:11,fontWeight:700,textDecoration:"none"}}>🔍 ค้นหางานในไทย — LinkedIn</a></div>):<Spin/>}</Sec>}
 
   {/* Life Phase Map (Dasha) */}
-  {!has("dasha")?<Locked planNeeded="all" title="Life Phase Map (Dasha)" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:6}}>🗺 แผนที่ช่วงชีวิต — Vedic Dasha System</div>{["🌀 เกตุ — การค้นหาตัวเอง","💎 ศุกร์ — ความสัมพันธ์","☀️ อาทิตย์ — การสร้างตัวตน","🌙 จันทร์ — อารมณ์และจิตใจ"].map((d,i)=><div key={i} style={{fontSize:11,padding:"3px 0",color:"#374151"}}>{d}</div>)}<div style={{fontSize:10,color:"#6366F1",marginTop:6}}>🔮 คำนวณจากนักษัตร + มหาทศา Vedic Jyotish</div></Locked>:<Sec fKey="dasha" title="Life Phase Map" icon="🗺">{(()=>{const phases=calcDasha(bday);const current=phases.find(d=>d.isCurrent);return<>{current&&<Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1"}}><div style={{fontSize:14,fontWeight:800,color:"#4338CA",marginBottom:4}}>{current.icon} ตอนนี้คุณอยู่ในช่วง: {current.theme}</div><div style={{fontSize:11,color:"#64748B"}}>มหาทศา{current.p} (อายุ {current.startAge}–{current.endAge} ปี | พ.ศ.{current.startYear+543}–{current.endYear+543})</div><div style={{fontSize:12,color:"#374151",marginTop:4}}>{current.desc}</div><div style={{fontSize:11,color:"#059669",marginTop:4,background:"#ECFDF5",padding:"6px 8px",borderRadius:6}}>🎯 โฟกัส: {current.focus}</div><div style={{fontSize:11,color:"#374151",marginTop:6,background:"#FFF7ED",padding:"8px",borderRadius:6,lineHeight:1.7}}>{current.cheer}</div><div style={{fontSize:10,color:"#B45309",marginTop:4,background:"#FFFBEB",padding:"6px 8px",borderRadius:6,lineHeight:1.6}}>{current.warn}</div></Card>}<div style={{marginTop:8}}><div style={{fontSize:11,fontWeight:700,color:"#64748B",marginBottom:6}}>Timeline ช่วงชีวิต</div>{phases.filter(d=>!d.isPast||d.isCurrent).slice(0,7).map((d,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 8px",borderRadius:8,marginBottom:2,background:d.isCurrent?"linear-gradient(135deg,#EEF2FF,#F5F3FF)":"#F8FAFC",border:d.isCurrent?"2px solid #6366F1":"1px solid #F1F5F9"}}><span style={{fontSize:16}}>{d.icon}</span><div style={{flex:1}}><div style={{fontSize:11,fontWeight:d.isCurrent?700:500,color:d.isCurrent?"#4338CA":"#374151"}}>{d.p} — {d.theme}</div><div style={{fontSize:9,color:"#94A3B8"}}>{d.desc}</div></div><div style={{textAlign:"right"}}><div style={{fontSize:10,fontWeight:600,color:d.isCurrent?"#4338CA":"#64748B"}}>{d.startAge}–{d.endAge} ปี</div><div style={{fontSize:9,color:"#94A3B8"}}>{d.startYear+543}–{d.endYear+543}</div></div></div>)}</div><div style={{marginTop:8,padding:8,background:"#F5F3FF",borderRadius:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>🔮 Vedic Dasha System</div><div style={{fontSize:9,color:"#64748B"}}>คำนวณจากนักษัตรเกิด ใช้ระบบวิมโศตตรีทศา 120 ปี ตามโหราศาสตร์พระเวท</div></div></>})()}</Sec>}
+  {!has("dasha")?<Locked planNeeded="all" title="Life Phase Map (Dasha)" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:6}}>🗺 แผนที่ช่วงชีวิต — Vedic Dasha System</div>{["🌀 เกตุ — การค้นหาตัวเอง","💎 ศุกร์ — ความสัมพันธ์","☀️ อาทิตย์ — การสร้างตัวตน","🌙 จันทร์ — อารมณ์และจิตใจ"].map((d,i)=><div key={i} style={{fontSize:11,padding:"3px 0",color:"#374151"}}>{d}</div>)}<div style={{fontSize:10,color:"#6366F1",marginTop:6}}>🔮 คำนวณจากนักษัตร + มหาทศา Vedic Jyotish</div></Locked>:<Sec fKey="dasha" title="Life Phase Map" icon="🗺">{(()=>{try{const phases=calcDasha(bday);if(!phases||phases.length===0)return<div style={{fontSize:11,color:"#94A3B8"}}>กรุณากรอกวันเกิดเพื่อดู Life Phase Map</div>;const current=phases.find(d=>d.isCurrent);return<>{current&&<Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1"}}><div style={{fontSize:14,fontWeight:800,color:"#4338CA",marginBottom:4}}>{current.icon} ตอนนี้คุณอยู่ในช่วง: {current.theme}</div><div style={{fontSize:11,color:"#64748B"}}>มหาทศา{current.p} (อายุ {current.startAge}–{current.endAge} ปี | พ.ศ.{current.startYear+543}–{current.endYear+543})</div><div style={{fontSize:12,color:"#374151",marginTop:4}}>{current.desc}</div><div style={{fontSize:11,color:"#059669",marginTop:4,background:"#ECFDF5",padding:"6px 8px",borderRadius:6}}>🎯 โฟกัส: {current.focus}</div><div style={{fontSize:11,color:"#374151",marginTop:6,background:"#FFF7ED",padding:"8px",borderRadius:6,lineHeight:1.7}}>{current.cheer}</div><div style={{fontSize:10,color:"#B45309",marginTop:4,background:"#FFFBEB",padding:"6px 8px",borderRadius:6,lineHeight:1.6}}>{current.warn}</div></Card>}<div style={{marginTop:8}}><div style={{fontSize:11,fontWeight:700,color:"#64748B",marginBottom:6}}>Timeline ช่วงชีวิต</div>{phases.filter(d=>!d.isPast||d.isCurrent).slice(0,7).map((d,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 8px",borderRadius:8,marginBottom:2,background:d.isCurrent?"linear-gradient(135deg,#EEF2FF,#F5F3FF)":"#F8FAFC",border:d.isCurrent?"2px solid #6366F1":"1px solid #F1F5F9"}}><span style={{fontSize:16}}>{d.icon}</span><div style={{flex:1}}><div style={{fontSize:11,fontWeight:d.isCurrent?700:500,color:d.isCurrent?"#4338CA":"#374151"}}>{d.p} — {d.theme}</div><div style={{fontSize:9,color:"#94A3B8"}}>{d.desc}</div></div><div style={{textAlign:"right"}}><div style={{fontSize:10,fontWeight:600,color:d.isCurrent?"#4338CA":"#64748B"}}>{d.startAge}–{d.endAge} ปี</div><div style={{fontSize:9,color:"#94A3B8"}}>{d.startYear+543}–{d.endYear+543}</div></div></div>)}</div><div style={{marginTop:8,padding:8,background:"#F5F3FF",borderRadius:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>🔮 Vedic Dasha System</div><div style={{fontSize:9,color:"#64748B"}}>คำนวณจากนักษัตรเกิด ใช้ระบบวิมโศตตรีทศา 120 ปี ตามโหราศาสตร์พระเวท</div></div></>}catch(e){return<div style={{fontSize:11,color:"#94A3B8"}}>ไม่สามารถคำนวณ Dasha ได้ กรุณาตรวจสอบวันเกิด</div>}})()}</Sec>}
 
   {!has("pdf")?<Locked planNeeded="all" title="PDF Report ดาวน์โหลด" onUpgrade={tryUpgrade}><div style={{fontSize:12,lineHeight:1.8}}>📄 รายงานฉบับเต็ม ประกอบด้วย:<br/>• 12 Dimension Scores + Spider Chart<br/>• Identity + Shadow + 5 Core Analysis<br/>• Do & Don't + 7-Day Energy + transit<br/>• Job Matching + Life Phase Map</div></Locked>:<Sec fKey="pdf" title="PDF Report" icon="📄"><Btn onClick={exportPDF} style={{fontSize:12,padding:8}}>📄 ดาวน์โหลด PDF</Btn></Sec>}
 
   {!has("share")?<Locked planNeeded="all" title="Social Share Card" onUpgrade={tryUpgrade}><div style={{fontSize:12,lineHeight:1.8}}>📸 การ์ดภาพ 1080×1080 สำหรับแชร์โซเชียล<br/>• Spider Chart + จุดแข็ง + Shadow Work<br/>• ดีไซน์สวย พร้อมโพสต์ IG / FB / LinkedIn</div></Locked>:<Sec fKey="share" title="Social Share Card" icon="📸"><div style={{fontSize:11,color:"#64748B",marginBottom:8}}>ดาวน์โหลดการ์ด 1080×1080 พร้อมแชร์ Instagram, Facebook, LinkedIn</div><Btn onClick={shareProfile} style={{fontSize:12,padding:8,background:"linear-gradient(135deg,#059669,#10B981)"}}>📸 ดาวน์โหลดการ์ดแชร์</Btn></Sec>}
 
-  <div style={{textAlign:"center",padding:"14px 0 40px"}}><button onClick={()=>{setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0);setPlan("free");localStorage.clear()}} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>🔄 เริ่มใหม่</button></div></div>};
+  <div style={{textAlign:"center",padding:"14px 0 40px"}}><button onClick={()=>{setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0)}} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>🔄 ทำแบบทดสอบใหม่</button></div></div>};
 
   return<div style={{fontFamily:"'Noto Sans Thai','DM Sans',-apple-system,sans-serif",minHeight:"100vh",background:"#F8FAFC",color:"#1E293B"}}><style>{css}</style>{loginModalJSX}<div style={{maxWidth:520,margin:"0 auto",padding:sc==="landing"?"0":"12px 16px 40px"}}>{sc==="landing"&&<Landing/>}{sc==="profile"&&<Profile/>}{sc==="quiz"&&<Quiz/>}{sc==="results"&&<Results/>}</div></div>;
 }
