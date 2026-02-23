@@ -1,5 +1,13 @@
 import { NextResponse } from "next/server";
 
+export async function GET() {
+  const ak = process.env.OPENAI_API_KEY;
+  return NextResponse.json({ 
+    status: ak ? "API key configured" : "NO API KEY!",
+    keyPrefix: ak ? ak.slice(0, 12) + "..." : "none"
+  });
+}
+
 export async function POST(req) {
   try {
     const { prompt, system } = await req.json();
@@ -30,10 +38,18 @@ export async function POST(req) {
     });
 
     clearTimeout(timeout);
+    
+    if (!r.ok) {
+      const errBody = await r.text();
+      console.error("OpenAI error:", r.status, errBody);
+      return NextResponse.json({ error: `OpenAI ${r.status}` }, { status: 500 });
+    }
+    
     const d = await r.json();
     const text = d.choices?.[0]?.message?.content || "";
     return NextResponse.json({ text });
   } catch (e) {
+    console.error("AI route error:", e.message);
     return NextResponse.json({ error: e.message || "GPT error" }, { status: 500 });
   }
 }
