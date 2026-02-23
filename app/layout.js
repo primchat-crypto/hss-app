@@ -1,4 +1,6 @@
 // app/layout.js
+import { Analytics } from '@vercel/analytics/next';
+
 export const metadata = {
   title: "Holistic Self Score — รู้จักตัวเองผ่านดวงดาวและจิตวิทยา",
   description: "แบบประเมินจิตวิทยาเชิงโหราศาสตร์ 12 มิติ พร้อม AI วิเคราะห์เฉพาะบุคคล",
@@ -20,7 +22,10 @@ export default function RootLayout({ children }) {
           @keyframes hss-blink { 50% { opacity: 0 } }
         `}</style>
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
