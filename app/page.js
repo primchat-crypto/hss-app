@@ -90,7 +90,7 @@ export default function App(){
   // Init: check Supabase session + handle payment redirect
   useEffect(()=>{
     const init=async()=>{
-      // 1. Detect Stripe redirect ?payment=success&plan=deep
+      // === STEP 1: Detect Stripe redirect ===
       const params=new URLSearchParams(window.location.search);
       const payOk=params.get("payment")==="success";
       const payPlan=params.get("plan");
@@ -101,47 +101,61 @@ export default function App(){
       }
       const paidPlan=localStorage.getItem("hss_paid_plan");
       const paidAt=parseInt(localStorage.getItem("hss_paid_at")||"0");
-      const hasPaid=paidPlan&&(Date.now()-paidAt<3600000); // valid 1 hour
+      const hasPaid=paidPlan&&(Date.now()-paidAt<3600000);
 
+      // === STEP 2: Always restore localStorage data first ===
+      const lsScores=ST.get("scores");const lsVedic=ST.get("vedic");
+      const lsProfile=ST.get("profile");const lsAnswers=ST.get("answers");const lsPlan=ST.get("plan");
+      let hasLocalData=false;
+      if(lsProfile){setNick(lsProfile.nick||"");setBday(lsProfile.bday||"--");setBtime(lsProfile.btime||"");setTSlot(lsProfile.tSlot||"");setProv(lsProfile.prov||"")}
+      if(lsAnswers)setAns(lsAnswers);
+      if(lsScores&&lsVedic){setScores(lsScores);setVedic(lsVedic);hasLocalData=true}
+
+      // === STEP 3: Try Supabase session ===
       if(sb){
         const{data:{session}}=await sb.auth.getSession();
         if(session?.user){
+          // LOGGED IN — load from DB
           setUser(session.user);setEmail(session.user.email||"");
-          // Load profile
           const{data:prof}=await sb.from("profiles").select("*").eq("id",session.user.id).single();
           if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"")}
-          // Load assessment
           const{data:assess}=await sb.from("assessments").select("*").eq("user_id",session.user.id).order("created_at",{ascending:false}).limit(1).single();
-          if(assess&&assess.scores){
-            setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);setSc("results");
-            if(assess.ai_results&&Object.keys(assess.ai_results).length>0){setAi(assess.ai_results)}
+          if(assess?.scores){
+            setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);
+            if(assess.ai_results&&Object.keys(assess.ai_results).length>0)setAi(assess.ai_results);
+            hasLocalData=true;
           }
           // Activate paid plan
           if(hasPaid){
             setPlan(paidPlan);ST.set("plan",paidPlan);
             sb.from("profiles").update({plan:paidPlan,updated_at:new Date().toISOString()}).eq("id",session.user.id);
             localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at");
-            // Go to results if we have scores
-            if(assess?.scores)setSc("results");
           } else {
-            setPlan(prof?.plan||"free");
+            setPlan(prof?.plan||lsPlan||"free");
           }
+          // Go to results if we have data
+          if(hasLocalData||assess?.scores)setSc("results");
+
         } else if(hasPaid){
-          // Session lost after Stripe → show login with success message + prefill email
+          // NOT LOGGED IN but PAID — show login modal + restore local data
           const savedEmail=localStorage.getItem("hss_user_email")||"";
           setEmail(savedEmail);
+          if(hasPaid)setPlan(paidPlan);
+          if(hasLocalData)setSc("results");
           setLoginModal(true);setAuthMode("login");
           setAuthErr("✅ ชำระเงินสำเร็จแล้ว! กรุณาเข้าสู่ระบบเพื่อปลดล็อก");
-          // Also restore results from localStorage if available
-          const sc2=ST.get("scores");const vd=ST.get("vedic");const a=ST.get("answers");const p=ST.get("profile");
-          if(p){setNick(p.nick||"");setBday(p.bday||"--");setBtime(p.btime||"");setTSlot(p.tSlot||"");setProv(p.prov||"")}
-          if(a)setAns(a);if(sc2&&vd){setScores(sc2);setVedic(vd);setSc("results")}
+
+        } else {
+          // NOT LOGGED IN, NOT PAID — check localStorage for existing results
+          if(lsPlan)setPlan(lsPlan);
+          if(hasLocalData)setSc("results");
         }
-        // Listen for auth state changes
+
+        // Listen for auth changes (Google OAuth, re-login, etc.)
         sb.auth.onAuthStateChange(async(ev,sess)=>{
           if(ev==="SIGNED_IN"&&sess?.user){
             setUser(sess.user);setEmail(sess.user.email||"");setLoginModal(false);
-            // Check if paid plan needs activation
+            // Activate paid plan if pending
             const pp=localStorage.getItem("hss_paid_plan");
             const ppAt=parseInt(localStorage.getItem("hss_paid_at")||"0");
             if(pp&&(Date.now()-ppAt<3600000)){
@@ -149,20 +163,20 @@ export default function App(){
               sb.from("profiles").update({plan:pp,updated_at:new Date().toISOString()}).eq("id",sess.user.id);
               localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at");
             }
-            // Load user data
+            // Load user data from DB
             const{data:prof}=await sb.from("profiles").select("*").eq("id",sess.user.id).single();
-            if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"");if(!pp)setPlan(prof.plan||"free")}
+            if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");if(!pp)setPlan(prof.plan||"free")}
             const{data:assess}=await sb.from("assessments").select("*").eq("user_id",sess.user.id).order("created_at",{ascending:false}).limit(1).single();
-            if(assess?.scores){setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);setSc("results");if(assess.ai_results)setAi(assess.ai_results)}
+            if(assess?.scores){setScores(assess.scores);setVedic(assess.vedic);setSc("results");if(assess.ai_results)setAi(assess.ai_results)}
+            else if(hasLocalData)setSc("results");
           }
           if(ev==="SIGNED_OUT"){setUser(null)}
         });
       } else {
-        // Fallback localStorage
-        const sc2=ST.get("scores");const vd=ST.get("vedic");const p=ST.get("profile");const pl=ST.get("plan");const a=ST.get("answers");
-        if(p){setNick(p.nick||"");setEmail(p.email||"");setBday(p.bday||"--");setBtime(p.btime||"");setTSlot(p.tSlot||"");setProv(p.prov||"")}if(a)setAns(a);
-        if(hasPaid){setPlan(paidPlan);localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at")}else if(pl)setPlan(pl);
-        if(sc2&&vd){setScores(sc2);setVedic(vd);setSc("results")}
+        // No Supabase — pure localStorage
+        if(hasPaid){setPlan(paidPlan);localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at")}
+        else if(lsPlan)setPlan(lsPlan);
+        if(hasLocalData)setSc("results");
       }
     };init();
   },[]);
