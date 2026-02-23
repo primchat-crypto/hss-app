@@ -119,6 +119,11 @@ export default function App(){
           setUser(session.user);setEmail(session.user.email||"");
           const{data:prof}=await sb.from("profiles").select("*").eq("id",session.user.id).single();
           if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"")}
+          // Sync bday from localStorage to DB if DB is missing it
+          if((!prof?.bday||prof.bday==="--")&&lsProfile?.bday&&lsProfile.bday!=="--"&&lsProfile.bday.length>=8){
+            setBday(lsProfile.bday);
+            await sb.from("profiles").upsert({id:session.user.id,nick:prof?.nick||lsProfile.nick||"",email:session.user.email,bday:lsProfile.bday,btime:lsProfile.btime||prof?.btime||"",time_slot:lsProfile.tSlot||prof?.time_slot||"",province:lsProfile.prov||prof?.province||"",plan:prof?.plan||"free",updated_at:new Date().toISOString()});
+          }
           const{data:assess}=await sb.from("assessments").select("*").eq("user_id",session.user.id).order("created_at",{ascending:false}).limit(1).single();
           if(assess?.scores){
             setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);
@@ -235,7 +240,12 @@ export default function App(){
       // Try GPT upgrade in background
       GPT.call(`JobMatch"${nn}"แข็ง:${so.slice(0,4).map(([k,v2])=>`${k}=${v2.toFixed(1)}`).join(",")} อ่อน:${so.slice(-3).map(([k,v2])=>`${k}=${v2.toFixed(1)}`).join(",")}\nแนะนำ3อาชีพ+เหตุผลอ้างdim+ดาว ตอบJSON:[{"title":"EN","titleTH":"ไทย","match":เลข,"dims":"3มิติ","reason":"2ประโยค"}]`,`job_${nn}`).then(t=>{const p=pJ(t);if(p&&Array.isArray(p)&&p.length>=3)setAi(prev=>({...prev,job:p}))});
       return}
-  }catch{}setAi(p=>({...p,[type]:r}));setAiL(p=>({...p,[type]:false}))};
+  }catch(e){console.log("AI error:",type,e)}
+    // Always set result (use fallback if null)
+    if(!r&&type!=="energy"&&type!=="job"){r=GPT.fb(`${type===" identity"?"id":type==="core"?"core":type==="12d"?"f12":type==="shadow"?"sh":type==="weekly"?"wk":"x"}_${nn}`);if(type==="weekly")r=pJ(r)}
+    setAi(p=>({...p,[type]:r}));setAiL(p=>({...p,[type]:false}));
+    // Save AI results to DB
+    if(r)setTimeout(()=>{const newAi={...ai,[type]:r};saveAI(newAi)},500)};
 
   const tryUpgrade=p=>{
     localStorage.setItem("hss_want_plan",p);
@@ -283,11 +293,24 @@ export default function App(){
     if(data?.user){setUser(data.user);setEmail(ae);setLoginModal(false);
       // Check if we need to go to Stripe
       const wp=localStorage.getItem("hss_want_plan");
-      if(wp){localStorage.removeItem("hss_want_plan");goStripe(wp)}
+      if(wp){
+        // Save profile before going to Stripe (so bday gets saved)
+        const lp=ST.get("profile");
+        if(lp?.bday&&lp.bday!=="--"){
+          await sb.from("profiles").upsert({id:data.user.id,nick:lp.nick||nick,email:ae,bday:lp.bday,btime:lp.btime||btime,time_slot:lp.tSlot||tSlot,province:lp.prov||prov,updated_at:new Date().toISOString()});
+        }
+        localStorage.removeItem("hss_want_plan");goStripe(wp)
+      }
       else{
         // Load profile & results FIRST
         const{data:prof}=await sb.from("profiles").select("*").eq("id",data.user.id).single();
         if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"")}
+        // If DB has no bday but localStorage does, sync it
+        const lp=ST.get("profile");
+        if((!prof?.bday||prof.bday==="--")&&lp?.bday&&lp.bday!=="--"&&lp.bday.length>=8){
+          setBday(lp.bday);
+          await sb.from("profiles").upsert({id:data.user.id,nick:lp.nick||prof?.nick||nick,email:ae,bday:lp.bday,btime:lp.btime||prof?.btime||"",time_slot:lp.tSlot||prof?.time_slot||"",province:lp.prov||prof?.province||"",plan:prof?.plan||"free",updated_at:new Date().toISOString()});
+        }
         const{data:assess}=await sb.from("assessments").select("*").eq("user_id",data.user.id).order("created_at",{ascending:false}).limit(1).single();
         if(assess&&assess.scores){setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);setSc("results");if(assess.ai_results)setAi(assess.ai_results)}
         // Check if there's a paid plan waiting to activate
