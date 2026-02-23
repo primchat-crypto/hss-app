@@ -127,9 +127,15 @@ export default function App(){
             setPlan(prof?.plan||"free");
           }
         } else if(hasPaid){
-          // Session lost after Stripe → show login with success message
+          // Session lost after Stripe → show login with success message + prefill email
+          const savedEmail=localStorage.getItem("hss_user_email")||"";
+          setEmail(savedEmail);
           setLoginModal(true);setAuthMode("login");
           setAuthErr("✅ ชำระเงินสำเร็จแล้ว! กรุณาเข้าสู่ระบบเพื่อปลดล็อก");
+          // Also restore results from localStorage if available
+          const sc2=ST.get("scores");const vd=ST.get("vedic");const a=ST.get("answers");const p=ST.get("profile");
+          if(p){setNick(p.nick||"");setBday(p.bday||"--");setBtime(p.btime||"");setTSlot(p.tSlot||"");setProv(p.prov||"")}
+          if(a)setAns(a);if(sc2&&vd){setScores(sc2);setVedic(vd);setSc("results")}
         }
         // Listen for auth state changes
         sb.auth.onAuthStateChange(async(ev,sess)=>{
@@ -214,32 +220,64 @@ export default function App(){
   }catch{}setAi(p=>({...p,[type]:r}));setAiL(p=>({...p,[type]:false}))};
 
   const tryUpgrade=p=>{
-    ST.set("wantPlan",p); // Save desired plan
+    localStorage.setItem("hss_want_plan",p);
     if(!logged){setPendingPlan(p);setLoginModal(true);setAuthErr("");setAuthMode("login")}
     else{goStripe(p)}};
 
   const goStripe=async(p)=>{
+    // Save current user email for post-payment re-login
+    if(user?.email)localStorage.setItem("hss_user_email",user.email);
     try{const r=await fetch("/api/stripe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:p,userId:user?.id||"",email:user?.email||email})});const d=await r.json();if(d.url)window.location.href=d.url;else alert(d.error||"เกิดข้อผิดพลาด")}catch{alert("ไม่สามารถเชื่อมต่อ Stripe ได้")}};
 
   // Real Supabase Auth
   const doSignup=async()=>{const ae=authEmailRef.current?.value||"";const ap=authPwRef.current?.value||"";if(!ae||!ap){setAuthErr("กรุณากรอกอีเมลและรหัสผ่าน");return}if(ap.length<6){setAuthErr("รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร");return}setAuthLoading(true);setAuthErr("");
-    const{data,error}=await sb.auth.signUp({email:ae,password:ap});
-    if(error){setAuthErr(error.message);setAuthLoading(false);return}
-    if(data?.user){setUser(data.user);setEmail(ae);setLoginModal(false);
-      const wp=pendingPlan||ST.get("wantPlan");
-      if(wp){setPendingPlan(null);ST.set("wantPlan",null);goStripe(wp)}
+    const{data,error}=await sb.auth.signUp({email:ae,password:ap,options:{data:{},emailRedirectTo:undefined}});
+    if(error){
+      // If "email rate limit exceeded" or similar, try login instead
+      if(error.message?.includes("rate limit")){setAuthErr("ระบบอีเมลเต็ม กรุณาใช้ 'เข้าสู่ระบบ' แทน หรือเข้าด้วย Google");setAuthLoading(false);return}
+      setAuthErr(error.message);setAuthLoading(false);return}
+    // Check if email confirmation is required (session will be null)
+    if(data?.session){
+      // No email confirmation needed — proceed normally
+      setUser(data.user||data.session.user);setEmail(ae);setLoginModal(false);
+      const wp=localStorage.getItem("hss_want_plan");
+      if(wp){localStorage.removeItem("hss_want_plan");goStripe(wp)}
+    } else if(data?.user){
+      // Email confirmation required — auto-login immediately
+      const{data:loginData,error:loginErr}=await sb.auth.signInWithPassword({email:ae,password:ap});
+      if(loginData?.user){
+        setUser(loginData.user);setEmail(ae);setLoginModal(false);
+        const wp=localStorage.getItem("hss_want_plan");
+        if(wp){localStorage.removeItem("hss_want_plan");goStripe(wp)}
+      } else {
+        // Cannot auto-login (email confirm truly required) — inform user
+        setAuthErr("สมัครสำเร็จ! กรุณาเข้าสู่ระบบด้วยอีเมลและรหัสผ่านที่ตั้งไว้");setAuthMode("login");
+      }
     }setAuthLoading(false)};
 
   const doLogin=async()=>{const ae=authEmailRef.current?.value||"";const ap=authPwRef.current?.value||"";if(!ae||!ap){setAuthErr("กรุณากรอกอีเมลและรหัสผ่าน");return}setAuthLoading(true);setAuthErr("");
     const{data,error}=await sb.auth.signInWithPassword({email:ae,password:ap});
-    if(error){setAuthErr(error.message==="Invalid login credentials"?"อีเมลหรือรหัสผ่านไม่ถูกต้อง":error.message);setAuthLoading(false);return}
+    if(error){
+      if(error.message==="Invalid login credentials")setAuthErr("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+      else if(error.message?.includes("Email not confirmed"))setAuthErr("กรุณายืนยันอีเมลก่อน หรือลองสมัครใหม่ด้วย Google");
+      else setAuthErr(error.message);
+      setAuthLoading(false);return}
     if(data?.user){setUser(data.user);setEmail(ae);setLoginModal(false);
-      const wp=pendingPlan||ST.get("wantPlan");
-      if(wp){setPendingPlan(null);ST.set("wantPlan",null);goStripe(wp)}
+      // Check if we need to go to Stripe
+      const wp=localStorage.getItem("hss_want_plan");
+      if(wp){localStorage.removeItem("hss_want_plan");goStripe(wp)}
       else{
-        // Normal login — load profile & results
+        // Check if there's a paid plan waiting to activate
+        const paidPlan=localStorage.getItem("hss_paid_plan");
+        const paidAt=parseInt(localStorage.getItem("hss_paid_at")||"0");
+        if(paidPlan&&(Date.now()-paidAt<3600000)){
+          setPlan(paidPlan);ST.set("plan",paidPlan);
+          sb.from("profiles").update({plan:paidPlan,updated_at:new Date().toISOString()}).eq("id",data.user.id);
+          localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at");
+        }
+        // Load profile & results
         const{data:prof}=await sb.from("profiles").select("*").eq("id",data.user.id).single();
-        if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"");setPlan(prof.plan||"free")}
+        if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"");if(!paidPlan)setPlan(prof.plan||"free")}
         const{data:assess}=await sb.from("assessments").select("*").eq("user_id",data.user.id).order("created_at",{ascending:false}).limit(1).single();
         if(assess&&assess.scores){setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);setSc("results");if(assess.ai_results)setAi(assess.ai_results)}
       }
@@ -337,7 +375,7 @@ ${wk} ${en} ${jb} ${dashaHTML}
   <div style={{fontSize:16,fontWeight:800,marginBottom:4}}>{authMode==="login"?"🔐 เข้าสู่ระบบ":"✨ สมัครสมาชิก"}</div>
   <div style={{fontSize:12,color:"#64748B",marginBottom:16}}>{authMode==="login"?"เข้าสู่ระบบเพื่อซื้อแพ็คเกจ":"สร้างบัญชีใหม่ (ไม่ต้องใช้เบอร์โทร)"}</div>
   {authErr&&<div style={{padding:"8px 12px",borderRadius:8,background:"#FEF2F2",border:"1px solid #FECACA",color:"#DC2626",fontSize:12,marginBottom:12}}>{authErr}</div>}
-  <div style={{marginBottom:12}}><label style={{fontSize:12,fontWeight:600,color:"#64748B",display:"block",marginBottom:4}}>อีเมล</label><input key="auth-email-input" ref={authEmailRef} defaultValue="" placeholder="your@email.com" type="email" autoComplete="email" style={{width:"100%",padding:"10px 14px",fontSize:14,border:"2px solid #E2E8F0",borderRadius:10,outline:"none",boxSizing:"border-box"}}/></div>
+  <div style={{marginBottom:12}}><label style={{fontSize:12,fontWeight:600,color:"#64748B",display:"block",marginBottom:4}}>อีเมล</label><input key="auth-email-input" ref={authEmailRef} defaultValue={email||localStorage.getItem("hss_user_email")||""} placeholder="your@email.com" type="email" autoComplete="email" style={{width:"100%",padding:"10px 14px",fontSize:14,border:"2px solid #E2E8F0",borderRadius:10,outline:"none",boxSizing:"border-box"}}/></div>
   <div style={{marginBottom:16}}><label style={{fontSize:12,fontWeight:600,color:"#64748B",display:"block",marginBottom:4}}>รหัสผ่าน</label><input key="auth-pw-input" ref={authPwRef} defaultValue="" type="password" placeholder={authMode==="signup"?"ตั้งรหัสผ่าน (อย่างน้อย 6 ตัว)":"รหัสผ่าน"} autoComplete={authMode==="signup"?"new-password":"current-password"} onKeyDown={e=>{if(e.key==="Enter"){authMode==="login"?doLogin():doSignup()}}} style={{width:"100%",padding:"10px 14px",fontSize:14,border:"2px solid #E2E8F0",borderRadius:10,outline:"none",boxSizing:"border-box"}}/></div>
   <Btn onClick={authMode==="login"?doLogin:doSignup} ok={!authLoading}>{authLoading?"กำลังดำเนินการ...":authMode==="login"?"เข้าสู่ระบบ →":"สมัครสมาชิก →"}</Btn>
   <div style={{textAlign:"center",marginTop:12}}><button onClick={()=>{setAuthMode(authMode==="login"?"signup":"login");setAuthErr("")}} style={{background:"none",border:"none",fontSize:12,color:"#6366F1",fontWeight:600,cursor:"pointer"}}>{authMode==="login"?"ยังไม่มีบัญชี? สมัครสมาชิก":"มีบัญชีแล้ว? เข้าสู่ระบบ"}</button></div>
