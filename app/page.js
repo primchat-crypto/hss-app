@@ -90,60 +90,69 @@ export default function App(){
   // Init: check Supabase session + handle payment redirect
   useEffect(()=>{
     const init=async()=>{
-      // 1. Detect Stripe payment redirect → save to localStorage (survives session loss)
+      // 1. Detect Stripe redirect ?payment=success&plan=deep
       const params=new URLSearchParams(window.location.search);
-      if(params.get("payment")==="success"&&params.get("plan")){
-        localStorage.setItem("hss_paid_plan",params.get("plan"));
+      const payOk=params.get("payment")==="success";
+      const payPlan=params.get("plan");
+      if(payOk&&payPlan){
+        localStorage.setItem("hss_paid_plan",payPlan);
         localStorage.setItem("hss_paid_at",Date.now().toString());
         window.history.replaceState({},"",window.location.pathname);
       }
-      // Check for recently paid plan (valid for 1 hour)
       const paidPlan=localStorage.getItem("hss_paid_plan");
       const paidAt=parseInt(localStorage.getItem("hss_paid_at")||"0");
-      const hasPaid=paidPlan&&(Date.now()-paidAt<3600000);
+      const hasPaid=paidPlan&&(Date.now()-paidAt<3600000); // valid 1 hour
 
       if(sb){
         const{data:{session}}=await sb.auth.getSession();
         if(session?.user){
           setUser(session.user);setEmail(session.user.email||"");
+          // Load profile
           const{data:prof}=await sb.from("profiles").select("*").eq("id",session.user.id).single();
-          const finalPlan=hasPaid?paidPlan:(prof?.plan||"free");
-          if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"");setPlan(finalPlan)}
+          if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"")}
+          // Load assessment
           const{data:assess}=await sb.from("assessments").select("*").eq("user_id",session.user.id).order("created_at",{ascending:false}).limit(1).single();
           if(assess&&assess.scores){
             setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);setSc("results");
             if(assess.ai_results&&Object.keys(assess.ai_results).length>0){setAi(assess.ai_results)}
           }
-          // Save paid plan to DB + clear
+          // Activate paid plan
           if(hasPaid){
             setPlan(paidPlan);ST.set("plan",paidPlan);
             sb.from("profiles").update({plan:paidPlan,updated_at:new Date().toISOString()}).eq("id",session.user.id);
             localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at");
+            // Go to results if we have scores
+            if(assess?.scores)setSc("results");
+          } else {
+            setPlan(prof?.plan||"free");
           }
         } else if(hasPaid){
-          // Session lost after Stripe redirect → ask user to login again
-          setLoginModal(true);setAuthMode("login");setAuthErr("✅ ชำระเงินสำเร็จแล้ว! กรุณาเข้าสู่ระบบเพื่อปลดล็อก");
+          // Session lost after Stripe → show login with success message
+          setLoginModal(true);setAuthMode("login");
+          setAuthErr("✅ ชำระเงินสำเร็จแล้ว! กรุณาเข้าสู่ระบบเพื่อปลดล็อก");
         }
+        // Listen for auth state changes
         sb.auth.onAuthStateChange(async(ev,sess)=>{
           if(ev==="SIGNED_IN"&&sess?.user){
             setUser(sess.user);setEmail(sess.user.email||"");setLoginModal(false);
-            // Activate paid plan after re-login
+            // Check if paid plan needs activation
             const pp=localStorage.getItem("hss_paid_plan");
             const ppAt=parseInt(localStorage.getItem("hss_paid_at")||"0");
             if(pp&&(Date.now()-ppAt<3600000)){
               setPlan(pp);ST.set("plan",pp);
               sb.from("profiles").update({plan:pp,updated_at:new Date().toISOString()}).eq("id",sess.user.id);
               localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at");
-              // Reload user data
-              const{data:prof}=await sb.from("profiles").select("*").eq("id",sess.user.id).single();
-              if(prof){setNick(prof.nick||"");setBday(prof.bday||"--")}
-              const{data:assess}=await sb.from("assessments").select("*").eq("user_id",sess.user.id).order("created_at",{ascending:false}).limit(1).single();
-              if(assess&&assess.scores){setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);setSc("results");if(assess.ai_results)setAi(assess.ai_results)}
-            } else if(pendingPlan){upgradePlan(pendingPlan);setPendingPlan(null)}
+            }
+            // Load user data
+            const{data:prof}=await sb.from("profiles").select("*").eq("id",sess.user.id).single();
+            if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"");if(!pp)setPlan(prof.plan||"free")}
+            const{data:assess}=await sb.from("assessments").select("*").eq("user_id",sess.user.id).order("created_at",{ascending:false}).limit(1).single();
+            if(assess?.scores){setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);setSc("results");if(assess.ai_results)setAi(assess.ai_results)}
           }
           if(ev==="SIGNED_OUT"){setUser(null)}
         });
       } else {
+        // Fallback localStorage
         const sc2=ST.get("scores");const vd=ST.get("vedic");const p=ST.get("profile");const pl=ST.get("plan");const a=ST.get("answers");
         if(p){setNick(p.nick||"");setEmail(p.email||"");setBday(p.bday||"--");setBtime(p.btime||"");setTSlot(p.tSlot||"");setProv(p.prov||"")}if(a)setAns(a);
         if(hasPaid){setPlan(paidPlan);localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at")}else if(pl)setPlan(pl);
@@ -204,27 +213,43 @@ export default function App(){
       return}
   }catch{}setAi(p=>({...p,[type]:r}));setAiL(p=>({...p,[type]:false}))};
 
-  const tryUpgrade=p=>{if(!logged){setPendingPlan(p);setLoginModal(true);setAuthErr("")}else{upgradePlan(p)}};
+  const tryUpgrade=p=>{
+    ST.set("wantPlan",p); // Save desired plan
+    if(!logged){setPendingPlan(p);setLoginModal(true);setAuthErr("");setAuthMode("login")}
+    else{goStripe(p)}};
+
+  const goStripe=async(p)=>{
+    try{const r=await fetch("/api/stripe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:p,userId:user?.id||"",email:user?.email||email})});const d=await r.json();if(d.url)window.location.href=d.url;else alert(d.error||"เกิดข้อผิดพลาด")}catch{alert("ไม่สามารถเชื่อมต่อ Stripe ได้")}};
 
   // Real Supabase Auth
   const doSignup=async()=>{const ae=authEmailRef.current?.value||"";const ap=authPwRef.current?.value||"";if(!ae||!ap){setAuthErr("กรุณากรอกอีเมลและรหัสผ่าน");return}if(ap.length<6){setAuthErr("รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร");return}setAuthLoading(true);setAuthErr("");
     const{data,error}=await sb.auth.signUp({email:ae,password:ap});
     if(error){setAuthErr(error.message);setAuthLoading(false);return}
-    if(data?.user){setUser(data.user);setEmail(ae);setLoginModal(false);if(pendingPlan){upgradePlan(pendingPlan);setPendingPlan(null)}}setAuthLoading(false)};
+    if(data?.user){setUser(data.user);setEmail(ae);setLoginModal(false);
+      const wp=pendingPlan||ST.get("wantPlan");
+      if(wp){setPendingPlan(null);ST.set("wantPlan",null);goStripe(wp)}
+    }setAuthLoading(false)};
 
   const doLogin=async()=>{const ae=authEmailRef.current?.value||"";const ap=authPwRef.current?.value||"";if(!ae||!ap){setAuthErr("กรุณากรอกอีเมลและรหัสผ่าน");return}setAuthLoading(true);setAuthErr("");
     const{data,error}=await sb.auth.signInWithPassword({email:ae,password:ap});
     if(error){setAuthErr(error.message==="Invalid login credentials"?"อีเมลหรือรหัสผ่านไม่ถูกต้อง":error.message);setAuthLoading(false);return}
-    if(data?.user){setUser(data.user);setEmail(ae);setLoginModal(false);if(pendingPlan){upgradePlan(pendingPlan);setPendingPlan(null)}}setAuthLoading(false)};
+    if(data?.user){setUser(data.user);setEmail(ae);setLoginModal(false);
+      const wp=pendingPlan||ST.get("wantPlan");
+      if(wp){setPendingPlan(null);ST.set("wantPlan",null);goStripe(wp)}
+      else{
+        // Normal login — load profile & results
+        const{data:prof}=await sb.from("profiles").select("*").eq("id",data.user.id).single();
+        if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"");setPlan(prof.plan||"free")}
+        const{data:assess}=await sb.from("assessments").select("*").eq("user_id",data.user.id).order("created_at",{ascending:false}).limit(1).single();
+        if(assess&&assess.scores){setAns(assess.answers||{});setScores(assess.scores);setVedic(assess.vedic);setSc("results");if(assess.ai_results)setAi(assess.ai_results)}
+      }
+    }setAuthLoading(false)};
 
   const doGoogle=async()=>{if(!sb)return;setAuthLoading(true);
     await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}})};
 
   const doLogout=async()=>{if(sb)await sb.auth.signOut();setUser(null);setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0);setPlan("free");localStorage.clear()};
 
-  const upgradePlan=async(p)=>{
-    // Redirect to Stripe Checkout
-    try{const r=await fetch("/api/stripe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:p,userId:user?.id||"",email:user?.email||email})});const d=await r.json();if(d.url)window.location.href=d.url;else alert(d.error||"เกิดข้อผิดพลาด")}catch{alert("ไม่สามารถเชื่อมต่อ Stripe ได้")}};
   const activatePlan=(p)=>{setPlan(p);ST.set("plan",p);savePlan(p);const fs=PLANS[p].f;if(fs.includes("12d")&&!ai["12d"])loadAI("12d");if(fs.includes("shadow")&&!ai.shadow)loadAI("shadow");if(fs.includes("weekly")&&!ai.weekly)loadAI("weekly");if(fs.includes("energy")&&!ai.energy)loadAI("energy");if(fs.includes("job")&&!ai.job)loadAI("job")};
 
   const exportPDF=()=>{if(!scores)return;const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);const w=window.open("","_blank");
