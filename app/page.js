@@ -336,10 +336,12 @@ export default function App(){
     await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}})};
 
   const doLogout=async()=>{
-    try{if(sb)await sb.auth.signOut()}catch(e){}
+    // Reset state immediately so UI updates right away (don't wait for Supabase)
     setUser(null);setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0);setPlan("free");
     // Clear only app data, not auth or payment
     ["hss6_scores","hss6_vedic","hss6_profile","hss6_plan","hss6_answers","hss_want_plan","hss_user_email"].forEach(k=>localStorage.removeItem(k));
+    // Sign out from Supabase in background (non-blocking)
+    try{if(sb)sb.auth.signOut()}catch(e){}
   };
 
   const activatePlan=(p)=>{setPlan(p);ST.set("plan",p);savePlan(p);const fs=PLANS[p].f;if(fs.includes("12d")&&!ai["12d"])loadAI("12d");if(fs.includes("shadow")&&!ai.shadow)loadAI("shadow");if(fs.includes("weekly")&&!ai.weekly)loadAI("weekly");if(fs.includes("energy")&&!ai.energy)loadAI("energy");if(fs.includes("job")&&!ai.job)loadAI("job")};
