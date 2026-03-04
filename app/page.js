@@ -386,7 +386,7 @@ ${wk} ${en} ${jb} ${dashaHTML}
     setTimeout(()=>URL.revokeObjectURL(url),1000)};
 
   const shareProfile=()=>{if(!scores||!nick)return;
-    const isFull=plan==="all";
+    const isFull=plan==="all"||plan==="deep";
     const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
     const top1=so[0];const bot1=so[so.length-1];
     const top3=so.slice(0,3);const bot3=so.slice(-3).reverse();
