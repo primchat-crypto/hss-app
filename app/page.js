@@ -337,6 +337,7 @@ export default function App(){
 
   const doLogout=async()=>{
     try{if(sb)await sb.auth.signOut()}catch(e){}
+    aiTriggered.current=false;
     setUser(null);setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0);setPlan("free");
     // Clear only app data, not auth or payment
     ["hss6_scores","hss6_vedic","hss6_profile","hss6_plan","hss6_answers","hss_want_plan","hss_user_email"].forEach(k=>localStorage.removeItem(k));
@@ -385,34 +386,137 @@ ${wk} ${en} ${jb} ${dashaHTML}
     }
     setTimeout(()=>URL.revokeObjectURL(url),1000)};
 
-  const shareProfile=()=>{if(!scores||!nick)return;
+  const shareProfile=async()=>{if(!scores||!nick)return;
+    const W=1080,H=1920;
+    const canvas=document.createElement("canvas");canvas.width=W;canvas.height=H;
+    const ctx=canvas.getContext("2d");
+    await document.fonts.ready;
+    // roundRect polyfill
+    if(!ctx.roundRect)ctx.roundRect=function(x,y,w,h,r){const R=typeof r==="number"?r:r[0]||0;this.beginPath();this.moveTo(x+R,y);this.lineTo(x+w-R,y);this.arcTo(x+w,y,x+w,y+R,R);this.lineTo(x+w,y+h-R);this.arcTo(x+w,y+h,x+w-R,y+h,R);this.lineTo(x+R,y+h);this.arcTo(x,y+h,x,y+h-R,R);this.lineTo(x,y+R);this.arcTo(x,y,x+R,y,R);this.closePath()};
     const isFull=plan==="all"||plan==="deep";
     const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
     const top1=so[0];const bot1=so[so.length-1];
     const top3=so.slice(0,3);const bot3=so.slice(-3).reverse();
-    const archetype=ai?.identity?.split("\n")[0]?.slice(0,70)||"The Strategic Visionary — ผู้มองเห็นภาพใหญ่";
-    const SHADOW_TIPS={"Shadow Pattern":"ลองฝึกสังเกตตัวเองเวลาเลี่ยงเรื่องสำคัญ แค่ 'รู้ตัว' ก็เปลี่ยนได้","Stress Response":"ตั้งกฎ: เจอปัญหาให้เริ่มแก้ภายใน 24 ชม.","Boundary System":"ฝึกพูด 'ขอคิดก่อน' แทน 'ได้เลย'","Responsibility Load":"ทำ 'งานสำคัญที่สุด' เป็นอย่างแรกของวัน","Emotional Regulation":"ฝึก 'กฎ 5 วินาที' — นับ 1-5 ก่อนตอบสนอง","Energy Management":"พักจริงๆ 15 นาทีต่อวัน ไม่ดูมือถือ","Integration Level":"เลือก 1 เป้าหมายสำคัญที่สุด โฟกัสแค่นั้นก่อน"};
+    const archetype=ai?.identity?.split("\n")[0]?.slice(0,50)||"The Strategic Visionary — ผู้มองเห็นภาพใหญ่";
+    const SHADOW_TIPS={"Shadow Pattern":"ลองฝึกสังเกตตัวเองเวลาเลี่ยงเรื่องสำคัญ","Stress Response":"ตั้งกฎ: เจอปัญหาให้เริ่มแก้ภายใน 24 ชม.","Boundary System":"ฝึกพูด 'ขอคิดก่อน' แทน 'ได้เลย'","Responsibility Load":"ทำ 'งานสำคัญที่สุด' เป็นอย่างแรกของวัน","Emotional Regulation":"ฝึก 'กฎ 5 วินาที' — นับ 1-5 ก่อนตอบสนอง","Energy Management":"พักจริงๆ 15 นาทีต่อวัน ไม่ดูมือถือ","Integration Level":"เลือก 1 เป้าหมายสำคัญที่สุด โฟกัสแค่นั้นก่อน"};
     const tip=SHADOW_TIPS[bot1[0]]||"ลองโฟกัสพัฒนาทีละนิด ทุกก้าวเล็กๆ สำคัญ";
-    const STR_DESC={"Cognitive Processing":"คิดวิเคราะห์เก่ง สรุปประเด็นได้ชัด เหมาะงานที่ต้องใช้สมอง","Integration Level":"มองภาพรวมดี เชื่อมโยงสิ่งต่างๆ ได้เป็นระบบ","Growth Orientation":"เรียนรู้และพัฒนาตัวเองอย่างต่อเนื่อง","Energy Management":"บริหารพลังงานได้ดี รู้จักเติมเต็มและใช้อย่างชาญฉลาด","Decision System":"ตัดสินใจอย่างมีหลักการ มองผลระยะยาว","Responsibility Load":"รับผิดชอบสูง เชื่อถือได้ ทำตามสัญญา","Motivation Driver":"มีแรงขับจากภายใน รู้ว่าทำเพื่ออะไร","Emotional Regulation":"ควบคุมอารมณ์ได้ดี ไม่ปล่อยให้อารมณ์นำทาง","Identity Stability":"รู้ตัวตน มั่นคงในหลักการ","Boundary System":"ขีดเส้นชัด รักษาพื้นที่ตัวเองได้ดี","Stress Response":"รับมือความกดดันได้ดี ฟื้นตัวเร็ว","Shadow Pattern":"รู้ทันจุดบอดของตัวเอง เปลี่ยนแปลงได้"};
+    const STR_DESC={"Cognitive Processing":"คิดวิเคราะห์เก่ง สรุปประเด็นได้ชัด","Integration Level":"มองภาพรวมดี เชื่อมโยงสิ่งต่างๆ ได้เป็นระบบ","Growth Orientation":"เรียนรู้และพัฒนาตัวเองอย่างต่อเนื่อง","Energy Management":"บริหารพลังงานได้ดี รู้จักเติมเต็มและใช้ชาญฉลาด","Decision System":"ตัดสินใจอย่างมีหลักการ มองผลระยะยาว","Responsibility Load":"รับผิดชอบสูง เชื่อถือได้ ทำตามสัญญา","Motivation Driver":"มีแรงขับจากภายใน รู้ว่าทำเพื่ออะไร","Emotional Regulation":"ควบคุมอารมณ์ได้ดี ไม่ปล่อยให้อารมณ์นำทาง","Identity Stability":"รู้ตัวตน มั่นคงในหลักการ","Boundary System":"ขีดเส้นชัด รักษาพื้นที่ตัวเองได้ดี","Stress Response":"รับมือความกดดันได้ดี ฟื้นตัวเร็ว","Shadow Pattern":"รู้ทันจุดบอดของตัวเอง เปลี่ยนแปลงได้"};
     const SDW_DESC={"Shadow Pattern":"มีแนวโน้มเลี่ยงเรื่องที่ยาก ต้องฝึกเผชิญตรง","Emotional Regulation":"อาจตอบสนองเร็วเกินไปในบางสถานการณ์","Stress Response":"เมื่อกดดันมาก อาจรับมือได้ยากกว่าที่ควร","Boundary System":"บางครั้งรับงานมากเกินไป ยากที่จะปฏิเสธ","Energy Management":"พลังงานขึ้นลงบ้าง ต้องจัดการจังหวะพัก","Decision System":"บางครั้งลังเลนาน หรือตัดสินใจเร็วเกินไป","Responsibility Load":"บางครั้งแบกมากเกิน ต้องเรียนรู้วางบ้าง","Motivation Driver":"แรงบันดาลใจผันผวน ต้องหาแหล่งพลังที่มั่นคง","Identity Stability":"เป้าหมายยังไม่ชัดพอ ต้องทบทวนตัวตน","Integration Level":"ยังมองภาพรวมไม่ครบ ต้องฝึกเชื่อมโยง","Growth Orientation":"การพัฒนาตัวเองยังไม่สม่ำเสมอ","Cognitive Processing":"การวิเคราะห์บางครั้งซับซ้อนเกิน ต้องฝึกสรุป"};
-    const radarSVG=()=>{const keys=Object.keys(scores);const vals=Object.values(scores);const n=keys.length;const cx=220,cy=200,rad=150;const pt=(i,v)=>{const a=Math.PI*2*i/n-Math.PI/2;return[cx+Math.cos(a)*v/10*rad,cy+Math.sin(a)*v/10*rad]};let grid="",poly="",dots="",labels="";[2.5,5,7.5,10].forEach(l=>{let pts=[];for(let i=0;i<n;i++){const[x,y]=pt(i,l);pts.push(`${x},${y}`)}grid+=`<polygon points="${pts.join(" ")}" fill="none" stroke="${l===10?"#D1D5DB":"#E5E7EB"}" stroke-width="${l===10?1:0.5}"/>`});let polyPts=[];keys.forEach((k,i)=>{const[x,y]=pt(i,vals[i]);polyPts.push(`${x},${y}`);dots+=`<circle cx="${x}" cy="${y}" r="3.5" fill="#7C3AED"/>`;const[lx,ly]=pt(i,13);const anchor=lx<cx-30?"end":lx>cx+30?"start":"middle";labels+=`<text x="${lx}" y="${ly+3}" text-anchor="${anchor}" fill="#374151" font-size="9.5" font-weight="600">${DM[k]?.icon||""} ${k.length>14?k.slice(0,12)+"…":k} ${vals[i].toFixed(1)}</text>`});poly=`<polygon points="${polyPts.join(" ")}" fill="rgba(124,58,237,.12)" stroke="#7C3AED" stroke-width="2" stroke-linejoin="round"/>`;return`<svg viewBox="0 0 440 400" style="width:100%;display:block">${grid}${poly}${dots}${labels}</svg>`};
-    const barRow=(k,v,isG)=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px"><span style="font-size:18px;width:24px;text-align:center;flex-shrink:0">${DM[k]?.icon||"✦"}</span><div style="flex:1"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:12px;font-weight:600;color:#1E293B">${k}</span><span style="font-size:12px;font-weight:700;color:${isG?"#059669":"#DC2626"}">${v.toFixed(1)}</span></div><div style="height:7px;border-radius:4px;background:#E5E7EB;overflow:hidden"><div style="height:100%;width:${v*10}%;border-radius:4px;background:${isG?"linear-gradient(90deg,#10B981,#34D399)":"linear-gradient(90deg,#EF4444,#F87171)"}"></div></div></div></div>`;
-    const detailItem=(k,v,isG,desc)=>`<div style="background:#fff;border-radius:12px;padding:12px;margin-bottom:7px;border:1px solid ${isG?"#D1FAE5":"#FEE2E2"}"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><div style="display:flex;align-items:center;gap:5px"><span style="font-size:16px">${DM[k]?.icon||"✦"}</span><span style="font-size:12px;font-weight:700;color:#1E293B">${k}</span></div><span style="font-size:13px;font-weight:800;color:${isG?"#059669":"#DC2626"}">${v.toFixed(1)}</span></div><p style="font-size:10px;color:#64748B;line-height:1.6;margin:0 0 7px">${desc}</p><div style="height:6px;border-radius:3px;background:#F3F4F6;overflow:hidden"><div style="height:100%;width:${v*10}%;border-radius:3px;background:${isG?"linear-gradient(90deg,#10B981,#34D399)":"linear-gradient(90deg,#EF4444,#F87171)"}"></div></div></div>`;
-    const HEADER=`<div style="background:linear-gradient(135deg,#6D28D9,#5B21B6);padding:28px 24px 22px;position:relative;overflow:hidden"><div style="position:absolute;width:280px;height:280px;top:-80px;right:-50px;background:radial-gradient(circle,rgba(255,255,255,.07),transparent 65%);border-radius:50%"></div><div style="position:relative;z-index:1"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div style="display:flex;align-items:center;gap:8px"><div style="width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff">✦</div><span style="font-size:10px;font-weight:700;color:rgba(255,255,255,.8);letter-spacing:1.5px">HUMAN SYSTEM STUDIO</span></div>${isFull?`<div style="padding:3px 10px;border-radius:12px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.25);font-size:9px;font-weight:800;color:#fff;letter-spacing:1px">ALL ACCESS</div>`:""}</div><div style="font-size:40px;font-weight:900;color:#fff;line-height:1.1;margin-bottom:4px">${nick}</div><div style="font-size:11px;color:rgba(255,255,255,.65);margin-bottom:12px">รู้จักตัวเองอย่างแม่นยำด้วย AI + โหราศาสตร์พระเวท + จิตวิทยา 36 ข้อ</div><div style="display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:18px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18)"><span style="font-size:14px">🏛</span><span style="font-size:11px;font-weight:700;color:#fff">${archetype}</span></div></div></div>`;
-    const FOOTER=`<div style="background:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #F1F5F9"><span style="font-size:13px;font-weight:800;color:#6D28D9">humansystemstudio.com</span><span style="font-size:9px;color:#94A3B8">${isFull?"AI + Vedic Astrology + Psychology 36 ข้อ":"ลองทำแบบประเมินฟรี →"}</span></div>`;
-    const CSS=`*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Noto Sans Thai','Sarabun',sans-serif;background:#EEEEFF;width:480px;margin:0 auto;padding:0}`;
-    const FONTS=`<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">`;
-    let body;
-    if(isFull){
-      body=`${HEADER}<div style="background:#fff;padding:16px 16px 8px">${radarSVG()}</div><div style="background:#fff;padding:12px 16px 16px;border-top:1px solid #F1F5F9;display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><div style="font-size:10px;font-weight:800;letter-spacing:1.5px;color:#059669;margin-bottom:8px">💪 STRENGTH — จุดแข็ง</div>${top3.map(([k,v])=>detailItem(k,v,true,STR_DESC[k]||"จุดแข็งที่โดดเด่น")).join("")}</div><div><div style="font-size:10px;font-weight:800;letter-spacing:1.5px;color:#DC2626;margin-bottom:8px">🌑 SHADOW — ต้องพัฒนา</div>${bot3.map(([k,v])=>detailItem(k,v,false,SDW_DESC[k]||"ต้องพัฒนาเพิ่มเติม")).join("")}</div></div><div style="background:#fff;padding:14px 16px;border-top:1px solid #F1F5F9"><div style="background:linear-gradient(135deg,#F5F3FF,#EDE9FE);border-radius:14px;padding:18px;border:1px solid #DDD6FE"><div style="font-size:15px;font-weight:800;color:#5B21B6;margin-bottom:8px">💜 ยินดีด้วย ${nick}!</div><div style="font-size:11px;color:#374151;line-height:1.8;margin-bottom:10px">คุณโดดเด่นด้าน <strong>${DM[top3[0][0]]?.icon}${top3[0][0]} (${top3[0][1].toFixed(1)})</strong>, <strong>${DM[top3[1][0]]?.icon}${top3[1][0]} (${top3[1][1].toFixed(1)})</strong><br/>จุดที่ต้องเฝ้าระวัง <strong>${DM[bot1[0]]?.icon}${bot1[0]} (${bot1[1].toFixed(1)})</strong> — ${tip}</div><div style="background:#fff;border-radius:8px;padding:10px 12px;border:1px solid #E5E7EB;font-size:10px;color:#374151;line-height:1.8">① ใช้จุดแข็ง ${top1[0]} ให้เต็มที่ — ยิ่งใช้ยิ่งแกร่ง<br/>② ${tip}<br/>③ สร้างระบบพักฟื้น — ชาร์จพลังทุกสัปดาห์<br/><br/>แค่เริ่มก็ชนะแล้ว ✨</div></div></div><div style="background:linear-gradient(135deg,#6D28D9,#5B21B6);padding:22px;text-align:center"><div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:5px">อยากรู้จักตัวเองแบบนี้บ้างไหม?</div><div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:12px">ลองทำแบบประเมินฟรี — AI + โหราศาสตร์พระเวท + จิตวิทยา 36 ข้อ</div><div style="display:inline-block;padding:9px 24px;border-radius:9px;background:#fff;color:#6D28D9;font-size:12px;font-weight:800">เริ่มวันนี้ → humansystemstudio.com</div></div>${FOOTER}`;
+    // Drawing helpers
+    const fr=(x,y,w,h,r,fill)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill()};
+    const sr=(x,y,w,h,r,stroke,lw=2)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke()};
+    const tx=(s,x,y,font,color,align="left",mw)=>{ctx.font=font;ctx.fillStyle=color;ctx.textAlign=align;mw?ctx.fillText(s,x,y,mw):ctx.fillText(s,x,y)};
+    // Word-wrap text, returns final y
+    const wt=(text,x,y,maxW,lh,font,color)=>{ctx.font=font;ctx.fillStyle=color;ctx.textAlign="left";let line="",cy=y;const words=text.split(" ");for(const w of words){const test=line+(line?" ":"")+w;if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,cy);line=w;cy+=lh;}else line=test;}if(line)ctx.fillText(line,x,cy);return cy+lh};
+    const linGrad=(x0,y0,x1,y1,stops)=>{const g=ctx.createLinearGradient(x0,y0,x1,y1);stops.forEach(([t,c])=>g.addColorStop(t,c));return g};
+    const PAD=50;
+    // ── BACKGROUND ──
+    ctx.fillStyle="#EEEEFF";ctx.fillRect(0,0,W,H);
+    let y=0;
+    // ── HEADER ──
+    const HH=isFull?400:440;
+    fr(0,0,W,HH,0,linGrad(0,0,W,HH,[[0,"#6D28D9"],[1,"#5B21B6"]]));
+    {const rg=ctx.createRadialGradient(W+40,-80,0,W+40,-80,520);rg.addColorStop(0,"rgba(255,255,255,0.08)");rg.addColorStop(1,"transparent");fr(0,0,W,HH,0,rg);}
+    // Logo box
+    fr(PAD,60,68,68,16,"rgba(255,255,255,0.2)");
+    tx("✦",PAD+34,112,"500 36px sans-serif","#fff","center");
+    tx("HUMAN SYSTEM STUDIO",PAD+84,100,"800 28px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.85)");
+    if(isFull){ctx.font="800 24px 'Noto Sans Thai',sans-serif";const bw=ctx.measureText("ALL ACCESS").width+44;fr(W-PAD-bw,60,bw,48,24,"rgba(255,255,255,0.2)");tx("ALL ACCESS",W-PAD-bw/2,93,"800 24px 'Noto Sans Thai',sans-serif","#fff","center");}
+    // Name
+    const nSz=nick.length>8?80:100;tx(nick,PAD,HH-220,"900 "+nSz+"px 'Noto Sans Thai',sans-serif","#fff");
+    // Subtitle
+    tx("รู้จักตัวเองอย่างแม่นยำด้วย AI + โหราศาสตร์พระเวท + จิตวิทยา 36 ข้อ",PAD,HH-148,"400 28px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.65)","left",W-PAD*2);
+    // Archetype badge
+    ctx.font="700 30px 'Noto Sans Thai',sans-serif";const arcStr="🏛 "+archetype;const arcW=Math.min(ctx.measureText(arcStr).width+56,W-PAD*2);
+    fr(PAD,HH-120,arcW,66,33,"rgba(255,255,255,0.15)");tx(arcStr,PAD+28,HH-120+44,"700 30px 'Noto Sans Thai',sans-serif","#fff","left",arcW-36);
+    y=HH+20;
+    if(!isFull){
+      // ── FREE CARD ──
+      // Bar section (white card)
+      const barsH=720;fr(PAD,y,W-PAD*2,barsH,28,"#fff");
+      let by=y+40;
+      // Section label
+      fr(PAD+28,by,14,14,7,"#6D28D9");tx("5 CORE DIMENSIONS",PAD+50,by+12,"800 26px 'Noto Sans Thai',sans-serif","#6D28D9");by+=48;
+      // Strength rows
+      tx("💪 จุดแข็ง — STRENGTH",PAD+24,by+22,"800 30px 'Noto Sans Thai',sans-serif","#059669");by+=52;
+      const bx=PAD+24,bW=W-PAD*2-48,nameX=bx+58,scoreX=bx+bW-8;
+      top3.forEach(([k,v])=>{tx(DM[k]?.icon||"✦",bx,by+42,"500 44px sans-serif","#1E293B");tx(k,nameX,by+28,"600 30px 'Noto Sans Thai',sans-serif","#1E293B","left",scoreX-nameX-90);tx(v.toFixed(1),scoreX,by+28,"800 32px 'Noto Sans Thai',sans-serif","#059669","right");fr(nameX,by+46,scoreX-nameX,16,8,"#E5E7EB");const g=linGrad(nameX,0,nameX+(scoreX-nameX)*v/10,0,[[0,"#10B981"],[1,"#34D399"]]);fr(nameX,by+46,(scoreX-nameX)*v/10,16,8,g);by+=104;});
+      // Shadow rows
+      tx("🌑 Shadow Work",PAD+24,by+22,"800 30px 'Noto Sans Thai',sans-serif","#DC2626");by+=52;
+      so.slice(-2).reverse().forEach(([k,v])=>{tx(DM[k]?.icon||"✦",bx,by+42,"500 44px sans-serif","#1E293B");tx(k,nameX,by+28,"600 30px 'Noto Sans Thai',sans-serif","#1E293B","left",scoreX-nameX-90);tx(v.toFixed(1),scoreX,by+28,"800 32px 'Noto Sans Thai',sans-serif","#DC2626","right");fr(nameX,by+46,scoreX-nameX,16,8,"#E5E7EB");const g=linGrad(nameX,0,nameX+(scoreX-nameX)*v/10,0,[[0,"#EF4444"],[1,"#F87171"]]);fr(nameX,by+46,(scoreX-nameX)*v/10,16,8,g);by+=104;});
+      y+=barsH+20;
+      // Insight cards (2-col)
+      const cW=(W-PAD*2-28)/2,cH=310;
+      fr(PAD,y,cW,cH,20,"#fff");sr(PAD,y,cW,cH,20,"#D1FAE5",2);
+      tx("💪 เด่นด้าน",PAD+22,y+44,"800 26px 'Noto Sans Thai',sans-serif","#059669");
+      tx((DM[top1[0]]?.icon||"")+"  "+top1[0],PAD+22,y+88,"800 30px 'Noto Sans Thai',sans-serif","#1E293B","left",cW-44);
+      tx("— "+top1[1].toFixed(1),PAD+22,y+128,"800 38px 'Noto Sans Thai',sans-serif","#059669");
+      wt(STR_DESC[top1[0]]||"จุดแข็งที่โดดเด่น",PAD+22,y+174,cW-44,40,"400 25px 'Noto Sans Thai',sans-serif","#374151");
+      fr(PAD+22,y+cH-54,cW-44,42,10,"#ECFDF5");tx("💡 ยิ่งใช้ยิ่งแกร่ง",PAD+38,y+cH-24,"400 24px 'Noto Sans Thai',sans-serif","#059669");
+      const cx2=PAD+cW+28;
+      fr(cx2,y,cW,cH,20,"#fff");sr(cx2,y,cW,cH,20,"#FEE2E2",2);
+      tx("⚠️ ต้องระวัง",cx2+22,y+44,"800 26px 'Noto Sans Thai',sans-serif","#DC2626");
+      tx((DM[bot1[0]]?.icon||"")+"  "+bot1[0],cx2+22,y+88,"800 30px 'Noto Sans Thai',sans-serif","#1E293B","left",cW-44);
+      tx("— "+bot1[1].toFixed(1),cx2+22,y+128,"800 38px 'Noto Sans Thai',sans-serif","#DC2626");
+      wt(SDW_DESC[bot1[0]]||"ต้องพัฒนาเพิ่มเติม",cx2+22,y+174,cW-44,40,"400 25px 'Noto Sans Thai',sans-serif","#374151");
+      fr(cx2+22,y+cH-54,cW-44,42,10,"#FFF1F2");tx("💡 "+tip.slice(0,26),cx2+38,y+cH-24,"400 24px 'Noto Sans Thai',sans-serif","#DC2626","left",cW-60);
+      y+=cH+20;
+      // Upgrade CTA box
+      const upH=190;fr(PAD,y,W-PAD*2,upH,24,"#fff");
+      tx("ค้นพบตัวตนที่ลึกซึ้งยิ่งขึ้น เช็คครบ 12 ด้าน",PAD+30,y+52,"700 30px 'Noto Sans Thai',sans-serif","#1E293B","left",W-PAD*2-60);
+      tx("AI วิเคราะห์เชิงลึก + Radar Chart + คำแนะนำเฉพาะคุณ",PAD+30,y+96,"400 26px 'Noto Sans Thai',sans-serif","#64748B","left",W-PAD*2-60);
+      const btnW=(W-PAD*2-90)/2;
+      fr(PAD+30,y+122,btnW,56,12,linGrad(PAD+30,0,PAD+30+btnW,0,[[0,"#F59E0B"],[1,"#D97706"]]));tx("Deep ฿49",PAD+30+btnW/2,y+158,"800 28px 'Noto Sans Thai',sans-serif","#fff","center");
+      fr(PAD+30+btnW+30,y+122,btnW,56,12,linGrad(PAD+30+btnW+30,0,PAD+60+btnW*2,0,[[0,"#6D28D9"],[1,"#5B21B6"]]));tx("Full ฿99",PAD+30+btnW+30+btnW/2,y+158,"800 28px 'Noto Sans Thai',sans-serif","#fff","center");
+      y+=upH+16;
     }else{
-      body=`${HEADER}<div style="background:#fff;padding:18px 20px 14px"><div style="display:flex;align-items:center;gap:6px;margin-bottom:14px"><div style="width:6px;height:6px;border-radius:50%;background:#6D28D9"></div><span style="font-size:9px;font-weight:800;letter-spacing:2px;color:#6D28D9">5 CORE DIMENSIONS</span></div><div style="margin-bottom:10px"><div style="font-size:9px;font-weight:800;letter-spacing:1.5px;color:#059669;margin-bottom:8px">💪 จุดแข็ง — STRENGTH</div>${top3.map(([k,v])=>barRow(k,v,true)).join("")}</div><div><div style="font-size:9px;font-weight:800;letter-spacing:1.5px;color:#DC2626;margin-bottom:8px">🌑 Shadow Work</div>${so.slice(-2).reverse().map(([k,v])=>barRow(k,v,false)).join("")}</div></div><div style="background:#EEEEFF;padding:10px 12px;display:grid;grid-template-columns:1fr 1fr;gap:10px"><div style="background:#fff;border-radius:12px;padding:14px;border:1px solid #D1FAE5"><div style="font-size:8px;font-weight:800;letter-spacing:1px;color:#059669;margin-bottom:6px">💪 เด่นด้าน</div><div style="font-size:13px;font-weight:800;color:#1E293B;margin-bottom:4px">${DM[top1[0]]?.icon} ${top1[0]} — ${top1[1].toFixed(1)}</div><div style="font-size:10px;color:#374151;line-height:1.65;margin-bottom:7px">${STR_DESC[top1[0]]||"จุดแข็งที่โดดเด่น ควรใช้ให้เต็มที่"}</div><div style="background:#ECFDF5;border-radius:6px;padding:5px 8px;font-size:9px;color:#059669;line-height:1.6">💡 ยิ่งใช้ยิ่งแกร่ง</div></div><div style="background:#fff;border-radius:12px;padding:14px;border:1px solid #FEE2E2"><div style="font-size:8px;font-weight:800;letter-spacing:1px;color:#DC2626;margin-bottom:6px">⚠️ ต้องระวัง</div><div style="font-size:13px;font-weight:800;color:#1E293B;margin-bottom:4px">${DM[bot1[0]]?.icon} ${bot1[0]} — ${bot1[1].toFixed(1)}</div><div style="font-size:10px;color:#374151;line-height:1.65;margin-bottom:7px">${SDW_DESC[bot1[0]]||"ต้องเฝ้าระวังและพัฒนา"}</div><div style="background:#FFF1F2;border-radius:6px;padding:5px 8px;font-size:9px;color:#DC2626;line-height:1.6">💡 ${tip.slice(0,55)}</div></div></div><div style="background:#fff;padding:14px 18px;border-top:1px solid #F1F5F9"><div style="font-size:12px;font-weight:800;color:#1E293B;margin-bottom:3px">ค้นพบตัวตนที่ลึกซึ้งยิ่งขึ้น เช็คครบ 12 ด้าน</div><div style="font-size:10px;color:#64748B;margin-bottom:10px">AI วิเคราะห์เชิงลึก + Radar Chart + คำแนะนำเฉพาะคุณ</div><div style="display:flex;gap:8px"><div style="flex:1;padding:9px 0;border-radius:8px;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;font-size:11px;font-weight:800;text-align:center">Deep ฿49</div><div style="flex:1;padding:9px 0;border-radius:8px;background:linear-gradient(135deg,#6D28D9,#5B21B6);color:#fff;font-size:11px;font-weight:800;text-align:center">Full ฿99</div></div></div>${FOOTER}`;
+      // ── FULL CARD ──
+      // Radar section
+      const radH=480;fr(PAD,y,W-PAD*2,radH,28,"#fff");
+      const keys=Object.keys(scores),vals=Object.values(scores),n=keys.length;
+      const rcx=W/2,rcy=y+radH/2+10,rrad=190;
+      const rpt=(i,v)=>{const a=Math.PI*2*i/n-Math.PI/2;return[rcx+Math.cos(a)*v/10*rrad,rcy+Math.sin(a)*v/10*rrad]};
+      // Grid
+      [2.5,5,7.5,10].forEach(l=>{ctx.beginPath();for(let i=0;i<n;i++){const[px,py]=rpt(i,l);i===0?ctx.moveTo(px,py):ctx.lineTo(px,py)}ctx.closePath();ctx.strokeStyle=l===10?"#D1D5DB":"#E5E7EB";ctx.lineWidth=l===10?2:1;ctx.stroke();});
+      for(let i=0;i<n;i++){const[px,py]=rpt(i,10);ctx.beginPath();ctx.moveTo(rcx,rcy);ctx.lineTo(px,py);ctx.strokeStyle="#E5E7EB";ctx.lineWidth=1;ctx.stroke();}
+      // Polygon
+      ctx.beginPath();keys.forEach((k,i)=>{const[px,py]=rpt(i,vals[i]);i===0?ctx.moveTo(px,py):ctx.lineTo(px,py)});ctx.closePath();ctx.fillStyle="rgba(124,58,237,0.12)";ctx.fill();ctx.strokeStyle="#7C3AED";ctx.lineWidth=3;ctx.stroke();
+      // Dots
+      keys.forEach((k,i)=>{const[px,py]=rpt(i,vals[i]);ctx.beginPath();ctx.arc(px,py,7,0,Math.PI*2);ctx.fillStyle="#7C3AED";ctx.fill();});
+      // Labels
+      keys.forEach((k,i)=>{const[lx,ly]=rpt(i,14.2);const align=lx<rcx-20?"right":lx>rcx+20?"left":"center";const label=(DM[k]?.icon||"")+" "+(k.length>13?k.slice(0,12)+"…":k)+" "+vals[i].toFixed(1);tx(label,lx,ly+4,"700 22px 'Noto Sans Thai',sans-serif","#374151",align);});
+      y+=radH+16;
+      // Strength/Shadow 2-col
+      const cW=(W-PAD*2-28)/2,lblH=56,itemH=174,nItems=3,colTotalH=lblH+itemH*nItems+16;
+      fr(PAD,y,W-PAD*2,colTotalH,28,"#EEEEFF");
+      fr(PAD,y,cW,lblH,0,"#ECFDF5");tx("💪 STRENGTH — จุดแข็ง",PAD+22,y+38,"800 26px 'Noto Sans Thai',sans-serif","#059669");
+      fr(PAD+cW+28,y,cW,lblH,0,"#FFF1F2");tx("🌑 SHADOW — ต้องพัฒนา",PAD+cW+28+22,y+38,"800 26px 'Noto Sans Thai',sans-serif","#DC2626");
+      let iy=y+lblH+8;
+      top3.forEach(([k,v])=>{fr(PAD,iy,cW,itemH-8,16,"#fff");sr(PAD,iy,cW,itemH-8,16,"#D1FAE5",2);tx(DM[k]?.icon||"✦",PAD+16,iy+44,"500 36px sans-serif","#1E293B");tx(k,PAD+62,iy+36,"700 26px 'Noto Sans Thai',sans-serif","#1E293B","left",cW-90);tx(v.toFixed(1),PAD+cW-14,iy+36,"800 30px 'Noto Sans Thai',sans-serif","#059669","right");wt(STR_DESC[k]||"จุดแข็งที่โดดเด่น",PAD+16,iy+70,cW-32,36,"400 22px 'Noto Sans Thai',sans-serif","#64748B");fr(PAD+16,iy+itemH-34,cW-32,14,7,"#E5E7EB");const g=linGrad(PAD+16,0,PAD+16+(cW-32)*v/10,0,[[0,"#10B981"],[1,"#34D399"]]);fr(PAD+16,iy+itemH-34,(cW-32)*v/10,14,7,g);iy+=itemH;});
+      iy=y+lblH+8;
+      bot3.forEach(([k,v])=>{const c2=PAD+cW+28;fr(c2,iy,cW,itemH-8,16,"#fff");sr(c2,iy,cW,itemH-8,16,"#FEE2E2",2);tx(DM[k]?.icon||"✦",c2+16,iy+44,"500 36px sans-serif","#1E293B");tx(k,c2+62,iy+36,"700 26px 'Noto Sans Thai',sans-serif","#1E293B","left",cW-90);tx(v.toFixed(1),c2+cW-14,iy+36,"800 30px 'Noto Sans Thai',sans-serif","#DC2626","right");wt(SDW_DESC[k]||"ต้องพัฒนาเพิ่มเติม",c2+16,iy+70,cW-32,36,"400 22px 'Noto Sans Thai',sans-serif","#64748B");fr(c2+16,iy+itemH-34,cW-32,14,7,"#E5E7EB");const g=linGrad(c2+16,0,c2+16+(cW-32)*v/10,0,[[0,"#EF4444"],[1,"#F87171"]]);fr(c2+16,iy+itemH-34,(cW-32)*v/10,14,7,g);iy+=itemH;});
+      y+=colTotalH+16;
+      // Encouragement card
+      const encH=220;const eg=linGrad(0,y,0,y+encH,[[0,"#F5F3FF"],[1,"#EDE9FE"]]);fr(PAD,y,W-PAD*2,encH,24,eg);sr(PAD,y,W-PAD*2,encH,24,"#DDD6FE",2);
+      tx("💜 ยินดีด้วย "+nick+"!",PAD+30,y+55,"800 36px 'Noto Sans Thai',sans-serif","#5B21B6");
+      wt("คุณโดดเด่นด้าน: "+top3.map(([k,v])=>(DM[k]?.icon||"")+k+" ("+v.toFixed(1)+")").join(", "),PAD+30,y+100,W-PAD*2-60,40,"600 26px 'Noto Sans Thai',sans-serif","#374151");
+      wt("จุดระวัง: "+bot1[0]+" ("+bot1[1].toFixed(1)+") — "+tip,PAD+30,y+148,W-PAD*2-60,38,"400 24px 'Noto Sans Thai',sans-serif","#374151");
+      fr(PAD+30,y+encH-60,W-PAD*2-60,48,10,"#fff");sr(PAD+30,y+encH-60,W-PAD*2-60,48,10,"#E5E7EB",1);
+      tx("① ใช้ "+top1[0]+" ให้เต็มที่  ② "+tip.slice(0,28)+"  ③ สร้างระบบพักฟื้น ✨",PAD+50,y+encH-28,"400 22px 'Noto Sans Thai',sans-serif","#374151","left",W-PAD*2-100);
+      y+=encH+16;
     }
-    const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">${FONTS}<style>${CSS}</style></head><body>${body}</body></html>`;
-    const blob=new Blob([html],{type:"text/html"});const url=URL.createObjectURL(blob);
-    const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
-    if(isIOS){const w=window.open();if(w){w.document.write(html);w.document.close()}else{window.location.href=url}}
-    else{const a=document.createElement("a");a.href=url;a.download=`HSS-${nick}-share.html`;a.click();URL.revokeObjectURL(url)}};
+    // ── CTA BANNER ──
+    const ctaH=130;fr(PAD,y,W-PAD*2,ctaH,24,linGrad(0,y,W,y+ctaH,[[0,"#6D28D9"],[1,"#5B21B6"]]));
+    tx("อยากรู้จักตัวเองแบบนี้บ้างไหม?",W/2,y+50,"800 34px 'Noto Sans Thai',sans-serif","#fff","center");
+    tx("ลองทำแบบประเมินฟรี — AI + โหราศาสตร์พระเวท + จิตวิทยา 36 ข้อ",W/2,y+92,"400 24px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.7)","center",W-PAD*2-60);
+    fr(W/2-210,y+108,420,54,10,"#fff");tx("เริ่มวันนี้ → humansystemstudio.com",W/2,y+143,"800 23px 'Noto Sans Thai',sans-serif","#6D28D9","center",400);
+    y+=ctaH+10;
+    // ── FOOTER ──
+    const footerH=H-y-6;fr(PAD,y,W-PAD*2,footerH,20,"#fff");
+    tx("humansystemstudio.com",PAD+28,y+footerH/2+14,"800 30px 'Noto Sans Thai',sans-serif","#6D28D9");
+    tx(isFull?"AI + Vedic Astrology + Psychology":"ลองทำแบบประเมินฟรี →",W-PAD-28,y+footerH/2+14,"400 24px 'Noto Sans Thai',sans-serif","#94A3B8","right");
+    // ── DOWNLOAD PNG ──
+    canvas.toBlob(blob=>{const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`HSS-${nick}-share.png`;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);},"image/png");};
 
   // Login/Signup Modal rendered inline with stable input refs
   const loginModalJSX=loginModal&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,padding:20}} onClick={()=>{setLoginModal(false);setAuthErr("")}}><div onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:16,padding:24,maxWidth:360,width:"100%"}}>
@@ -450,7 +554,7 @@ ${wk} ${en} ${jb} ${dashaHTML}
 
   const Results=()=>{if(!scores)return null;const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);const c5={"Cognitive Processing":scores["Cognitive Processing"],"Emotional Regulation":scores["Emotional Regulation"],"Identity Stability":scores["Identity Stability"],"Shadow Pattern":scores["Shadow Pattern"],"Growth Orientation":scores["Growth Orientation"]};
   return<div>
-  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:26,height:26,borderRadius:8,background:"linear-gradient(135deg,#4338CA,#6D28D9)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff"}}>✦</div><span style={{fontSize:14,fontWeight:800}}>{nick}</span></div><span style={{fontSize:10,color:"#94A3B8"}}>{PLANS[plan].name}{logged?` · ${user?.email?.split("@")[0]}`:""}</span></div><div style={{display:"flex",alignItems:"center",gap:4}}>{plan!=="free"&&<span style={{fontSize:10,fontWeight:700,color:"#fff",background:PLANS[plan].c,padding:"3px 10px",borderRadius:8}}>{PLANS[plan].name}</span>}{logged?<button onClick={doLogout} style={{fontSize:10,color:"#94A3B8",background:"none",border:"1px solid #E2E8F0",borderRadius:6,padding:"3px 8px",cursor:"pointer"}}>ออก</button>:<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:10,color:"#4338CA",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:6,padding:"3px 8px",cursor:"pointer"}}>เข้าสู่ระบบ</button>}</div></div>
+  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:26,height:26,borderRadius:8,background:"linear-gradient(135deg,#4338CA,#6D28D9)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff"}}>✦</div><span style={{fontSize:14,fontWeight:800}}>{nick}</span></div><span style={{fontSize:10,color:"#94A3B8"}}>{PLANS[plan].name}{logged?` · ${user?.email?.split("@")[0]}`:""}</span></div><div style={{display:"flex",alignItems:"center",gap:4}}>{plan!=="free"&&<span style={{fontSize:10,fontWeight:700,color:"#fff",background:PLANS[plan].c,padding:"3px 10px",borderRadius:8}}>{PLANS[plan].name}</span>}{logged?<button onClick={doLogout} style={{fontSize:12,color:"#64748B",background:"#F8FAFC",border:"1px solid #E2E8F0",borderRadius:8,padding:"6px 14px",cursor:"pointer",minWidth:60,minHeight:36}}>ออกจากระบบ</button>:<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:12,color:"#4338CA",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:8,padding:"6px 14px",cursor:"pointer"}}>เข้าสู่ระบบ</button>}</div></div>
 
   {plan==="free"&&<Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1"}}><div style={{fontSize:12,fontWeight:700,color:"#4338CA",marginBottom:6}}>🔓 ปลดล็อกความเข้าใจตัวเอง</div><div style={{display:"flex",gap:6}}><button onClick={()=>tryUpgrade("deep")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #F59E0B",background:"#fff",color:"#92400E",fontSize:11,fontWeight:700,cursor:"pointer"}}>Deep ฿49</button><button onClick={()=>tryUpgrade("all")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>All ฿99</button></div></Card>}
 
