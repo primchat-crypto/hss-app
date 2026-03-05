@@ -474,7 +474,7 @@ ${wk} ${en} ${jb} ${dashaHTML}
       // Radar section
       const radH=480;fr(PAD,y,W-PAD*2,radH,28,"#fff");
       const keys=Object.keys(scores),vals=Object.values(scores),n=keys.length;
-      const rcx=W/2,rcy=y+radH/2+10,rrad=190;
+      const rcx=W/2,rcy=y+radH/2,rrad=170;
       const rpt=(i,v)=>{const a=Math.PI*2*i/n-Math.PI/2;return[rcx+Math.cos(a)*v/10*rrad,rcy+Math.sin(a)*v/10*rrad]};
       // Grid
       [2.5,5,7.5,10].forEach(l=>{ctx.beginPath();for(let i=0;i<n;i++){const[px,py]=rpt(i,l);i===0?ctx.moveTo(px,py):ctx.lineTo(px,py)}ctx.closePath();ctx.strokeStyle=l===10?"#D1D5DB":"#E5E7EB";ctx.lineWidth=l===10?2:1;ctx.stroke();});
@@ -484,7 +484,7 @@ ${wk} ${en} ${jb} ${dashaHTML}
       // Dots
       keys.forEach((k,i)=>{const[px,py]=rpt(i,vals[i]);ctx.beginPath();ctx.arc(px,py,7,0,Math.PI*2);ctx.fillStyle="#7C3AED";ctx.fill();});
       // Labels
-      keys.forEach((k,i)=>{const[lx,ly]=rpt(i,14.2);const align=lx<rcx-20?"right":lx>rcx+20?"left":"center";const label=(DM[k]?.icon||"")+" "+(k.length>13?k.slice(0,12)+"…":k)+" "+vals[i].toFixed(1);tx(label,lx,ly+4,"700 22px 'Noto Sans Thai',sans-serif","#374151",align);});
+      keys.forEach((k,i)=>{const[lx,ly]=rpt(i,11.5);const align=lx<rcx-20?"right":lx>rcx+20?"left":"center";const label=(DM[k]?.icon||"")+" "+(k.length>13?k.slice(0,12)+"…":k)+" "+vals[i].toFixed(1);tx(label,lx,ly+4,"700 20px 'Noto Sans Thai',sans-serif","#374151",align);});
       y+=radH+16;
       // Strength/Shadow 2-col
       const cW=(W-PAD*2-28)/2,lblH=56,itemH=174,nItems=3,colTotalH=lblH+itemH*nItems+16;
