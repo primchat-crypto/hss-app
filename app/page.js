@@ -4,7 +4,7 @@ import{createClient}from"@supabase/supabase-js";
 
 const SB_URL=process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SB_KEY=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const sb=(SB_URL&&SB_KEY)?createClient(SB_URL,SB_KEY,{auth:{persistSession:true,storageKey:"hss-auth",storage:typeof window!=="undefined"?window.localStorage:undefined}}):null;
+let sb=null;try{if(SB_URL&&SB_KEY)sb=createClient(SB_URL,SB_KEY,{auth:{persistSession:true,storageKey:"hss-auth",storage:typeof window!=="undefined"?window.localStorage:undefined}})}catch{sb=null}
 
 const BRAND="Human System Studio";
 const PLANS={free:{name:"Free",price:0,tag:"🟢",c:"#10B981",f:["identity","core5","share"]},deep:{name:"Deep Insight",price:49,tag:"🟡",c:"#F59E0B",badge:"Early Bird",f:["identity","core5","12d","shadow","weekly","energy","share"]},all:{name:"All Access",price:99,tag:"🔵",c:"#3B82F6",badge:"Early Bird คุ้มสุด",f:["identity","core5","12d","shadow","weekly","energy","job","dasha","pdf","share"]}};
@@ -258,7 +258,7 @@ export default function App(){
     try{const r=await fetch("/api/stripe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:p,userId:user?.id||"",email:user?.email||email})});const d=await r.json();if(d.url)window.location.href=d.url;else alert(d.error||"เกิดข้อผิดพลาด")}catch{alert("ไม่สามารถเชื่อมต่อ Stripe ได้")}};
 
   // Real Supabase Auth
-  const doSignup=async()=>{const ae=authEmailRef.current?.value||"";const ap=authPwRef.current?.value||"";if(!ae||!ap){setAuthErr("กรุณากรอกอีเมลและรหัสผ่าน");return}if(ap.length<6){setAuthErr("รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร");return}setAuthLoading(true);setAuthErr("");
+  const doSignup=async()=>{const ae=authEmailRef.current?.value||"";const ap=authPwRef.current?.value||"";if(!ae||!ap){setAuthErr("กรุณากรอกอีเมลและรหัสผ่าน");return}if(ap.length<6){setAuthErr("รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร");return}if(!sb){setAuthErr("ระบบ auth ยังไม่พร้อม กรุณาลองใหม่");return}setAuthLoading(true);setAuthErr("");
     const{data,error}=await sb.auth.signUp({email:ae,password:ap,options:{data:{},emailRedirectTo:undefined}});
     if(error){
       // If "email rate limit exceeded" or similar, try login instead
@@ -283,7 +283,7 @@ export default function App(){
       }
     }setAuthLoading(false)};
 
-  const doLogin=async()=>{const ae=authEmailRef.current?.value||"";const ap=authPwRef.current?.value||"";if(!ae||!ap){setAuthErr("กรุณากรอกอีเมลและรหัสผ่าน");return}setAuthLoading(true);setAuthErr("");
+  const doLogin=async()=>{const ae=authEmailRef.current?.value||"";const ap=authPwRef.current?.value||"";if(!ae||!ap){setAuthErr("กรุณากรอกอีเมลและรหัสผ่าน");return}if(!sb){setAuthErr("ระบบ auth ยังไม่พร้อม กรุณาลองใหม่");return}setAuthLoading(true);setAuthErr("");
     const{data,error}=await sb.auth.signInWithPassword({email:ae,password:ap});
     if(error){
       if(error.message==="Invalid login credentials")setAuthErr("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
