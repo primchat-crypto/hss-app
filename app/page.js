@@ -7,8 +7,8 @@ const SB_KEY=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const sb=(SB_URL&&SB_KEY)?createClient(SB_URL,SB_KEY,{auth:{persistSession:true,storageKey:"hss-auth",storage:typeof window!=="undefined"?window.localStorage:undefined}}):null;
 
 const BRAND="Human System Studio";
-const PLANS={free:{name:"Free",price:0,tag:"🟢",c:"#10B981",f:["identity","core5"]},deep:{name:"Deep Insight",price:49,tag:"🟡",c:"#F59E0B",badge:"Early Bird",f:["identity","core5","12d","shadow","weekly","energy"]},all:{name:"All Access",price:99,tag:"🔵",c:"#3B82F6",badge:"Early Bird คุ้มสุด",f:["identity","core5","12d","shadow","weekly","energy","job","dasha","pdf","share"]}};
-const FT=[["Identity Snapshot (AI)","identity",1,1,1],["5 Core Scores + AI วิเคราะห์","core5",1,1,1],["จุดแข็ง / จุดพัฒนา 12 มิติ","12d",0,1,1],["Shadow Analysis เชิงลึก","shadow",0,1,1],["Do & Don't รายสัปดาห์","weekly",0,1,1],["7-Day Energy Forecast","energy",0,1,1],["Job Matching AI","job",0,0,1],["Life Phase Map (Dasha)","dasha",0,0,1],["PDF Report ดาวน์โหลด","pdf",0,0,1],["Social Share Card","share",0,0,1]];
+const PLANS={free:{name:"Free",price:0,tag:"🟢",c:"#10B981",f:["identity","core5","share"]},deep:{name:"Deep Insight",price:49,tag:"🟡",c:"#F59E0B",badge:"Early Bird",f:["identity","core5","12d","shadow","weekly","energy","share"]},all:{name:"All Access",price:99,tag:"🔵",c:"#3B82F6",badge:"Early Bird คุ้มสุด",f:["identity","core5","12d","shadow","weekly","energy","job","dasha","pdf","share"]}};
+const FT=[["Identity Snapshot (AI)","identity",1,1,1],["5 Core Scores + AI วิเคราะห์","core5",1,1,1],["จุดแข็ง / จุดพัฒนา 12 มิติ","12d",0,1,1],["Shadow Analysis เชิงลึก","shadow",0,1,1],["Do & Don't รายสัปดาห์","weekly",0,1,1],["7-Day Energy Forecast","energy",0,1,1],["Job Matching AI","job",0,0,1],["Life Phase Map (Dasha)","dasha",0,0,1],["PDF Report ดาวน์โหลด","pdf",0,0,1],["Social Share Card","share",1,1,1]];
 
 const QG={A:{t:"The Foundation",dims:{"Cognitive Processing":{icon:"🧠",c:"#6366F1",pl:"พุธ",q:["ก่อนเริ่มงาน ฉันวางแผนคร่าวๆ อย่างน้อย 1 ครั้ง","เมื่ออธิบายเรื่องยาก ฉันสรุปให้เหลือประเด็นหลักได้","ก่อนส่งงาน ฉันตรวจทานจุดผิดพลาดสำคัญอีกครั้ง"]},"Emotional Regulation":{icon:"🌊",c:"#0EA5E9",pl:"จันทร์",q:["เมื่ออารมณ์แรง ฉันหยุดพักก่อนตอบหรือก่อนตัดสินใจ","ในวันที่อารมณ์ไม่ดี ฉันยังทำงานจำเป็นให้เดินหน้าได้อย่างน้อย 1 อย่าง","หลังเจอเรื่องกระทบใจ ฉันกลับมาใช้ชีวิตปกติได้ภายใน 1–2 วัน"]},"Identity Stability":{icon:"⚓",c:"#EC4899",pl:"อาทิตย์+เสาร์",q:["ฉันตัดสินใจตามหลักของตัวเอง มากกว่าทำตามแรงกดดันจากคนอื่น","เมื่อมีคนติ ฉันโฟกัสที่สิ่งที่ต้องแก้ไข มากกว่าคิดว่าตัวเองไม่มีค่า","ฉันโฟกัสเป้าหมายหลักเรื่องหนึ่งได้ต่อเนื่องอย่างน้อย 2 สัปดาห์"]}}},B:{t:"The Execution",dims:{"Energy Management":{icon:"⚡",c:"#F59E0B",pl:"อังคาร",q:["เมื่อมีงานสำคัญ ฉันเริ่มลงมือภายใน 24 ชั่วโมง","ฉันทำงานต่อเนื่องตามแผนได้ โดยไม่หลุดโฟกัสบ่อย","เมื่อเริ่มล้า ฉันเลือกพักเพื่อฟื้นพลัง แทนฝืนทำต่อ"]},"Decision System":{icon:"⚖️",c:"#3B82F6",pl:"พฤหัส+เสาร์",q:["ก่อนตัดสินใจเรื่องสำคัญ ฉันหาข้อมูลอย่างน้อย 2 มุมมอง","เมื่อตัดสินใจแล้ว ฉันลงมือทำโดยไม่ย้อนลังเลซ้ำ","ฉันคิดถึงผลระยะยาว ก่อนเลือกสิ่งที่มีต้นทุนสูง"]},"Responsibility Load":{icon:"🏋️",c:"#8B5CF6",pl:"เสาร์",q:["ฉันทำงานที่สำคัญที่สุดก่อน แม้ไม่ใช่งานที่อยากทำ","ถ้ารู้ว่าจะไม่ทัน ฉันแจ้งล่วงหน้าและเสนอทางออก","แม้ไม่มีคนตาม ฉันยังทำสิ่งที่รับปากไว้ให้เสร็จ"]}}},C:{t:"The Interaction",dims:{"Motivation Driver":{icon:"🔥",c:"#F97316",pl:"อาทิตย์",q:["ฉันรู้ว่าทำสิ่งนี้ไปเพื่ออะไร และอธิบายเหตุผลได้ชัด","เมื่อเห็นต่าง ฉันกล้าแสดงความเห็นของตัวเอง","เมื่อทำสำเร็จ ฉันยอมรับความสามารถของตัวเอง"]},"Boundary System":{icon:"🛡️",c:"#10B981",pl:"เสาร์+จันทร์",q:["เมื่อถูกขอเกินกำลัง ฉันกล้าปฏิเสธหรือปรับขอบเขต","ฉันมีช่วงเวลาพักจริงอย่างน้อย 1 ครั้งต่อสัปดาห์","หลังเจอคนที่ทำให้เครียด ฉันมีวิธีรีเซ็ตตัวเอง"]},"Stress Response":{icon:"🧊",c:"#64748B",pl:"เสาร์",q:["ภายใต้ความกดดัน ฉันยังรักษาคุณภาพงานขั้นต่ำได้","เมื่อเจอปัญหา ฉันเริ่มแก้ไขภายใน 24 ชั่วโมง","แม้ไม่อยากทำ ฉันยังหาวิธีพาตัวเองลงมือทำ"]}}},D:{t:"The Evolution & Shadow",dims:{"Shadow Pattern":{icon:"🌑",c:"#1E293B",pl:"ราหู/เกตุ",rev:true,q:["ฉันเลี่ยงเรื่องสำคัญ ไปทำสิ่งที่สบายกว่าแทน","ฉันตัดสินใจเพราะกลัวหรืออยากได้ แล้วมานึกเสียใจทีหลัง","ฉันผัดเรื่องที่ควรเผชิญ แม้รู้ว่ามันกระทบซ้ำ"]},"Growth Orientation":{icon:"🌱",c:"#10B981",pl:"พฤหัส",q:["เมื่อได้รับคำแนะนำ ฉันถามต่อเพื่อเข้าใจให้ชัด","ฉันใช้เวลาอย่างน้อยสัปดาห์ละ 30 นาทีพัฒนาตัวเอง","หลังทำพลาด ฉันสรุปบทเรียนเพื่อใช้ครั้งต่อไป"]},"Integration Level":{icon:"🔮",c:"#A78BFA",pl:"ผลรวมทุกดาว",q:["ฉันมีสิ่งสำคัญอันดับ 1 ที่โฟกัสชัดในช่วงนี้","ตารางชีวิตฉันมีจังหวะพักที่ช่วยไม่ให้ล้าเรื้อรัง","ฉันรู้จุดแข็งและจุดเสี่ยงของตัวเอง และใช้วางแผนสัปดาห์นี้จริง"]}}}};
 
@@ -335,11 +335,13 @@ export default function App(){
   const doGoogle=async()=>{if(!sb)return;setAuthLoading(true);
     await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}})};
 
-  const doLogout=async()=>{
-    try{if(sb)await sb.auth.signOut()}catch(e){}
+  const doLogout=()=>{
+    // Update UI immediately — don't block on async signOut
+    aiTriggered.current=false;
     setUser(null);setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0);setPlan("free");
-    // Clear only app data, not auth or payment
     ["hss6_scores","hss6_vedic","hss6_profile","hss6_plan","hss6_answers","hss_want_plan","hss_user_email"].forEach(k=>localStorage.removeItem(k));
+    // Sign out in background (non-blocking)
+    if(sb)sb.auth.signOut().catch(()=>{});
   };
 
   const activatePlan=(p)=>{setPlan(p);ST.set("plan",p);savePlan(p);const fs=PLANS[p].f;if(fs.includes("12d")&&!ai["12d"])loadAI("12d");if(fs.includes("shadow")&&!ai.shadow)loadAI("shadow");if(fs.includes("weekly")&&!ai.weekly)loadAI("weekly");if(fs.includes("energy")&&!ai.energy)loadAI("energy");if(fs.includes("job")&&!ai.job)loadAI("job")};
@@ -360,18 +362,17 @@ export default function App(){
     const dashaPhases=calcDasha(pdfBday);const currentDasha=dashaPhases.find(d=>d.isCurrent);
     dashaHTML=dashaPhases.length>0?`<h2>🗺 Life Phase Map (Vedic Dasha)</h2>${currentDasha?`<div class="card" style="background:linear-gradient(135deg,#EEF2FF,#F5F3FF);border:2px solid #6366F1"><b style="color:#4338CA;font-size:14px">${currentDasha.icon} ตอนนี้คุณอยู่ในช่วง: ${currentDasha.theme}</b><div style="font-size:11px;margin-top:4px">มหาทศา${currentDasha.p} (อายุ ${currentDasha.startAge}–${currentDasha.endAge} ปี | ${currentDasha.startYear}–${currentDasha.endYear})</div><div style="font-size:11px;margin-top:2px;color:#374151">${currentDasha.desc}</div><div style="font-size:11px;color:#059669;margin-top:2px">🎯 โฟกัส: ${currentDasha.focus}</div><div style="font-size:11px;color:#374151;margin-top:4px;background:#FFF7ED;padding:6px 8px;border-radius:6px">${currentDasha.cheer}</div><div style="font-size:10px;color:#B45309;margin-top:4px;background:#FFFBEB;padding:4px 8px;border-radius:6px">${currentDasha.warn}</div></div>`:""}${dashaPhases.filter(d=>!d.isPast||d.isCurrent).slice(0,6).map(d=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #F1F5F9;${d.isCurrent?"font-weight:700;color:#4338CA":"color:#374151"}"><span style="font-size:14px">${d.icon}</span><span style="font-size:11px;flex:1">${d.p} — ${d.theme}</span><span style="font-size:10px;color:#94A3B8">${d.startAge}–${d.endAge} ปี</span></div>`).join("")}`:""}catch(e){dashaHTML=""}
     // Build full PDF
-    const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>HSS Report - ${nick}</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Noto Sans Thai',sans-serif;padding:40px;color:#1E293B;max-width:700px;margin:0 auto;font-size:13px;line-height:1.7}h1{font-size:22px;margin-bottom:8px}h2{font-size:15px;margin:24px 0 8px;color:#4338CA;border-bottom:2px solid #EEF2FF;padding-bottom:4px}.bar{height:8px;border-radius:4px;margin:4px 0 10px}.card{background:#F8FAFC;border-radius:10px;padding:12px;margin:6px 0}.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700}p{margin:3px 0}@media print{body{padding:20px}}</style></head><body>
-<h1>🔮 ${nick} — Human System Studio</h1><p style="color:#64748B">Vedic Astrology + Psychology · ${new Date().toLocaleDateString("th-TH")}</p>
+    const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>HSS Report - ${nick}</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Noto Sans Thai',sans-serif;background:#F8FAFC;color:#1E293B;font-size:13px;line-height:1.7}.page{max-width:680px;margin:0 auto;padding:32px 24px 60px}.header{background:linear-gradient(135deg,#4338CA 0%,#6D28D9 100%);color:#fff;border-radius:16px;padding:24px 28px;margin-bottom:24px}.header h1{font-size:22px;font-weight:800;margin-bottom:4px}.header p{font-size:12px;opacity:.8;margin:0}.header-badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:3px 12px;font-size:11px;font-weight:700;margin-top:10px}h2{font-size:14px;font-weight:700;color:#4338CA;margin:20px 0 8px;padding-bottom:6px;border-bottom:2px solid #EEF2FF}.bar-row{margin:6px 0 10px}.bar-label{display:flex;justify-content:space-between;margin-bottom:3px;font-size:12px}.bar-bg{height:7px;background:#E2E8F0;border-radius:4px;overflow:hidden}.bar-fill{height:100%;border-radius:4px}.card{background:#fff;border-radius:12px;padding:14px 16px;margin:6px 0;border:1px solid #E2E8F0;box-shadow:0 1px 3px rgba(0,0,0,.05)}.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700}p{margin:3px 0}.footer{text-align:center;margin-top:32px;padding-top:16px;border-top:1px solid #E2E8F0;font-size:11px;color:#94A3B8}@media print{body{background:#fff}.header{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body><div class="page"><div class="header"><h1>🔮 ${nick}</h1><p>Human System Studio · Vedic Astrology + Psychology · ${new Date().toLocaleDateString("th-TH")}</p><span class="header-badge">✦ Personal AI Report</span></div>
 ${ai.identity?`<h2>✦ Identity Snapshot</h2><p>${ai.identity}</p>`:""}
 <h2>📊 12 Dimensions</h2>${spiderSVG}
-${Object.entries(scores).map(([k,v])=>`<div style="margin:6px 0"><div style="display:flex;justify-content:space-between"><span>${DM[k]?.icon} ${k} <span style="font-size:10px;color:#94A3B8">(${DM[k]?.pl})</span></span><b style="color:${DM[k]?.c}">${v.toFixed(1)}</b></div><div class="bar" style="background:#E2E8F0"><div style="height:100%;width:${v*10}%;background:${DM[k]?.c};border-radius:4px"></div></div></div>`).join("")}
+${Object.entries(scores).map(([k,v])=>`<div class="bar-row"><div class="bar-label"><span>${DM[k]?.icon} ${k} <span style="font-size:10px;color:#94A3B8">(${DM[k]?.pl})</span></span><b style="color:${DM[k]?.c}">${v.toFixed(1)}</b></div><div class="bar-bg"><div class="bar-fill" style="width:${v*10}%;background:${DM[k]?.c}"></div></div></div>`).join("")}
 <h2>💪 จุดแข็ง</h2><div class="g">${so.slice(0,4).map(([k,v])=>`<div class="card"><span class="tag" style="background:#ECFDF5;color:#059669">${v.toFixed(1)}</span> ${DM[k]?.icon} ${k}</div>`).join("")}</div>
 <h2>⚠️ จุดพัฒนา</h2><div class="g">${so.slice(-4).map(([k,v])=>`<div class="card"><span class="tag" style="background:#FFF1F2;color:#EF4444">${v.toFixed(1)}</span> ${DM[k]?.icon} ${k}</div>`).join("")}</div>
 ${ai.core?`<h2>🏛 5 Core Analysis</h2><p style="white-space:pre-wrap">${ai.core}</p>`:""}
 ${ai["12d"]?`<h2>📐 12D Deep Analysis</h2><p style="white-space:pre-wrap">${ai["12d"]}</p>`:""}
 ${ai.shadow?`<h2>🌑 Shadow Analysis</h2><p style="white-space:pre-wrap">${ai.shadow}</p>`:""}
 ${wk} ${en} ${jb} ${dashaHTML}
-<p style="margin-top:30px;font-size:11px;color:#94A3B8;text-align:center">Human System Studio · Vedic Astrology + Psychology · ${new Date().toLocaleDateString("th-TH")}</p></body></html>`;
+<div class="footer">Human System Studio · Vedic Astrology + Psychology · ${new Date().toLocaleDateString("th-TH")}</div></div></body></html>`;
     // Download as HTML file — compatible with iOS Safari
     const blob=new Blob([html],{type:"text/html;charset=utf-8"});
     const url=URL.createObjectURL(blob);
@@ -385,59 +386,137 @@ ${wk} ${en} ${jb} ${dashaHTML}
     }
     setTimeout(()=>URL.revokeObjectURL(url),1000)};
 
-  const shareProfile=()=>{if(!scores||!nick)return;
-    const W=1080,H=1080;const cv=document.createElement("canvas");cv.width=W;cv.height=H;const ctx=cv.getContext("2d");
+  const shareProfile=async()=>{if(!scores||!nick)return;
+    const W=1080,H=1920;
+    const canvas=document.createElement("canvas");canvas.width=W;canvas.height=H;
+    const ctx=canvas.getContext("2d");
+    await document.fonts.ready;
     // roundRect polyfill
-    if(!ctx.roundRect){ctx.roundRect=function(x,y,w,h,r){r=Math.min(r,w/2,h/2);this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y)}};
-    // Background gradient
-    const bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,"#1E1B4B");bg.addColorStop(1,"#312E81");ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
-    // Decorative circles
-    ctx.globalAlpha=.06;ctx.fillStyle="#A78BFA";ctx.beginPath();ctx.arc(180,180,300,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(900,900,350,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
-    // Header
-    ctx.fillStyle="#fff";ctx.font="bold 52px 'Noto Sans Thai',sans-serif";ctx.textAlign="center";ctx.fillText(`✦ ${nick}`,W/2,90);
-    ctx.font="24px 'Noto Sans Thai',sans-serif";ctx.fillStyle="#A5B4FC";ctx.fillText("Human System Studio · Vedic + Psychology",W/2,130);
-    // Spider chart
-    const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);const keys=Object.keys(scores);const vals=Object.values(scores);const n=keys.length;
-    const cx=W/2,cy=370,rad=180;
-    const pt=(i,v)=>{const a=Math.PI*2*i/n-Math.PI/2;return{x:cx+Math.cos(a)*v/10*rad,y:cy+Math.sin(a)*v/10*rad}};
-    // Grid
-    [2,4,6,8,10].forEach(l=>{ctx.beginPath();for(let i=0;i<=n;i++){const p=pt(i%n,l);i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y)}ctx.strokeStyle="rgba(165,180,252,.15)";ctx.lineWidth=1;ctx.stroke()});
-    // Polygon fill
-    ctx.beginPath();keys.forEach((_,i)=>{const p=pt(i,vals[i]);i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y)});ctx.closePath();ctx.fillStyle="rgba(99,102,241,.25)";ctx.fill();ctx.strokeStyle="#818CF8";ctx.lineWidth=2.5;ctx.stroke();
-    // Points + labels
-    keys.forEach((k,i)=>{const p=pt(i,vals[i]);ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fillStyle="#818CF8";ctx.fill();ctx.strokeStyle="#1E1B4B";ctx.lineWidth=2;ctx.stroke();
-      const lp=pt(i,12);ctx.fillStyle="#C7D2FE";ctx.font="13px 'Noto Sans Thai',sans-serif";ctx.textAlign="center";ctx.fillText(k.length>12?k.slice(0,10)+"…":k,lp.x,lp.y+5)});
-    // Top strengths
-    const y1=580;ctx.fillStyle="#fff";ctx.font="bold 28px 'Noto Sans Thai',sans-serif";ctx.textAlign="left";ctx.fillText("💪 เก่งเรื่อง",60,y1);
-    so.slice(0,3).forEach(([k,v],i)=>{const y=y1+40+i*50;ctx.fillStyle="#10B981";ctx.font="bold 22px 'Noto Sans Thai',sans-serif";ctx.fillText(`${DM[k]?.icon} ${k}`,80,y);ctx.fillStyle="#6EE7B7";ctx.font="bold 20px 'Noto Sans Thai',sans-serif";ctx.fillText(`${v.toFixed(1)}/10`,900,y);
-      // Bar
-      ctx.fillStyle="rgba(16,185,129,.15)";const bx=80,bw=860,by2=y+8,bh=8;ctx.beginPath();ctx.roundRect(bx,by2,bw,bh,4);ctx.fill();ctx.fillStyle="#10B981";ctx.beginPath();ctx.roundRect(bx,by2,bw*v/10,bh,4);ctx.fill()});
-    // Shadow work
-    const shadow=so.slice(-2);const y2=y1+200;ctx.fillStyle="#fff";ctx.font="bold 28px 'Noto Sans Thai',sans-serif";ctx.fillText("🌑 Shadow Work",60,y2);
-    shadow.forEach(([k,v],i)=>{const y=y2+40+i*50;ctx.fillStyle="#F87171";ctx.font="bold 22px 'Noto Sans Thai',sans-serif";ctx.fillText(`${DM[k]?.icon} ${k}`,80,y);ctx.fillStyle="#FCA5A5";ctx.font="bold 20px 'Noto Sans Thai',sans-serif";ctx.fillText(`${v.toFixed(1)}/10`,900,y);
-      ctx.fillStyle="rgba(248,113,113,.15)";const bx=80,bw=860,by2=y+8,bh=8;ctx.beginPath();ctx.roundRect(bx,by2,bw,bh,4);ctx.fill();ctx.fillStyle="#F87171";ctx.beginPath();ctx.roundRect(bx,by2,bw*v/10,bh,4);ctx.fill()});
-    // Encouragement message
-    const topName=so[0][0];const botName=shadow[0][0];
-    const SHADOW_TIPS={"Shadow Pattern":"ลองฝึกสังเกตตัวเองเวลาเลี่ยงเรื่องสำคัญ แค่ 'รู้ตัว' ก็เปลี่ยนได้แล้ว","Stress Response":"ลองตั้งกฎ: เจอปัญหาให้เริ่มแก้ภายใน 24 ชม. ไม่ต้องทำเสร็จ แค่เริ่ม","Boundary System":"ฝึกพูดว่า 'ขอคิดก่อน' แทน 'ได้เลย' เมื่อถูกขอเกินกำลัง","Responsibility Load":"ลองทำ 'งานที่สำคัญที่สุด' เป็นอย่างแรกของวัน ก่อนเปิดมือถือ","Emotional Regulation":"เขียนอารมณ์ลง 1 บรรทัดทุกเช้า ช่วยให้รู้จักตัวเองเร็วขึ้น","Energy Management":"พักจริงๆ สัก 15 นาทีต่อวัน ไม่ดูมือถือ ร่างกายจะขอบคุณ","Integration Level":"เลือก 1 เป้าหมายที่สำคัญที่สุดตอนนี้ โฟกัสแค่นั้นก่อน"};
-    const tip=SHADOW_TIPS[botName]||"ลองโฟกัสพัฒนาทีละนิด ทุกก้าวเล็กๆ สำคัญ";
-    const y3=y2+160;
-    // Encouragement box background
-    ctx.fillStyle="rgba(99,102,241,.12)";ctx.beginPath();ctx.roundRect(50,y3,W-100,120,12);ctx.fill();ctx.strokeStyle="rgba(165,180,252,.3)";ctx.lineWidth=1;ctx.stroke();
-    // Encouragement text
-    ctx.fillStyle="#E0E7FF";ctx.font="bold 22px 'Noto Sans Thai',sans-serif";ctx.textAlign="left";
-    ctx.fillText(`💜 สู้เค้านะ ${nick}! เก่งด้าน ${DM[topName]?.icon}${topName}`,80,y3+32);
-    ctx.fillStyle="#C7D2FE";ctx.font="20px 'Noto Sans Thai',sans-serif";
-    ctx.fillText(`แต่ยังต้องฝึกเรื่อง ${DM[botName]?.icon}${botName}`,80,y3+62);
-    ctx.fillStyle="#A5B4FC";ctx.font="18px 'Noto Sans Thai',sans-serif";
-    // Wrap tip text
-    const maxW=W-180;const words=tip.split("");let line="";let ly=y3+92;
-    for(const ch of words){const test=line+ch;if(ctx.measureText(test).width>maxW){ctx.fillText(line,80,ly);line=ch;ly+=24}else line=test}if(line)ctx.fillText(line,80,ly);
-    // Footer
-    const fy=Math.max(ly+50,H-60);
-    ctx.fillStyle="#64748B";ctx.font="18px 'Noto Sans Thai',sans-serif";ctx.textAlign="center";ctx.fillText("humansystemstudio.com · Vedic Astrology × Psychology",W/2,fy);
-    ctx.fillStyle="#A5B4FC";ctx.font="bold 18px 'Noto Sans Thai',sans-serif";ctx.fillText("ลองทำแบบประเมินฟรี →",W/2,fy+25);
-    // Download
-    cv.toBlob(blob=>{const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`HSS-${nick}.png`;a.click();URL.revokeObjectURL(url)},"image/png")};
+    if(!ctx.roundRect)ctx.roundRect=function(x,y,w,h,r){const R=typeof r==="number"?r:r[0]||0;this.beginPath();this.moveTo(x+R,y);this.lineTo(x+w-R,y);this.arcTo(x+w,y,x+w,y+R,R);this.lineTo(x+w,y+h-R);this.arcTo(x+w,y+h,x+w-R,y+h,R);this.lineTo(x+R,y+h);this.arcTo(x,y+h,x,y+h-R,R);this.lineTo(x,y+R);this.arcTo(x,y,x+R,y,R);this.closePath()};
+    const isFull=plan==="all"||plan==="deep";
+    const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+    const top1=so[0];const bot1=so[so.length-1];
+    const top3=so.slice(0,3);const bot3=so.slice(-3).reverse();
+    const archetype=ai?.identity?.split("\n")[0]?.slice(0,50)||"The Strategic Visionary — ผู้มองเห็นภาพใหญ่";
+    const SHADOW_TIPS={"Shadow Pattern":"ลองฝึกสังเกตตัวเองเวลาเลี่ยงเรื่องสำคัญ","Stress Response":"ตั้งกฎ: เจอปัญหาให้เริ่มแก้ภายใน 24 ชม.","Boundary System":"ฝึกพูด 'ขอคิดก่อน' แทน 'ได้เลย'","Responsibility Load":"ทำ 'งานสำคัญที่สุด' เป็นอย่างแรกของวัน","Emotional Regulation":"ฝึก 'กฎ 5 วินาที' — นับ 1-5 ก่อนตอบสนอง","Energy Management":"พักจริงๆ 15 นาทีต่อวัน ไม่ดูมือถือ","Integration Level":"เลือก 1 เป้าหมายสำคัญที่สุด โฟกัสแค่นั้นก่อน"};
+    const tip=SHADOW_TIPS[bot1[0]]||"ลองโฟกัสพัฒนาทีละนิด ทุกก้าวเล็กๆ สำคัญ";
+    const STR_DESC={"Cognitive Processing":"คิดวิเคราะห์เก่ง สรุปประเด็นได้ชัด","Integration Level":"มองภาพรวมดี เชื่อมโยงสิ่งต่างๆ ได้เป็นระบบ","Growth Orientation":"เรียนรู้และพัฒนาตัวเองอย่างต่อเนื่อง","Energy Management":"บริหารพลังงานได้ดี รู้จักเติมเต็มและใช้ชาญฉลาด","Decision System":"ตัดสินใจอย่างมีหลักการ มองผลระยะยาว","Responsibility Load":"รับผิดชอบสูง เชื่อถือได้ ทำตามสัญญา","Motivation Driver":"มีแรงขับจากภายใน รู้ว่าทำเพื่ออะไร","Emotional Regulation":"ควบคุมอารมณ์ได้ดี ไม่ปล่อยให้อารมณ์นำทาง","Identity Stability":"รู้ตัวตน มั่นคงในหลักการ","Boundary System":"ขีดเส้นชัด รักษาพื้นที่ตัวเองได้ดี","Stress Response":"รับมือความกดดันได้ดี ฟื้นตัวเร็ว","Shadow Pattern":"รู้ทันจุดบอดของตัวเอง เปลี่ยนแปลงได้"};
+    const SDW_DESC={"Shadow Pattern":"มีแนวโน้มเลี่ยงเรื่องที่ยาก ต้องฝึกเผชิญตรง","Emotional Regulation":"อาจตอบสนองเร็วเกินไปในบางสถานการณ์","Stress Response":"เมื่อกดดันมาก อาจรับมือได้ยากกว่าที่ควร","Boundary System":"บางครั้งรับงานมากเกินไป ยากที่จะปฏิเสธ","Energy Management":"พลังงานขึ้นลงบ้าง ต้องจัดการจังหวะพัก","Decision System":"บางครั้งลังเลนาน หรือตัดสินใจเร็วเกินไป","Responsibility Load":"บางครั้งแบกมากเกิน ต้องเรียนรู้วางบ้าง","Motivation Driver":"แรงบันดาลใจผันผวน ต้องหาแหล่งพลังที่มั่นคง","Identity Stability":"เป้าหมายยังไม่ชัดพอ ต้องทบทวนตัวตน","Integration Level":"ยังมองภาพรวมไม่ครบ ต้องฝึกเชื่อมโยง","Growth Orientation":"การพัฒนาตัวเองยังไม่สม่ำเสมอ","Cognitive Processing":"การวิเคราะห์บางครั้งซับซ้อนเกิน ต้องฝึกสรุป"};
+    // Drawing helpers
+    const fr=(x,y,w,h,r,fill)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill()};
+    const sr=(x,y,w,h,r,stroke,lw=2)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke()};
+    const tx=(s,x,y,font,color,align="left",mw)=>{ctx.font=font;ctx.fillStyle=color;ctx.textAlign=align;mw?ctx.fillText(s,x,y,mw):ctx.fillText(s,x,y)};
+    // Word-wrap text, returns final y
+    const wt=(text,x,y,maxW,lh,font,color)=>{ctx.font=font;ctx.fillStyle=color;ctx.textAlign="left";let line="",cy=y;const words=text.split(" ");for(const w of words){const test=line+(line?" ":"")+w;if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,cy);line=w;cy+=lh;}else line=test;}if(line)ctx.fillText(line,x,cy);return cy+lh};
+    const linGrad=(x0,y0,x1,y1,stops)=>{const g=ctx.createLinearGradient(x0,y0,x1,y1);stops.forEach(([t,c])=>g.addColorStop(t,c));return g};
+    const PAD=50;
+    // ── BACKGROUND ──
+    ctx.fillStyle="#EEEEFF";ctx.fillRect(0,0,W,H);
+    let y=0;
+    // ── HEADER ──
+    const HH=isFull?400:440;
+    fr(0,0,W,HH,0,linGrad(0,0,W,HH,[[0,"#6D28D9"],[1,"#5B21B6"]]));
+    {const rg=ctx.createRadialGradient(W+40,-80,0,W+40,-80,520);rg.addColorStop(0,"rgba(255,255,255,0.08)");rg.addColorStop(1,"transparent");fr(0,0,W,HH,0,rg);}
+    // Logo box
+    fr(PAD,60,68,68,16,"rgba(255,255,255,0.2)");
+    tx("✦",PAD+34,112,"500 36px sans-serif","#fff","center");
+    tx("HUMAN SYSTEM STUDIO",PAD+84,100,"800 28px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.85)");
+    if(isFull){ctx.font="800 24px 'Noto Sans Thai',sans-serif";const bw=ctx.measureText("ALL ACCESS").width+44;fr(W-PAD-bw,60,bw,48,24,"rgba(255,255,255,0.2)");tx("ALL ACCESS",W-PAD-bw/2,93,"800 24px 'Noto Sans Thai',sans-serif","#fff","center");}
+    // Name
+    const nSz=nick.length>8?80:100;tx(nick,PAD,HH-220,"900 "+nSz+"px 'Noto Sans Thai',sans-serif","#fff");
+    // Subtitle
+    tx("รู้จักตัวเองอย่างแม่นยำด้วย AI + โหราศาสตร์พระเวท + จิตวิทยา 36 ข้อ",PAD,HH-148,"400 28px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.65)","left",W-PAD*2);
+    // Archetype badge
+    ctx.font="700 30px 'Noto Sans Thai',sans-serif";const arcStr="🏛 "+archetype;const arcW=Math.min(ctx.measureText(arcStr).width+56,W-PAD*2);
+    fr(PAD,HH-120,arcW,66,33,"rgba(255,255,255,0.15)");tx(arcStr,PAD+28,HH-120+44,"700 30px 'Noto Sans Thai',sans-serif","#fff","left",arcW-36);
+    y=HH+20;
+    if(!isFull){
+      // ── FREE CARD ──
+      // Bar section (white card)
+      const barsH=720;fr(PAD,y,W-PAD*2,barsH,28,"#fff");
+      let by=y+40;
+      // Section label
+      fr(PAD+28,by,14,14,7,"#6D28D9");tx("5 CORE DIMENSIONS",PAD+50,by+12,"800 26px 'Noto Sans Thai',sans-serif","#6D28D9");by+=48;
+      // Strength rows
+      tx("💪 จุดแข็ง — STRENGTH",PAD+24,by+22,"800 30px 'Noto Sans Thai',sans-serif","#059669");by+=52;
+      const bx=PAD+24,bW=W-PAD*2-48,nameX=bx+58,scoreX=bx+bW-8;
+      top3.forEach(([k,v])=>{tx(DM[k]?.icon||"✦",bx,by+42,"500 44px sans-serif","#1E293B");tx(k,nameX,by+28,"600 30px 'Noto Sans Thai',sans-serif","#1E293B","left",scoreX-nameX-90);tx(v.toFixed(1),scoreX,by+28,"800 32px 'Noto Sans Thai',sans-serif","#059669","right");fr(nameX,by+46,scoreX-nameX,16,8,"#E5E7EB");const g=linGrad(nameX,0,nameX+(scoreX-nameX)*v/10,0,[[0,"#10B981"],[1,"#34D399"]]);fr(nameX,by+46,(scoreX-nameX)*v/10,16,8,g);by+=104;});
+      // Shadow rows
+      tx("🌑 Shadow Work",PAD+24,by+22,"800 30px 'Noto Sans Thai',sans-serif","#DC2626");by+=52;
+      so.slice(-2).reverse().forEach(([k,v])=>{tx(DM[k]?.icon||"✦",bx,by+42,"500 44px sans-serif","#1E293B");tx(k,nameX,by+28,"600 30px 'Noto Sans Thai',sans-serif","#1E293B","left",scoreX-nameX-90);tx(v.toFixed(1),scoreX,by+28,"800 32px 'Noto Sans Thai',sans-serif","#DC2626","right");fr(nameX,by+46,scoreX-nameX,16,8,"#E5E7EB");const g=linGrad(nameX,0,nameX+(scoreX-nameX)*v/10,0,[[0,"#EF4444"],[1,"#F87171"]]);fr(nameX,by+46,(scoreX-nameX)*v/10,16,8,g);by+=104;});
+      y+=barsH+20;
+      // Insight cards (2-col)
+      const cW=(W-PAD*2-28)/2,cH=310;
+      fr(PAD,y,cW,cH,20,"#fff");sr(PAD,y,cW,cH,20,"#D1FAE5",2);
+      tx("💪 เด่นด้าน",PAD+22,y+44,"800 26px 'Noto Sans Thai',sans-serif","#059669");
+      tx((DM[top1[0]]?.icon||"")+"  "+top1[0],PAD+22,y+88,"800 30px 'Noto Sans Thai',sans-serif","#1E293B","left",cW-44);
+      tx("— "+top1[1].toFixed(1),PAD+22,y+128,"800 38px 'Noto Sans Thai',sans-serif","#059669");
+      wt(STR_DESC[top1[0]]||"จุดแข็งที่โดดเด่น",PAD+22,y+174,cW-44,40,"400 25px 'Noto Sans Thai',sans-serif","#374151");
+      fr(PAD+22,y+cH-54,cW-44,42,10,"#ECFDF5");tx("💡 ยิ่งใช้ยิ่งแกร่ง",PAD+38,y+cH-24,"400 24px 'Noto Sans Thai',sans-serif","#059669");
+      const cx2=PAD+cW+28;
+      fr(cx2,y,cW,cH,20,"#fff");sr(cx2,y,cW,cH,20,"#FEE2E2",2);
+      tx("⚠️ ต้องระวัง",cx2+22,y+44,"800 26px 'Noto Sans Thai',sans-serif","#DC2626");
+      tx((DM[bot1[0]]?.icon||"")+"  "+bot1[0],cx2+22,y+88,"800 30px 'Noto Sans Thai',sans-serif","#1E293B","left",cW-44);
+      tx("— "+bot1[1].toFixed(1),cx2+22,y+128,"800 38px 'Noto Sans Thai',sans-serif","#DC2626");
+      wt(SDW_DESC[bot1[0]]||"ต้องพัฒนาเพิ่มเติม",cx2+22,y+174,cW-44,40,"400 25px 'Noto Sans Thai',sans-serif","#374151");
+      fr(cx2+22,y+cH-54,cW-44,42,10,"#FFF1F2");tx("💡 "+tip.slice(0,26),cx2+38,y+cH-24,"400 24px 'Noto Sans Thai',sans-serif","#DC2626","left",cW-60);
+      y+=cH+20;
+      // Upgrade CTA box
+      const upH=190;fr(PAD,y,W-PAD*2,upH,24,"#fff");
+      tx("ค้นพบตัวตนที่ลึกซึ้งยิ่งขึ้น เช็คครบ 12 ด้าน",PAD+30,y+52,"700 30px 'Noto Sans Thai',sans-serif","#1E293B","left",W-PAD*2-60);
+      tx("AI วิเคราะห์เชิงลึก + Radar Chart + คำแนะนำเฉพาะคุณ",PAD+30,y+96,"400 26px 'Noto Sans Thai',sans-serif","#64748B","left",W-PAD*2-60);
+      const btnW=(W-PAD*2-90)/2;
+      fr(PAD+30,y+122,btnW,56,12,linGrad(PAD+30,0,PAD+30+btnW,0,[[0,"#F59E0B"],[1,"#D97706"]]));tx("Deep ฿49",PAD+30+btnW/2,y+158,"800 28px 'Noto Sans Thai',sans-serif","#fff","center");
+      fr(PAD+30+btnW+30,y+122,btnW,56,12,linGrad(PAD+30+btnW+30,0,PAD+60+btnW*2,0,[[0,"#6D28D9"],[1,"#5B21B6"]]));tx("Full ฿99",PAD+30+btnW+30+btnW/2,y+158,"800 28px 'Noto Sans Thai',sans-serif","#fff","center");
+      y+=upH+16;
+    }else{
+      // ── FULL CARD ──
+      // Radar section
+      const radH=480;fr(PAD,y,W-PAD*2,radH,28,"#fff");
+      const keys=Object.keys(scores),vals=Object.values(scores),n=keys.length;
+      const rcx=W/2,rcy=y+radH/2+10,rrad=190;
+      const rpt=(i,v)=>{const a=Math.PI*2*i/n-Math.PI/2;return[rcx+Math.cos(a)*v/10*rrad,rcy+Math.sin(a)*v/10*rrad]};
+      // Grid
+      [2.5,5,7.5,10].forEach(l=>{ctx.beginPath();for(let i=0;i<n;i++){const[px,py]=rpt(i,l);i===0?ctx.moveTo(px,py):ctx.lineTo(px,py)}ctx.closePath();ctx.strokeStyle=l===10?"#D1D5DB":"#E5E7EB";ctx.lineWidth=l===10?2:1;ctx.stroke();});
+      for(let i=0;i<n;i++){const[px,py]=rpt(i,10);ctx.beginPath();ctx.moveTo(rcx,rcy);ctx.lineTo(px,py);ctx.strokeStyle="#E5E7EB";ctx.lineWidth=1;ctx.stroke();}
+      // Polygon
+      ctx.beginPath();keys.forEach((k,i)=>{const[px,py]=rpt(i,vals[i]);i===0?ctx.moveTo(px,py):ctx.lineTo(px,py)});ctx.closePath();ctx.fillStyle="rgba(124,58,237,0.12)";ctx.fill();ctx.strokeStyle="#7C3AED";ctx.lineWidth=3;ctx.stroke();
+      // Dots
+      keys.forEach((k,i)=>{const[px,py]=rpt(i,vals[i]);ctx.beginPath();ctx.arc(px,py,7,0,Math.PI*2);ctx.fillStyle="#7C3AED";ctx.fill();});
+      // Labels
+      keys.forEach((k,i)=>{const[lx,ly]=rpt(i,14.2);const align=lx<rcx-20?"right":lx>rcx+20?"left":"center";const label=(DM[k]?.icon||"")+" "+(k.length>13?k.slice(0,12)+"…":k)+" "+vals[i].toFixed(1);tx(label,lx,ly+4,"700 22px 'Noto Sans Thai',sans-serif","#374151",align);});
+      y+=radH+16;
+      // Strength/Shadow 2-col
+      const cW=(W-PAD*2-28)/2,lblH=56,itemH=174,nItems=3,colTotalH=lblH+itemH*nItems+16;
+      fr(PAD,y,W-PAD*2,colTotalH,28,"#EEEEFF");
+      fr(PAD,y,cW,lblH,0,"#ECFDF5");tx("💪 STRENGTH — จุดแข็ง",PAD+22,y+38,"800 26px 'Noto Sans Thai',sans-serif","#059669");
+      fr(PAD+cW+28,y,cW,lblH,0,"#FFF1F2");tx("🌑 SHADOW — ต้องพัฒนา",PAD+cW+28+22,y+38,"800 26px 'Noto Sans Thai',sans-serif","#DC2626");
+      let iy=y+lblH+8;
+      top3.forEach(([k,v])=>{fr(PAD,iy,cW,itemH-8,16,"#fff");sr(PAD,iy,cW,itemH-8,16,"#D1FAE5",2);tx(DM[k]?.icon||"✦",PAD+16,iy+44,"500 36px sans-serif","#1E293B");tx(k,PAD+62,iy+36,"700 26px 'Noto Sans Thai',sans-serif","#1E293B","left",cW-90);tx(v.toFixed(1),PAD+cW-14,iy+36,"800 30px 'Noto Sans Thai',sans-serif","#059669","right");wt(STR_DESC[k]||"จุดแข็งที่โดดเด่น",PAD+16,iy+70,cW-32,36,"400 22px 'Noto Sans Thai',sans-serif","#64748B");fr(PAD+16,iy+itemH-34,cW-32,14,7,"#E5E7EB");const g=linGrad(PAD+16,0,PAD+16+(cW-32)*v/10,0,[[0,"#10B981"],[1,"#34D399"]]);fr(PAD+16,iy+itemH-34,(cW-32)*v/10,14,7,g);iy+=itemH;});
+      iy=y+lblH+8;
+      bot3.forEach(([k,v])=>{const c2=PAD+cW+28;fr(c2,iy,cW,itemH-8,16,"#fff");sr(c2,iy,cW,itemH-8,16,"#FEE2E2",2);tx(DM[k]?.icon||"✦",c2+16,iy+44,"500 36px sans-serif","#1E293B");tx(k,c2+62,iy+36,"700 26px 'Noto Sans Thai',sans-serif","#1E293B","left",cW-90);tx(v.toFixed(1),c2+cW-14,iy+36,"800 30px 'Noto Sans Thai',sans-serif","#DC2626","right");wt(SDW_DESC[k]||"ต้องพัฒนาเพิ่มเติม",c2+16,iy+70,cW-32,36,"400 22px 'Noto Sans Thai',sans-serif","#64748B");fr(c2+16,iy+itemH-34,cW-32,14,7,"#E5E7EB");const g=linGrad(c2+16,0,c2+16+(cW-32)*v/10,0,[[0,"#EF4444"],[1,"#F87171"]]);fr(c2+16,iy+itemH-34,(cW-32)*v/10,14,7,g);iy+=itemH;});
+      y+=colTotalH+16;
+      // Encouragement card
+      const encH=220;const eg=linGrad(0,y,0,y+encH,[[0,"#F5F3FF"],[1,"#EDE9FE"]]);fr(PAD,y,W-PAD*2,encH,24,eg);sr(PAD,y,W-PAD*2,encH,24,"#DDD6FE",2);
+      tx("💜 ยินดีด้วย "+nick+"!",PAD+30,y+55,"800 36px 'Noto Sans Thai',sans-serif","#5B21B6");
+      wt("คุณโดดเด่นด้าน: "+top3.map(([k,v])=>(DM[k]?.icon||"")+k+" ("+v.toFixed(1)+")").join(", "),PAD+30,y+100,W-PAD*2-60,40,"600 26px 'Noto Sans Thai',sans-serif","#374151");
+      wt("จุดระวัง: "+bot1[0]+" ("+bot1[1].toFixed(1)+") — "+tip,PAD+30,y+148,W-PAD*2-60,38,"400 24px 'Noto Sans Thai',sans-serif","#374151");
+      fr(PAD+30,y+encH-60,W-PAD*2-60,48,10,"#fff");sr(PAD+30,y+encH-60,W-PAD*2-60,48,10,"#E5E7EB",1);
+      tx("① ใช้ "+top1[0]+" ให้เต็มที่  ② "+tip.slice(0,28)+"  ③ สร้างระบบพักฟื้น ✨",PAD+50,y+encH-28,"400 22px 'Noto Sans Thai',sans-serif","#374151","left",W-PAD*2-100);
+      y+=encH+16;
+    }
+    // ── CTA BANNER ──
+    const ctaH=130;fr(PAD,y,W-PAD*2,ctaH,24,linGrad(0,y,W,y+ctaH,[[0,"#6D28D9"],[1,"#5B21B6"]]));
+    tx("อยากรู้จักตัวเองแบบนี้บ้างไหม?",W/2,y+50,"800 34px 'Noto Sans Thai',sans-serif","#fff","center");
+    tx("ลองทำแบบประเมินฟรี — AI + โหราศาสตร์พระเวท + จิตวิทยา 36 ข้อ",W/2,y+92,"400 24px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.7)","center",W-PAD*2-60);
+    fr(W/2-210,y+108,420,54,10,"#fff");tx("เริ่มวันนี้ → humansystemstudio.com",W/2,y+143,"800 23px 'Noto Sans Thai',sans-serif","#6D28D9","center",400);
+    y+=ctaH+10;
+    // ── FOOTER ──
+    const footerH=H-y-6;fr(PAD,y,W-PAD*2,footerH,20,"#fff");
+    tx("humansystemstudio.com",PAD+28,y+footerH/2+14,"800 30px 'Noto Sans Thai',sans-serif","#6D28D9");
+    tx(isFull?"AI + Vedic Astrology + Psychology":"ลองทำแบบประเมินฟรี →",W-PAD-28,y+footerH/2+14,"400 24px 'Noto Sans Thai',sans-serif","#94A3B8","right");
+    // ── DOWNLOAD PNG ──
+    canvas.toBlob(blob=>{const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`HSS-${nick}-share.png`;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);},"image/png");};
 
   // Login/Signup Modal rendered inline with stable input refs
   const loginModalJSX=loginModal&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,padding:20}} onClick={()=>{setLoginModal(false);setAuthErr("")}}><div onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:16,padding:24,maxWidth:360,width:"100%"}}>
@@ -475,7 +554,7 @@ ${wk} ${en} ${jb} ${dashaHTML}
 
   const Results=()=>{if(!scores)return null;const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);const c5={"Cognitive Processing":scores["Cognitive Processing"],"Emotional Regulation":scores["Emotional Regulation"],"Identity Stability":scores["Identity Stability"],"Shadow Pattern":scores["Shadow Pattern"],"Growth Orientation":scores["Growth Orientation"]};
   return<div>
-  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:26,height:26,borderRadius:8,background:"linear-gradient(135deg,#4338CA,#6D28D9)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff"}}>✦</div><span style={{fontSize:14,fontWeight:800}}>{nick}</span></div><span style={{fontSize:10,color:"#94A3B8"}}>{PLANS[plan].name}{logged?` · ${user?.email?.split("@")[0]}`:""}</span></div><div style={{display:"flex",alignItems:"center",gap:4}}>{plan!=="free"&&<span style={{fontSize:10,fontWeight:700,color:"#fff",background:PLANS[plan].c,padding:"3px 10px",borderRadius:8}}>{PLANS[plan].name}</span>}{logged?<button onClick={doLogout} style={{fontSize:10,color:"#94A3B8",background:"none",border:"1px solid #E2E8F0",borderRadius:6,padding:"3px 8px",cursor:"pointer"}}>ออก</button>:<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:10,color:"#4338CA",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:6,padding:"3px 8px",cursor:"pointer"}}>เข้าสู่ระบบ</button>}</div></div>
+  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:26,height:26,borderRadius:8,background:"linear-gradient(135deg,#4338CA,#6D28D9)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff"}}>✦</div><span style={{fontSize:14,fontWeight:800}}>{nick}</span></div><span style={{fontSize:10,color:"#94A3B8"}}>{PLANS[plan].name}{logged?` · ${user?.email?.split("@")[0]}`:""}</span></div><div style={{display:"flex",alignItems:"center",gap:4}}>{plan!=="free"&&<span style={{fontSize:10,fontWeight:700,color:"#fff",background:PLANS[plan].c,padding:"3px 10px",borderRadius:8}}>{PLANS[plan].name}</span>}{logged?<button onClick={doLogout} style={{fontSize:12,color:"#64748B",background:"#F8FAFC",border:"1px solid #E2E8F0",borderRadius:8,padding:"6px 14px",cursor:"pointer",minWidth:60,minHeight:36}}>ออกจากระบบ</button>:<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:12,color:"#4338CA",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:8,padding:"6px 14px",cursor:"pointer"}}>เข้าสู่ระบบ</button>}</div></div>
 
   {plan==="free"&&<Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1"}}><div style={{fontSize:12,fontWeight:700,color:"#4338CA",marginBottom:6}}>🔓 ปลดล็อกความเข้าใจตัวเอง</div><div style={{display:"flex",gap:6}}><button onClick={()=>tryUpgrade("deep")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #F59E0B",background:"#fff",color:"#92400E",fontSize:11,fontWeight:700,cursor:"pointer"}}>Deep ฿49</button><button onClick={()=>tryUpgrade("all")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>All ฿99</button></div></Card>}
 
@@ -512,7 +591,7 @@ ${wk} ${en} ${jb} ${dashaHTML}
 
   {!has("pdf")?<Locked planNeeded="all" title="PDF Report ดาวน์โหลด" onUpgrade={tryUpgrade}><div style={{fontSize:12,lineHeight:1.8}}>📄 รายงานฉบับเต็ม ประกอบด้วย:<br/>• 12 Dimension Scores + Spider Chart<br/>• Identity + Shadow + 5 Core Analysis<br/>• Do & Don't + 7-Day Energy + transit<br/>• Job Matching + Life Phase Map</div></Locked>:<Sec fKey="pdf" title="PDF Report" icon="📄"><Btn onClick={exportPDF} style={{fontSize:12,padding:8}}>📄 ดาวน์โหลด PDF</Btn></Sec>}
 
-  {!has("share")?<Locked planNeeded="all" title="Social Share Card" onUpgrade={tryUpgrade}><div style={{fontSize:12,lineHeight:1.8}}>📸 การ์ดภาพ 1080×1080 สำหรับแชร์โซเชียล<br/>• Spider Chart + จุดแข็ง + Shadow Work<br/>• ดีไซน์สวย พร้อมโพสต์ IG / FB / LinkedIn</div></Locked>:<Sec fKey="share" title="Social Share Card" icon="📸"><div style={{fontSize:11,color:"#64748B",marginBottom:8}}>ดาวน์โหลดการ์ด 1080×1080 พร้อมแชร์ Instagram, Facebook, LinkedIn</div><Btn onClick={shareProfile} style={{fontSize:12,padding:8,background:"linear-gradient(135deg,#059669,#10B981)"}}>📸 ดาวน์โหลดการ์ดแชร์</Btn></Sec>}
+  <Sec fKey="share" title="Social Share Card" icon="📸"><div style={{fontSize:11,color:"#64748B",marginBottom:6}}>{plan==="all"?"การ์ด Full — Radar Chart 12 ด้าน + จุดแข็ง + Shadow + คำแนะนำ":"การ์ด Free — 5 Core + จุดแข็ง/Shadow + CTA อัปเกรด"}</div><Btn onClick={shareProfile} style={{fontSize:12,padding:8,background:"linear-gradient(135deg,#7C3AED,#5B21B6)"}}>📸 ดาวน์โหลดการ์ดแชร์</Btn></Sec>
 
   <div style={{textAlign:"center",padding:"14px 0 40px"}}><button onClick={()=>{setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0)}} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>🔄 ทำแบบทดสอบใหม่</button></div></div>};
 

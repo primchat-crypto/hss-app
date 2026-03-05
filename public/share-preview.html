@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Share Card Preview — HSS</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans Thai',sans-serif;background:#E5E7EB;padding:40px 20px;color:#1E293B}
+.page-title{text-align:center;margin-bottom:40px}
+.page-title h1{font-size:22px;font-weight:800;color:#1E293B;margin-bottom:4px}
+.page-title p{font-size:13px;color:#6B7280}
+.cards-row{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;align-items:flex-start}
+.card-wrapper{display:flex;flex-direction:column;align-items:center;gap:12px}
+.card-label{font-size:11px;font-weight:800;letter-spacing:2px;color:#6B7280;text-transform:uppercase}
+.card-badge{padding:4px 16px;border-radius:20px;font-size:12px;font-weight:700;color:#fff}
+.badge-free{background:#10B981}
+.badge-deep{background:#F59E0B}
+.badge-all{background:#4338CA}
+
+/* === CARD === */
+.hss-card{width:480px;background:#EEEEFF;border-radius:20px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.15)}
+
+/* Header */
+.hss-header{background:linear-gradient(135deg,#6D28D9,#5B21B6);padding:28px 24px 22px;position:relative;overflow:hidden}
+.hss-header::after{content:"";position:absolute;width:280px;height:280px;top:-80px;right:-50px;background:radial-gradient(circle,rgba(255,255,255,.07),transparent 65%);border-radius:50%}
+.hss-header-inner{position:relative;z-index:1}
+.hss-header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.hss-logo{display:flex;align-items:center;gap:8px}
+.hss-logo-icon{width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex-shrink:0}
+.hss-logo-text{font-size:10px;font-weight:700;color:rgba(255,255,255,.8);letter-spacing:1.5px}
+.hss-access-badge{padding:3px 10px;border-radius:12px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.25);font-size:9px;font-weight:800;color:#fff;letter-spacing:1px}
+.hss-name{font-size:40px;font-weight:900;color:#fff;line-height:1.1;margin-bottom:4px}
+.hss-subtitle{font-size:11px;color:rgba(255,255,255,.65);margin-bottom:12px;line-height:1.5}
+.hss-archetype{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:18px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);font-size:11px;font-weight:700;color:#fff}
+
+/* Free card body */
+.hss-section{background:#fff;padding:18px 20px}
+.hss-section-label{display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.hss-dot{width:6px;height:6px;border-radius:50%;background:#6D28D9}
+.hss-section-title{font-size:9px;font-weight:800;letter-spacing:2px;color:#6D28D9}
+.hss-dim-group-label{font-size:9px;font-weight:800;letter-spacing:1.5px;margin-bottom:8px}
+.hss-dim-group-label.green{color:#059669}
+.hss-dim-group-label.red{color:#DC2626}
+.hss-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.hss-bar-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
+.hss-bar-inner{flex:1}
+.hss-bar-top{display:flex;justify-content:space-between;margin-bottom:3px}
+.hss-bar-name{font-size:12px;font-weight:600;color:#1E293B}
+.hss-bar-val.green{font-size:12px;font-weight:700;color:#059669}
+.hss-bar-val.red{font-size:12px;font-weight:700;color:#DC2626}
+.hss-bar-track{height:7px;border-radius:4px;background:#E5E7EB;overflow:hidden}
+.hss-bar-fill.green{height:100%;border-radius:4px;background:linear-gradient(90deg,#10B981,#34D399)}
+.hss-bar-fill.red{height:100%;border-radius:4px;background:linear-gradient(90deg,#EF4444,#F87171)}
+
+/* Insight cards */
+.hss-insight-row{background:#EEEEFF;padding:10px 12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hss-insight-card{background:#fff;border-radius:12px;padding:14px}
+.hss-insight-card.green{border:1px solid #D1FAE5}
+.hss-insight-card.red{border:1px solid #FEE2E2}
+.hss-insight-tag{font-size:8px;font-weight:800;letter-spacing:1px;margin-bottom:6px}
+.hss-insight-tag.green{color:#059669}
+.hss-insight-tag.red{color:#DC2626}
+.hss-insight-score{font-size:13px;font-weight:800;color:#1E293B;margin-bottom:4px}
+.hss-insight-desc{font-size:10px;color:#374151;line-height:1.65;margin-bottom:7px}
+.hss-insight-tip{border-radius:6px;padding:5px 8px;font-size:9px;line-height:1.6}
+.hss-insight-tip.green{background:#ECFDF5;color:#059669}
+.hss-insight-tip.red{background:#FFF1F2;color:#DC2626}
+
+/* CTA */
+.hss-cta{background:#fff;padding:14px 18px;border-top:1px solid #F1F5F9}
+.hss-cta-title{font-size:12px;font-weight:800;color:#1E293B;margin-bottom:3px}
+.hss-cta-sub{font-size:10px;color:#64748B;margin-bottom:10px}
+.hss-cta-btns{display:flex;gap:8px}
+.hss-cta-btn{flex:1;padding:9px 0;border-radius:8px;font-size:11px;font-weight:800;text-align:center;color:#fff}
+.hss-cta-btn.deep{background:linear-gradient(135deg,#F59E0B,#D97706)}
+.hss-cta-btn.all{background:linear-gradient(135deg,#6D28D9,#5B21B6)}
+
+/* Footer */
+.hss-footer{background:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #F1F5F9}
+.hss-footer-brand{font-size:13px;font-weight:800;color:#6D28D9}
+.hss-footer-sub{font-size:9px;color:#94A3B8}
+
+/* === FULL CARD === */
+.hss-radar{background:#fff;padding:16px 16px 8px}
+.hss-grid{background:#fff;padding:12px 16px 16px;border-top:1px solid #F1F5F9;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hss-grid-col-title{font-size:10px;font-weight:800;letter-spacing:1.5px;margin-bottom:8px}
+.hss-grid-col-title.green{color:#059669}
+.hss-grid-col-title.red{color:#DC2626}
+.hss-detail-item{border-radius:12px;padding:12px;margin-bottom:7px}
+.hss-detail-item.green{border:1px solid #D1FAE5}
+.hss-detail-item.red{border:1px solid #FEE2E2}
+.hss-detail-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.hss-detail-left{display:flex;align-items:center;gap:5px}
+.hss-detail-icon{font-size:16px}
+.hss-detail-name{font-size:12px;font-weight:700;color:#1E293B}
+.hss-detail-score{font-size:13px;font-weight:800}
+.hss-detail-score.green{color:#059669}
+.hss-detail-score.red{color:#DC2626}
+.hss-detail-desc{font-size:10px;color:#64748B;line-height:1.6;margin:0 0 7px}
+.hss-detail-bar{height:6px;border-radius:3px;background:#F3F4F6;overflow:hidden}
+.hss-detail-bar-fill.green{height:100%;border-radius:3px;background:linear-gradient(90deg,#10B981,#34D399)}
+.hss-detail-bar-fill.red{height:100%;border-radius:3px;background:linear-gradient(90deg,#EF4444,#F87171)}
+
+/* Encouragement */
+.hss-encourage{background:#fff;padding:14px 16px;border-top:1px solid #F1F5F9}
+.hss-encourage-inner{background:linear-gradient(135deg,#F5F3FF,#EDE9FE);border-radius:14px;padding:18px;border:1px solid #DDD6FE}
+.hss-cheer-title{font-size:15px;font-weight:800;color:#5B21B6;margin-bottom:8px}
+.hss-cheer-body{font-size:11px;color:#374151;line-height:1.8;margin-bottom:10px}
+.hss-cheer-tips{background:#fff;border-radius:8px;padding:10px 12px;border:1px solid #E5E7EB;font-size:10px;color:#374151;line-height:1.8}
+
+/* Invite CTA */
+.hss-invite{background:linear-gradient(135deg,#6D28D9,#5B21B6);padding:22px;text-align:center}
+.hss-invite-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:5px}
+.hss-invite-sub{font-size:11px;color:rgba(255,255,255,.7);margin-bottom:12px}
+.hss-invite-btn{display:inline-block;padding:9px 24px;border-radius:9px;background:#fff;color:#6D28D9;font-size:12px;font-weight:800}
+</style>
+</head>
+<body>
+
+<div class="page-title">
+  <h1>🃏 Social Share Card — Prototype Preview</h1>
+  <p>ตัวอย่างการ์ดที่ผู้ใช้จะได้รับ ตามแพ็คเกจ</p>
+</div>
+
+<div class="cards-row">
+
+  <!-- ══════════════════════════════ FREE CARD ══════════════════════════════ -->
+  <div class="card-wrapper">
+    <div class="card-label">Free Plan</div>
+    <div class="card-badge badge-free">🟢 Free — การ์ด 5 Core</div>
+    <div class="hss-card">
+      <!-- Header -->
+      <div class="hss-header">
+        <div class="hss-header-inner">
+          <div class="hss-header-top">
+            <div class="hss-logo">
+              <div class="hss-logo-icon">✦</div>
+              <span class="hss-logo-text">HUMAN SYSTEM STUDIO</span>
+            </div>
+          </div>
+          <div class="hss-name">Prim</div>
+          <div class="hss-subtitle">รู้จักตัวเองอย่างแม่นยำด้วย AI + โหราศาสตร์พระเวท + จิตวิทยา 36 ข้อ</div>
+          <div class="hss-archetype"><span>🏛</span> The Strategic Visionary — ผู้มองเห็นภาพใหญ่</div>
+        </div>
+      </div>
+
+      <!-- 5 Core -->
+      <div class="hss-section" style="padding-bottom:14px">
+        <div class="hss-section-label">
+          <div class="hss-dot"></div>
+          <span class="hss-section-title">5 CORE DIMENSIONS</span>
+        </div>
+        <!-- Strength -->
+        <div class="hss-dim-group-label green" style="margin-bottom:8px">💪 จุดแข็ง — STRENGTH</div>
+        <div class="hss-bar-row">
+          <span class="hss-bar-icon">🧠</span>
+          <div class="hss-bar-inner">
+            <div class="hss-bar-top"><span class="hss-bar-name">Cognitive Processing</span><span class="hss-bar-val green">8.2</span></div>
+            <div class="hss-bar-track"><div class="hss-bar-fill green" style="width:82%"></div></div>
+          </div>
+        </div>
+        <div class="hss-bar-row">
+          <span class="hss-bar-icon">🔮</span>
+          <div class="hss-bar-inner">
+            <div class="hss-bar-top"><span class="hss-bar-name">Integration Level</span><span class="hss-bar-val green">7.5</span></div>
+            <div class="hss-bar-track"><div class="hss-bar-fill green" style="width:75%"></div></div>
+          </div>
+        </div>
+        <div class="hss-bar-row">
+          <span class="hss-bar-icon">🌱</span>
+          <div class="hss-bar-inner">
+            <div class="hss-bar-top"><span class="hss-bar-name">Growth Orientation</span><span class="hss-bar-val green">7.7</span></div>
+            <div class="hss-bar-track"><div class="hss-bar-fill green" style="width:77%"></div></div>
+          </div>
+        </div>
+        <!-- Shadow -->
+        <div class="hss-dim-group-label red" style="margin-top:4px;margin-bottom:8px">🌑 Shadow Work</div>
+        <div class="hss-bar-row">
+          <span class="hss-bar-icon">🌊</span>
+          <div class="hss-bar-inner">
+            <div class="hss-bar-top"><span class="hss-bar-name">Emotional Regulation</span><span class="hss-bar-val red">4.8</span></div>
+            <div class="hss-bar-track"><div class="hss-bar-fill red" style="width:48%"></div></div>
+          </div>
+        </div>
+        <div class="hss-bar-row">
+          <span class="hss-bar-icon">🌑</span>
+          <div class="hss-bar-inner">
+            <div class="hss-bar-top"><span class="hss-bar-name">Shadow Pattern</span><span class="hss-bar-val red">4.5</span></div>
+            <div class="hss-bar-track"><div class="hss-bar-fill red" style="width:45%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Insight Cards -->
+      <div class="hss-insight-row">
+        <div class="hss-insight-card green">
+          <div class="hss-insight-tag green">💪 เด่นด้าน</div>
+          <div class="hss-insight-score">🧠 Cognitive — 8.2</div>
+          <div class="hss-insight-desc">คิดวิเคราะห์เก่ง สรุปประเด็นได้ชัด เหมาะงานที่ต้องใช้สมอง</div>
+          <div class="hss-insight-tip green">💡 ยิ่งใช้ยิ่งแกร่ง</div>
+        </div>
+        <div class="hss-insight-card red">
+          <div class="hss-insight-tag red">⚠️ ต้องระวัง</div>
+          <div class="hss-insight-score">🌊 Emotional — 4.8</div>
+          <div class="hss-insight-desc">ต้องเฝ้าระวังและพัฒนา มีแนวโน้มเป็นจุดบอด</div>
+          <div class="hss-insight-tip red">💡 ฝึก 'กฎ 5 วินาที' — นับ 1-5 ก่อนตอบสนอง</div>
+        </div>
+      </div>
+
+      <!-- CTA Upsell -->
+      <div class="hss-cta">
+        <div class="hss-cta-title">ค้นพบตัวตนที่ลึกซึ้งยิ่งขึ้น เช็คครบ 12 ด้าน</div>
+        <div class="hss-cta-sub">AI วิเคราะห์เชิงลึก + Radar Chart + คำแนะนำเฉพาะคุณ</div>
+        <div class="hss-cta-btns">
+          <div class="hss-cta-btn deep">Deep ฿49</div>
+          <div class="hss-cta-btn all">Full ฿99</div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="hss-footer">
+        <span class="hss-footer-brand">humansystemstudio.com</span>
+        <span class="hss-footer-sub">ลองทำแบบประเมินฟรี →</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════ DEEP / ALL FULL CARD ══════════════════════════ -->
+  <div class="card-wrapper">
+    <div class="card-label">Deep Insight &amp; All Access</div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <div class="card-badge badge-deep">🟡 Deep ฿49</div>
+      <div class="card-badge badge-all">🔵 All Access ฿99</div>
+    </div>
+    <div class="hss-card">
+      <!-- Header -->
+      <div class="hss-header">
+        <div class="hss-header-inner">
+          <div class="hss-header-top">
+            <div class="hss-logo">
+              <div class="hss-logo-icon">✦</div>
+              <span class="hss-logo-text">HUMAN SYSTEM STUDIO</span>
+            </div>
+            <div class="hss-access-badge">ALL ACCESS</div>
+          </div>
+          <div class="hss-name">Prim</div>
+          <div class="hss-subtitle">รู้จักตัวเองอย่างแม่นยำด้วย AI + โหราศาสตร์พระเวท + จิตวิทยา 36 ข้อ</div>
+          <div class="hss-archetype"><span>🏛</span> The Strategic Visionary — ผู้มองเห็นภาพใหญ่</div>
+        </div>
+      </div>
+
+      <!-- Radar SVG -->
+      <div class="hss-radar">
+        <svg viewBox="0 0 440 400" style="width:100%;display:block">
+          <!-- Grid rings -->
+          <polygon points="220,50 330,115 330,285 220,350 110,285 110,115" fill="none" stroke="#D1D5DB" stroke-width="0.5"/>
+          <polygon points="220,87 302,134 302,266 220,313 138,266 138,134" fill="none" stroke="#E5E7EB" stroke-width="0.5"/>
+          <polygon points="220,125 273,152 273,248 220,275 167,248 167,152" fill="none" stroke="#E5E7EB" stroke-width="0.5"/>
+          <polygon points="220,163 245,171 245,230 220,238 195,230 195,171" fill="none" stroke="#E5E7EB" stroke-width="0.5"/>
+          <!-- Data polygon (example data) -->
+          <polygon points="220,65 318,121 325,275 220,345 122,270 113,132" fill="rgba(124,58,237,.12)" stroke="#7C3AED" stroke-width="2" stroke-linejoin="round"/>
+          <!-- Dots -->
+          <circle cx="220" cy="65" r="3.5" fill="#7C3AED"/>
+          <circle cx="318" cy="121" r="3.5" fill="#7C3AED"/>
+          <circle cx="325" cy="275" r="3.5" fill="#7C3AED"/>
+          <circle cx="220" cy="345" r="3.5" fill="#7C3AED"/>
+          <circle cx="122" cy="270" r="3.5" fill="#7C3AED"/>
+          <circle cx="113" cy="132" r="3.5" fill="#7C3AED"/>
+          <!-- Labels (12 dims simplified to 6 for visual) -->
+          <text x="220" y="36" text-anchor="middle" fill="#374151" font-size="9.5" font-weight="600">🧠 Cognitive 8.2</text>
+          <text x="355" y="115" text-anchor="start" fill="#374151" font-size="9.5" font-weight="600">⚡ Energy 7.8</text>
+          <text x="355" y="285" text-anchor="start" fill="#374151" font-size="9.5" font-weight="600">🔮 Integration 7.5</text>
+          <text x="220" y="368" text-anchor="middle" fill="#374151" font-size="9.5" font-weight="600">🌱 Growth 7.7</text>
+          <text x="85" y="285" text-anchor="end" fill="#374151" font-size="9.5" font-weight="600">🌑 Shadow 4.5</text>
+          <text x="85" y="115" text-anchor="end" fill="#374151" font-size="9.5" font-weight="600">🌊 Emotional 4.8</text>
+        </svg>
+      </div>
+
+      <!-- 3+3 Grid -->
+      <div class="hss-grid">
+        <div>
+          <div class="hss-grid-col-title green">💪 STRENGTH — จุดแข็ง</div>
+          <div class="hss-detail-item green">
+            <div class="hss-detail-top">
+              <div class="hss-detail-left"><span class="hss-detail-icon">🧠</span><span class="hss-detail-name">Cognitive Processing</span></div>
+              <span class="hss-detail-score green">8.2</span>
+            </div>
+            <p class="hss-detail-desc">คิดวิเคราะห์เก่ง สรุปประเด็นได้ชัด เหมาะงานที่ต้องใช้สมอง</p>
+            <div class="hss-detail-bar"><div class="hss-detail-bar-fill green" style="width:82%"></div></div>
+          </div>
+          <div class="hss-detail-item green">
+            <div class="hss-detail-top">
+              <div class="hss-detail-left"><span class="hss-detail-icon">🌱</span><span class="hss-detail-name">Growth Orientation</span></div>
+              <span class="hss-detail-score green">7.7</span>
+            </div>
+            <p class="hss-detail-desc">เรียนรู้และพัฒนาตัวเองอย่างต่อเนื่อง ไม่หยุดนิ่ง</p>
+            <div class="hss-detail-bar"><div class="hss-detail-bar-fill green" style="width:77%"></div></div>
+          </div>
+          <div class="hss-detail-item green">
+            <div class="hss-detail-top">
+              <div class="hss-detail-left"><span class="hss-detail-icon">🔮</span><span class="hss-detail-name">Integration Level</span></div>
+              <span class="hss-detail-score green">7.5</span>
+            </div>
+            <p class="hss-detail-desc">มองภาพรวมดี เชื่อมโยงสิ่งต่างๆ ได้เป็นระบบ</p>
+            <div class="hss-detail-bar"><div class="hss-detail-bar-fill green" style="width:75%"></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="hss-grid-col-title red">🌑 SHADOW — ต้องพัฒนา</div>
+          <div class="hss-detail-item red">
+            <div class="hss-detail-top">
+              <div class="hss-detail-left"><span class="hss-detail-icon">🌊</span><span class="hss-detail-name">Emotional Regulation</span></div>
+              <span class="hss-detail-score red">4.8</span>
+            </div>
+            <p class="hss-detail-desc">อาจตอบสนองเร็วเกินไปในบางสถานการณ์</p>
+            <div class="hss-detail-bar"><div class="hss-detail-bar-fill red" style="width:48%"></div></div>
+          </div>
+          <div class="hss-detail-item red">
+            <div class="hss-detail-top">
+              <div class="hss-detail-left"><span class="hss-detail-icon">🌑</span><span class="hss-detail-name">Shadow Pattern</span></div>
+              <span class="hss-detail-score red">4.5</span>
+            </div>
+            <p class="hss-detail-desc">มีแนวโน้มเลี่ยงเรื่องที่ยาก ต้องฝึกเผชิญตรง</p>
+            <div class="hss-detail-bar"><div class="hss-detail-bar-fill red" style="width:45%"></div></div>
+          </div>
+          <div class="hss-detail-item red">
+            <div class="hss-detail-top">
+              <div class="hss-detail-left"><span class="hss-detail-icon">🧊</span><span class="hss-detail-name">Stress Response</span></div>
+              <span class="hss-detail-score red">5.1</span>
+            </div>
+            <p class="hss-detail-desc">เมื่อกดดันมาก อาจรับมือได้ยากกว่าที่ควร</p>
+            <div class="hss-detail-bar"><div class="hss-detail-bar-fill red" style="width:51%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Encouragement -->
+      <div class="hss-encourage">
+        <div class="hss-encourage-inner">
+          <div class="hss-cheer-title">💜 ยินดีด้วย Prim!</div>
+          <div class="hss-cheer-body">
+            คุณโดดเด่นด้าน <strong>🧠 Cognitive Processing (8.2)</strong>, <strong>🌱 Growth Orientation (7.7)</strong><br/>
+            จุดที่ต้องเฝ้าระวัง <strong>🌊 Emotional Regulation (4.8)</strong> — ฝึก 'กฎ 5 วินาที' — นับ 1-5 ก่อนตอบสนอง
+          </div>
+          <div class="hss-cheer-tips">
+            ① ใช้จุดแข็ง Cognitive Processing ให้เต็มที่ — ยิ่งใช้ยิ่งแกร่ง<br/>
+            ② ฝึก 'กฎ 5 วินาที' — นับ 1-5 ก่อนตอบสนองทุกครั้ง<br/>
+            ③ สร้างระบบพักฟื้น — ชาร์จพลังทุกสัปดาห์<br/><br/>
+            แค่เริ่มก็ชนะแล้ว ✨
+          </div>
+        </div>
+      </div>
+
+      <!-- Invite CTA -->
+      <div class="hss-invite">
+        <div class="hss-invite-title">อยากรู้จักตัวเองแบบนี้บ้างไหม?</div>
+        <div class="hss-invite-sub">ลองทำแบบประเมินฟรี — AI + โหราศาสตร์พระเวท + จิตวิทยา 36 ข้อ</div>
+        <div class="hss-invite-btn">เริ่มวันนี้ → humansystemstudio.com</div>
+      </div>
+
+      <!-- Footer -->
+      <div class="hss-footer">
+        <span class="hss-footer-brand">humansystemstudio.com</span>
+        <span class="hss-footer-sub">AI + Vedic Astrology + Psychology 36 ข้อ</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Summary table -->
+<div style="max-width:700px;margin:48px auto 0;background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
+  <h2 style="font-size:15px;font-weight:800;margin-bottom:14px">📋 สรุป — ใครได้การ์ดแบบไหน</h2>
+  <table style="width:100%;border-collapse:collapse;font-size:13px">
+    <thead>
+      <tr style="background:#F8FAFC">
+        <th style="text-align:left;padding:8px 10px;font-weight:700;color:#64748B">Plan</th>
+        <th style="text-align:center;padding:8px 10px;font-weight:700;color:#64748B">การ์ด</th>
+        <th style="text-align:left;padding:8px 10px;font-weight:700;color:#64748B">เนื้อหา</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid #F1F5F9">
+        <td style="padding:8px 10px"><span style="background:#ECFDF5;color:#059669;padding:2px 10px;border-radius:8px;font-weight:700;font-size:11px">🟢 Free</span></td>
+        <td style="padding:8px 10px;text-align:center">Free Card</td>
+        <td style="padding:8px 10px;color:#64748B;font-size:12px">5 Core bars + Insight cards + CTA อัปเกรด (Deep ฿49 / Full ฿99)</td>
+      </tr>
+      <tr style="border-bottom:1px solid #F1F5F9">
+        <td style="padding:8px 10px"><span style="background:#FFFBEB;color:#92400E;padding:2px 10px;border-radius:8px;font-weight:700;font-size:11px">🟡 Deep ฿49</span></td>
+        <td style="padding:8px 10px;text-align:center">Full Card ✅</td>
+        <td style="padding:8px 10px;color:#64748B;font-size:12px">Radar Chart 12 มิติ + 3 Strength + 3 Shadow + คำแนะนำ + Invite CTA</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 10px"><span style="background:#EEF2FF;color:#3730A3;padding:2px 10px;border-radius:8px;font-weight:700;font-size:11px">🔵 All ฿99</span></td>
+        <td style="padding:8px 10px;text-align:center">Full Card ✅</td>
+        <td style="padding:8px 10px;color:#64748B;font-size:12px">เหมือน Deep + badge "ALL ACCESS" ในส่วนหัว</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:20px;padding:14px;background:#F0FDF4;border-radius:10px;border:1px solid #BBF7D0">
+    <div style="font-size:13px;font-weight:700;color:#166534;margin-bottom:4px">✅ ลูกค้าเก่าที่ชำระเงินแล้ว</div>
+    <div style="font-size:12px;color:#15803D;line-height:1.7">
+      หลัง deploy code ใหม่ → ลูกค้าทุกคนได้ดีไซน์ใหม่อัตโนมัติ<br/>
+      • plan ถูกเก็บไว้ใน Supabase DB — ไม่หายไปไหน<br/>
+      • ไม่ต้องชำระเงินใหม่ ไม่ต้องทำอะไรเพิ่ม<br/>
+      • เปิดเว็บ → login → ดูผลลัพธ์ → กด "ดาวน์โหลดการ์ดแชร์" ได้เลย
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
