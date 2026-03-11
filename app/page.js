@@ -387,7 +387,7 @@ ${wk} ${en} ${jb} ${dashaHTML}
     setTimeout(()=>URL.revokeObjectURL(url),1000)};
 
   const shareProfile=async()=>{if(!scores||!nick)return;
-    const W=1080,H=1920;
+    const W=1080,H=2100;
     const canvas=document.createElement("canvas");canvas.width=W;canvas.height=H;
     const ctx=canvas.getContext("2d");
     await document.fonts.ready;
@@ -497,10 +497,10 @@ ${wk} ${en} ${jb} ${dashaHTML}
       bot3.forEach(([k,v])=>{const c2=PAD+cW+28;fr(c2,iy,cW,itemH-8,16,"#fff");sr(c2,iy,cW,itemH-8,16,"#FEE2E2",2);tx(DM[k]?.icon||"✦",c2+16,iy+44,"500 36px sans-serif","#1E293B");tx(k,c2+62,iy+36,"700 26px 'Noto Sans Thai',sans-serif","#1E293B","left",cW-90);tx(v.toFixed(1),c2+cW-14,iy+36,"800 30px 'Noto Sans Thai',sans-serif","#DC2626","right");wt(SDW_DESC[k]||"ต้องพัฒนาเพิ่มเติม",c2+16,iy+70,cW-32,36,"400 22px 'Noto Sans Thai',sans-serif","#64748B");fr(c2+16,iy+itemH-34,cW-32,14,7,"#E5E7EB");const g=linGrad(c2+16,0,c2+16+(cW-32)*v/10,0,[[0,"#EF4444"],[1,"#F87171"]]);fr(c2+16,iy+itemH-34,(cW-32)*v/10,14,7,g);iy+=itemH;});
       y+=colTotalH+16;
       // Encouragement card
-      const encH=220;const eg=linGrad(0,y,0,y+encH,[[0,"#F5F3FF"],[1,"#EDE9FE"]]);fr(PAD,y,W-PAD*2,encH,24,eg);sr(PAD,y,W-PAD*2,encH,24,"#DDD6FE",2);
+      const encH=340;const eg=linGrad(0,y,0,y+encH,[[0,"#F5F3FF"],[1,"#EDE9FE"]]);fr(PAD,y,W-PAD*2,encH,24,eg);sr(PAD,y,W-PAD*2,encH,24,"#DDD6FE",2);
       tx("💜 ยินดีด้วย "+nick+"!",PAD+30,y+55,"800 36px 'Noto Sans Thai',sans-serif","#5B21B6");
-      wt("คุณโดดเด่นด้าน: "+top3.map(([k,v])=>(DM[k]?.icon||"")+k+" ("+v.toFixed(1)+")").join(", "),PAD+30,y+100,W-PAD*2-60,40,"600 26px 'Noto Sans Thai',sans-serif","#374151");
-      wt("จุดระวัง: "+bot1[0]+" ("+bot1[1].toFixed(1)+") — "+tip,PAD+30,y+148,W-PAD*2-60,38,"400 24px 'Noto Sans Thai',sans-serif","#374151");
+      const ey1=wt("คุณโดดเด่นด้าน: "+top3.map(([k,v])=>(DM[k]?.icon||"")+k+" ("+v.toFixed(1)+")").join(", "),PAD+30,y+100,W-PAD*2-60,40,"600 26px 'Noto Sans Thai',sans-serif","#374151");
+      wt("จุดระวัง: "+bot1[0]+" ("+bot1[1].toFixed(1)+") — "+tip,PAD+30,ey1+8,W-PAD*2-60,38,"400 24px 'Noto Sans Thai',sans-serif","#374151");
       fr(PAD+30,y+encH-60,W-PAD*2-60,48,10,"#fff");sr(PAD+30,y+encH-60,W-PAD*2-60,48,10,"#E5E7EB",1);
       tx("① ใช้ "+top1[0]+" ให้เต็มที่  ② "+tip.slice(0,28)+"  ③ สร้างระบบพักฟื้น ✨",PAD+50,y+encH-28,"400 22px 'Noto Sans Thai',sans-serif","#374151","left",W-PAD*2-100);
       y+=encH+16;
