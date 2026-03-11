@@ -509,7 +509,6 @@ ${wk} ${en} ${jb} ${dashaHTML}
     const ctaH=130;fr(PAD,y,W-PAD*2,ctaH,24,linGrad(0,y,W,y+ctaH,[[0,"#6D28D9"],[1,"#5B21B6"]]));
     tx("อยากรู้จักตัวเองแบบนี้บ้างไหม?",W/2,y+50,"800 34px 'Noto Sans Thai',sans-serif","#fff","center");
     tx("ลองทำแบบประเมินฟรี — AI + โหราศาสตร์พระเวท + จิตวิทยา 36 ข้อ",W/2,y+92,"400 24px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.7)","center",W-PAD*2-60);
-    fr(W/2-210,y+108,420,54,10,"#fff");tx("เริ่มวันนี้ → humansystemstudio.com",W/2,y+143,"800 23px 'Noto Sans Thai',sans-serif","#6D28D9","center",400);
     y+=ctaH+10;
     // ── FOOTER ──
     const footerH=H-y-6;fr(PAD,y,W-PAD*2,footerH,20,"#fff");
