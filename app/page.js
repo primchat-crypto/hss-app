@@ -195,14 +195,16 @@ export default function App(){
   useEffect(()=>{
     if(scores&&nick&&vedic&&!aiTriggered.current){
       aiTriggered.current=true;
-      if(!ai.identity)loadAI("identity",scores,vedic,nick,bday);
-      if(!ai.core)loadAI("core",scores,vedic,nick,bday);
       const fs=PLANS[plan].f;
-      if(fs.includes("12d")&&!ai["12d"])loadAI("12d",scores,vedic,nick,bday);
-      if(fs.includes("shadow")&&!ai.shadow)loadAI("shadow",scores,vedic,nick,bday);
-      if(fs.includes("weekly")&&!ai.weekly)loadAI("weekly",scores,vedic,nick,bday);
-      if(fs.includes("energy")&&!ai.energy)loadAI("energy",scores,vedic,nick,bday);
-      if(fs.includes("job")&&!ai.job)loadAI("job",scores,vedic,nick,bday);
+      // Energy & job use instant smart fallback — always refresh (energy is date-sensitive)
+      if(fs.includes("energy"))loadAI("energy",scores,vedic,nick,bday);
+      if(fs.includes("job"))loadAI("job",scores,vedic,nick,bday);
+      // GPT-blocking calls staggered 500 ms apart to avoid concurrent API rate-limiting
+      if(!ai.identity)loadAI("identity",scores,vedic,nick,bday);
+      if(!ai.core)setTimeout(()=>loadAI("core",scores,vedic,nick,bday),500);
+      if(fs.includes("12d")&&!ai["12d"])setTimeout(()=>loadAI("12d",scores,vedic,nick,bday),1000);
+      if(fs.includes("shadow")&&!ai.shadow)setTimeout(()=>loadAI("shadow",scores,vedic,nick,bday),1500);
+      if(fs.includes("weekly")&&!ai.weekly)setTimeout(()=>loadAI("weekly",scores,vedic,nick,bday),2000);
     }
   },[scores,nick,vedic,plan,ai]);
 
@@ -218,7 +220,7 @@ export default function App(){
   const answer=val=>{const q=ALL_Q[qI];const key=`${q.dim}-${q.qi}`;const na={...ans,[key]:val};setAns(na);ST.set("answers",na);if(qI<ALL_Q.length-1)setTimeout(()=>setQI(qI+1),200)};
   const finish=()=>{const ts=knowT?btime:tSlot;const v=calcV(bday,ts);const s=calcS(v,ans);setVedic(v);setScores(s);ST.set("vedic",v);ST.set("scores",s);saveAssessment(s,v,ans);setSc("results");loadAI("identity",s,v);loadAI("core",s,v)};
 
-  const loadAI=async(type,s2,v2,nameOverride,bdayOverride)=>{const s=s2||scores;const v=v2||vedic;const nn=nameOverride||nick;const bd=bdayOverride||bday;if(!s||!nn||ai[type])return;setAiL(p=>({...p,[type]:true}));let r=null;try{const so=Object.entries(s).sort((a,b)=>b[1]-a[1]);
+  const loadAI=async(type,s2,v2,nameOverride,bdayOverride)=>{const s=s2||scores;const v=v2||vedic;const nn=nameOverride||nick;const bd=bdayOverride||bday;if(!s||!nn||(ai[type]&&type!=="energy"&&type!=="job"))return;setAiL(p=>({...p,[type]:true}));let r=null;try{const so=Object.entries(s).sort((a,b)=>b[1]-a[1]);
     if(type==="identity")r=await GPT.call(`วิเคราะห์ตัวตน"${nn}"3ประโยค Vedic+พฤติกรรม:\nศักยภาพดวง:${Object.entries(v).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v2])=>`${k}(${v2.toFixed(1)})`).join(",")}\nพฤติกรรม:แข็ง${so.slice(0,3).map(([k,v2])=>`${k}(${v2.toFixed(1)})`).join(",")} อ่อน${so.slice(-2).map(([k,v2])=>`${k}(${v2.toFixed(1)})`).join(",")}\nถ้าศักยภาพสูงแต่พฤติกรรมต่ำ→"ดวงให้มาแต่ยังใช้ไม่เต็ม"`,`id_${nn}`);
     if(type==="core")r=await GPT.call(`วิเคราะห์5Core"${nn}"Vedic:\n🧠Cognitive(พุธ):ดวง${v["Cognitive Processing"]?.toFixed(1)}จริง${s["Cognitive Processing"]?.toFixed(1)}\n🌊Emotional(จันทร์):ดวง${v["Emotional Regulation"]?.toFixed(1)}จริง${s["Emotional Regulation"]?.toFixed(1)}\n⚓Identity(อาทิตย์+เสาร์):ดวง${v["Identity Stability"]?.toFixed(1)}จริง${s["Identity Stability"]?.toFixed(1)}\n🌑Shadow(ราหู/เกตุ):ดวง${v["Shadow Pattern"]?.toFixed(1)}จริง${s["Shadow Pattern"]?.toFixed(1)}\n🌱Growth(พฤหัส):ดวง${v["Growth Orientation"]?.toFixed(1)}จริง${s["Growth Orientation"]?.toFixed(1)}\nแต่ละด้าน1-2ประโยค`,`core_${nn}`);
     if(type==="12d")r=await GPT.call(`วิเคราะห์12มิติ"${nn}"Vedic:\n${Object.entries(s).map(([k,sv])=>`${k}:ดวง${v[k]?.toFixed(1)}จริง${sv.toFixed(1)}`).join("\n")}\nจุดแข็ง4+ดาวหนุน จุดพัฒนา4+action ถ้าgap>2→highlight`,`f12_${nn}`);
@@ -344,7 +346,7 @@ export default function App(){
     if(sb)sb.auth.signOut().catch(()=>{});
   };
 
-  const activatePlan=(p)=>{setPlan(p);ST.set("plan",p);savePlan(p);const fs=PLANS[p].f;if(fs.includes("12d")&&!ai["12d"])loadAI("12d");if(fs.includes("shadow")&&!ai.shadow)loadAI("shadow");if(fs.includes("weekly")&&!ai.weekly)loadAI("weekly");if(fs.includes("energy")&&!ai.energy)loadAI("energy");if(fs.includes("job")&&!ai.job)loadAI("job")};
+  const activatePlan=(p)=>{setPlan(p);ST.set("plan",p);savePlan(p);const fs=PLANS[p].f;if(fs.includes("energy"))loadAI("energy",scores,vedic,nick,bday);if(fs.includes("job"))loadAI("job",scores,vedic,nick,bday);if(fs.includes("12d")&&!ai["12d"])loadAI("12d",scores,vedic,nick,bday);if(fs.includes("shadow")&&!ai.shadow)loadAI("shadow",scores,vedic,nick,bday);if(fs.includes("weekly")&&!ai.weekly)loadAI("weekly",scores,vedic,nick,bday)};
 
   const exportPDF=()=>{if(!scores)return;const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
     // Spider chart SVG for PDF
