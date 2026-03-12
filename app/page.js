@@ -7,8 +7,8 @@ const SB_KEY=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const sb=(SB_URL&&SB_KEY)?createClient(SB_URL,SB_KEY,{auth:{persistSession:true,storageKey:"hss-auth",storage:typeof window!=="undefined"?window.localStorage:undefined}}):null;
 
 const BRAND="Human System Studio";
-const PLANS={free:{name:"Free",price:0,tag:"🟢",c:"#10B981",f:["identity","core5","share"]},deep:{name:"Deep Insight",price:49,tag:"🟡",c:"#F59E0B",badge:"Early Bird",f:["identity","core5","12d","shadow","weekly","energy","share"]},all:{name:"All Access",price:99,tag:"🔵",c:"#3B82F6",badge:"Early Bird คุ้มสุด",f:["identity","core5","12d","shadow","weekly","energy","job","dasha","pdf","share"]}};
-const FT=[["Identity Snapshot (AI)","identity",1,1,1],["5 Core Scores + AI วิเคราะห์","core5",1,1,1],["จุดแข็ง / จุดพัฒนา 12 มิติ","12d",0,1,1],["Shadow Analysis เชิงลึก","shadow",0,1,1],["Do & Don't รายสัปดาห์","weekly",0,1,1],["7-Day Energy Forecast","energy",0,1,1],["Job Matching AI","job",0,0,1],["Life Phase Map (Dasha)","dasha",0,0,1],["PDF Report ดาวน์โหลด","pdf",0,0,1],["Social Share Card","share",1,1,1]];
+const PLANS={free:{name:"Free",price:0,tag:"🟢",c:"#10B981",f:["identity","core5","share"]},deep:{name:"Deep Insight",price:49,tag:"🟡",c:"#F59E0B",badge:"Early Bird",f:["identity","core5","12d","shadow","weekly","energy","share"]},all:{name:"All Access",price:99,tag:"🔵",c:"#3B82F6",badge:"Early Bird คุ้มสุด",f:["identity","core5","12d","shadow","weekly","energy","timeline","job","dasha","pdf","share"]}};
+const FT=[["Identity Snapshot (AI)","identity",1,1,1],["5 Core Scores + AI วิเคราะห์","core5",1,1,1],["จุดแข็ง / จุดพัฒนา 12 มิติ","12d",0,1,1],["Shadow Analysis เชิงลึก","shadow",0,1,1],["Do & Don't รายสัปดาห์","weekly",0,1,1],["7-Day Energy Forecast","energy",0,1,1],["Career Timeline พลังงานการงาน","timeline",0,0,1],["Job Matching AI","job",0,0,1],["Life Phase Map (Dasha)","dasha",0,0,1],["PDF Report ดาวน์โหลด","pdf",0,0,1],["Social Share Card","share",1,1,1]];
 
 const QG={A:{t:"The Foundation",dims:{"Cognitive Processing":{icon:"🧠",c:"#6366F1",pl:"พุธ",q:["ก่อนเริ่มงาน ฉันวางแผนคร่าวๆ อย่างน้อย 1 ครั้ง","เมื่ออธิบายเรื่องยาก ฉันสรุปให้เหลือประเด็นหลักได้","ก่อนส่งงาน ฉันตรวจทานจุดผิดพลาดสำคัญอีกครั้ง"]},"Emotional Regulation":{icon:"🌊",c:"#0EA5E9",pl:"จันทร์",q:["เมื่ออารมณ์แรง ฉันหยุดพักก่อนตอบหรือก่อนตัดสินใจ","ในวันที่อารมณ์ไม่ดี ฉันยังทำงานจำเป็นให้เดินหน้าได้อย่างน้อย 1 อย่าง","หลังเจอเรื่องกระทบใจ ฉันกลับมาใช้ชีวิตปกติได้ภายใน 1–2 วัน"]},"Identity Stability":{icon:"⚓",c:"#EC4899",pl:"อาทิตย์+เสาร์",q:["ฉันตัดสินใจตามหลักของตัวเอง มากกว่าทำตามแรงกดดันจากคนอื่น","เมื่อมีคนติ ฉันโฟกัสที่สิ่งที่ต้องแก้ไข มากกว่าคิดว่าตัวเองไม่มีค่า","ฉันโฟกัสเป้าหมายหลักเรื่องหนึ่งได้ต่อเนื่องอย่างน้อย 2 สัปดาห์"]}}},B:{t:"The Execution",dims:{"Energy Management":{icon:"⚡",c:"#F59E0B",pl:"อังคาร",q:["เมื่อมีงานสำคัญ ฉันเริ่มลงมือภายใน 24 ชั่วโมง","ฉันทำงานต่อเนื่องตามแผนได้ โดยไม่หลุดโฟกัสบ่อย","เมื่อเริ่มล้า ฉันเลือกพักเพื่อฟื้นพลัง แทนฝืนทำต่อ"]},"Decision System":{icon:"⚖️",c:"#3B82F6",pl:"พฤหัส+เสาร์",q:["ก่อนตัดสินใจเรื่องสำคัญ ฉันหาข้อมูลอย่างน้อย 2 มุมมอง","เมื่อตัดสินใจแล้ว ฉันลงมือทำโดยไม่ย้อนลังเลซ้ำ","ฉันคิดถึงผลระยะยาว ก่อนเลือกสิ่งที่มีต้นทุนสูง"]},"Responsibility Load":{icon:"🏋️",c:"#8B5CF6",pl:"เสาร์",q:["ฉันทำงานที่สำคัญที่สุดก่อน แม้ไม่ใช่งานที่อยากทำ","ถ้ารู้ว่าจะไม่ทัน ฉันแจ้งล่วงหน้าและเสนอทางออก","แม้ไม่มีคนตาม ฉันยังทำสิ่งที่รับปากไว้ให้เสร็จ"]}}},C:{t:"The Interaction",dims:{"Motivation Driver":{icon:"🔥",c:"#F97316",pl:"อาทิตย์",q:["ฉันรู้ว่าทำสิ่งนี้ไปเพื่ออะไร และอธิบายเหตุผลได้ชัด","เมื่อเห็นต่าง ฉันกล้าแสดงความเห็นของตัวเอง","เมื่อทำสำเร็จ ฉันยอมรับความสามารถของตัวเอง"]},"Boundary System":{icon:"🛡️",c:"#10B981",pl:"เสาร์+จันทร์",q:["เมื่อถูกขอเกินกำลัง ฉันกล้าปฏิเสธหรือปรับขอบเขต","ฉันมีช่วงเวลาพักจริงอย่างน้อย 1 ครั้งต่อสัปดาห์","หลังเจอคนที่ทำให้เครียด ฉันมีวิธีรีเซ็ตตัวเอง"]},"Stress Response":{icon:"🧊",c:"#64748B",pl:"เสาร์",q:["ภายใต้ความกดดัน ฉันยังรักษาคุณภาพงานขั้นต่ำได้","เมื่อเจอปัญหา ฉันเริ่มแก้ไขภายใน 24 ชั่วโมง","แม้ไม่อยากทำ ฉันยังหาวิธีพาตัวเองลงมือทำ"]}}},D:{t:"The Evolution & Shadow",dims:{"Shadow Pattern":{icon:"🌑",c:"#1E293B",pl:"ราหู/เกตุ",rev:true,q:["ฉันเลี่ยงเรื่องสำคัญ ไปทำสิ่งที่สบายกว่าแทน","ฉันตัดสินใจเพราะกลัวหรืออยากได้ แล้วมานึกเสียใจทีหลัง","ฉันผัดเรื่องที่ควรเผชิญ แม้รู้ว่ามันกระทบซ้ำ"]},"Growth Orientation":{icon:"🌱",c:"#10B981",pl:"พฤหัส",q:["เมื่อได้รับคำแนะนำ ฉันถามต่อเพื่อเข้าใจให้ชัด","ฉันใช้เวลาอย่างน้อยสัปดาห์ละ 30 นาทีพัฒนาตัวเอง","หลังทำพลาด ฉันสรุปบทเรียนเพื่อใช้ครั้งต่อไป"]},"Integration Level":{icon:"🔮",c:"#A78BFA",pl:"ผลรวมทุกดาว",q:["ฉันมีสิ่งสำคัญอันดับ 1 ที่โฟกัสชัดในช่วงนี้","ตารางชีวิตฉันมีจังหวะพักที่ช่วยไม่ให้ล้าเรื้อรัง","ฉันรู้จุดแข็งและจุดเสี่ยงของตัวเอง และใช้วางแผนสัปดาห์นี้จริง"]}}}};
 
@@ -44,6 +44,46 @@ const gen7Day=(bd)=>{const nm=natalMoon(bd);const ns=natalPStr(bd);const today=n
 const DASHA_SEQ=[{p:"เกตุ",y:7,icon:"🌀",theme:"การค้นหาตัวเอง",desc:"ช่วงเวลาแห่งการทบทวนภายใน ค้นหาทิศทางชีวิต",focus:"สำรวจตัวตน ปล่อยวางสิ่งเก่า",cheer:"นี่คือช่วงที่จักรวาลให้เวลาคุณ 'รีเซ็ต' — ไม่ต้องรีบ ค่อยๆ หาคำตอบ ทุกการเดินทางเริ่มจากก้าวแรก 🌱",warn:"⚠️ ระวัง: อย่าตัดสินใจใหญ่ด้วยอารมณ์ชั่ววูบ ช่วงนี้สิ่งที่เห็นอาจยังไม่ใช่ภาพเต็ม"},{p:"ศุกร์",y:20,icon:"💎",theme:"ความสัมพันธ์และความสุข",desc:"พลังไปทางความสัมพันธ์ ศิลปะ ความงาม ความรัก",focus:"สร้างสัมพันธ์ ลงทุนความสุข",cheer:"ดาวศุกร์ส่งพลังรัก ความสุข ความอุดมสมบูรณ์ — ถ้ารู้สึกดีกับคนรอบข้าง แสดงว่าคุณใช้พลังนี้ถูกทางแล้ว ✨",warn:"⚠️ ระวัง: อย่าหลงความสุขระยะสั้นจนลืมรากฐาน อย่าพึ่งลาออกจากงานเพราะอยากตามความฝัน โดยไม่มีแผนสำรอง"},{p:"อาทิตย์",y:6,icon:"☀️",theme:"การสร้างตัวตน",desc:"ช่วงสร้างตัวตน อำนาจ ชื่อเสียง ความมั่นใจ",focus:"แสดงตัวตน เป็นผู้นำ",cheer:"นี่คือเวลาที่แสงสว่างส่องมาที่คุณ — กล้าขึ้นเวที กล้าบอกโลกว่าคุณเป็นใคร ความมั่นใจของคุณจะดึงดูดโอกาส 🌟",warn:"⚠️ ระวัง: อย่าให้ความมั่นใจกลายเป็นหยิ่ง ฟังคนรอบข้างด้วย"},{p:"จันทร์",y:10,icon:"🌙",theme:"อารมณ์และจิตใจ",desc:"พลังด้านอารมณ์ ครอบครัว การดูแลเอาใจใส่",focus:"ดูแลจิตใจ สร้างความมั่นคงภายใน",cheer:"จันทร์ให้คุณรู้สึกลึกกว่าเดิม — นั่นคือพลัง ไม่ใช่ความอ่อนแอ คนที่เข้าใจอารมณ์ตัวเองคือคนที่แข็งแกร่งที่สุด 💙",warn:"⚠️ ระวัง: อย่าเก็บทุกอย่างไว้คนเดียว หาคนไว้ใจคุยด้วย อย่าตัดสินใจเรื่องเงินตอนอารมณ์ไม่ดี"},{p:"อังคาร",y:7,icon:"🔥",theme:"พลังงานและการกระทำ",desc:"ช่วงลงมือทำ กล้าเสี่ยง พลังกายสูง",focus:"ลงมือทำ เผชิญหน้าความท้าทาย",cheer:"อังคารจุดไฟให้คุณ — พลังกายและใจพร้อมทำสิ่งใหญ่ ใช้พลังนี้ให้คุ้ม ลงมือเลย ไม่ต้องรอ 🚀",warn:"⚠️ ระวัง: พลังสูง = ใจร้อนง่าย อย่าทะเลาะกับคนสำคัญ คิดก่อนพูด"},{p:"ราหู",y:18,icon:"🌑",theme:"การเปลี่ยนแปลงครั้งใหญ่",desc:"บทเรียนใหม่ที่ไม่คุ้นเคย เปลี่ยนแปลงฉับพลัน",focus:"เปิดรับสิ่งใหม่ อย่ายึดติดของเดิม",cheer:"ราหูพาคุณออกจาก comfort zone — อาจรู้สึกไม่สบายใจ แต่นี่คือช่วงที่คุณจะเติบโตมากที่สุด ทุกอย่างจะคุ้มค่า 🦋",warn:"⚠️ ระวัง: อย่าเชื่อคนง่ายเกินไป ตรวจสอบข้อมูลก่อนลงทุนหรือเซ็นสัญญาใหญ่"},{p:"พฤหัส",y:16,icon:"📚",theme:"การขยายตัวและปัญญา",desc:"ช่วงเรียนรู้ ขยายตัว ปัญญาเปิด โชคดี",focus:"ศึกษา ขยายขอบเขต ลงทุนระยะยาว",cheer:"พฤหัสเปิดประตูแห่งโอกาส — ทุกอย่างที่เรียนรู้ตอนนี้จะเป็นทุนให้คุณไปอีก 10 ปี ช่วงนี้โชคอยู่ข้างคุณ 🍀",warn:"⚠️ ระวัง: อย่ากระจายตัวมากเกินไป โฟกัสสิ่งที่สำคัญจริงๆ"},{p:"เสาร์",y:19,icon:"⚙️",theme:"วินัยและความรับผิดชอบ",desc:"บทเรียนเรื่องวินัย ความอดทน สร้างฐาน",focus:"สร้างวินัย ทำงานหนัก ผลมาช้าแต่ยั่งยืน",cheer:"เสาร์สอนให้คุณอดทน — อาจรู้สึกหนัก แต่คนที่ผ่านช่วงเสาร์ไปได้จะแข็งแกร่งกว่าเดิมหลายเท่า ผลที่ได้จะยั่งยืน 💪",warn:"⚠️ ระวัง: อย่าลัดขั้นตอน ทำทางลัดช่วงนี้จะย้อนมาเสียใจทีหลัง ค่อยๆ สร้าง"},{p:"พุธ",y:17,icon:"🧠",theme:"สื่อสารและเรียนรู้",desc:"พลังด้านสื่อสาร ธุรกิจ การค้า ความคิด",focus:"สื่อสาร เรียนรู้ สร้างเครือข่าย",cheer:"พุธเปิดสมองให้คุณ — คิดเร็ว เรียนเร็ว สื่อสารเก่ง ใช้พลังนี้สร้างเครือข่ายและโอกาสใหม่ๆ 🤝",warn:"⚠️ ระวัง: คิดเยอะ = กังวลง่าย อย่าลืมพักสมอง อย่าเสียเวลากับรายละเอียดเล็กน้อยจนลืมภาพใหญ่"}];
 const calcDasha=(bd)=>{if(!bd||bd==="--"||bd==="undefined"||bd.length<8)return[];const bp=bd.split("-");if(!bp||bp.length<3)return[];const by=parseInt(bp[0]);const bm=parseInt(bp[1]);const bdNum=parseInt(bp[2]);if(!by||!bm||!bdNum||isNaN(by)||isNaN(bm)||isNaN(bdNum))return[];const testDate=new Date(`${by}-${String(bm).padStart(2,"0")}-${String(bdNum).padStart(2,"0")}T12:00:00Z`);if(isNaN(testDate.getTime()))return[];const nm=natalMoon(bd);const nakI=((nm*2+(bdNum%3))%27+27)%27;const startI=((Math.floor(nakI/3))%9+9)%9;const phases=[];let age=0;for(let c=0;c<18;c++){const di=(startI+c)%9;const d=DASHA_SEQ[di];const startAge=age;const endAge=age+d.y;const startYear=by+startAge;const endYear=by+endAge;const now=new Date().getFullYear();const isCurrent=now>=startYear&&now<endYear;const isPast=now>=endYear;phases.push({...d,startAge,endAge,startYear,endYear,isCurrent,isPast});age+=d.y;if(age>100)break}return phases};
 
+// Career Timeline — Monthly Energy for Job Planning
+const TL_MONTHS_TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const TL_MONTHS_FULL=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const TL_TYPES=[
+  {energy:90,type:'golden',icon:'🌟',planet:'ดาวพฤหัส',planetEmoji:'🟡',planetEffect:'โชคลาภ · โอกาสใหม่',headline:'เดือนแห่งโอกาส',tags:[['Golden Month','golden'],['เจรจาได้ผล','good']],
+    goldenDays:[{day:3,action:'นัดสัมภาษณ์ / เสนองาน',reason:'ดาวพฤหัสตรงราศีเกิด พลังงานผู้นำสูง'},{day:11,action:'เซ็นสัญญาได้เลย',reason:'ดวงอาทิตย์เสริมบ้านการงาน มั่นคง'},{day:19,action:'พรีเซนต์ / ประชุมสำคัญ',reason:'ดาวศุกร์ทำมุมดีกับพุธ โน้มน้าวสำเร็จ'},{day:25,action:'เริ่มงานใหม่ / ยื่นใบสมัคร',reason:'วันมงคล ฤกษ์ดีเริ่มต้นสิ่งใหม่'}],
+    blackDays:[{day:7,action:'หลีกเลี่ยงการโต้เถียง',reason:'ดาวอังคาร retrograde ความขัดแย้งสูง'},{day:22,action:'อย่าเซ็นสัญญา',reason:'ราหูกัดเกตุ ข้อมูลอาจผิดพลาด'}],
+    psychText:'ดาวพฤหัสเคลื่อนผ่านบ้านที่ 10 (บ้านการงาน) ทำให้มีพลังงานแห่งโอกาสสูงมาก คุณจะรู้สึกมีแรงจูงใจและมองเห็นโอกาสได้ชัดเจน นักจิตวิทยาเรียกช่วงนี้ว่า "Flow State" — ช่วงที่ทุกอย่างไหลลื่น',
+    psychTip:'เขียน cover letter หรือ pitch ใหม่ทันที อย่ารอ พลังงานนี้สูงสุดในสัปดาห์ที่ 1–2 ของเดือน',planets:['🟡 ดาวพฤหัส','☀️ ดวงอาทิตย์','💚 ดาวศุกร์'],sideJob:false},
+  {energy:73,type:'good',icon:'😊',planet:'ดวงอาทิตย์',planetEmoji:'☀️',planetEffect:'ผู้นำ · อำนาจ · ชื่อเสียง',headline:'ภาพลักษณ์โดดเด่น',tags:[['พลังงานดี','good'],['งานเสริม','side']],
+    goldenDays:[{day:6,action:'สมัครงาน / เสนอตัว',reason:'ดวงอาทิตย์เสริมดวงงาน คนมองเห็น'},{day:15,action:'พูดในที่ประชุม / โน้มน้าว',reason:'ดาวพุธตรีโกณ การสื่อสารคมชัด'}],
+    blackDays:[{day:12,action:'ระวังความเครียดสะสม',reason:'ดาวเสาร์กดทับ พักผ่อนให้พอ'},{day:28,action:'รอก่อนตัดสินใจใหญ่',reason:'จันทร์คู่ราหู อารมณ์แปรปรวน'}],
+    psychText:'ดวงอาทิตย์ส่องผ่านบ้านที่ 10 ทำให้คุณมีภาพลักษณ์โดดเด่น คนรอบข้างมองเห็นคุณมากขึ้น ช่วงนี้เหมาะมากในการ "ทำตัวให้ปรากฏ" อัปเดต LinkedIn หรือรับงานเสริม',
+    psychTip:'เปิดรับงาน Freelance หรือ Side Project ช่วงนี้ มีโอกาสสูงที่จะได้รับการติดต่อจากภายนอก',planets:['☀️ ดวงอาทิตย์','⚡ ดาวพุธ','🪐 ดาวเสาร์'],sideJob:true},
+  {energy:33,type:'danger',icon:'⚠️',planet:'ดาวเสาร์',planetEmoji:'🪐',planetEffect:'ความกดดัน · วินัย · การทดสอบ',headline:'Saturn กดทับ — หยุดพัก',tags:[['ระวัง','danger'],['Saturn','neutral']],
+    goldenDays:[{day:9,action:'จัดการงานค้างให้เสร็จ',reason:'ช่องเล็กๆ เหมาะทำงานเบาๆ ที่ค้างอยู่'}],
+    blackDays:[{day:4,action:'อย่ายื่นใบสมัครงาน',reason:'ดาวเสาร์กดดวงงาน โอกาสต่ำ'},{day:14,action:'ห้ามเซ็นสัญญาเด็ดขาด',reason:'อังคาร retrograde สัญญามักมีปัญหา'},{day:21,action:'ระวังคำพูดและชื่อเสียง',reason:'ราหูทับ MC ระวังความเข้าใจผิด'}],
+    psychText:'ดาวเสาร์ทำมุมกดทับดวงงานของคุณ ทางจิตวิทยานี่คือช่วง "Reality Check" — คุณอาจรู้สึก Burnout ท้อแท้ หรือรู้สึกว่าไม่คืบหน้า อาการเหล่านี้เป็นเรื่องปกติและชั่วคราว',
+    psychTip:'ใช้เดือนนี้ "ทบทวน" ไม่ใช่ "เริ่มใหม่" ทำสิ่งเล็กๆ ที่ค้างอยู่ให้เสร็จ ใช้เวลาพักผ่อน ออกกำลังกาย',planets:['🪐 ดาวเสาร์','🔴 ดาวอังคาร','🐉 ราหู'],sideJob:false},
+  {energy:65,type:'side',icon:'💼',planet:'ดาวพุธ',planetEmoji:'⚡',planetEffect:'การสื่อสาร · สัญญา · Freelance',headline:'งานเสริมเข้ามา',tags:[['งานเสริม','side'],['Freelance','good']],
+    goldenDays:[{day:5,action:'เซ็นสัญญา Freelance',reason:'ดาวพุธ direct การสื่อสารชัดเจน'},{day:16,action:'Networking / สร้าง connection',reason:'ดาวศุกร์ทำมุมดี เข้ากับคนง่าย'},{day:24,action:'นำเสนอ Portfolio',reason:'ดวงอาทิตย์บู๊สต์ ภาพลักษณ์ดี'}],
+    blackDays:[{day:8,action:'ระวังการสื่อสารผิดพลาด',reason:'ดาวพุธ retrograde เริ่มต้น'}],
+    psychText:'ดาวพุธทำมุมดีกับดาวศุกร์ในบ้านรายได้ ทักษะสร้างสรรค์และการสื่อสารทำงานร่วมกันได้ดีที่สุด เหมาะมากกับการสร้าง Personal Brand หรือรับงาน Content / Creative',
+    psychTip:'โพสต์ผลงานใน LinkedIn หรือเปิด Portfolio เดือนนี้มีโอกาสสูงที่ "งานจะหาคุณเอง"',planets:['⚡ ดาวพุธ','💚 ดาวศุกร์','🌙 ดวงจันทร์'],sideJob:true},
+  {energy:52,type:'neutral',icon:'😐',planet:'ดวงจันทร์',planetEmoji:'🌙',planetEffect:'ความรู้สึก · ความสัมพันธ์',headline:'เดือนวางแผน',tags:[['ปานกลาง','neutral']],
+    goldenDays:[{day:10,action:'สร้างความสัมพันธ์ในที่ทำงาน',reason:'จันทร์ทำมุมดี เข้าใจกันง่าย'},{day:20,action:'รับงาน Creative เล็กน้อย',reason:'ดาวศุกร์เดินผ่าน ความคิดสร้างสรรค์ดี'}],
+    blackDays:[{day:17,action:'ระวังทำงานหนักเกินไป',reason:'ดาวเสาร์เตือน พลังงานลดต่ำกว่าปกติ'}],
+    psychText:'เดือนที่พลังงานกลางๆ ดวงจันทร์ปกครองอารมณ์ คุณอาจลังเลใจมากกว่าปกติ ทางจิตวิทยาเรียกว่า "Ambivalence Phase" เหมาะวางแผนไม่ใช่ตัดสินใจใหญ่',
+    psychTip:'ใช้เวลา 15 นาทีต่อวันเขียน Journal — เขียนว่าอยากได้อะไรจากงาน ยิ่งชัดเจนก่อนเดือนพลังงานสูง ยิ่งได้ผลดี',planets:['🌙 ดวงจันทร์','💚 ดาวศุกร์'],sideJob:false}
+];
+const TL_ZODIAC_SEEDS={aries:[3,1,4,0,2,3,4,1,0,2,3,4],taurus:[4,0,3,1,4,2,0,3,1,4,2,3],gemini:[1,3,0,4,2,1,3,0,4,2,1,3],cancer:[2,4,1,3,0,2,4,1,3,0,2,4],leo:[0,2,4,1,3,0,2,4,1,3,0,2],virgo:[3,4,1,0,2,3,4,1,0,2,3,4],libra:[1,0,3,4,2,1,0,3,4,2,1,0],scorpio:[4,2,0,3,1,4,2,0,3,1,4,2],sagittarius:[2,1,4,0,3,2,1,4,0,3,2,1],capricorn:[0,3,2,4,1,0,3,2,4,1,0,3],aquarius:[3,1,0,2,4,3,1,0,2,4,3,1],pisces:[4,2,3,1,0,4,2,3,1,0,4,2]};
+const bdayToZodiac=(bd)=>{if(!bd||bd==="--"||bd.length<8)return"aries";const parts=bd.split("-");const m=parseInt(parts[1]);const d=parseInt(parts[2]);if((m===3&&d>=21)||(m===4&&d<=19))return"aries";if((m===4&&d>=20)||(m===5&&d<=20))return"taurus";if((m===5&&d>=21)||(m===6&&d<=20))return"gemini";if((m===6&&d>=21)||(m===7&&d<=22))return"cancer";if((m===7&&d>=23)||(m===8&&d<=22))return"leo";if((m===8&&d>=23)||(m===9&&d<=22))return"virgo";if((m===9&&d>=23)||(m===10&&d<=22))return"libra";if((m===10&&d>=23)||(m===11&&d<=21))return"scorpio";if((m===11&&d>=22)||(m===12&&d<=21))return"sagittarius";if((m===12&&d>=22)||(m===1&&d<=19))return"capricorn";if((m===1&&d>=20)||(m===2&&d<=18))return"aquarius";return"pisces"};
+const starsFromEnergy=(e)=>{if(e>=85)return 5;if(e>=70)return 4;if(e>=52)return 3;if(e>=35)return 2;return 1};
+const starStr=(n)=>{let s='';for(let i=0;i<n;i++)s+='⭐';for(let i=n;i<5;i++)s+='☆';return s};
+const starLabel=(n)=>['','เดือนยาก','เดือนระวัง','เดือนปกติ','เดือนดี','เดือนทอง'][n]||'';
+const genTimeline=(bd,year)=>{const zodiac=bdayToZodiac(bd);const seeds=TL_ZODIAC_SEEDS[zodiac]||TL_ZODIAC_SEEDS.aries;
+  // Shift seeds by year offset for variety
+  const baseYear=new Date().getFullYear()+543;const yOff=((year||baseYear)-baseYear+12)%12;
+  return seeds.map((idx,i)=>{const si=(idx+yOff)%5;const t=TL_TYPES[si];return{month:i,monthFull:TL_MONTHS_FULL[i],monthShort:TL_MONTHS_TH[i],stars:starsFromEnergy(t.energy),energy:t.energy,...t}})};
+
 // Vedic scoring
 const calcV=(bd,ts)=>{const m=parseInt(bd?.split("-")?.[1])||6;const d=parseInt(bd?.split("-")?.[2])||15;const s=(m*31+d)%100;const tb={dawn:5,morning:3,noon:0,evening:2,night:-2}[ts]||0;const ps={me:Math.min(40,20+(s%20)+tb),mo:Math.min(40,18+((s*3)%22)+tb),su:Math.min(40,22+((s*7)%18)+tb),ma:Math.min(40,19+((s*11)%21)+tb),ju:Math.min(40,21+((s*13)%19)+tb),sa:Math.min(40,17+((s*17)%23)+tb),ra:Math.min(40,15+((s*19)%25)+tb)};const f=(p,i)=>Math.min(100,p+Math.min(25,10+((s+i)%15))+Math.min(20,8+((s*2+i)%12))+Math.min(15,5+((s*3+i)%10)));return{"Cognitive Processing":f(ps.me,1)/10,"Emotional Regulation":f(ps.mo,2)/10,"Identity Stability":f(Math.round((ps.su+ps.sa)/2),3)/10,"Energy Management":f(ps.ma,4)/10,"Decision System":f(Math.round((ps.ju+ps.sa)/2),5)/10,"Responsibility Load":f(ps.sa,6)/10,"Motivation Driver":f(ps.su,7)/10,"Boundary System":f(Math.round((ps.sa+ps.mo)/2),8)/10,"Stress Response":f(ps.sa,9)/10,"Shadow Pattern":f(ps.ra,10)/10,"Growth Orientation":f(ps.ju,11)/10,"Integration Level":f(Math.round(Object.values(ps).reduce((a,b)=>a+b,0)/7),12)/10}};
 const calcS=(v,ans)=>{const sc={};DIMS.forEach(dim=>{const vd=v[dim]||5;let raw=0,cnt=0;const dd=DM[dim];if(dd)dd.q.forEach((_,i)=>{const k=`${dim}-${i}`;if(ans[k]!==undefined){let val=ans[k];if(dd.rev)val=4-val;raw+=val;cnt++}});const ap=cnt>0?(raw/(cnt*4))*10:5;let fi=vd*.6+ap*.4;if(vd>7&&ap<4)fi-=1.5;if(vd<4&&ap>7)fi+=.5;sc[dim]=Math.max(0,Math.min(10,Math.round(fi*10)/10))});return sc};
@@ -65,7 +105,7 @@ fb:k=>{if(!k)return"กำลังวิเคราะห์...";if(k.startsWi
 const pJ=t=>{if(!t)return null;try{return JSON.parse(t.replace(/```json\s*/g,"").replace(/```/g,"").trim())}catch{return null}};
 const ST={set:(k,v)=>{try{localStorage.setItem(`hss6_${k}`,JSON.stringify(v))}catch{}},get:k=>{try{const s=localStorage.getItem(`hss6_${k}`);return s?JSON.parse(s):null}catch{return null}}};
 
-const css=`@keyframes hs{to{transform:rotate(360deg)}}@keyframes hb{50%{opacity:0}}@keyframes hfl{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}`;
+const css=`@keyframes hs{to{transform:rotate(360deg)}}@keyframes hb{50%{opacity:0}}@keyframes hfl{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}`;
 const Spin=({t="AI กำลังวิเคราะห์..."})=><div style={{padding:"12px 0",display:"flex",alignItems:"center",gap:8}}><div style={{width:16,height:16,borderRadius:"50%",border:"2.5px solid #E0E7FF",borderTopColor:"#6366F1",animation:"hs .7s linear infinite"}}/><span style={{fontSize:12,color:"#6366F1",fontWeight:600}}>{t}</span></div>;
 const Typer=({text})=>{const[s,setS]=useState("");const[d,setD]=useState(false);useEffect(()=>{if(!text)return;let i=0;setS("");setD(false);const iv=setInterval(()=>{i+=3;if(i>=text.length){setS(text);setD(true);clearInterval(iv)}else setS(text.slice(0,i))},12);return()=>clearInterval(iv)},[text]);return<div style={{fontSize:13,lineHeight:1.8,color:"#374151",whiteSpace:"pre-wrap"}}>{s}{!d&&<span style={{display:"inline-block",width:2,height:14,background:"#6366F1",marginLeft:1,animation:"hb .8s step-end infinite"}}/>}</div>};
 const Spider=({scores,size=260})=>{const keys=Object.keys(scores);const vals=Object.values(scores);const n=keys.length;const cx=size/2,cy=size/2,r=size*.34;const pt=(i,v)=>{const a=Math.PI*2*i/n-Math.PI/2;return{x:cx+Math.cos(a)*v/10*r,y:cy+Math.sin(a)*v/10*r}};return<svg viewBox={`0 0 ${size} ${size}`} style={{width:"100%",maxWidth:280}}>{[2,4,6,8,10].map(l=><polygon key={l} points={keys.map((_,i)=>{const p=pt(i,l);return`${p.x},${p.y}`}).join(" ")} fill="none" stroke="#E5E7EB" strokeWidth=".6"/>)}{keys.map((_,i)=>{const p=pt(i,10);return<line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="#F3F4F6" strokeWidth=".4"/>})}<polygon points={keys.map((_,i)=>{const p=pt(i,vals[i]);return`${p.x},${p.y}`}).join(" ")} fill="rgba(99,102,241,.12)" stroke="#6366F1" strokeWidth="1.8"/>{keys.map((_,i)=>{const p=pt(i,vals[i]);return<circle key={i} cx={p.x} cy={p.y} r="2.5" fill="#6366F1" stroke="#fff" strokeWidth="1.2"/>})}{keys.map((k,i)=>{const p=pt(i,12.2);const sh=k.length>12?k.slice(0,10)+"…":k;return<text key={i} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle" style={{fontSize:"5.2px",fill:"#6B7280",fontWeight:500}}>{sh}</text>})}</svg>};
@@ -201,6 +241,7 @@ export default function App(){
       // Energy & job use instant smart fallback — always refresh (energy is date-sensitive)
       if(fs.includes("energy"))loadAI("energy",scores,vedic,nick,bday);
       if(fs.includes("job"))loadAI("job",scores,vedic,nick,bday);
+      if(fs.includes("timeline"))loadAI("timeline",scores,vedic,nick,bday);
       // GPT-blocking calls staggered 500 ms apart to avoid concurrent API rate-limiting
       if(!ai.identity)loadAI("identity",scores,vedic,nick,bday);
       if(!ai.core)setTimeout(()=>loadAI("core",scores,vedic,nick,bday),500);
@@ -235,6 +276,16 @@ export default function App(){
       // Try GPT upgrade in background (non-blocking)
       GPT.call(`พลังงาน7วัน"${nn}"จันทร์กำเนิดราศี${tr[0].nmR} Em:${s["Emotional Regulation"]?.toFixed(1)} En:${s["Energy Management"]?.toFixed(1)}\n${tr.map(d=>`${d.dn}${d.date}:${d.dl.icon}${d.dl.lord} จ${d.moonR}(${d.ma.r}) อ${d.marsR}(${d.md.d}) E=${d.ce}%`).join("\n")}\nตอบJSON7obj:[{"day":"วัน","date":"d/m","energy":30ถึง95,"mood":"emoji+2คำ","tip":"สั้นอ้างดาว","transit":"ดาว","goodFor":"สั้น"}]`,`en_${nn}_${new Date().toISOString().slice(0,10)}`).then(t=>{const p=pJ(t);if(p&&Array.isArray(p)&&p.length===7){setAi(prev=>({...prev,energy:p.map(d=>({...d,energy:d.energy<15?Math.round(d.energy*10):d.energy}))}))}});
       return}
+    // Timeline: generate monthly career energy, then try GPT upgrade
+    if(type==="timeline"){
+      const baseYear=new Date().getFullYear()+543;
+      const tl=genTimeline(bd,baseYear);
+      const smartFB={year:baseYear,months:tl};
+      setAi(p=>({...p,timeline:smartFB}));setAiL(p=>({...p,timeline:false}));
+      // Try GPT upgrade for richer psych insights
+      const zodiac=bdayToZodiac(bd);const top3=so.slice(0,3).map(([k])=>k).join(",");
+      GPT.call(`CareerTimeline"${nn}"ราศี${zodiac}พ.ศ.${baseYear} แข็ง:${top3}\nวิเคราะห์พลังงานการงาน12เดือน แต่ละเดือนให้:psychText(2ประโยคจิตวิทยา×โหราศาสตร์) psychTip(1ประโยคเทคนิครับมือ)\nตอบJSON:[{"month":0,"psychText":"...","psychTip":"..."},...]12เดือน`,`tl_${nn}_${baseYear}`).then(t=>{const p=pJ(t);if(p&&Array.isArray(p)&&p.length===12){setAi(prev=>{const cur=prev.timeline||smartFB;const enhanced={...cur,months:cur.months.map((m,i)=>{const gpt=p.find(x=>x.month===i);return gpt?{...m,psychText:gpt.psychText||m.psychText,psychTip:gpt.psychTip||m.psychTip}:m})};return{...prev,timeline:enhanced}})}});
+      return}
     // Job: show smart fallback FIRST then try GPT
     if(type==="job"){const top3=so.slice(0,3).map(([k])=>k);const bot2=so.slice(-2).map(([k])=>k);
       const JOB_MAP={"Cognitive Processing":[{t:"Data Analyst",th:"นักวิเคราะห์ข้อมูล"},{t:"Software Engineer",th:"วิศวกรซอฟต์แวร์"}],"Energy Management":[{t:"Project Manager",th:"ผู้จัดการโปรเจกต์"},{t:"Sales Manager",th:"ผู้จัดการฝ่ายขาย"}],"Emotional Regulation":[{t:"UX Researcher",th:"นักวิจัย UX"},{t:"Counselor",th:"ที่ปรึกษา"}],"Decision System":[{t:"Financial Planner",th:"นักวางแผนการเงิน"},{t:"Strategy Consultant",th:"ที่ปรึกษากลยุทธ์"}],"Growth Orientation":[{t:"Product Manager",th:"ผู้จัดการผลิตภัณฑ์"},{t:"Researcher",th:"นักวิจัย"}],"Motivation Driver":[{t:"Entrepreneur",th:"ผู้ประกอบการ"},{t:"Marketing Manager",th:"ผู้จัดการการตลาด"}],"Responsibility Load":[{t:"Operations Manager",th:"ผู้จัดการปฏิบัติการ"},{t:"Quality Assurance",th:"QA Engineer"}]};
@@ -246,7 +297,7 @@ export default function App(){
       return}
   }catch(e){console.log("AI error:",type,e)}
     // Always set result (use fallback if null)
-    if(!r&&type!=="energy"&&type!=="job"){r=GPT.fb(`${type===" identity"?"id":type==="core"?"core":type==="12d"?"f12":type==="shadow"?"sh":type==="weekly"?"wk":"x"}_${nn}`);if(type==="weekly")r=pJ(r)}
+    if(!r&&type!=="energy"&&type!=="job"&&type!=="timeline"){r=GPT.fb(`${type===" identity"?"id":type==="core"?"core":type==="12d"?"f12":type==="shadow"?"sh":type==="weekly"?"wk":"x"}_${nn}`);if(type==="weekly")r=pJ(r)}
     setAi(p=>({...p,[type]:r}));setAiL(p=>({...p,[type]:false}));
     // Save AI results to DB
     if(r)setTimeout(()=>{const newAi={...ai,[type]:r};saveAI(newAi)},500)};
@@ -348,7 +399,7 @@ export default function App(){
     if(sb)sb.auth.signOut().catch(()=>{});
   };
 
-  const activatePlan=(p)=>{setPlan(p);ST.set("plan",p);savePlan(p);const fs=PLANS[p].f;if(fs.includes("energy"))loadAI("energy",scores,vedic,nick,bday);if(fs.includes("job"))loadAI("job",scores,vedic,nick,bday);if(fs.includes("12d")&&!ai["12d"])loadAI("12d",scores,vedic,nick,bday);if(fs.includes("shadow")&&!ai.shadow)loadAI("shadow",scores,vedic,nick,bday);if(fs.includes("weekly")&&!ai.weekly)loadAI("weekly",scores,vedic,nick,bday)};
+  const activatePlan=(p)=>{setPlan(p);ST.set("plan",p);savePlan(p);const fs=PLANS[p].f;if(fs.includes("energy"))loadAI("energy",scores,vedic,nick,bday);if(fs.includes("job"))loadAI("job",scores,vedic,nick,bday);if(fs.includes("timeline"))loadAI("timeline",scores,vedic,nick,bday);if(fs.includes("12d")&&!ai["12d"])loadAI("12d",scores,vedic,nick,bday);if(fs.includes("shadow")&&!ai.shadow)loadAI("shadow",scores,vedic,nick,bday);if(fs.includes("weekly")&&!ai.weekly)loadAI("weekly",scores,vedic,nick,bday)};
 
   const exportPDF=()=>{if(!scores)return;const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
     // Spider chart SVG for PDF
@@ -552,6 +603,91 @@ ${wk} ${en} ${jb} ${dashaHTML}
   const Quiz=()=>{const q=ALL_Q[qI];const key=`${q.dim}-${q.qi}`;const pct=((qI+1)/36*100);const allD=Object.keys(ans).length>=36;
   return<div><div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:12,fontWeight:700,color:"#64748B"}}>{qI+1}/36</span><span style={{fontSize:10,color:"#94A3B8"}}>{q.dim}</span></div><div style={{height:4,background:"#E2E8F0",borderRadius:2,overflow:"hidden",marginBottom:12}}><div style={{height:"100%",width:`${pct}%`,background:"linear-gradient(90deg,#4338CA,#A78BFA)",borderRadius:2,transition:"width .3s"}}/></div><Card><div style={{display:"inline-flex",alignItems:"center",gap:4,padding:"2px 10px",borderRadius:10,background:`${q.c}15`,marginBottom:8,fontSize:10,fontWeight:600,color:q.c}}>{q.icon} {q.dim} · {q.pl}</div><p style={{fontSize:14,fontWeight:500,lineHeight:1.7,marginBottom:12,color:"#1E293B"}}>{q.q}</p><div style={{display:"flex",flexDirection:"column",gap:4}}>{SCALE.map((l,i)=><button key={i} onClick={()=>answer(i)} style={{padding:"9px 12px",fontSize:12,fontWeight:ans[key]===i?700:500,border:`2px solid ${ans[key]===i?"#4338CA":"#E2E8F0"}`,borderRadius:8,cursor:"pointer",textAlign:"left",background:ans[key]===i?"#EEF2FF":"#fff",color:ans[key]===i?"#4338CA":"#374151",display:"flex",alignItems:"center",gap:8}}><span style={{width:20,height:20,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,background:ans[key]===i?"#4338CA":"#F1F5F9",color:ans[key]===i?"#fff":"#94A3B8",flexShrink:0}}>{i}</span>{l}</button>)}</div></Card><div style={{display:"flex",gap:8,marginTop:8}}><button onClick={()=>setQI(Math.max(0,qI-1))} disabled={qI===0} style={{flex:1,padding:10,border:"2px solid #E2E8F0",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:qI>0?"pointer":"not-allowed",color:qI>0?"#374151":"#CBD5E1"}}>←</button>{allD?<Btn onClick={finish} style={{flex:2}}>ดูผลลัพธ์ ✦</Btn>:<button onClick={()=>{if(ans[key]!==undefined&&qI<35)setQI(qI+1)}} style={{flex:2,padding:10,borderRadius:8,border:"none",background:ans[key]!==undefined?"linear-gradient(135deg,#4338CA,#6D28D9)":"#E2E8F0",color:ans[key]!==undefined?"#fff":"#94A3B8",fontSize:12,fontWeight:600,cursor:ans[key]!==undefined?"pointer":"not-allowed"}}>ถัดไป →</button>}</div></div>};
 
+  // ─── TIMELINE MONTH COMPONENT ───
+  const TimelineMonth=({m,i,typeColors,typeBg,typeBorder})=>{
+    const[open,setOpen]=useState(false);
+    const borderC=typeBorder[m.type]||'#C0B8D0';
+    const headlineC={golden:'#C88A10',danger:'#C04040',good:'#2E8A58',side:'#3A7AC0',neutral:'#7060A0'}[m.type]||'#7060A0';
+    return<div style={{marginBottom:6}}>
+      <div onClick={()=>setOpen(!open)} style={{background:"#fff",borderRadius:10,padding:"10px 12px",cursor:"pointer",border:`1px solid ${open?borderC:"#F1F5F9"}`,borderLeft:`3px solid ${borderC}`,display:"flex",alignItems:"center",gap:10,transition:"all 0.2s",boxShadow:open?"0 2px 8px rgba(0,0,0,0.06)":"none"}}>
+        <span style={{fontSize:22,minWidth:28,textAlign:"center"}}>{m.icon}</span>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}>
+            <span style={{fontSize:13,fontWeight:700,color:"#1E293B"}}>{m.monthFull}</span>
+            <span style={{fontSize:12,letterSpacing:1}}>{starStr(m.stars)}</span>
+          </div>
+          <div style={{fontSize:11,fontWeight:600,color:headlineC,marginBottom:2}}>{m.headline}</div>
+          <div style={{fontSize:10,color:"#8A8090"}}>🔭 {m.planetEmoji} {m.planet} · {m.planetEffect}</div>
+          <div style={{display:"flex",gap:3,marginTop:4,flexWrap:"wrap"}}>
+            {m.tags.map(([label,tagType],ti)=>{
+              const tagBg={golden:'#FFF3D4',danger:'#FFE8E8',good:'#E4F5EC',side:'#E4EEFF',neutral:'#F0ECF8'}[tagType]||'#F0ECF8';
+              const tagFg={golden:'#C88A10',danger:'#C04040',good:'#2E8A58',side:'#3A7AC0',neutral:'#7060A0'}[tagType]||'#7060A0';
+              return<span key={ti} style={{fontSize:9,padding:"1px 6px",borderRadius:10,fontWeight:600,background:tagBg,color:tagFg}}>{label}</span>})}
+          </div>
+        </div>
+        <span style={{color:"#C0B8D0",fontSize:14,transition:"transform 0.2s",transform:open?"rotate(90deg)":"none"}}>›</span>
+      </div>
+      {open&&<div style={{background:"#fff",borderRadius:"0 0 12px 12px",border:`1px solid ${borderC}`,borderTop:"none",overflow:"hidden",animation:"slideDown 0.3s ease"}}>
+        {/* Header */}
+        <div style={{padding:"12px 14px",borderBottom:"1px solid #F0ECF8",display:"flex",justifyContent:"space-between"}}>
+          <div>
+            <div style={{fontSize:16,fontWeight:700,color:"#1E293B"}}>{m.icon} {m.monthFull}</div>
+            <div style={{fontSize:12,fontWeight:600,color:headlineC,margin:"2px 0"}}>{m.headline}</div>
+            <div style={{fontSize:10,color:"#8A8090"}}>🔭 {m.planetEmoji} {m.planet} · {m.planetEffect}</div>
+          </div>
+          <div style={{textAlign:"right"}}>
+            <div style={{fontSize:16}}>{starStr(m.stars)}</div>
+            <div style={{fontSize:9,color:"#8A8090",fontWeight:600}}>{starLabel(m.stars)}</div>
+          </div>
+        </div>
+
+        {/* Golden Days */}
+        <div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#C88A10",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>✦ Golden Days — นัดได้เลย</div>
+          {m.goldenDays.map((d,di)=><div key={di} style={{background:"#FFFBF0",borderRadius:8,padding:"7px 10px",marginBottom:4,display:"flex",alignItems:"flex-start",gap:8}}>
+            <span style={{fontSize:14,fontWeight:700,color:"#C88A10",minWidth:24}}>{d.day}</span>
+            <div>
+              <div style={{fontSize:11,fontWeight:600,color:"#1E293B"}}>{d.action}</div>
+              <div style={{fontSize:10,color:"#8A8090"}}>🔭 {d.reason}</div>
+              <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:600,padding:"1px 8px",borderRadius:10,marginTop:3,background:"#E4F5EC",color:"#2E8A58"}}>✅ ทำได้เลย</span>
+            </div>
+          </div>)}
+        </div>
+
+        {/* Black Days */}
+        <div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#C04040",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>⚑ Black Days — ระวัง</div>
+          {m.blackDays.map((d,di)=><div key={di} style={{background:"#FFF5F5",borderRadius:8,padding:"7px 10px",marginBottom:4,display:"flex",alignItems:"flex-start",gap:8}}>
+            <span style={{fontSize:14,fontWeight:700,color:"#C04040",minWidth:24}}>{d.day}</span>
+            <div>
+              <div style={{fontSize:11,fontWeight:600,color:"#1E293B"}}>{d.action}</div>
+              <div style={{fontSize:10,color:"#8A8090"}}>🔭 {d.reason}</div>
+              <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:600,padding:"1px 8px",borderRadius:10,marginTop:3,background:"#FFE8E8",color:"#C04040"}}>⚠️ ระวัง</span>
+            </div>
+          </div>)}
+        </div>
+
+        {/* Psychology × Astrology */}
+        <div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#7B6FA0",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>🧠 จิตวิทยา × โหราศาสตร์</div>
+          <div style={{background:"#F8F7FC",borderRadius:10,padding:"10px 12px"}}>
+            <div style={{fontSize:11,lineHeight:1.8,color:"#3A3050",marginBottom:8}}>{m.psychText}</div>
+            <div style={{background:"#fff",borderRadius:8,padding:"8px 10px",borderLeft:"3px solid #7B6FA0"}}>
+              <div style={{fontSize:11,color:"#5A4A70",lineHeight:1.6}}>💡 {m.psychTip}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Planets */}
+        <div style={{padding:"10px 14px"}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#5A4A70",marginBottom:6}}>🔭 ดาวที่มีอิทธิพล</div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+            {m.planets.map((p,pi)=><span key={pi} style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:500,padding:"3px 8px",borderRadius:10,background:"#F0ECF8",color:"#5A4A70"}}>{p}</span>)}
+          </div>
+        </div>
+      </div>}
+    </div>};
+
   // ─── RESULTS ───
   const Sec=({fKey,title,icon,children})=>{const ok=has(fKey);return<Card style={{position:"relative"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:ok?8:4}}><div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:15}}>{icon}</span><span style={{fontSize:13,fontWeight:700}}>{title}</span></div>{!ok&&<span style={{fontSize:10,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"2px 8px",borderRadius:8}}>🔒</span>}</div>{ok?children:<><p style={{fontSize:11,color:"#94A3B8",marginBottom:6}}>ปลดล็อกเพื่อดู</p><div style={{display:"flex",gap:6}}>{plan==="free"&&<button onClick={()=>tryUpgrade("deep")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #F59E0B",background:"#FFFBEB",color:"#92400E",fontSize:11,fontWeight:700,cursor:"pointer"}}>Deep ฿49</button>}{plan!=="all"&&<button onClick={()=>tryUpgrade("all")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>All ฿99</button>}</div></>}</Card>};
 
@@ -575,6 +711,67 @@ ${wk} ${en} ${jb} ${dashaHTML}
 
   {/* Locked preview: Energy */}
   {!has("energy")?<Locked planNeeded="deep" title="7-Day Energy Forecast" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>🌙 พลังงาน 7 วัน — Moon + Mars + Day Lord</div>{["จันทร์ — 🌟 สดใส-เริ่มใหม่","อังคาร — 😊 สงบมั่นคง","พุธ — 🔥 กระตือรือร้น","พฤหัสบดี — 📚 ปัญญาเปิด","ศุกร์ — 💎 ผ่อนคลาย","เสาร์ — ⚙️ ต้องใช้วินัย","อาทิตย์ — ☀️ มีพลัง"].map((d,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 8px",borderRadius:6,background:i%2===0?"#F8FAFC":"#fff",fontSize:11,marginBottom:2}}><span>{d.split("—")[0]}</span><span style={{fontWeight:700}}>{d.split("—")[1]}</span></div>)}<div style={{fontSize:10,color:"#6366F1",marginTop:6}}>🔮 คำนวณจาก Transit จันทร์+อังคาร+เจ้าวัน Vedic</div></Locked>:<Sec fKey="energy" title="7-Day Energy" icon="🌙">{aiL.energy||!ai.energy?<Spin/>:Array.isArray(ai.energy)?<>{ai.energy.map((d,i)=><div key={i} style={{padding:"8px 10px",borderRadius:8,marginBottom:3,background:i===0?"linear-gradient(135deg,#EEF2FF,#F5F3FF)":"#F8FAFC",border:i===0?"2px solid #6366F1":"1px solid #F1F5F9"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><div style={{display:"flex",alignItems:"center",gap:4}}><span style={{fontSize:12,fontWeight:700}}>{i===0?"📍 ":""}{d.day}</span><span style={{fontSize:9,color:"#94A3B8",background:"#fff",padding:"1px 4px",borderRadius:4}}>{d.date}</span></div></div><div style={{fontSize:12,fontWeight:600,color:"#374151",marginBottom:2}}>{d.mood}</div>{d.transit&&<div style={{fontSize:9,color:"#7C3AED"}}>🪐 {d.transit}</div>}{d.goodFor&&<div style={{fontSize:10,color:"#059669",background:"#ECFDF5",borderRadius:4,padding:"2px 6px",marginTop:2}}>✅ {d.goodFor}</div>}{d.tip&&<div style={{fontSize:10,color:"#374151",background:"#fff",borderRadius:4,padding:"2px 6px",marginTop:2,border:"1px solid #F1F5F9"}}>💡 {d.tip}</div>}</div>)}<div style={{marginTop:6,padding:8,background:"#F5F3FF",borderRadius:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>🔮 Vedic Jyotish 3 ชั้น</div><div style={{fontSize:9,color:"#64748B"}}>จันทร์Transit(40%) + อังคาร(25%) + เจ้าวัน(35%)</div></div></>:<Spin/>}</Sec>}
+
+  {/* Career Timeline */}
+  {!has("timeline")?<Locked planNeeded="all" title="Career Timeline พลังงานการงาน" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>📅 พลังงานการงานรายเดือน — โหราศาสตร์ × จิตวิทยา</div><div style={{display:"flex",gap:4,marginBottom:6,flexWrap:"wrap"}}>{['🌟 เดือนทอง ×3','⚠️ เดือนระวัง ×2','💼 งานเสริม ×4'].map((t,i)=><span key={i} style={{fontSize:10,padding:"3px 8px",borderRadius:8,background:i===0?"#FFF8E1":i===1?"#FFF1F2":"#E4EEFF",fontWeight:600,color:i===0?"#C88A10":i===1?"#C04040":"#3A7AC0"}}>{t}</span>)}</div>{['ม.ค. 🌟 เดือนแห่งโอกาส','ก.พ. ⚠️ Saturn กดทับ','มี.ค. 💼 งานเสริมเข้ามา'].map((d,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 8px",borderRadius:6,background:"#F8FAFC",marginBottom:2,fontSize:11}}><span>{d}</span><span style={{fontSize:10}}>⭐⭐⭐{i===0?"⭐⭐":"☆☆"}</span></div>)}<div style={{fontSize:10,color:"#7B6FA0",marginTop:6}}>🔮 Golden Days + Black Days + คำแนะนำจิตวิทยาเฉพาะดวงคุณ</div></Locked>:
+  <Sec fKey="timeline" title="Career Timeline" icon="📅">{(()=>{
+    const tl=ai.timeline;
+    if(aiL.timeline||!tl)return<Spin t="กำลังคำนวณ Timeline..."/>;
+    const months=tl.months||[];
+    const year=tl.year||new Date().getFullYear()+543;
+    const goldenC=months.filter(m=>m.stars===5).length;
+    const dangerC=months.filter(m=>m.type==='danger').length;
+    const sideC=months.filter(m=>m.sideJob).length;
+    const typeColors={golden:'#F5A623',good:'#4CAF7D',danger:'#E05C5C',side:'#5C9BE0',neutral:'#B0A8C0'};
+    const typeBg={golden:'#FFF8E1',good:'#E8F5E9',danger:'#FFF1F2',side:'#E4EEFF',neutral:'#F5F3FF'};
+    const typeBorder={golden:'#F5A623',good:'#4CAF7D',danger:'#E05C5C',side:'#5C9BE0',neutral:'#C0B8D0'};
+    return<div>
+    {/* Year label */}
+    <div style={{textAlign:"center",marginBottom:10}}><span style={{fontSize:16,fontWeight:700,color:"#1E293B",letterSpacing:1}}>พ.ศ. {year}</span><div style={{fontSize:11,color:"#8A8090"}}>พลังงานการงานรายเดือน · โหราศาสตร์ × จิตวิทยา</div></div>
+
+    {/* Summary pills */}
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:12}}>
+      <div style={{background:"#FFF8E1",borderRadius:10,padding:"8px 6px",textAlign:"center"}}><div style={{fontSize:16}}>⭐</div><div style={{fontSize:18,fontWeight:700,color:"#C88A10"}}>{goldenC}</div><div style={{fontSize:9,color:"#8A8090",fontWeight:500}}>เดือนทอง</div></div>
+      <div style={{background:"#FFF1F2",borderRadius:10,padding:"8px 6px",textAlign:"center"}}><div style={{fontSize:16}}>⚠️</div><div style={{fontSize:18,fontWeight:700,color:"#C04040"}}>{dangerC}</div><div style={{fontSize:9,color:"#8A8090",fontWeight:500}}>เดือนระวัง</div></div>
+      <div style={{background:"#E4EEFF",borderRadius:10,padding:"8px 6px",textAlign:"center"}}><div style={{fontSize:16}}>💼</div><div style={{fontSize:18,fontWeight:700,color:"#3A7AC0"}}>{sideC}</div><div style={{fontSize:9,color:"#8A8090",fontWeight:500}}>งานเสริม</div></div>
+    </div>
+
+    {/* Energy Chart (SVG) */}
+    <div style={{background:"#fff",borderRadius:12,padding:"12px 8px",marginBottom:12,border:"1px solid #F1F5F9"}}>
+      <div style={{fontSize:12,fontWeight:700,color:"#1E293B",marginBottom:2}}>📈 กราฟพลังงานการงาน</div>
+      <div style={{fontSize:10,color:"#8A8090",marginBottom:8}}>แตะที่เดือนเพื่อดูรายละเอียด</div>
+      <svg viewBox="0 0 480 100" style={{width:"100%",height:80}} preserveAspectRatio="none">
+        <line x1="0" y1="25" x2="480" y2="25" stroke="#F0ECF8" strokeWidth="0.5"/>
+        <line x1="0" y1="50" x2="480" y2="50" stroke="#F0ECF8" strokeWidth="0.8"/>
+        <line x1="0" y1="75" x2="480" y2="75" stroke="#F0ECF8" strokeWidth="0.5"/>
+        {(()=>{
+          const pts=months.map((m,i)=>({x:20+i*(440/11),y:10+(1-m.energy/100)*80}));
+          const pathD=pts.map((p,i)=>i===0?`M ${p.x},${p.y}`:`L ${p.x},${p.y}`).join(' ');
+          const areaD=pathD+` L ${pts[11].x},95 L ${pts[0].x},95 Z`;
+          return<>
+            <defs><linearGradient id="tlAreaG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#7B6FA0" stopOpacity="0.15"/><stop offset="100%" stopColor="#7B6FA0" stopOpacity="0.01"/></linearGradient></defs>
+            <path d={areaD} fill="url(#tlAreaG)"/>
+            <path d={pathD} fill="none" stroke="#7B6FA0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            {pts.map((p,i)=><circle key={i} cx={p.x} cy={p.y} r={months[i].stars===5?5:3.5} fill={typeColors[months[i].type]} stroke="#fff" strokeWidth="1.5" style={{cursor:"pointer"}}/>)}
+          </>})()}
+      </svg>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(12,1fr)",textAlign:"center",marginTop:4}}>
+        {months.map((m,i)=><span key={i} style={{fontSize:8,color:"#B0A8C0",fontWeight:500}}>{m.monthShort}</span>)}
+      </div>
+      <div style={{display:"flex",gap:10,marginTop:8,flexWrap:"wrap"}}>
+        {[['#F5A623','เดือนทอง'],['#4CAF7D','เดือนดี'],['#E05C5C','ระวัง'],['#5C9BE0','งานเสริม']].map(([c,l],i)=><div key={i} style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#8A8090"}}><div style={{width:6,height:6,borderRadius:"50%",background:c}}/>{l}</div>)}
+      </div>
+    </div>
+
+    {/* Month cards */}
+    <div style={{fontSize:12,fontWeight:700,color:"#1E293B",marginBottom:6}}>🗓️ ทุกเดือนในปีนี้</div>
+    {months.map((m,i)=><TimelineMonth key={i} m={m} i={i} typeColors={typeColors} typeBg={typeBg} typeBorder={typeBorder}/>)}
+
+    <div style={{marginTop:8,padding:8,background:"#F5F3FF",borderRadius:8}}>
+      <div style={{fontSize:10,fontWeight:700,color:"#7B6FA0",marginBottom:2}}>🔮 Vedic Jyotish × จิตวิทยา</div>
+      <div style={{fontSize:9,color:"#64748B"}}>คำนวณจากราศีเกิด + Transit ดาวเคราะห์ + หลักจิตวิทยาพฤติกรรม</div>
+    </div>
+    </div>})()}</Sec>}
 
   {/* Locked preview: Job */}
   {!has("job")?<Locked planNeeded="all" title="Job Matching AI" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>💼 AI แนะนำอาชีพจาก 12D Profile + Vedic</div>{[{t:"Data Analyst",m:88},{t:"Project Manager",m:82},{t:"UX Researcher",m:78}].map((j,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 10px",borderRadius:6,background:"#F8FAFC",marginBottom:3,fontSize:12}}><span>{i+1}. {j.t}</span><span style={{fontWeight:700,color:"#4338CA"}}>Match {j.m}%</span></div>)}<div style={{display:"flex",gap:4,marginTop:4}}><div style={{padding:"5px 10px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:10,fontWeight:700}}>🔍 ค้นหาใน LinkedIn</div></div></Locked>:<Sec fKey="job" title="Job Matching AI" icon="💼">{aiL.job||!ai.job?<Spin/>:Array.isArray(ai.job)?ai.job.map((j,i)=><div key={i} style={{padding:10,borderRadius:8,background:"#F8FAFC",marginBottom:4}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}><span style={{fontSize:13,fontWeight:700}}>{j.titleTH||j.title}</span><span style={{fontSize:10,fontWeight:700,color:"#4338CA",background:"#EEF2FF",padding:"2px 6px",borderRadius:6}}>{j.match}%</span></div>{j.dims&&<div style={{fontSize:10,color:"#6366F1",marginBottom:2}}>📊 {j.dims}</div>}<div style={{fontSize:11,color:"#64748B",lineHeight:1.5}}>{j.reason}</div><a href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(j.title)}&location=Thailand`} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:6,padding:"5px 12px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:11,fontWeight:700,textDecoration:"none"}}>🔍 ค้นหางานในไทย — LinkedIn</a></div>):<Spin/>}</Sec>}
