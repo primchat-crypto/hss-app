@@ -10,14 +10,14 @@ export async function GET() {
 
 export async function POST(req) {
   try {
-    const { prompt, system } = await req.json();
+    const { prompt, system, maxTokens } = await req.json();
     if (!prompt) return NextResponse.json({ error: "No prompt" }, { status: 400 });
 
     const ak = process.env.OPENAI_API_KEY;
     if (!ak) return NextResponse.json({ error: "No API key configured" }, { status: 500 });
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 12000);
+    const timeout = setTimeout(() => controller.abort(), 25000);
 
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -27,7 +27,7 @@ export async function POST(req) {
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
-        max_tokens: 800,
+        max_tokens: maxTokens||800,
         temperature: 0.2,
         messages: [
           { role: "system", content: system || "You are a helpful assistant." },
