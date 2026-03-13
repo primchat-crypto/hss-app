@@ -492,16 +492,17 @@ export default function App(){
     if(type==="shadow")r=await GPT.call(`เขียนเหมือนนักจิตวิทยาที่อบอุ่น ฮีลใจ ไม่ทำให้กลัว\nวิเคราะห์ด้านที่ซ่อนอยู่ของ"${nn}"(ราหู/เกตุ คือบทเรียนชีวิต ไม่ใช่สิ่งเลวร้าย):\nด้านที่ซ่อน:พรสวรรค์${v["Shadow Pattern"]?.toFixed(1)} ตอนนี้${s["Shadow Pattern"]?.toFixed(1)}\nความเครียด:${s["Stress Response"]?.toFixed(1)} ขอบเขตตัวเอง:${s["Boundary System"]?.toFixed(1)}\n⚡สิ่งที่กระตุ้นอารมณ์(อธิบายด้วยความเข้าใจ) 🔄รูปแบบที่เกิดซ้ำ(บอกเบาๆ ไม่ตำหนิ) 💡วิธีดูแลตัวเอง(ง่ายๆ ทำได้ทันที เหมือนเพื่อนแนะนำ)`,`sh_${nn}`);
     if(type==="weekly"){const t=await GPT.call(`เขียนเหมือนพี่ที่ปรึกษาที่ห่วงใย อบอุ่น ฮีลใจ\nคำแนะนำสัปดาห์นี้สำหรับ"${nn}":\nเด่น:${so.slice(0,3).map(([k])=>k).join(",")} ต้องดูแลเพิ่ม:${so.slice(-2).map(([k])=>k).join(",")}\nตอบJSONไม่มีbacktick:{"do":["สิ่งดีๆที่ควรทำ1(ให้กำลังใจ)","ควรทำ2(อบอุ่น)","ควรทำ3(เป็นกันเอง)"],"dont":["สิ่งที่ควรระวัง1(พูดเบาๆไม่ตำหนิ)","ควรระวัง2(แนะทางออก)","ควรระวัง3(ห่วงใย)"]}`,`wk_${nn}`);r=pJ(t)}
     // Energy: show smart fallback FIRST then try GPT
-    if(type==="energy"){const tr=gen7Day(bd);const MOODS=["🌟 สดใส","😊 สงบ","🔥 กระตือรือร้น","🧠 คิดวิเคราะห์","📚 ปัญญาเปิด","💎 ผ่อนคลาย","⚙️ ต้องใช้วินัย"];
+    if(type==="energy"){try{const tr=gen7Day(bd);const MOODS=["🌟 สดใส","😊 สงบ","🔥 กระตือรือร้น","🧠 คิดวิเคราะห์","📚 ปัญญาเปิด","💎 ผ่อนคลาย","⚙️ ต้องใช้วินัย"];
       const today=new Date();
       const smartFB=tr.map((d,i)=>{const dt=new Date(today);dt.setDate(dt.getDate()+i);const dateStr=`${dt.getDate()}/${dt.getMonth()+1}`;const dayLabel=`${d.dn} ${dateStr}`;return{day:dayLabel,date:dateStr,energy:d.ce,mood:d.ce>75?MOODS[0]:d.ce>65?MOODS[1]:d.ce>55?MOODS[3]:MOODS[6],tip:`เจ้าวัน${d.dl.icon}${d.dl.lord} ${d.dl.q} จันทร์จรราศี${d.moonR}(${d.ma.r})`,transit:`เจ้าวัน${d.dl.icon}${d.dl.lord} + จันทร์จรราศี${d.moonR} + อังคารจรราศี${d.marsR}`,goodFor:d.dl.gf}});
       setAi(p=>({...p,energy:smartFB}));setAiL(p=>({...p,energy:false}));clearTimeout(safetyTm);
       // Try GPT upgrade in background (non-blocking)
       const dateLabels=tr.map((d,i)=>{const dt=new Date(today);dt.setDate(dt.getDate()+i);return`${d.dn} ${dt.getDate()}/${dt.getMonth()+1}`});
       GPT.call(`นักจิตวิทยาอบอุ่นฮีลใจ\nพลังงาน7วัน"${nn}"ราศี${tr[0].nmR}\n${tr.map((d,i)=>`${dateLabels[i]}:${d.dl.icon}${d.dl.lord} จ${d.moonR}(${d.ma.r}) E=${d.ce}%`).join("\n")}\nตอบJSON7obj ใช้วันที่จริงที่ให้:[{"day":"${dateLabels[0]}","date":"${tr[0].date}","energy":30-95,"mood":"emoji+2คำ","tip":"สั้นอ้างดาว+ให้กำลังใจ","transit":"ดาว","goodFor":"สั้น"}]`,`en_${nn}_${new Date().toISOString().slice(0,10)}`).then(t=>{const p=pJ(t);if(p&&Array.isArray(p)&&p.length===7){setAi(prev=>({...prev,energy:p.map((d,i)=>({...d,day:d.day||dateLabels[i],date:d.date||tr[i]?.date,energy:d.energy<15?Math.round(d.energy*10):d.energy}))}))}});
+      }catch(e){console.log("Energy fallback error:",e);const fb=pJ(GPT.fb("en_x"));setAi(p=>({...p,energy:fb||[]}));setAiL(p=>({...p,energy:false}));clearTimeout(safetyTm)}
       return}
     // Timeline: generate monthly career energy, then try GPT upgrade
-    if(type==="timeline"){
+    if(type==="timeline"){try{
       const baseYear=new Date().getFullYear()+543;
       const tl=genTimeline(bd,baseYear);
       const smartFB={year:baseYear,months:tl};
@@ -511,20 +512,28 @@ export default function App(){
       const d0=tl[0]?.dashaInfo||{};
       const transitSummary=tl.slice(0,4).map(m=>`${m.monthShort}:E${m.energy}%(${m.type}) ${m.stressors?.join(',')||'ปกติ'}`).join(" ");
       GPT.call(`นักจิตวิทยาอบอุ่น ฮีลใจ ตรงไปตรงมา\nHybrid Dasha×Transit กราฟชีวิตการงาน"${nn}" ราศี${rashiName} มหาทศา${d0.planet||'พฤหัส'}(${d0.dignity||'ปกติ'}) พ.ศ.${baseYear}\nจุดเด่น:${top3}\nTransit:${transitSummary}\nแต่ละเดือนให้:psychText(2ประโยค Career&Wealth narrative อ้าง Cashflow vs Asset ระยะยาว ถ้าDashaสูง+Transitต่ำ="ศักยภาพสูงแต่อุปสรรคหนัก" ถ้าDashaต่ำ+Transitสูง="โชคชั่วคราว อย่าลงทุนใหญ่" ฮีลใจแต่ตรงไปตรงมา) psychTip(1ประโยค Actionable advice เรื่องเงินและอาชีพ)\nตอบJSONไม่มีbacktick:[{"month":0,"psychText":"...","psychTip":"..."},...]12เดือน`,`tl_${nn}_${baseYear}`).then(t=>{const p=pJ(t);if(p&&Array.isArray(p)&&p.length===12){setAi(prev=>{const cur=prev.timeline||smartFB;const enhanced={...cur,months:cur.months.map((m,i)=>{const gpt=p.find(x=>x.month===i);return gpt?{...m,psychText:gpt.psychText||m.psychText,psychTip:gpt.psychTip||m.psychTip}:m})};return{...prev,timeline:enhanced}})}});
+      }catch(e){console.log("Timeline fallback error:",e);const baseYear=new Date().getFullYear()+543;setAi(p=>({...p,timeline:{year:baseYear,months:[]}}));setAiL(p=>({...p,timeline:false}));clearTimeout(safetyTm)}
       return}
     // Job: show smart fallback FIRST then try GPT
-    if(type==="job"){const top3=so.slice(0,3).map(([k])=>k);const bot2=so.slice(-2).map(([k])=>k);
+    if(type==="job"){try{const top3=so.slice(0,3).map(([k])=>k);const bot2=so.slice(-2).map(([k])=>k);
       const JOB_MAP={"Cognitive Processing":[{t:"Data Analyst",th:"นักวิเคราะห์ข้อมูล"},{t:"Software Engineer",th:"วิศวกรซอฟต์แวร์"}],"Energy Management":[{t:"Project Manager",th:"ผู้จัดการโปรเจกต์"},{t:"Sales Manager",th:"ผู้จัดการฝ่ายขาย"}],"Emotional Regulation":[{t:"UX Researcher",th:"นักวิจัย UX"},{t:"Counselor",th:"ที่ปรึกษา"}],"Decision System":[{t:"Financial Planner",th:"นักวางแผนการเงิน"},{t:"Strategy Consultant",th:"ที่ปรึกษากลยุทธ์"}],"Growth Orientation":[{t:"Product Manager",th:"ผู้จัดการผลิตภัณฑ์"},{t:"Researcher",th:"นักวิจัย"}],"Motivation Driver":[{t:"Entrepreneur",th:"ผู้ประกอบการ"},{t:"Marketing Manager",th:"ผู้จัดการการตลาด"}],"Responsibility Load":[{t:"Operations Manager",th:"ผู้จัดการปฏิบัติการ"},{t:"Quality Assurance",th:"QA Engineer"}]};
       const picks=[];const seen=new Set();top3.forEach(dim=>{(JOB_MAP[dim]||JOB_MAP["Cognitive Processing"]).forEach(j=>{if(!seen.has(j.t)&&picks.length<3){seen.add(j.t);picks.push({title:j.t,titleTH:j.th,match:Math.round(85-picks.length*5+s[dim]),dims:top3.slice(0,3).join(" + "),reason:`${DM[dim]?.icon}${dim}(${s[dim]?.toFixed(1)})ที่แข็งหนุนงานนี้ ดาว${DM[dim]?.pl}ส่งพลัง`})}})});
       while(picks.length<3)picks.push({title:"Business Analyst",titleTH:"นักวิเคราะห์ธุรกิจ",match:75,dims:top3.join(" + "),reason:"ทักษะรอบด้านเหมาะกับการวิเคราะห์"});
       setAi(p=>({...p,job:picks}));setAiL(p=>({...p,job:false}));clearTimeout(safetyTm);
       // Try GPT upgrade in background
       GPT.call(`นักจิตวิทยาแนะแนวอาชีพอบอุ่นฮีลใจ\nจับคู่อาชีพ"${nn}"เด่น:${so.slice(0,4).map(([k,v2])=>`${k}=${v2.toFixed(1)}`).join(",")} ต้องดูแลเพิ่ม:${so.slice(-3).map(([k,v2])=>`${k}=${v2.toFixed(1)}`).join(",")}\nแนะนำ3อาชีพ match=เปอร์เซ็นต์จับคู่(เต็ม100 อันแรกสูงสุด88-95 อันสอง80-87 อันสาม73-79) ตอบJSON:[{"title":"EN","titleTH":"ไทย","match":88,"dims":"3มิติ","reason":"2ประโยค(ฮีลใจ)"}]`,`job_${nn}`).then(t=>{const p=pJ(t);if(p&&Array.isArray(p)&&p.length>=3){const normalized=p.map((j,i)=>({...j,match:j.match<=10?Math.round(j.match*10):j.match<50?Math.round(j.match+40):j.match}));setAi(prev=>({...prev,job:normalized}))}});
+      }catch(e){console.log("Job fallback error:",e);const fb=[{title:"Business Analyst",titleTH:"นักวิเคราะห์ธุรกิจ",match:85,dims:"รอบด้าน",reason:"ทักษะรอบด้านเหมาะกับการวิเคราะห์"},{title:"Project Manager",titleTH:"ผู้จัดการโปรเจกต์",match:80,dims:"รอบด้าน",reason:"ความสามารถในการจัดการและประสานงาน"},{title:"Consultant",titleTH:"ที่ปรึกษา",match:75,dims:"รอบด้าน",reason:"ทักษะการสื่อสารและแก้ปัญหา"}];setAi(p=>({...p,job:fb}));setAiL(p=>({...p,job:false}));clearTimeout(safetyTm)}
       return}
-  }catch(e){console.log("AI error:",type,e)}
+  }catch(e){console.log("AI error:",type,e);
+    // Provide non-null fallbacks for types that use smart fallback pattern
+    if(type==="energy"){r=pJ(GPT.fb("en_x"))||[]}
+    if(type==="timeline"){r={year:new Date().getFullYear()+543,months:[]}}
+    if(type==="job"){r=[{title:"Business Analyst",titleTH:"นักวิเคราะห์ธุรกิจ",match:85,dims:"รอบด้าน",reason:"ทักษะรอบด้านเหมาะกับการวิเคราะห์"},{title:"Project Manager",titleTH:"ผู้จัดการโปรเจกต์",match:80,dims:"รอบด้าน",reason:"ความสามารถในการจัดการและประสานงาน"},{title:"Consultant",titleTH:"ที่ปรึกษา",match:75,dims:"รอบด้าน",reason:"ทักษะการสื่อสารและแก้ปัญหา"}]}
+  }
     clearTimeout(safetyTm);
     // Always set result (use fallback if null)
     if(!r&&type!=="energy"&&type!=="job"&&type!=="timeline"){r=GPT.fb(`${type==="identity"?"id":type==="core"?"core":type==="12d"?"f12":type==="shadow"?"sh":type==="weekly"?"wk":"x"}_${nn}`);if(type==="weekly")r=pJ(r)}
+    if(!r)r=type==="energy"?[]:type==="timeline"?{year:new Date().getFullYear()+543,months:[]}:type==="job"?[]:"กำลังประมวลผล...";
     setAi(p=>({...p,[type]:r}));setAiL(p=>({...p,[type]:false}));
     // Save AI results to DB
     if(r)setTimeout(()=>{const newAi={...ai,[type]:r};saveAI(newAi)},500)};
