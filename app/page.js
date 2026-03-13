@@ -99,137 +99,197 @@ const planetDignity=(planet,rashi)=>{
   if(lord===pName)return{d:'เกษตร',score:10,desc:'ดาวเกษตร — อยู่บ้านตัวเอง'};
   return{d:'ปกติ',score:0,desc:'สภาพปกติ'};
 };
-// Generate monthly transit energy for Thai astrology
+// Hybrid Engine: Vedic Dasha × Thai Transit — "Realistic Life Score"
+// Map Dasha planet names (Thai) to planet keys
+const DASHA_PLANET_KEY={'เกตุ':'ra','ศุกร์':'ve','อาทิตย์':'su','จันทร์':'mo','อังคาร':'ma','ราหู':'ra','พฤหัส':'ju','เสาร์':'sa','พุธ':'me'};
+// House from Ascendant: planet rashi relative to natal lagna
+const houseFrom=(planetR,lagna)=>((planetR-lagna)%12+12)%12+1; // 1-12
+
 const genTimeline=(bd,year)=>{
-  const natalR=bdayToRashiThai(bd);
-  const ns=natalPStr(bd); // reuse natal planet strength
-  const ceYear=(year||new Date().getFullYear()+543)-543; // convert to CE
-  const baseDate=new Date(ceYear,0,15); // Jan 15 of target year
-  // Base transit positions at epoch (Jan 2025 approx)
+  const natalR=bdayToRashiThai(bd); // Ascendant (ลัคนา) = sidereal sun sign
+  const ns=natalPStr(bd);
+  const ceYear=(year||new Date().getFullYear()+543)-543;
+  const baseDate=new Date(ceYear,0,15);
   const epoch=new Date(2025,0,1);const epochMonths=(baseDate-epoch)/(30.4375*86400000);
-  const baseTr={su:9,mo:1,ma:2,me:10,ju:1,ve:11,sa:10,ra:11}; // approx Jan 2025 sidereal
+  const baseTr={su:9,mo:1,ma:2,me:10,ju:1,ve:11,sa:10,ra:11};
+
+  // Get current Mahadasha from Vedic Dasha system
+  const dashas=calcDasha(bd);
+  const currentDasha=dashas.find(d=>d.isCurrent)||dashas[0]||{p:'พฤหัส',icon:'📚',theme:'การเติบโต'};
+  const dashaPlanetKey=DASHA_PLANET_KEY[currentDasha.p]||'ju';
 
   return Array.from({length:12},(_,mi)=>{
     const mOff=epochMonths+mi;
-    // Calculate transit position for each planet this month
+    // 1. Calculate transit positions for all planets this month
     const tr={};
     Object.entries(TL_PLANET_DATA).forEach(([p,data])=>{
       tr[p]=((baseTr[p]+Math.round(data.speed*mOff))%12+12)%12;
     });
 
-    // Calculate energy from transits to natal rashi (เรือนที่ 10 = การงาน)
-    const h10=(natalR+9)%12; // เรือน 10 (กัมมะ — การงาน)
-    const h1=natalR; // เรือน 1 (ตนุ — ตัวเอง)
-    const h2=(natalR+1)%12; // เรือน 2 (กดุมภะ — ทรัพย์)
-    const h11=(natalR+10)%12; // เรือน 11 (ลาภะ)
+    // House positions relative to Ascendant (ลัคนา)
+    const h={};
+    Object.keys(tr).forEach(p=>{h[p]=houseFrom(tr[p],natalR)});
 
-    // Jupiter transit to H10 = golden, Saturn transit to H10 = pressure
-    const juAsp=thaiAspect(tr.ju,h10);
-    const saAsp=thaiAspect(tr.sa,h10);
-    const suAsp=thaiAspect(tr.su,h10);
-    const maAsp=thaiAspect(tr.ma,h10);
-    const meAsp=thaiAspect(tr.me,h1);
-    const raAsp=thaiAspect(tr.ra,h10);
-    const juDig=planetDignity('ju',tr.ju);
-    const saDig=planetDignity('sa',tr.sa);
+    // ─── ALGORITHM: Hybrid Dasha × Transit Scoring ───
 
-    // Composite energy score
-    let energy=60; // base
-    energy+=juAsp.score*0.35; // พฤหัส = โชค/โอกาส (weight high)
-    energy+=saAsp.score*0.25; // เสาร์ = กดดัน/วินัย
-    energy+=suAsp.score*0.15; // อาทิตย์ = อำนาจ/ชื่อเสียง
-    energy+=maAsp.score*0.10; // อังคาร = พลังงาน
-    energy+=meAsp.score*0.08; // พุธ = สื่อสาร
-    energy+=raAsp.score*0.07; // ราหู = ความเปลี่ยนแปลง
-    energy+=juDig.score*0.1;
-    energy+=saDig.score*0.08;
-    // Clamp
-    energy=Math.max(15,Math.min(95,Math.round(energy)));
+    // Step 1: Baseline = 50
+    let energy=50;
+    let dashaScore=0;
+    let transitScore=0;
+
+    // Step 2: Dasha Impact (long-term potential)
+    const dashaDig=planetDignity(dashaPlanetKey,tr[dashaPlanetKey]||0);
+    if(dashaDig.d==='อุจจ์'||dashaDig.d==='เกษตร')dashaScore+=20; // มหาอุจจ์/เกษตร: +20
+    else if(dashaDig.d==='นิจ')dashaScore-=20; // นิจ/ประ: -20
+    // Dasha planet in เรือน 6, 8, 12 (dusthana) = -15
+    const dashaHouse=h[dashaPlanetKey]||1;
+    if(dashaHouse===6||dashaHouse===8||dashaHouse===12)dashaScore-=15;
+
+    // Step 3: Transit Impact (monthly flow)
+    // Jupiter (๕) good aspect to Ascendant: +10
+    const juAspH1=thaiAspect(tr.ju,natalR);
+    if(juAspH1.score>0)transitScore+=10;
+
+    // Saturn (๗) hitting Ascendant (ทับลัคน์ = house 1): -15
+    if(h.sa===1)transitScore-=15;
+    // Rahu (๘) hitting Ascendant: -15
+    if(h.ra===1)transitScore-=15;
+    // Mars (๓) hitting Ascendant: -15
+    if(h.ma===1)transitScore-=15;
+
+    // Saturn/Rahu/Mars in dusthana (6,8,12) from Ascendant: additional stress
+    [h.sa,h.ra,h.ma].forEach(hp=>{if(hp===8||hp===12)transitScore-=5});
+
+    // Moon debilitated (นิจ) this month: -10 (poor cashflow / emotional)
+    const moonDig=planetDignity('mo',tr.mo);
+    if(moonDig.d==='นิจ')transitScore-=10;
+
+    // Jupiter in good aspect to เรือนกัมมะ (H10): +8
+    const h10=(natalR+9)%12;
+    const juAspH10=thaiAspect(tr.ju,h10);
+    if(juAspH10.score>0)transitScore+=8;
+
+    // Sun dignity bonus
+    const suDig=planetDignity('su',tr.su);
+    if(suDig.d==='อุจจ์'||suDig.d==='เกษตร')transitScore+=5;
+
+    // Apply scores
+    energy+=dashaScore+transitScore;
+    energy=Math.max(5,Math.min(100,Math.round(energy)));
+
+    // Step 4: Balance Content — Dasha vs Transit narrative
+    const dashaHigh=dashaScore>=10;
+    const dashaLow=dashaScore<=-10;
+    const transitHigh=transitScore>=5;
+    const transitLow=transitScore<=-10;
+
+    let balanceType='balanced';
+    let balanceText='';
+    if(dashaHigh&&transitLow){balanceType='potential_blocked';balanceText='ศักยภาพสูงแต่อุปสรรคหนัก — สำเร็จได้แน่นอน แต่ต้องใช้พลังมาก ระวังเรื่องค่าใช้จ่ายและสุขภาพ';}
+    else if(dashaLow&&transitHigh){balanceType='temp_peak';balanceText='โชคดีเล็กๆ น้อยๆ เข้ามา แต่อย่าลงทุนใหญ่ เพราะเป็นช่วงพีคชั่วคราว เก็บเงินไว้ก่อน';}
+    else if(dashaHigh&&transitHigh){balanceType='golden';balanceText='ทั้งพื้นดวงและดาวจรหนุนพร้อมกัน — ช่วงนี้คือโอกาสทองจริงๆ';}
+    else if(dashaLow&&transitLow){balanceType='rest';balanceText='ช่วงนี้ทั้งพื้นดวงและดาวจรกดดัน — ร่างกายและจิตใจบอกให้พัก อย่าฝืน';}
 
     // Determine type
     let type,icon,headline;
-    const stars=energy>=85?5:energy>=70?4:energy>=52?3:energy>=35?2:1;
+    const stars=energy>=80?5:energy>=65?4:energy>=50?3:energy>=35?2:1;
     if(stars===5){type='golden';icon='🌟';headline='เดือนทองแห่งโอกาส';}
     else if(stars===4){type='good';icon='😊';headline='พลังงานดี — เดินหน้า';}
-    else if(stars<=1){type='danger';icon='⚠️';headline='เสาร์กดทับ — พักฟื้น';}
-    else if(energy>=55&&meAsp.score>5){type='side';icon='💼';headline='งานเสริมเข้ามา';}
-    else if(stars===2){type='danger';icon='⚠️';headline='ระวัง — พลังงานต่ำ';}
-    else{type='neutral';icon='😐';headline='เดือนวางแผน';}
+    else if(stars<=1){type='danger';icon='⚠️';headline='ดาวกดทับหนัก — พักฟื้น';}
+    else if(stars===2){type='danger';icon='⚠️';headline='ระวัง — อุปสรรคเข้ามา';}
+    else if(balanceType==='temp_peak'){type='side';icon='💼';headline='โชคเล็กๆ เข้ามา — อย่าลงทุนใหญ่';}
+    else{type='neutral';icon='😐';headline='เดือนวางแผน — สะสมพลัง';}
 
-    // Dominant planet this month
-    const allAsp=[{p:'ju',asp:juAsp,dig:juDig},{p:'sa',asp:saAsp,dig:saDig},{p:'su',asp:suAsp},{p:'ma',asp:maAsp}];
+    // Dominant planet
+    const allAsp=[
+      {p:'ju',asp:juAspH10,dig:planetDignity('ju',tr.ju)},
+      {p:'sa',asp:thaiAspect(tr.sa,h10),dig:planetDignity('sa',tr.sa)},
+      {p:'su',asp:thaiAspect(tr.su,h10)},
+      {p:'ma',asp:thaiAspect(tr.ma,natalR)}
+    ];
     const dominant=allAsp.sort((a,b)=>Math.abs(b.asp.score)-Math.abs(a.asp.score))[0];
     const domP=TL_PLANET_DATA[dominant.p];
 
-    // Golden days (based on day-of-week lord matching natal strength)
+    // Golden/Black days
     const goldenDays=[];const blackDays=[];
     const daysInMonth=[31,ceYear%4===0?29:28,31,30,31,30,31,31,30,31,30,31][mi];
-    for(let day=1;day<=daysInMonth;day+=1){
+    for(let day=1;day<=daysInMonth&&goldenDays.length<4;day++){
       const dt=new Date(ceYear,mi,day);const dow=dt.getDay();
       const dl=DAY_LORD[dow];const dlStr=ns[dl.planet]||5;
-      // Golden: day lord matches strong natal planet + good transit
-      if(dlStr>=7&&energy>=55&&(day%7===3||day%8===5||day%9===2)){
-        const actions=['นัดสัมภาษณ์ / เสนองาน','เซ็นสัญญาได้','พรีเซนต์ / ประชุมสำคัญ','เริ่มงานใหม่ / ยื่นใบสมัคร','Networking / สร้าง connection','นำเสนอ Portfolio'];
-        goldenDays.push({day,action:actions[goldenDays.length%actions.length],reason:`เจ้าวัน${dl.icon}${dl.lord}หนุน (กำลัง${dlStr.toFixed(1)}) + ${domP.emoji}${domP.name}${dominant.asp.q}`});
-        if(goldenDays.length>=4)break;
+      if(dlStr>=6.5&&energy>=40&&(day%7===3||day%8===5||day%9===2)){
+        const actions=['นัดสัมภาษณ์ / เสนองาน','เซ็นสัญญาได้','พรีเซนต์ / ประชุมสำคัญ','เริ่มงานใหม่','Networking','นำเสนอ Portfolio'];
+        goldenDays.push({day,action:actions[goldenDays.length%actions.length],reason:`เจ้าวัน${dl.icon}${dl.lord}หนุน (กำลัง${dlStr.toFixed(1)}) + ${domP.emoji}${domP.name}`});
       }
     }
-    // Black days: day lord weak + bad transit
-    for(let day=1;day<=daysInMonth;day+=1){
+    for(let day=1;day<=daysInMonth&&blackDays.length<3;day++){
       const dt=new Date(ceYear,mi,day);const dow=dt.getDay();
       const dl=DAY_LORD[dow];const dlStr=ns[dl.planet]||5;
-      if(dlStr<4&&(day%6===4||day%7===1||day%11===3)){
-        const warns=['อย่ายื่นใบสมัคร / เซ็นสัญญา','ระวังการสื่อสารผิดพลาด','หลีกเลี่ยงการโต้เถียง','ระวังความเข้าใจผิด'];
-        blackDays.push({day,action:warns[blackDays.length%warns.length],reason:`เจ้าวัน${dl.icon}${dl.lord}อ่อน (กำลัง${dlStr.toFixed(1)}) + ${saAsp.score<0?'🪐เสาร์'+saAsp.q:raAsp.score<0?'🐉ราหู'+raAsp.q:'ดาวจรกดดัน'}`});
-        if(blackDays.length>=3)break;
+      if(dlStr<5&&(day%6===4||day%7===1||day%11===3)){
+        const warns=['อย่ายื่นใบสมัคร / เซ็นสัญญา','ระวังค่าใช้จ่ายไม่คาดคิด','หลีกเลี่ยงการโต้เถียง','ระวังความเข้าใจผิด'];
+        blackDays.push({day,action:warns[blackDays.length%warns.length],reason:`เจ้าวัน${dl.icon}${dl.lord}อ่อน + ${h.sa===1?'🪐เสาร์ทับลัคน์':h.ra===1?'🐉ราหูทับลัคน์':'ดาวจรกดดัน'}`});
       }
     }
-    // Ensure at least 1 golden and 1 black
     if(goldenDays.length===0)goldenDays.push({day:Math.min(10,daysInMonth),action:'จัดการงานค้างให้เสร็จ',reason:`ช่วงเล็กๆ ที่${domP.emoji}${domP.name}ส่งพลังหนุน`});
     if(blackDays.length===0)blackDays.push({day:Math.min(17,daysInMonth),action:'ระวังทำงานหนักเกินไป',reason:'พลังงานลดต่ำกว่าปกติ ควรพักผ่อน'});
 
     // Tags
     const tags=[];
-    if(type==='golden')tags.push(['เดือนทอง','golden'],['เจรจาดี','good']);
+    if(type==='golden')tags.push(['เดือนทอง','golden'],['โอกาสสูง','good']);
     else if(type==='good')tags.push(['พลังงานดี','good']);
-    else if(type==='danger')tags.push(['ระวัง','danger']);
-    else if(type==='side')tags.push(['งานเสริม','side'],['Freelance','good']);
+    else if(type==='danger'){tags.push(['ระวัง','danger']);if(h.sa===1||h.ra===1||h.ma===1)tags.push(['ดาวทับลัคน์','danger'])}
+    else if(type==='side')tags.push(['โชคเล็กน้อย','side']);
     else tags.push(['ปานกลาง','neutral']);
-    if(meAsp.score>5&&type!=='side')tags.push(['สื่อสารดี','good']);
-    if(juAsp.score>10)tags.push(['พฤหัสหนุน','golden']);
+    if(balanceType==='potential_blocked')tags.push(['ศักยภาพสูง-อุปสรรคหนัก','neutral']);
+    if(moonDig.d==='นิจ')tags.push(['ระวังกระแสเงินสด','danger']);
 
-    // Planets involved
-    const planets=[`${domP.emoji} ${domP.name}`];
+    // Planets
+    const planets=[`${currentDasha.icon} ทศา${currentDasha.p}`];
+    planets.push(`${domP.emoji} ${domP.name} (${TL_RASHI_TH[tr[dominant.p]]})`);
     if(dominant.p!=='ju')planets.push(`🟡 พฤหัส (${TL_RASHI_TH[tr.ju]})`);
     if(dominant.p!=='sa')planets.push(`🪐 เสาร์ (${TL_RASHI_TH[tr.sa]})`);
-    if(dominant.p!=='su')planets.push(`☀️ อาทิตย์ (${TL_RASHI_TH[tr.su]})`);
 
-    // Thai astrology psych text
-    const psychTexts={
-      golden:`เดือนนี้ดาวพฤหัสส่งพลังดีมากๆ ให้เรือนการงานของคุณ เหมือนมีลมพัดหนุนหลัง คุณจะรู้สึกมีพลัง มองเห็นโอกาสชัดเจน ร่างกายและจิตใจจะอยู่ใน "โหมดไหลลื่น" ทุกอย่างเชื่อมต่อกันได้ดี`,
-      good:`ช่วงนี้คนรอบข้างจะมองเห็นคุณมากขึ้นนะ ดวงอาทิตย์ส่องแสงให้ภาพลักษณ์ของคุณโดดเด่น ความเชื่อมั่นในตัวเองจะสูงขึ้นตามธรรมชาติ ปล่อยให้ตัวเองเปล่งประกายได้เลย`,
-      danger:`เดือนนี้อาจรู้สึกเหนื่อยหรือท้อบ้าง — ไม่ต้องกังวลนะ นี่คือช่วงที่ร่างกายและจิตใจบอกให้พัก เหมือนต้นไม้ที่ต้องหยุดพักก่อนจะออกดอกรอบใหม่ ไม่ใช่ความล้มเหลว แต่เป็นการเตรียมพร้อม`,
-      side:`ดาวพุธส่งพลังสร้างสรรค์และการสื่อสารดีมาก ช่วงนี้เหมาะจะลองทำอะไรใหม่ๆ สร้างตัวตนออนไลน์ หรือรับงานที่ใช้ความคิดสร้างสรรค์ คุณมีพรสวรรค์ด้านนี้อยู่แล้วนะ`,
-      neutral:`เดือนนี้พลังงานกลางๆ เหมือนอยู่ในช่วง "ตั้งหลัก" ก่อนก้าวต่อ ไม่ต้องรีบตัดสินใจเรื่องใหญ่ ใช้เวลานี้ทบทวนว่าอยากไปทางไหน ยิ่งชัดเจนก่อน ยิ่งก้าวได้มั่นคง`
-    };
+    // Stress markers for narrative
+    const stressors=[];
+    if(h.sa===1)stressors.push('เสาร์ทับลัคน์ — กดดัน เหนื่อย Burnout');
+    if(h.ra===1)stressors.push('ราหูทับลัคน์ — ค่าใช้จ่ายไม่คาดคิด สับสน');
+    if(h.ma===1)stressors.push('อังคารทับลัคน์ — ขัดแย้ง ใจร้อน');
+    if(moonDig.d==='นิจ')stressors.push('จันทร์นิจ — กระแสเงินสดตึง อารมณ์ตก');
+
+    // Career & Wealth Narrative (psychText)
+    const dashaNote=`มหาทศา${currentDasha.icon}${currentDasha.p} (${currentDasha.theme}) ${dashaDig.d!=='ปกติ'?'— ดาวทศา'+dashaDig.desc:''}`;
+    let psychText='';
+    if(type==='golden'){
+      psychText=`${dashaNote}\n${balanceText||'ทั้งพื้นดวงและดาวจรเปิดทาง'} ช่วงนี้เหมือนมีลมพัดหนุนหลัง ทั้ง Cashflow และ Asset ระยะยาวไปด้วยกันได้ดี`;
+    }else if(type==='good'){
+      psychText=`${dashaNote}\n${balanceText||'พลังงานโดยรวมดี'} Cashflow มั่นคง เหมาะลงทุนทั้งในตัวเองและทรัพย์สินระยะยาว`;
+    }else if(type==='danger'){
+      psychText=`${dashaNote}\n${stressors.length>0?stressors.join(' · '):'พลังงานต่ำ'}\n${balanceText||'ช่วงนี้ร่างกายและจิตใจบอกให้หยุดพัก'} ระวัง Cashflow — ลดรายจ่ายไม่จำเป็น อย่าลงทุนใหญ่`;
+    }else if(type==='side'){
+      psychText=`${dashaNote}\n${balanceText||'มีรายได้เสริมเข้ามาบ้าง'} Cashflow ดีขึ้นชั่วคราว แต่เป็นช่วงพีคสั้นๆ เก็บเงินไว้มากกว่าใช้`;
+    }else{
+      psychText=`${dashaNote}\n${balanceText||'พลังงานกลางๆ'} ใช้ช่วงนี้วางแผน Cashflow ระยะยาว มากกว่าตัดสินใจเรื่องเงินก้อนใหญ่`;
+    }
+
+    // Actionable Advice (psychTip)
     const psychTips={
-      golden:'ช่วงนี้พลังดีมาก ลองเขียน cover letter ใหม่ หรือเสนอไอเดียที่คิดไว้นาน สัปดาห์แรกๆ จะเป็นจังหวะที่ดีที่สุด',
-      good:'ลองอัปเดต LinkedIn หรือเปิดรับโอกาสใหม่ๆ ช่วงนี้คนจะนึกถึงคุณ เชื่อมั่นในตัวเองได้เลยนะ',
-      danger:'ให้เกียรติร่างกายและจิตใจ พักผ่อนให้เต็มที่ ทำสิ่งเล็กๆ ที่ค้างอยู่ให้เสร็จ ออกกำลังกายเบาๆ ช่วงนี้จะผ่านไปเอง',
-      side:'ลองโพสต์ผลงานหรือเปิด Portfolio ให้คนเห็น เดือนนี้โอกาสสูงที่งานดีๆ จะมาหาคุณเอง',
-      neutral:'ลองหาเวลา 15 นาที/วัน เขียนเป้าหมายที่อยากได้ ยิ่งชัดเจนก่อนเดือนพลังงานสูง ยิ่งจะก้าวได้เร็ว'
+      golden:'ลงทุนในตัวเอง — เขียน pitch ใหม่ สมัครงานที่ท้าทายกว่า หรือเปิดช่องทางรายได้ใหม่ พลังนี้อยู่สัปดาห์แรกๆ ของเดือน',
+      good:'อัปเดต LinkedIn เปิดรับโอกาสใหม่ ช่วงนี้เหมาะสร้าง Asset (ทักษะ + connection) มากกว่าใช้เงินซื้อความสุขระยะสั้น',
+      danger:'ลดรายจ่าย สำรองเงินฉุกเฉิน อย่าเซ็นสัญญาใหญ่ พักผ่อนให้เต็มที่ ออกกำลังกายเบาๆ ช่วงนี้จะผ่านไป',
+      side:'รับงานเสริมได้ แต่อย่าลาออกจากงานหลัก เก็บเงินที่ได้มา 70% ใช้ 30% โอกาสนี้ชั่วคราว',
+      neutral:'เขียนเป้าหมาย Cashflow 3 เดือน วางแผนการเงิน ยิ่งชัดก่อนเดือนพลังสูง ยิ่งใช้โอกาสได้คุ้ม'
     };
 
     return{
       month:mi,monthFull:TL_MONTHS_FULL[mi],monthShort:TL_MONTHS_TH[mi],
       stars,energy,type,icon,headline,tags,
       planet:domP.name,planetEmoji:domP.emoji,
-      planetEffect:`${dominant.asp.q} เรือนกัมมะ · ${TL_RASHI_TH[tr[dominant.p]]}`,
+      planetEffect:`ทศา${currentDasha.p}(${dashaDig.d}) · ${dominant.asp.q} H10 · ${TL_RASHI_TH[tr[dominant.p]]}`,
       natalRashi:TL_RASHI_TH[natalR],natalRashiIcon:TL_RASHI_ICONS[natalR],
-      transitInfo:`พฤหัสจร${TL_RASHI_TH[tr.ju]} เสาร์จร${TL_RASHI_TH[tr.sa]} อาทิตย์จร${TL_RASHI_TH[tr.su]}`,
+      transitInfo:`ทศา${currentDasha.p}(${dashaDig.d}) พฤหัสจร${TL_RASHI_TH[tr.ju]} เสาร์จร${TL_RASHI_TH[tr.sa]}${h.sa===1?' ⚠️ทับลัคน์':''}${h.ra===1?' ⚠️ราหูทับลัคน์':''}`,
+      dashaInfo:{planet:currentDasha.p,icon:currentDasha.icon,theme:currentDasha.theme,dignity:dashaDig.d,house:dashaHouse},
+      balanceType,balanceText,stressors,
       goldenDays,blackDays,
-      psychText:psychTexts[type]||psychTexts.neutral,
-      psychTip:psychTips[type]||psychTips.neutral,
+      psychText,psychTip:psychTips[type]||psychTips.neutral,
       planets,sideJob:type==='side'||type==='good'
     };
   });
@@ -446,10 +506,11 @@ export default function App(){
       const tl=genTimeline(bd,baseYear);
       const smartFB={year:baseYear,months:tl};
       setAi(p=>({...p,timeline:smartFB}));setAiL(p=>({...p,timeline:false}));clearTimeout(safetyTm);
-      // Try GPT upgrade for richer psych insights (Thai astrology system)
+      // Try GPT upgrade — Hybrid Dasha × Thai Transit narrative
       const nRashi=bdayToRashiThai(bd);const rashiName=TL_RASHI_TH[nRashi];const top3=so.slice(0,3).map(([k])=>k).join(",");
-      const transitSummary=tl.slice(0,3).map(m=>`${m.monthShort}:${m.type}(${m.energy}%) ${m.transitInfo}`).join(" ");
-      GPT.call(`เขียนเหมือนนักจิตวิทยาที่อบอุ่น ฮีลใจ ภาษาง่ายๆ\nโหราศาสตร์ไทย กราฟชีวิตการงาน"${nn}"ราศีเกิด${rashiName} เจ้าเรือน${TL_RASHI_LORDS[nRashi]} พ.ศ.${baseYear}\nจุดเด่น:${top3}\nดาวจร:${transitSummary}\nวิเคราะห์การงาน12เดือน อ้างดาวจร+เรือน\nแต่ละเดือนให้:psychText(2ประโยค อบอุ่น ฮีลใจ ผสมดาว+จิตวิทยา ไม่ทำให้กลัว เดือนที่ดวงไม่ดีก็บอกว่าเป็นช่วงพักฟื้น) psychTip(1ประโยค คำแนะนำง่ายๆทำได้ทันที เหมือนเพื่อนบอก)\nตอบJSONไม่มีbacktick:[{"month":0,"psychText":"...","psychTip":"..."},...]12เดือน`,`tl_${nn}_${baseYear}`).then(t=>{const p=pJ(t);if(p&&Array.isArray(p)&&p.length===12){setAi(prev=>{const cur=prev.timeline||smartFB;const enhanced={...cur,months:cur.months.map((m,i)=>{const gpt=p.find(x=>x.month===i);return gpt?{...m,psychText:gpt.psychText||m.psychText,psychTip:gpt.psychTip||m.psychTip}:m})};return{...prev,timeline:enhanced}})}});
+      const d0=tl[0]?.dashaInfo||{};
+      const transitSummary=tl.slice(0,4).map(m=>`${m.monthShort}:E${m.energy}%(${m.type}) ${m.stressors?.join(',')||'ปกติ'}`).join(" ");
+      GPT.call(`นักจิตวิทยาอบอุ่น ฮีลใจ ตรงไปตรงมา\nHybrid Dasha×Transit กราฟชีวิตการงาน"${nn}" ราศี${rashiName} มหาทศา${d0.planet||'พฤหัส'}(${d0.dignity||'ปกติ'}) พ.ศ.${baseYear}\nจุดเด่น:${top3}\nTransit:${transitSummary}\nแต่ละเดือนให้:psychText(2ประโยค Career&Wealth narrative อ้าง Cashflow vs Asset ระยะยาว ถ้าDashaสูง+Transitต่ำ="ศักยภาพสูงแต่อุปสรรคหนัก" ถ้าDashaต่ำ+Transitสูง="โชคชั่วคราว อย่าลงทุนใหญ่" ฮีลใจแต่ตรงไปตรงมา) psychTip(1ประโยค Actionable advice เรื่องเงินและอาชีพ)\nตอบJSONไม่มีbacktick:[{"month":0,"psychText":"...","psychTip":"..."},...]12เดือน`,`tl_${nn}_${baseYear}`).then(t=>{const p=pJ(t);if(p&&Array.isArray(p)&&p.length===12){setAi(prev=>{const cur=prev.timeline||smartFB;const enhanced={...cur,months:cur.months.map((m,i)=>{const gpt=p.find(x=>x.month===i);return gpt?{...m,psychText:gpt.psychText||m.psychText,psychTip:gpt.psychTip||m.psychTip}:m})};return{...prev,timeline:enhanced}})}});
       return}
     // Job: show smart fallback FIRST then try GPT
     if(type==="job"){const top3=so.slice(0,3).map(([k])=>k);const bot2=so.slice(-2).map(([k])=>k);
