@@ -1,4 +1,10 @@
 {
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "vercel-build": "next build"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.0",
     "@vercel/analytics": "^1.6.1",
