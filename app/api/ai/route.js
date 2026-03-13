@@ -17,7 +17,7 @@ export async function POST(req) {
     if (!ak) return NextResponse.json({ error: "No API key configured" }, { status: 500 });
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 20000);
+    const timeout = setTimeout(() => controller.abort(), 12000);
 
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
