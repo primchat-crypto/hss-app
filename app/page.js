@@ -465,7 +465,7 @@ export default function App(){
   const stripDateAI=r=>{if(!r)return{};const{energy:_e,job:_j,...rest}=r;
     if(rest["12d"]&&!rest["12d"].includes("🌟 มิติที่เป็นจุดแข็ง"))delete rest["12d"];
     if(rest.shadow&&!rest.shadow.includes("🌑 Shadow Score:"))delete rest.shadow;
-    if(rest.identity&&(typeof rest.identity==="string"||!rest.identity.powerTitle))delete rest.identity;
+    if(rest.identity&&(typeof rest.identity==="string"||!rest.identity.powerTitle||rest.identity?.when?.goldenWindow?.startsWith("เดือน")))delete rest.identity;
     if(rest.core&&rest.core.includes("ส่งพลัง"))delete rest.core;
     return rest};
 
