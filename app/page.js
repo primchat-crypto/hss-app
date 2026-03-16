@@ -460,6 +460,7 @@ export default function App(){
   const[user,setUser]=useState(null);const[loginModal,setLoginModal]=useState(false);const[pendingPlan,setPendingPlan]=useState(null);
   const[authMode,setAuthMode]=useState("login");const[authErr,setAuthErr]=useState("");const[authLoading,setAuthLoading]=useState(false);
   const authEmailRef=useRef(null);const authPwRef=useRef(null);
+  const wasAuthedRef=useRef(false);
   const nickRef=useRef(null);const emailRef=useRef(null);
   // Strip date-sensitive fields so they always regenerate fresh (energy=daily, job=may be stale)
   const stripDateAI=r=>{if(!r)return{};const{energy:_e,job:_j,...rest}=r;
@@ -498,7 +499,7 @@ export default function App(){
         const{data:{session}}=await sb.auth.getSession();
         if(session?.user){
           // LOGGED IN — load from DB
-          setUser(session.user);setEmail(session.user.email||"");
+          wasAuthedRef.current=true;setUser(session.user);setEmail(session.user.email||"");
           const{data:prof}=await sb.from("profiles").select("*").eq("id",session.user.id).single();
           if(prof){setNick(prof.nick||"");setBday(prof.bday||"--");setBtime(prof.btime||"");setTSlot(prof.time_slot||"");setProv(prof.province||"")}
           // Sync bday from localStorage to DB if DB is missing it
@@ -541,7 +542,7 @@ export default function App(){
         // Listen for auth changes (Google OAuth, re-login, etc.)
         sb.auth.onAuthStateChange(async(ev,sess)=>{
           if(ev==="SIGNED_IN"&&sess?.user){
-            setUser(sess.user);setEmail(sess.user.email||"");setLoginModal(false);
+            wasAuthedRef.current=true;setUser(sess.user);setEmail(sess.user.email||"");setLoginModal(false);
             // Activate paid plan if pending
             const pp=localStorage.getItem("hss_paid_plan");
             const ppAt=parseInt(localStorage.getItem("hss_paid_at")||"0");
@@ -561,7 +562,8 @@ export default function App(){
               if(ls&&lv){setScores(ls);setVedic(lv);setSc("results")}
             }
           }
-          if(ev==="SIGNED_OUT"){setUser(null)}
+          if(ev==="TOKEN_REFRESHED"&&sess?.user){wasAuthedRef.current=true;setUser(sess.user)}
+          if(ev==="SIGNED_OUT"){setUser(null);if(wasAuthedRef.current){wasAuthedRef.current=false;setLoginModal(true);setAuthMode("login");setAuthErr("เซสชันหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง")}}
         });
       } else {
         // No Supabase — pure localStorage
@@ -715,8 +717,8 @@ export default function App(){
       else setAuthErr(error.message);
       setAuthLoading(false);return}
     if(data?.user){setUser(data.user);setEmail(ae);setLoginModal(false);
-      // Check if we need to go to Stripe
-      const wp=localStorage.getItem("hss_want_plan");
+      // Check if we need to go to Stripe — use pendingPlan (state) not localStorage, to avoid stale redirect
+      const wp=pendingPlan;
       if(wp){
         // Save profile before going to Stripe (so bday gets saved)
         const lp=ST.get("profile");
