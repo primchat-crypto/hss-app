@@ -823,133 +823,135 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     if(!ctx.roundRect)ctx.roundRect=function(x,y,w,h,r){const R=typeof r==="number"?r:r[0]||0;this.beginPath();this.moveTo(x+R,y);this.lineTo(x+w-R,y);this.arcTo(x+w,y,x+w,y+R,R);this.lineTo(x+w,y+h-R);this.arcTo(x+w,y+h,x+w-R,y+h,R);this.lineTo(x+R,y+h);this.arcTo(x,y+h,x,y+h-R,R);this.lineTo(x,y+R);this.arcTo(x,y,x+R,y,R);this.closePath()};
     // ── Data ──
     const mbti=calcMBTI(scores);
-    const mMeta=MBTI_META[mbti]||{title:"The Strategic Visionary",th:"ผู้มีวิสัยทัศน์เชิงกลยุทธ์"};
+    const mMeta=MBTI_META[mbti]||{title:"The Strategic Visionary",th:"\u0E1C\u0E39\u0E49\u0E21\u0E35\u0E27\u0E34\u0E2A\u0E31\u0E22\u0E17\u0E31\u0E28\u0E19\u0E4C\u0E40\u0E0A\u0E34\u0E07\u0E01\u0E25\u0E22\u0E38\u0E17\u0E18\u0E4C"};
     const domP=calcDomPlanet(vedic||scores);
     const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
-    const top3=so.slice(0,3);const bot2=so.slice(-2).reverse();
-    const archEN=(ai?.identity?.powerTitle||mMeta.title||"The Strategic Visionary").toUpperCase();
+    const top3=so.slice(0,3);
+    const archEN=ai?.identity?.powerTitle||mMeta.title||"The Strategic Visionary";
     const archTH=mMeta.th;
-    const shadowVal=scores["Shadow Pattern"]||5;
-    const rawInsight=ai?.identity?.who?.hiddenPower||ai?.principle||null;
-    const insightText=rawInsight?rawInsight.replace(/^The \w[\w\s]* [–—-] /,"").replace(/^[A-Z][\w\s]+ [–—-] /,""):("คุณมีพลังแฝงด้าน "+top3[0]?.[0]+" ที่คนส่วนใหญ่ไม่มี — ถ้าใช้มันถูกทาง ชีวิตจะเปลี่ยนไปอย่างที่คาดไม่ถึง");
-    // ── Archetype color palette by MBTI group ──
+    const desc=ai?.identity?.who?.mbtiCore||ai?.identity?.who?.vedicSoul||mMeta.th||"";
+    // Archetype color by MBTI group
     const mbtiGrp=mbti[1]==="N"?(mbti[2]==="T"?"NT":"NF"):(mbti[3]==="J"?"SJ":"SP");
-    const PALETTES={
-      NT:{g1:"#1E1B4B",g2:"#312E81",g3:"#0F0A2E",accent:"#A5B4FC",accentBr:"#818CF8",bar:["#6366F1","#818CF8"],cat:"ANALYST"},
-      NF:{g1:"#134E4A",g2:"#115E59",g3:"#0A2724",accent:"#99F6E4",accentBr:"#5EEAD4",bar:["#14B8A6","#2DD4BF"],cat:"DIPLOMAT"},
-      SJ:{g1:"#451A03",g2:"#78350F",g3:"#1C0A00",accent:"#FDE68A",accentBr:"#FBBF24",bar:["#F59E0B","#FBBF24"],cat:"SENTINEL"},
-      SP:{g1:"#450A0A",g2:"#7F1D1D",g3:"#1C0404",accent:"#FCA5A5",accentBr:"#F87171",bar:["#EF4444","#F87171"],cat:"EXPLORER"}
-    };
-    const P=PALETTES[mbtiGrp];
+    const GRP_CLR={NT:"#6366F1",NF:"#0D9488",SJ:"#D97706",SP:"#E11D48"};
+    const arcClr=GRP_CLR[mbtiGrp];
+    // Spectrum dimensions (core 5)
+    const SPEC=[
+      {dim:"Cognitive Processing",color:"#10B981",left:"Analytical",right:"Creative",leftTH:"\u0E27\u0E34\u0E40\u0E04\u0E23\u0E32\u0E30\u0E2B\u0E4C",rightTH:"\u0E2A\u0E23\u0E49\u0E32\u0E07\u0E2A\u0E23\u0E23\u0E04\u0E4C"},
+      {dim:"Emotional Regulation",color:"#FB923C",left:"Stable",right:"Sensitive",leftTH:"\u0E21\u0E31\u0E48\u0E19\u0E04\u0E07",rightTH:"\u0E2D\u0E48\u0E2D\u0E19\u0E44\u0E2B\u0E27"},
+      {dim:"Identity Stability",color:"#60A5FA",left:"Confident",right:"Adaptable",leftTH:"\u0E21\u0E31\u0E48\u0E19\u0E43\u0E08",rightTH:"\u0E22\u0E37\u0E14\u0E2B\u0E22\u0E38\u0E48\u0E19"},
+      {dim:"Energy Management",color:"#F472B6",left:"Energetic",right:"Reserved",leftTH:"\u0E01\u0E23\u0E30\u0E15\u0E37\u0E2D\u0E23\u0E37\u0E2D\u0E23\u0E49\u0E19",rightTH:"\u0E2A\u0E07\u0E27\u0E19"},
+      {dim:"Growth Orientation",color:"#A78BFA",left:"Growth-Driven",right:"Steady",leftTH:"\u0E21\u0E38\u0E48\u0E07\u0E21\u0E31\u0E48\u0E19",rightTH:"\u0E2A\u0E21\u0E48\u0E33\u0E40\u0E2A\u0E21\u0E2D"}
+    ];
+    // Trait names for top scores
+    const TRAITS={"Cognitive Processing":{name:"Strategic Thinker",icon:"\uD83E\uDDE0",bg:"#6366F1"},"Emotional Regulation":{name:"Emotional Anchor",icon:"\uD83C\uDF0A",bg:"#0EA5E9"},"Identity Stability":{name:"Self-Assured",icon:"\u2693",bg:"#EC4899"},"Energy Management":{name:"Action Taker",icon:"\u26A1",bg:"#F59E0B"},"Growth Orientation":{name:"Growth Seeker",icon:"\uD83C\uDF31",bg:"#10B981"},"Decision System":{name:"Decisive",icon:"\u2696\uFE0F",bg:"#3B82F6"},"Responsibility Load":{name:"Reliable",icon:"\uD83C\uDFCB\uFE0F",bg:"#8B5CF6"},"Motivation Driver":{name:"Self-Motivated",icon:"\uD83D\uDD25",bg:"#F97316"},"Boundary System":{name:"Boundary Setter",icon:"\uD83D\uDEE1\uFE0F",bg:"#10B981"},"Stress Response":{name:"Resilient",icon:"\uD83E\uDDCA",bg:"#64748B"},"Shadow Pattern":{name:"Self-Aware",icon:"\uD83C\uDF11",bg:"#1E293B"},"Integration Level":{name:"Integrator",icon:"\uD83D\uDD2E",bg:"#A78BFA"}};
     // ── Helpers ──
     const fr=(x,y,w,h,r,fill)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill()};
     const sr=(x,y,w,h,r,stroke,lw=2)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke()};
     const tx=(s,x,y,font,color,align="left",mw)=>{ctx.font=font;ctx.fillStyle=color;ctx.textAlign=align;mw?ctx.fillText(s,x,y,mw):ctx.fillText(s,x,y)};
     const wt=(text,x,y,maxW,lh,font,color)=>{ctx.font=font;ctx.fillStyle=color;ctx.textAlign="left";let line="",cy=y;const chars=[...text];for(const ch of chars){const test=line+ch;if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,cy);line=ch;cy+=lh;}else line=test;}if(line)ctx.fillText(line,x,cy);return cy+lh};
     const linGrad=(x0,y0,x1,y1,stops)=>{const g=ctx.createLinearGradient(x0,y0,x1,y1);stops.forEach(([t,c])=>g.addColorStop(t,c));return g};
-    const PAD=60;
-    // ═══ BACKGROUND (deep gradient per archetype) ═══
-    fr(0,0,W,H,0,linGrad(0,0,0,H,[[0,P.g1],[0.35,P.g2],[1,P.g3]]));
-    {const rg=ctx.createRadialGradient(W*.3,H*.22,0,W*.3,H*.22,650);rg.addColorStop(0,P.accent+"18");rg.addColorStop(1,"transparent");fr(0,0,W,H,0,rg);}
-    {const rg2=ctx.createRadialGradient(W*.75,H*.55,0,W*.75,H*.55,500);rg2.addColorStop(0,P.accent+"0A");rg2.addColorStop(1,"transparent");fr(0,0,W,H,0,rg2);}
+    const PAD=60;const IX=PAD+20;const IW=W-PAD*2-40;
+    // ══════════════════════════════════════
+    // ── WHITE BACKGROUND ──
+    ctx.fillStyle="#FFFFFF";ctx.fillRect(0,0,W,H);
+    // ── PHONE FRAME (dark navy border) ──
+    sr(16,16,W-32,H-32,44,"#2D3561",6);
     let y=0;
-    // ═══ TOP: AI + Vedic + Psychology branding ═══
-    y=48;
-    tx("AI + Vedic Astrology + Psychology Assessment",W/2,y+24,"500 22px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.35)","center");
-    // ═══ HSS Logo + Category ═══
-    y=100;
-    // Logo
-    fr(PAD,y,56,56,14,"rgba(255,255,255,0.12)");
-    tx("✦",PAD+28,y+42,"500 30px sans-serif","#fff","center");
-    tx("HUMAN SYSTEM STUDIO",PAD+72,y+38,"700 24px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.55)");
-    // Category pill (right side)
-    ctx.font="700 20px 'Noto Sans Thai',sans-serif";const catW=ctx.measureText(P.cat).width+36;
-    fr(W-PAD-catW,y+8,catW,38,19,"rgba(255,255,255,0.1)");
-    sr(W-PAD-catW,y+8,catW,38,19,"rgba(255,255,255,0.15)",1);
-    tx(P.cat,W-PAD-catW/2,y+34,"700 20px 'Noto Sans Thai',sans-serif",P.accent,"center");
-    // ═══ ARCHETYPE NAME (Visual Anchor) ═══
-    y=200;
-    const archFontSz=archEN.length>28?56:archEN.length>20?68:archEN.length>14?80:92;
-    ctx.font="900 "+archFontSz+"px 'Noto Sans Thai',sans-serif";
-    let archLines=[];let archLine="";
-    for(const word of archEN.split(" ")){const test=archLine+(archLine?" ":"")+word;if(ctx.measureText(test).width>(W-PAD*2)&&archLine){archLines.push(archLine);archLine=word;}else archLine=test;}
-    if(archLine)archLines.push(archLine);
-    archLines.forEach((ln,i)=>{tx(ln,PAD,y+(i+1)*(archFontSz+8),"900 "+archFontSz+"px 'Noto Sans Thai',sans-serif","#fff");});
-    y+=archLines.length*(archFontSz+8)+14;
-    // TH name
-    tx(archTH,PAD,y+34,"500 36px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.6)");
-    y+=56;
-    // Nickname
-    tx(nick,PAD,y+26,"400 26px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.3)");
-    y+=48;
-    // ═══ PILLS: MBTI + Star ═══
-    ctx.font="800 30px 'Noto Sans Thai',sans-serif";const mbtiW=ctx.measureText(mbti).width+38;
-    fr(PAD,y,mbtiW,50,25,"rgba(255,255,255,0.12)");
-    sr(PAD,y,mbtiW,50,25,"rgba(255,255,255,0.25)",1.5);
-    tx(mbti,PAD+mbtiW/2,y+36,"800 30px 'Noto Sans Thai',sans-serif","#fff","center");
-    const starTxt=domP.icon+" "+domP.planet;
-    ctx.font="600 26px 'Noto Sans Thai',sans-serif";const starW=ctx.measureText(starTxt).width+38;
-    const sX=PAD+mbtiW+14;
-    fr(sX,y,starW,50,25,"rgba(255,255,255,0.12)");
-    sr(sX,y,starW,50,25,"rgba(255,255,255,0.25)",1.5);
-    tx(starTxt,sX+starW/2,y+36,"600 26px 'Noto Sans Thai',sans-serif","#fff","center");
+    // ── TITLE BAR ──
+    y=56;
+    tx("Human System",IX,y+48,"800 48px 'Noto Sans Thai',sans-serif","#1E293B");
+    tx("AI + Vedic + Psychology",W-IX,y+48,"400 22px 'Noto Sans Thai',sans-serif","#94A3B8","right");
     y+=80;
-    // ═══ TOP SCORES (no definitions — mystery) ═══
-    tx("TOP SCORES",PAD,y+22,"800 22px 'Noto Sans Thai',sans-serif",P.accent);
-    y+=46;
-    const bW=W-PAD*2,barH=18,rowH=76;
+    // ── ARCHETYPE CARD (light gray rounded card) ──
+    const cardH=280;
+    fr(IX,y,IW,cardH,24,"#F3F4F6");
+    // Archetype EN name (large, colored)
+    const arcFsz=archEN.length>24?40:archEN.length>16?48:56;
+    ctx.font="800 "+arcFsz+"px 'Noto Sans Thai',sans-serif";
+    let arcLines=[];let arcLn="";
+    for(const word of archEN.split(" ")){const test=arcLn+(arcLn?" ":"")+word;if(ctx.measureText(test).width>IW*0.55&&arcLn){arcLines.push(arcLn);arcLn=word;}else arcLn=test;}
+    if(arcLn)arcLines.push(arcLn);
+    arcLines.forEach((ln,i)=>{tx(ln,IX+28,y+44+(i)*(arcFsz+6),"800 "+arcFsz+"px 'Noto Sans Thai',sans-serif",arcClr);});
+    const arcTextBottom=y+44+(arcLines.length-1)*(arcFsz+6)+10;
+    // MBTI type
+    tx(mbti,IX+28,arcTextBottom+30,"700 32px 'Noto Sans Thai',sans-serif",arcClr+"AA");
+    // Description (left side, wrapped)
+    const descClean=desc.replace(/^[A-Z]+\s*[–—-]\s*/,"").slice(0,160);
+    wt(descClean,IX+28,arcTextBottom+68,IW*0.55,32,"400 24px 'Noto Sans Thai',sans-serif","#64748B");
+    // Decorative: nick + planet on right side
+    tx(domP.icon,IX+IW-120,y+60,"500 64px sans-serif","#fff","center");
+    tx(nick,IX+IW-28,y+cardH-36,"600 24px 'Noto Sans Thai',sans-serif","#94A3B8","right");
+    // Pills inside card bottom-right
+    ctx.font="700 20px 'Noto Sans Thai',sans-serif";const mW=ctx.measureText(mbti).width+24;
+    const pillY=y+cardH-70;
+    fr(IX+IW-28-mW-8,pillY,mW+8,32,16,arcClr+"18");
+    tx(mbti,IX+IW-28-mW/2-4,pillY+23,"700 20px 'Noto Sans Thai',sans-serif",arcClr,"center");
+    const sTxt=domP.icon+" "+domP.planet;
+    ctx.font="500 18px 'Noto Sans Thai',sans-serif";const sW2=ctx.measureText(sTxt).width+20;
+    fr(IX+IW-28-mW-8-sW2-12,pillY,sW2+8,32,16,arcClr+"18");
+    tx(sTxt,IX+IW-28-mW-8-sW2/2-8,pillY+23,"500 18px 'Noto Sans Thai',sans-serif",arcClr,"center");
+    y+=cardH+24;
+    // ── SPECTRUM BARS (5 core dimensions) ──
+    const barPadL=120,barPadR=120;
+    const barTotalW=IW-barPadL-barPadR;
+    const barH=28;
+    SPEC.forEach(s=>{
+      const sc=scores[s.dim]||5;
+      const leftPct=Math.round(sc*10);
+      const rightPct=100-leftPct;
+      const leftDom=leftPct>=rightPct;
+      // Dimension name (centered, colored)
+      tx(s.dim,IX+IW/2,y+24,"700 24px 'Noto Sans Thai',sans-serif",s.color,"center");
+      y+=36;
+      // Left percentage
+      tx("%"+leftPct,IX+10,y+24,"700 26px 'Noto Sans Thai',sans-serif",leftDom?s.color:"#64748B");
+      // Right percentage
+      tx("%"+rightPct,IX+IW-10,y+24,"700 26px 'Noto Sans Thai',sans-serif",!leftDom?s.color:"#64748B","right");
+      // Bar (clipped rounded rect)
+      const bx=IX+barPadL,bw=barTotalW;
+      const leftW=bw*leftPct/100;
+      ctx.save();
+      ctx.beginPath();ctx.roundRect(bx,y+8,bw,barH,barH/2);ctx.clip();
+      ctx.fillStyle=leftDom?s.color:"#E2E8F0";ctx.fillRect(bx,y+8,leftW,barH);
+      ctx.fillStyle=leftDom?"#E2E8F0":s.color;ctx.fillRect(bx+leftW,y+8,bw-leftW,barH);
+      ctx.restore();
+      y+=40;
+      // Labels
+      tx(s.left,IX+10,y+18,"500 22px 'Noto Sans Thai',sans-serif",leftDom?s.color:"#94A3B8");
+      tx(s.right,IX+IW-10,y+18,"500 22px 'Noto Sans Thai',sans-serif",!leftDom?s.color:"#94A3B8","right");
+      y+=38;
+    });
+    y+=16;
+    // ── CHARACTER TRAITS (top 3 strengths) ──
+    tx("Character Traits",IX,y+42,"800 42px 'Noto Sans Thai',sans-serif","#1E293B");
+    y+=68;
     top3.forEach(([k,v])=>{
-      tx(DM[k]?.icon||"✦",PAD,y+28,"500 30px sans-serif","rgba(255,255,255,0.9)");
-      tx(k,PAD+44,y+26,"600 26px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.85)");
-      tx(v.toFixed(1),PAD+bW,y+26,"800 28px 'Noto Sans Thai',sans-serif","#fff","right");
-      fr(PAD,y+46,bW,barH,9,"rgba(255,255,255,0.08)");
-      const fw=bW*v/10;
-      fr(PAD,y+46,fw,barH,9,linGrad(PAD,0,PAD+fw,0,[[0,P.bar[0]],[1,P.bar[1]]]));
-      y+=rowH;
+      const tr=TRAITS[k]||{name:k,icon:"\u2726",bg:"#6366F1"};
+      // Card background
+      fr(IX,y,IW,90,18,"#F3F4F6");
+      // Icon circle
+      fr(IX+16,y+13,64,64,16,tr.bg);
+      tx(tr.icon,IX+48,y+56,"500 34px sans-serif","#fff","center");
+      // Trait name
+      tx(tr.name,IX+IW-24,y+55,"700 32px 'Noto Sans Thai',sans-serif","#1E293B","right");
+      // Score badge
+      tx(v.toFixed(1),IX+100,y+55,"600 24px 'Noto Sans Thai',sans-serif","#94A3B8");
+      y+=106;
     });
-    // Divider
-    y+=6;fr(PAD,y,bW,1,0,"rgba(255,255,255,0.08)");y+=18;
-    // ═══ SHADOW (muted, mysterious) ═══
-    tx("SHADOW",PAD,y+22,"800 22px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.3)");
-    y+=46;
-    // Shadow Pattern
-    tx(DM["Shadow Pattern"]?.icon||"🌑",PAD,y+28,"500 30px sans-serif","rgba(255,255,255,0.4)");
-    tx("Shadow Pattern",PAD+44,y+26,"600 26px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.4)");
-    tx(shadowVal.toFixed(1),PAD+bW,y+26,"800 28px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.4)","right");
-    fr(PAD,y+46,bW,barH,9,"rgba(255,255,255,0.05)");
-    fr(PAD,y+46,bW*shadowVal/10,barH,9,"rgba(255,255,255,0.12)");
-    y+=rowH;
-    // Other shadow scores
-    bot2.forEach(([k,v])=>{if(k==="Shadow Pattern")return;
-      tx(DM[k]?.icon||"✦",PAD,y+28,"500 30px sans-serif","rgba(255,255,255,0.35)");
-      tx(k,PAD+44,y+26,"600 26px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.35)");
-      tx(v.toFixed(1),PAD+bW,y+26,"800 28px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.35)","right");
-      fr(PAD,y+46,bW,barH,9,"rgba(255,255,255,0.05)");
-      fr(PAD,y+46,bW*v/10,barH,9,"rgba(255,255,255,0.10)");
-      y+=rowH;
-    });
-    // ═══ INSIGHT (Truth Bomb) ═══
-    y+=24;
-    const insH=220;
-    fr(PAD,y,W-PAD*2,insH,20,"rgba(255,255,255,0.06)");
-    fr(PAD,y,6,insH,3,P.accentBr);
-    tx("\u201C",PAD+28,y+56,"700 60px Georgia,serif",P.accent);
-    wt(insightText,PAD+32,y+78,W-PAD*2-64,42,"italic 500 30px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.8)");
-    y+=insH+24;
-    // ═══ 🔒 SHADOW ANALYSIS (The Hook — ends here) ═══
-    const hookH=200;
-    fr(PAD,y,W-PAD*2,hookH,24,"rgba(0,0,0,0.4)");
-    sr(PAD,y,W-PAD*2,hookH,24,"rgba(255,255,255,0.06)",1);
-    tx("🔒",PAD+30,y+56,"500 42px sans-serif","#fff");
-    tx("Shadow Analysis",PAD+86,y+52,"800 32px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.8)");
-    tx("ปลดล็อกด้านมืดที่คุณไม่เคยรู้...",PAD+30,y+100,"400 26px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.4)");
-    // CTA button
-    const btnW=W-PAD*2-60;
-    fr(PAD+30,y+130,btnW,52,26,P.accentBr);
-    tx("ลองทำแบบประเมินฟรี  →",PAD+30+btnW/2,y+164,"800 24px 'Noto Sans Thai',sans-serif",P.g1,"center");
-    y+=hookH+30;
-    // ═══ Small footer line (subtle, inside safe zone) ═══
-    tx("✦ humansystemstudio.com",W/2,y+20,"600 22px 'Noto Sans Thai',sans-serif","rgba(255,255,255,0.2)","center");
+    y+=16;
+    // ── \uD83D\uDD12 SHADOW ANALYSIS HOOK ──
+    const hookH=160;
+    fr(IX,y,IW,hookH,24,"#F3F4F6");
+    sr(IX,y,IW,hookH,24,"#E2E8F0",2);
+    tx("\uD83D\uDD12",IX+28,y+50,"500 36px sans-serif","#5B21B6");
+    tx("Shadow Analysis",IX+78,y+46,"800 28px 'Noto Sans Thai',sans-serif","#5B21B6");
+    tx("\u0E1B\u0E25\u0E14\u0E25\u0E47\u0E2D\u0E04\u0E14\u0E49\u0E32\u0E19\u0E21\u0E37\u0E14\u0E17\u0E35\u0E48\u0E04\u0E38\u0E13\u0E44\u0E21\u0E48\u0E40\u0E04\u0E22\u0E23\u0E39\u0E49...",IX+28,y+88,"400 24px 'Noto Sans Thai',sans-serif","#64748B");
+    const btnW2=IW-56;
+    fr(IX+28,y+108,btnW2,42,21,linGrad(IX+28,0,IX+28+btnW2,0,[[0,"#6D28D9"],[1,"#5B21B6"]]));
+    tx("\u0E25\u0E2D\u0E07\u0E17\u0E33\u0E41\u0E1A\u0E1A\u0E1B\u0E23\u0E30\u0E40\u0E21\u0E34\u0E19\u0E1F\u0E23\u0E35  \u2192",IX+28+btnW2/2,y+136,"700 22px 'Noto Sans Thai',sans-serif","#fff","center");
+    y+=hookH+20;
+    // ── FOOTER ──
+    tx("\u2726 humansystemstudio.com",W/2,y+20,"600 22px 'Noto Sans Thai',sans-serif","#C7D2FE","center");
     // ── DOWNLOAD PNG ──
     canvas.toBlob(blob=>{const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`HSS-${nick}-share.png`;
       if(/iPhone|iPad|iPod/.test(navigator.userAgent)){const w=window.open();if(w){w.document.write('<img src="'+url+'" style="width:100%">');w.document.close()}else{document.body.appendChild(a);a.click();document.body.removeChild(a)}}
