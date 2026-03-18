@@ -971,7 +971,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
       // Fixed 3-line layout
       const shCardH=160;
       fr(IX,y,IW,shCardH,24,"#1E1B4B");
-      tx("\u26A1 Shadow Analysis",IX+28,y+38,"800 28px 'Noto Sans Thai',sans-serif","#E0E7FF");
+      tx("\u26A1 Shadow Trigger",IX+28,y+38,"800 28px 'Noto Sans Thai',sans-serif","#E0E7FF");
       wt(shClean,IX+28,y+70,IW-56,28,"400 22px 'Noto Sans Thai',sans-serif","#C7D2FE",3);
       y+=shCardH+20;
     }else{
