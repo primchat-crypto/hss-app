@@ -815,8 +815,28 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     }
     setTimeout(()=>URL.revokeObjectURL(url),1000)};
 
+  // ── MBTI SVG Characters ──
+  const MBTI_SVG={
+    "INTJ":(sc)=>{const s="#f5c8a0",h="#2c1810",o="#6c63d8",c="#6c63d8",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="43" cy="95" rx="22" ry="8" fill="#3a3a5c" transform="rotate(-6,43,95)"/><ellipse cx="57" cy="94" rx="20" ry="8" fill="#2e2e4a" transform="rotate(5,57,94)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="45" y="56" width="10" height="30" rx="3" fill="#5a52c4" opacity="0.5"/><polygon points="50,60 47,70 50,74 53,70" fill="#ff6b9d" opacity="0.8"/><rect x="15" y="62" width="21" height="8" rx="4" fill="${o}" transform="rotate(18,25,66)"/><rect x="5" y="74" width="22" height="16" rx="3" fill="#dde8ff" stroke="#aabce8" stroke-width="1"/><line x1="8" y1="78" x2="24" y2="78" stroke="${c}" stroke-width="1" opacity="0.5"/><line x1="8" y1="82" x2="22" y2="82" stroke="${c}" stroke-width="1" opacity="0.5"/><line x1="8" y1="86" x2="20" y2="86" stroke="${c}" stroke-width="1" opacity="0.5"/><rect x="64" y="56" width="21" height="8" rx="4" fill="${o}" transform="rotate(-30,74,60)"/><ellipse cx="75" cy="47" rx="5" ry="7" fill="${s}" transform="rotate(-30,75,47)"/><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="18" ry="19" fill="${s}"/><ellipse cx="50" cy="22" rx="18" ry="10" fill="${h}"/><ellipse cx="34" cy="36" rx="5" ry="8" fill="${h}"/><circle cx="43" cy="38" r="3" fill="#fff"/><circle cx="57" cy="38" r="3" fill="#fff"/><circle cx="44" cy="39" r="1.8" fill="#2a1a08"/><circle cx="58" cy="39" r="1.8" fill="#2a1a08"/><circle cx="44.5" cy="38.5" r="0.6" fill="#fff"/><circle cx="58.5" cy="38.5" r="0.6" fill="#fff"/><path d="M44 45 Q50 48 56 45" stroke="#c07060" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="38" y="35" width="11" height="7" rx="3" fill="none" stroke="${c}" stroke-width="1.2"/><rect x="51" y="35" width="11" height="7" rx="3" fill="none" stroke="${c}" stroke-width="1.2"/><line x1="34" y1="38" x2="38" y2="38" stroke="${c}" stroke-width="1.2"/><line x1="62" y1="38" x2="66" y2="38" stroke="${c}" stroke-width="1.2"/></svg>`},
+    "INTP":(sc)=>{const s="#f0c890",h="#2a1808",o="#378add",c="#378add",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="42" cy="94" rx="22" ry="8" fill="#404060" transform="rotate(-5,42,94)"/><ellipse cx="58" cy="93" rx="20" ry="8" fill="#303050" transform="rotate(4,58,93)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="13" y="60" width="21" height="8" rx="4" fill="${o}" transform="rotate(15,23,64)"/><ellipse cx="12" cy="52" rx="5" ry="7" fill="${s}" transform="rotate(15,12,52)"/><rect x="64" y="62" width="21" height="8" rx="4" fill="${o}" transform="rotate(-10,74,66)"/><circle cx="74" cy="44" r="8" fill="${c}" opacity="0.12"/><text x="74" y="48" text-anchor="middle" font-size="10" fill="${c}" opacity="0.9">?</text><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="18" ry="19" fill="${s}"/><ellipse cx="50" cy="22" rx="19" ry="10" fill="${h}"/><ellipse cx="34" cy="34" rx="5" ry="10" fill="${h}"/><ellipse cx="66" cy="34" rx="5" ry="10" fill="${h}"/><circle cx="43" cy="38" r="3" fill="#fff"/><circle cx="57" cy="38" r="3" fill="#fff"/><circle cx="44" cy="39" r="2" fill="#1a0f06"/><circle cx="58" cy="39" r="2" fill="#1a0f06"/><circle cx="44.5" cy="38.5" r="0.7" fill="#fff"/><circle cx="58.5" cy="38.5" r="0.7" fill="#fff"/><path d="M45 45 Q50 48 55 45" stroke="#b07060" stroke-width="1.5" fill="none"/></svg>`},
+    "ENTJ":(sc)=>{const s="#f2c888",h="#1a0e06",o="#1d9e75",c="#1d9e75",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="42" cy="94" rx="22" ry="8" fill="#1a2020" transform="rotate(-5,42,94)"/><ellipse cx="58" cy="93" rx="20" ry="8" fill="#141a1a" transform="rotate(4,58,93)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="34" y="52" width="32" height="8" rx="4" fill="${o}" opacity="0.7"/><rect x="13" y="58" width="23" height="8" rx="4" fill="${o}"/><rect x="64" y="58" width="23" height="8" rx="4" fill="${o}"/><ellipse cx="86" cy="46" rx="6" ry="7" fill="${s}" transform="rotate(-20,86,46)"/><polygon points="75,34 84,24 87,33" fill="${c}" opacity="0.7"/><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="19" ry="20" fill="${s}"/><ellipse cx="50" cy="21" rx="19" ry="11" fill="${h}"/><ellipse cx="34" cy="34" rx="5" ry="10" fill="${h}"/><circle cx="43" cy="37" r="3" fill="#fff"/><circle cx="57" cy="37" r="3" fill="#fff"/><circle cx="44" cy="38" r="2.2" fill="#0a0604"/><circle cx="58" cy="38" r="2.2" fill="#0a0604"/><circle cx="44.5" cy="37.5" r="0.8" fill="#fff"/><circle cx="58.5" cy="37.5" r="0.8" fill="#fff"/><line x1="43" y1="44" x2="57" y2="44" stroke="#c07040" stroke-width="1.8" stroke-linecap="round"/></svg>`},
+    "ENTP":(sc)=>{const s="#f5d5a0",h="#2a1505",o="#0f6e56",c="#0f6e56",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="42" cy="95" rx="22" ry="8" fill="#c88050" transform="rotate(-8,42,95)"/><ellipse cx="58" cy="94" rx="20" ry="8" fill="#b07040" transform="rotate(6,58,94)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="8" y="58" width="28" height="8" rx="4" fill="${o}" transform="rotate(12,22,62)"/><ellipse cx="8" cy="55" rx="6" ry="7" fill="${s}" transform="rotate(12,8,55)"/><rect x="64" y="56" width="28" height="8" rx="4" fill="${o}" transform="rotate(-15,78,60)"/><ellipse cx="92" cy="52" rx="6" ry="7" fill="${s}" transform="rotate(-15,92,52)"/><path d="M62,30 Q72,22 74,34 Q72,40 62,36" fill="${c}" opacity="0.15"/><text x="68" y="36" text-anchor="middle" font-size="9" fill="${c}" opacity="0.9">!</text><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="19" ry="20" fill="${s}"/><ellipse cx="50" cy="21" rx="19" ry="11" fill="${h}"/><ellipse cx="34" cy="34" rx="6" ry="12" fill="${h}"/><circle cx="43" cy="37" r="3" fill="#fff"/><circle cx="57" cy="37" r="3" fill="#fff"/><circle cx="44" cy="38" r="2" fill="#1a0e06"/><circle cx="58" cy="38" r="2" fill="#1a0e06"/><circle cx="44.5" cy="37.5" r="0.7" fill="#fff"/><circle cx="58.5" cy="37.5" r="0.7" fill="#fff"/><path d="M43 44 Q50 48 57 44" stroke="#d06040" stroke-width="2" fill="none"/></svg>`},
+    "INFJ":(sc)=>{const s="#f0c890",h="#3a2040",o="#7f77dd",c="#7f77dd",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><circle cx="50" cy="55" r="46" fill="none" stroke="${c}" stroke-width="1" opacity="0.2"/><ellipse cx="42" cy="95" rx="26" ry="10" fill="#9b8ec4" transform="rotate(-5,42,95)"/><ellipse cx="58" cy="94" rx="24" ry="10" fill="#8a7eb8" transform="rotate(4,58,94)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="16" y="74" width="22" height="8" rx="4" fill="${o}" transform="rotate(-12,27,78)"/><ellipse cx="14" cy="83" rx="8" ry="5" fill="${s}" transform="rotate(-12,14,83)"/><rect x="62" y="74" width="22" height="8" rx="4" fill="${o}" transform="rotate(12,73,78)"/><ellipse cx="86" cy="83" rx="8" ry="5" fill="${s}" transform="rotate(12,86,83)"/><circle cx="18" cy="52" r="3" fill="${c}" opacity="0.5"/><circle cx="82" cy="48" r="2.5" fill="${c}" opacity="0.4"/><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="19" ry="20" fill="${s}"/><ellipse cx="50" cy="21" rx="20" ry="11" fill="${h}"/><rect x="30" y="28" width="9" height="24" rx="4" fill="${h}"/><rect x="61" y="28" width="9" height="22" rx="4" fill="${h}"/><path d="M37 60 Q40 57 43 60" stroke="#3a2010" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M57 60 Q60 57 63 60" stroke="#3a2010" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M43 46 Q50 50 57 46" stroke="#b07090" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="50" cy="30" r="2" fill="${c}" opacity="0.7"/></svg>`},
+    "INFP":(sc)=>{const s="#f8d5b0",h="#4a2015",o="#d4537e",c="#d4537e",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="42" cy="95" rx="24" ry="9" fill="#c8a060" transform="rotate(-7,42,95)"/><ellipse cx="58" cy="94" rx="22" ry="9" fill="#b89050" transform="rotate(5,58,94)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="16" y="74" width="22" height="8" rx="4" fill="${o}"/><ellipse cx="14" cy="83" rx="8" ry="5" fill="${s}"/><rect x="62" y="74" width="22" height="8" rx="4" fill="${o}"/><ellipse cx="86" cy="83" rx="8" ry="5" fill="${s}"/><circle cx="50" cy="72" r="5" fill="${c}" opacity="0.2"/><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="19" ry="20" fill="${s}"/><ellipse cx="50" cy="21" rx="20" ry="11" fill="${h}"/><ellipse cx="34" cy="36" rx="6" ry="12" fill="${h}"/><ellipse cx="66" cy="36" rx="6" ry="12" fill="${h}"/><circle cx="43" cy="38" r="3" fill="#fff"/><circle cx="57" cy="38" r="3" fill="#fff"/><circle cx="44" cy="39" r="1.8" fill="#2a1010"/><circle cx="58" cy="39" r="1.8" fill="#2a1010"/><path d="M44 46 Q50 51 56 46" stroke="#c04060" stroke-width="2" fill="none"/><ellipse cx="40" cy="44" rx="5" ry="3" fill="#f4a0b0" opacity="0.5"/><ellipse cx="60" cy="44" rx="5" ry="3" fill="#f4a0b0" opacity="0.5"/></svg>`},
+    "ENFJ":(sc)=>{const s="#f0c890",h="#2a1508",o="#ba7517",c="#ba7517",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="42" cy="95" rx="24" ry="9" fill="#886030" transform="rotate(-7,42,95)"/><ellipse cx="58" cy="94" rx="22" ry="9" fill="#705020" transform="rotate(5,58,94)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="8" y="60" width="28" height="8" rx="4" fill="${o}" transform="rotate(10,22,64)"/><ellipse cx="7" cy="57" rx="6" ry="7" fill="${s}" transform="rotate(10,7,57)"/><rect x="64" y="60" width="28" height="8" rx="4" fill="${o}" transform="rotate(-10,78,64)"/><ellipse cx="93" cy="57" rx="6" ry="7" fill="${s}" transform="rotate(-10,93,57)"/><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="19" ry="20" fill="${s}"/><ellipse cx="50" cy="21" rx="19" ry="11" fill="${h}"/><ellipse cx="34" cy="34" rx="5" ry="10" fill="${h}"/><ellipse cx="66" cy="34" rx="5" ry="10" fill="${h}"/><circle cx="43" cy="38" r="3" fill="#fff"/><circle cx="57" cy="38" r="3" fill="#fff"/><circle cx="44" cy="39" r="2" fill="#1a0e06"/><circle cx="58" cy="39" r="2" fill="#1a0e06"/><path d="M43 46 Q50 51 57 46" stroke="#d08020" stroke-width="2" fill="none"/><ellipse cx="40" cy="44" rx="5" ry="3" fill="#ffc080" opacity="0.5"/><ellipse cx="60" cy="44" rx="5" ry="3" fill="#ffc080" opacity="0.5"/></svg>`},
+    "ENFP":(sc)=>{const s="#fcd8b0",h="#8b4513",o="#ff9f43",c="#ff9f43",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="40" cy="96" rx="26" ry="10" fill="#c8a060" transform="rotate(-10,40,96)"/><ellipse cx="60" cy="95" rx="24" ry="10" fill="#b89050" transform="rotate(8,60,95)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="-2" y="54" width="34" height="9" rx="4" fill="${o}" transform="rotate(8,15,58)"/><ellipse cx="-2" cy="52" rx="7" ry="8" fill="${s}" transform="rotate(8,-2,52)"/><rect x="68" y="54" width="34" height="9" rx="4" fill="${o}" transform="rotate(-8,85,58)"/><ellipse cx="102" cy="52" rx="7" ry="8" fill="${s}" transform="rotate(-8,102,52)"/><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="20" ry="21" fill="${s}"/><ellipse cx="50" cy="20" rx="21" ry="12" fill="${h}"/><ellipse cx="32" cy="34" rx="8" ry="15" fill="${h}"/><ellipse cx="68" cy="34" rx="8" ry="15" fill="#a0522d"/><circle cx="43" cy="37" r="3.5" fill="#fff"/><circle cx="57" cy="37" r="3.5" fill="#fff"/><circle cx="44" cy="38" r="2" fill="#3a2010"/><circle cx="58" cy="38" r="2" fill="#3a2010"/><path d="M42 46 Q50 54 58 46" stroke="#e06040" stroke-width="2" fill="#fff" opacity="0.7"/><ellipse cx="38" cy="43" rx="6" ry="4" fill="#ffb0a0" opacity="0.5"/><ellipse cx="62" cy="43" rx="6" ry="4" fill="#ffb0a0" opacity="0.5"/></svg>`},
+    "ISTJ":(sc)=>{const s="#eac888",h="#1c1008",o="#444441",c="#444441",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="42" cy="95" rx="22" ry="8" fill="#303028" transform="rotate(-5,42,95)"/><ellipse cx="58" cy="94" rx="20" ry="8" fill="#282820" transform="rotate(4,58,94)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="46" y="56" width="8" height="30" rx="3" fill="#333330" opacity="0.5"/><rect x="13" y="60" width="23" height="8" rx="4" fill="${o}"/><rect x="64" y="60" width="23" height="8" rx="4" fill="${o}"/><rect x="62" y="50" width="22" height="28" rx="4" fill="${o}" opacity="0.6"/><line x1="65" y1="56" x2="81" y2="56" stroke="#fff" stroke-width="1" opacity="0.5"/><line x1="65" y1="61" x2="81" y2="61" stroke="#fff" stroke-width="1" opacity="0.5"/><line x1="65" y1="66" x2="78" y2="66" stroke="#fff" stroke-width="1" opacity="0.5"/><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="18" ry="19" fill="${s}"/><ellipse cx="50" cy="22" rx="18" ry="10" fill="${h}"/><ellipse cx="34" cy="34" rx="5" ry="9" fill="${h}"/><ellipse cx="66" cy="34" rx="5" ry="9" fill="${h}"/><circle cx="43" cy="38" r="3" fill="#fff"/><circle cx="57" cy="38" r="3" fill="#fff"/><circle cx="44" cy="39" r="2" fill="#0e0c08"/><circle cx="58" cy="39" r="2" fill="#0e0c08"/><line x1="44" y1="45" x2="56" y2="45" stroke="#b08060" stroke-width="1.8" stroke-linecap="round"/></svg>`},
+    "ISFJ":(sc)=>{const s="#f2d0a0",h="#241408",o="#378add",c="#378add",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="42" cy="95" rx="24" ry="9" fill="#88a8cc" transform="rotate(-6,42,95)"/><ellipse cx="58" cy="94" rx="22" ry="9" fill="#7898bc" transform="rotate(5,58,94)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><path d="M34,64 Q50,58 66,64 Q66,78 50,84 Q34,78 34,64" fill="${c}" opacity="0.18"/><rect x="14" y="66" width="22" height="8" rx="4" fill="${o}" transform="rotate(-8,25,70)"/><ellipse cx="12" cy="74" rx="7" ry="5" fill="${s}" transform="rotate(-8,12,74)"/><rect x="64" y="66" width="22" height="8" rx="4" fill="${o}" transform="rotate(8,75,70)"/><ellipse cx="88" cy="74" rx="7" ry="5" fill="${s}" transform="rotate(8,88,74)"/><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="19" ry="20" fill="${s}"/><ellipse cx="50" cy="21" rx="19" ry="11" fill="${h}"/><ellipse cx="34" cy="34" rx="6" ry="12" fill="${h}"/><ellipse cx="66" cy="34" rx="6" ry="12" fill="${h}"/><circle cx="43" cy="38" r="3" fill="#fff"/><circle cx="57" cy="38" r="3" fill="#fff"/><circle cx="44" cy="39" r="1.8" fill="#1a0e08"/><circle cx="58" cy="39" r="1.8" fill="#1a0e08"/><path d="M43 46 Q50 50 57 46" stroke="#b08060" stroke-width="1.8" fill="none"/><ellipse cx="40" cy="44" rx="5" ry="3" fill="#ffc0a0" opacity="0.45"/><ellipse cx="60" cy="44" rx="5" ry="3" fill="#ffc0a0" opacity="0.45"/></svg>`},
+    "ESTJ":(sc)=>{const s="#ecc080",h="#1e1208",o="#3b6d11",c="#3b6d11",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="42" cy="94" rx="22" ry="8" fill="#202820" transform="rotate(-5,42,94)"/><ellipse cx="58" cy="93" rx="20" ry="8" fill="#181e18" transform="rotate(4,58,93)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="34" y="52" width="32" height="8" rx="4" fill="${o}" opacity="0.7"/><rect x="13" y="56" width="23" height="8" rx="4" fill="${o}"/><rect x="64" y="52" width="23" height="8" rx="4" fill="${o}" transform="rotate(-20,75,56)"/><ellipse cx="85" cy="46" rx="6" ry="7" fill="${s}" transform="rotate(-20,85,46)"/><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="18" ry="19" fill="${s}"/><ellipse cx="50" cy="22" rx="18" ry="10" fill="${h}"/><ellipse cx="34" cy="34" rx="5" ry="8" fill="${h}"/><circle cx="43" cy="38" r="3" fill="#fff"/><circle cx="57" cy="38" r="3" fill="#fff"/><circle cx="44" cy="39" r="2" fill="#0e0c06"/><circle cx="58" cy="39" r="2" fill="#0e0c06"/><line x1="43" y1="45" x2="57" y2="45" stroke="#c08040" stroke-width="1.8" stroke-linecap="round"/></svg>`},
+    "ESFJ":(sc)=>{const s="#f8d8b0",h="#3e1810",o="#993556",c="#993556",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="42" cy="95" rx="24" ry="9" fill="#b08070" transform="rotate(-7,42,95)"/><ellipse cx="58" cy="94" rx="22" ry="9" fill="#a07060" transform="rotate(5,58,94)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="8" y="60" width="26" height="8" rx="4" fill="${o}" transform="rotate(12,21,64)"/><ellipse cx="7" cy="57" rx="6" ry="7" fill="${s}" transform="rotate(12,7,57)"/><rect x="66" y="60" width="26" height="8" rx="4" fill="${o}" transform="rotate(-12,79,64)"/><ellipse cx="93" cy="57" rx="6" ry="7" fill="${s}" transform="rotate(-12,93,57)"/><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="19" ry="20" fill="${s}"/><ellipse cx="50" cy="21" rx="20" ry="11" fill="${h}"/><ellipse cx="34" cy="34" rx="6" ry="12" fill="${h}"/><ellipse cx="66" cy="34" rx="6" ry="12" fill="${h}"/><circle cx="43" cy="38" r="3" fill="#fff"/><circle cx="57" cy="38" r="3" fill="#fff"/><circle cx="44" cy="39" r="1.8" fill="#2a1010"/><circle cx="58" cy="39" r="1.8" fill="#2a1010"/><path d="M43 46 Q50 51 57 46" stroke="#c04060" stroke-width="2" fill="none"/><ellipse cx="40" cy="44" rx="5" ry="3" fill="#f4a0b0" opacity="0.5"/><ellipse cx="60" cy="44" rx="5" ry="3" fill="#f4a0b0" opacity="0.5"/></svg>`},
+    "ISTP":(sc)=>{const s="#f0c878",h="#241408",o="#5f5e5a",c="#5f5e5a",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="42" cy="95" rx="22" ry="8" fill="#404038" transform="rotate(-5,42,95)"/><ellipse cx="58" cy="94" rx="20" ry="8" fill="#303028" transform="rotate(4,58,94)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="13" y="62" width="23" height="8" rx="4" fill="${o}"/><rect x="64" y="58" width="23" height="8" rx="4" fill="${o}" transform="rotate(-18,75,62)"/><rect x="80" y="48" width="5" height="16" rx="2" fill="#888" transform="rotate(-18,82,56)"/><circle cx="80" cy="46" r="5" fill="${c}" opacity="0.5" transform="rotate(-18,80,46)"/><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="18" ry="19" fill="${s}"/><ellipse cx="50" cy="22" rx="18" ry="10" fill="${h}"/><ellipse cx="34" cy="34" rx="5" ry="9" fill="${h}"/><ellipse cx="66" cy="34" rx="5" ry="9" fill="${h}"/><circle cx="43" cy="38" r="3" fill="#fff"/><circle cx="57" cy="38" r="3" fill="#fff"/><circle cx="44" cy="39" r="2" fill="#1a0e06"/><circle cx="58" cy="39" r="2" fill="#1a0e06"/><path d="M44 45 Q50 48 56 45" stroke="#b08040" stroke-width="1.5" fill="none"/></svg>`},
+    "ISFP":(sc)=>{const s="#f7d5b5",h="#5c3d2e",o="#f4748a",c="#d4537e",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="42" cy="95" rx="24" ry="9" fill="#b8bec8" transform="rotate(-8,42,95)"/><ellipse cx="58" cy="94" rx="22" ry="9" fill="#a8afc0" transform="rotate(6,58,94)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="14" y="62" width="22" height="8" rx="4" fill="${o}"/><ellipse cx="10" cy="72" rx="13" ry="9" fill="#f5e6c8" transform="rotate(-10,10,72)"/><circle cx="5" cy="69" r="3" fill="#f4748a"/><circle cx="12" cy="67" r="3" fill="#7ec8e3"/><circle cx="18" cy="70" r="3" fill="#a8e6cf"/><circle cx="14" cy="76" r="3" fill="#ffd166"/><circle cx="6" cy="76" r="2.5" fill="#c77dff"/><rect x="64" y="58" width="22" height="8" rx="4" fill="${o}" transform="rotate(-28,75,62)"/><rect x="76" y="42" width="4" height="22" rx="2" fill="#c8a882" transform="rotate(-28,78,53)"/><ellipse cx="75" cy="40" rx="4" ry="5" fill="${c}" opacity="0.8" transform="rotate(-28,75,40)"/><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="20" ry="21" fill="${s}"/><ellipse cx="50" cy="20" rx="21" ry="12" fill="${h}"/><ellipse cx="32" cy="36" rx="7" ry="14" fill="${h}"/><ellipse cx="68" cy="34" rx="6" ry="12" fill="${h}"/><circle cx="43" cy="38" r="3.5" fill="#fff"/><circle cx="57" cy="38" r="3.5" fill="#fff"/><circle cx="44" cy="39" r="2" fill="#3a2010"/><circle cx="58" cy="39" r="2" fill="#3a2010"/><path d="M43 46 Q50 51 57 46" stroke="#d4607a" stroke-width="2" fill="none"/><ellipse cx="39" cy="44" rx="5" ry="3" fill="#f4a0b0" opacity="0.5"/><ellipse cx="61" cy="44" rx="5" ry="3" fill="#f4a0b0" opacity="0.5"/></svg>`},
+    "ESTP":(sc)=>{const s="#f2c888",h="#1e0e06",o="#993c1d",c="#993c1d",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="38" cy="96" rx="22" ry="8" fill="#c88050" transform="rotate(-12,38,96)"/><ellipse cx="62" cy="94" rx="20" ry="8" fill="#b07040" transform="rotate(10,62,94)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="6" y="56" width="30" height="8" rx="4" fill="${o}" transform="rotate(18,21,60)"/><ellipse cx="5" cy="52" rx="6" ry="7" fill="${s}" transform="rotate(18,5,52)"/><rect x="64" y="58" width="23" height="8" rx="4" fill="${o}" transform="rotate(-15,75,62)"/><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="19" ry="20" fill="${s}"/><ellipse cx="50" cy="21" rx="19" ry="10" fill="${h}"/><ellipse cx="34" cy="34" rx="5" ry="9" fill="${h}"/><ellipse cx="66" cy="34" rx="5" ry="9" fill="${h}"/><circle cx="43" cy="37" r="3" fill="#fff"/><circle cx="57" cy="37" r="3" fill="#fff"/><circle cx="44" cy="38" r="2.2" fill="#0a0604"/><circle cx="58" cy="38" r="2.2" fill="#0a0604"/><path d="M43 44 Q50 49 57 44" stroke="#c06030" stroke-width="2" fill="none"/></svg>`},
+    "ESFP":(sc)=>{const s="#fcd5a8",h="#3a1008",o="#e24b4a",c="#e24b4a",W=100*sc,H=110*sc;return`<svg width="${W}" height="${H}" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="106" rx="30" ry="5" fill="#d0d8f0" opacity="0.5"/><ellipse cx="38" cy="96" rx="24" ry="9" fill="#e87050" transform="rotate(-10,38,96)"/><ellipse cx="62" cy="95" rx="22" ry="9" fill="#d86040" transform="rotate(8,62,95)"/><rect x="34" y="56" width="32" height="34" rx="12" fill="${o}"/><rect x="2" y="54" width="32" height="9" rx="4" fill="${o}" transform="rotate(16,18,58)"/><ellipse cx="2" cy="51" rx="7" ry="8" fill="${s}" transform="rotate(16,2,51)"/><rect x="66" y="54" width="32" height="9" rx="4" fill="${o}" transform="rotate(-16,82,58)"/><ellipse cx="98" cy="51" rx="7" ry="8" fill="${s}" transform="rotate(-16,98,51)"/><rect x="44" y="50" width="12" height="10" rx="5" fill="${s}"/><ellipse cx="50" cy="38" rx="20" ry="21" fill="${s}"/><ellipse cx="50" cy="20" rx="21" ry="12" fill="${h}"/><ellipse cx="32" cy="34" rx="8" ry="16" fill="${h}"/><ellipse cx="68" cy="34" rx="8" ry="16" fill="#5a1808"/><circle cx="43" cy="37" r="3.5" fill="#fff"/><circle cx="57" cy="37" r="3.5" fill="#fff"/><circle cx="44" cy="38" r="2" fill="#2a0808"/><circle cx="58" cy="38" r="2" fill="#2a0808"/><path d="M41 46 Q50 55 59 46" stroke="#c03030" stroke-width="2.5" fill="#fff" opacity="0.6"/><ellipse cx="38" cy="43" rx="6" ry="4" fill="#ffb0a0" opacity="0.55"/><ellipse cx="62" cy="43" rx="6" ry="4" fill="#ffb0a0" opacity="0.55"/></svg>`}
+  };
+
   const shareProfile=async()=>{if(!scores||!nick)return;
-    const W=1080,H=1920;
+    const W=1080,H=2160;
     const canvas=document.createElement("canvas");canvas.width=W;canvas.height=H;
     const ctx=canvas.getContext("2d");
     await document.fonts.ready;
@@ -826,134 +846,165 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const mMeta=MBTI_META[mbti]||{title:"The Strategic Visionary",th:"\u0E1C\u0E39\u0E49\u0E21\u0E35\u0E27\u0E34\u0E2A\u0E31\u0E22\u0E17\u0E31\u0E28\u0E19\u0E4C\u0E40\u0E0A\u0E34\u0E07\u0E01\u0E25\u0E22\u0E38\u0E17\u0E18\u0E4C"};
     const domP=calcDomPlanet(vedic||scores);
     const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
-    const top3=so.slice(0,3);
     const archEN=ai?.identity?.powerTitle||mMeta.title||"The Strategic Visionary";
-    const archTH=mMeta.th;
     const desc=ai?.identity?.who?.mbtiCore||ai?.identity?.who?.vedicSoul||mMeta.th||"";
-    // Archetype color by MBTI group
     const mbtiGrp=mbti[1]==="N"?(mbti[2]==="T"?"NT":"NF"):(mbti[3]==="J"?"SJ":"SP");
     const GRP_CLR={NT:"#6366F1",NF:"#0D9488",SJ:"#D97706",SP:"#E11D48"};
     const arcClr=GRP_CLR[mbtiGrp];
+    const isPaid=plan==="deep"||plan==="all";
+    // Wealth data from AI identity
+    const wSkill=ai?.identity?.what?.skillTitle||"\u0E17\u0E31\u0E01\u0E29\u0E30\u0E2B\u0E25\u0E31\u0E01";
+    const wHighlight=ai?.identity?.what?.skillHighlight||ai?.identity?.what?.marketValue||"";
+    const wMoney=ai?.identity?.what?.moneyMaker||"";
+    const wGap=ai?.identity?.what?.gapToClose||"\u0E22\u0E31\u0E07\u0E44\u0E21\u0E48\u0E1E\u0E1A\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25";
+    // Shadow data
+    const shadowTxt=ai?.shadow||"";
     // Spectrum dimensions (core 5)
     const SPEC=[
-      {dim:"Cognitive Processing",color:"#10B981",left:"Analytical",right:"Creative",leftTH:"\u0E27\u0E34\u0E40\u0E04\u0E23\u0E32\u0E30\u0E2B\u0E4C",rightTH:"\u0E2A\u0E23\u0E49\u0E32\u0E07\u0E2A\u0E23\u0E23\u0E04\u0E4C"},
-      {dim:"Emotional Regulation",color:"#FB923C",left:"Stable",right:"Sensitive",leftTH:"\u0E21\u0E31\u0E48\u0E19\u0E04\u0E07",rightTH:"\u0E2D\u0E48\u0E2D\u0E19\u0E44\u0E2B\u0E27"},
-      {dim:"Identity Stability",color:"#60A5FA",left:"Confident",right:"Adaptable",leftTH:"\u0E21\u0E31\u0E48\u0E19\u0E43\u0E08",rightTH:"\u0E22\u0E37\u0E14\u0E2B\u0E22\u0E38\u0E48\u0E19"},
-      {dim:"Energy Management",color:"#F472B6",left:"Energetic",right:"Reserved",leftTH:"\u0E01\u0E23\u0E30\u0E15\u0E37\u0E2D\u0E23\u0E37\u0E2D\u0E23\u0E49\u0E19",rightTH:"\u0E2A\u0E07\u0E27\u0E19"},
-      {dim:"Growth Orientation",color:"#A78BFA",left:"Growth-Driven",right:"Steady",leftTH:"\u0E21\u0E38\u0E48\u0E07\u0E21\u0E31\u0E48\u0E19",rightTH:"\u0E2A\u0E21\u0E48\u0E33\u0E40\u0E2A\u0E21\u0E2D"}
+      {dim:"Cognitive Processing",color:"#10B981",left:"Analytical",right:"Creative"},
+      {dim:"Emotional Regulation",color:"#FB923C",left:"Stable",right:"Sensitive"},
+      {dim:"Identity Stability",color:"#60A5FA",left:"Confident",right:"Adaptable"},
+      {dim:"Energy Management",color:"#F472B6",left:"Energetic",right:"Reserved"},
+      {dim:"Growth Orientation",color:"#A78BFA",left:"Growth-Driven",right:"Steady"}
     ];
-    // Trait names for top scores
-    const TRAITS={"Cognitive Processing":{name:"Strategic Thinker",icon:"\uD83E\uDDE0",bg:"#6366F1"},"Emotional Regulation":{name:"Emotional Anchor",icon:"\uD83C\uDF0A",bg:"#0EA5E9"},"Identity Stability":{name:"Self-Assured",icon:"\u2693",bg:"#EC4899"},"Energy Management":{name:"Action Taker",icon:"\u26A1",bg:"#F59E0B"},"Growth Orientation":{name:"Growth Seeker",icon:"\uD83C\uDF31",bg:"#10B981"},"Decision System":{name:"Decisive",icon:"\u2696\uFE0F",bg:"#3B82F6"},"Responsibility Load":{name:"Reliable",icon:"\uD83C\uDFCB\uFE0F",bg:"#8B5CF6"},"Motivation Driver":{name:"Self-Motivated",icon:"\uD83D\uDD25",bg:"#F97316"},"Boundary System":{name:"Boundary Setter",icon:"\uD83D\uDEE1\uFE0F",bg:"#10B981"},"Stress Response":{name:"Resilient",icon:"\uD83E\uDDCA",bg:"#64748B"},"Shadow Pattern":{name:"Self-Aware",icon:"\uD83C\uDF11",bg:"#1E293B"},"Integration Level":{name:"Integrator",icon:"\uD83D\uDD2E",bg:"#A78BFA"}};
     // ── Helpers ──
     const fr=(x,y,w,h,r,fill)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill()};
     const sr=(x,y,w,h,r,stroke,lw=2)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke()};
-    const tx=(s,x,y,font,color,align="left",mw)=>{ctx.font=font;ctx.fillStyle=color;ctx.textAlign=align;mw?ctx.fillText(s,x,y,mw):ctx.fillText(s,x,y)};
-    const wt=(text,x,y,maxW,lh,font,color)=>{ctx.font=font;ctx.fillStyle=color;ctx.textAlign="left";let line="",cy=y;const chars=[...text];for(const ch of chars){const test=line+ch;if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,cy);line=ch;cy+=lh;}else line=test;}if(line)ctx.fillText(line,x,cy);return cy+lh};
+    const tx=(s,x,y,font,color,align="left",mw)=>{ctx.font=font;ctx.fillStyle=color;ctx.textAlign=align;ctx.textBaseline="alphabetic";mw?ctx.fillText(s,x,y,mw):ctx.fillText(s,x,y)};
+    const wt=(text,x,y,maxW,lh,font,color,maxLines=99)=>{ctx.font=font;ctx.fillStyle=color;ctx.textAlign="left";let line="",cy=y,lc=0;const chars=[...text];for(const ch of chars){const test=line+ch;if(ctx.measureText(test).width>maxW&&line){if(++lc>=maxLines)break;ctx.fillText(line,x,cy);line=ch;cy+=lh;}else line=test;}if(line&&lc<maxLines)ctx.fillText(line,x,cy);return cy+lh};
     const linGrad=(x0,y0,x1,y1,stops)=>{const g=ctx.createLinearGradient(x0,y0,x1,y1);stops.forEach(([t,c])=>g.addColorStop(t,c));return g};
-    const PAD=60;const IX=PAD+20;const IW=W-PAD*2-40;
+    const PAD=50;const IX=PAD+16;const IW=W-PAD*2-32;
+    // ── Load SVG character as image ──
+    const svgFn=MBTI_SVG[mbti]||MBTI_SVG["INTJ"];
+    const svgStr=svgFn(2.8);
+    const svgBlob=new Blob([svgStr],{type:"image/svg+xml;charset=utf-8"});
+    const svgUrl=URL.createObjectURL(svgBlob);
+    const charImg=await new Promise((res)=>{const img=new Image();img.onload=()=>res(img);img.onerror=()=>res(null);img.src=svgUrl;});
     // ══════════════════════════════════════
     // ── WHITE BACKGROUND ──
     ctx.fillStyle="#FFFFFF";ctx.fillRect(0,0,W,H);
-    // ── PHONE FRAME (dark navy border) ──
-    sr(16,16,W-32,H-32,44,"#2D3561",6);
+    // ── PHONE FRAME ──
+    sr(14,14,W-28,H-28,44,"#2D3561",5);
     let y=0;
     // ── TITLE BAR ──
-    y=56;
-    tx("Human System",IX,y+48,"800 48px 'Noto Sans Thai',sans-serif","#1E293B");
-    tx("AI + Vedic + Psychology",W-IX,y+48,"400 22px 'Noto Sans Thai',sans-serif","#94A3B8","right");
-    y+=80;
-    // ── ARCHETYPE CARD (light gray rounded card) ──
-    const cardH=280;
+    y=50;
+    tx("Human System",IX,y+44,"800 44px 'Noto Sans Thai',sans-serif","#1E293B");
+    tx("AI + Vedic + Psychology",W-IX,y+44,"400 20px 'Noto Sans Thai',sans-serif","#94A3B8","right");
+    y+=76;
+    // ── ARCHETYPE CARD ──
+    const cardH=320;
     fr(IX,y,IW,cardH,24,"#F3F4F6");
-    // Archetype EN name (large, colored)
-    const arcFsz=archEN.length>24?40:archEN.length>16?48:56;
+    // "\u0E04\u0E38\u0E13" + nickname
+    tx("\u0E04\u0E38\u0E13 "+nick,IX+28,y+38,"600 26px 'Noto Sans Thai',sans-serif","#64748B");
+    // Archetype name
+    const arcFsz=archEN.length>24?36:archEN.length>16?44:52;
     ctx.font="800 "+arcFsz+"px 'Noto Sans Thai',sans-serif";
     let arcLines=[];let arcLn="";
-    for(const word of archEN.split(" ")){const test=arcLn+(arcLn?" ":"")+word;if(ctx.measureText(test).width>IW*0.55&&arcLn){arcLines.push(arcLn);arcLn=word;}else arcLn=test;}
+    for(const word of archEN.split(" ")){const test=arcLn+(arcLn?" ":"")+word;if(ctx.measureText(test).width>IW*0.52&&arcLn){arcLines.push(arcLn);arcLn=word;}else arcLn=test;}
     if(arcLn)arcLines.push(arcLn);
-    arcLines.forEach((ln,i)=>{tx(ln,IX+28,y+44+(i)*(arcFsz+6),"800 "+arcFsz+"px 'Noto Sans Thai',sans-serif",arcClr);});
-    const arcTextBottom=y+44+(arcLines.length-1)*(arcFsz+6)+10;
-    // MBTI type
-    tx(mbti,IX+28,arcTextBottom+30,"700 32px 'Noto Sans Thai',sans-serif",arcClr+"AA");
-    // Description (left side, wrapped)
-    const descClean=desc.replace(/^[A-Z]+\s*[–—-]\s*/,"").slice(0,160);
-    wt(descClean,IX+28,arcTextBottom+68,IW*0.55,32,"400 24px 'Noto Sans Thai',sans-serif","#64748B");
-    // Decorative: nick + planet on right side
-    tx(domP.icon,IX+IW-120,y+60,"500 64px sans-serif","#fff","center");
-    tx(nick,IX+IW-28,y+cardH-36,"600 24px 'Noto Sans Thai',sans-serif","#94A3B8","right");
-    // Pills inside card bottom-right
-    ctx.font="700 20px 'Noto Sans Thai',sans-serif";const mW=ctx.measureText(mbti).width+24;
-    const pillY=y+cardH-70;
-    fr(IX+IW-28-mW-8,pillY,mW+8,32,16,arcClr+"18");
-    tx(mbti,IX+IW-28-mW/2-4,pillY+23,"700 20px 'Noto Sans Thai',sans-serif",arcClr,"center");
-    const sTxt=domP.icon+" "+domP.planet;
-    ctx.font="500 18px 'Noto Sans Thai',sans-serif";const sW2=ctx.measureText(sTxt).width+20;
-    fr(IX+IW-28-mW-8-sW2-12,pillY,sW2+8,32,16,arcClr+"18");
-    tx(sTxt,IX+IW-28-mW-8-sW2/2-8,pillY+23,"500 18px 'Noto Sans Thai',sans-serif",arcClr,"center");
-    y+=cardH+24;
-    // ── SPECTRUM BARS (5 core dimensions) ──
-    const barPadL=120,barPadR=120;
+    arcLines.forEach((ln,i)=>{tx(ln,IX+28,y+70+(i)*(arcFsz+4),"800 "+arcFsz+"px 'Noto Sans Thai',sans-serif",arcClr);});
+    const arcBot=y+70+(arcLines.length-1)*(arcFsz+4)+8;
+    // MBTI badge
+    tx(mbti,IX+28,arcBot+28,"700 30px 'Noto Sans Thai',sans-serif",arcClr+"BB");
+    // Description + planet
+    const descClean=desc.replace(/^[A-Z]+\s*[\u2013\u2014-]\s*/,"").slice(0,120);
+    const descEnd=wt(descClean,IX+28,arcBot+64,IW*0.50,30,"400 22px 'Noto Sans Thai',sans-serif","#64748B",4);
+    // Planet info
+    tx(domP.icon+" "+domP.planet+" \u0E40\u0E14\u0E48\u0E19",IX+28,Math.max(descEnd+8,y+cardH-36),"500 22px 'Noto Sans Thai',sans-serif","#94A3B8");
+    // SVG Character on right
+    if(charImg){const cW=280,cH=308;ctx.drawImage(charImg,IX+IW-cW-8,y+16,cW,cH);}
+    y+=cardH+20;
+    // ── SPECTRUM BARS (5 core dimensions — bigger bars) ──
+    const barPadL=110,barPadR=110;
     const barTotalW=IW-barPadL-barPadR;
-    const barH=28;
+    const barH=36;
     SPEC.forEach(s=>{
       const sc=scores[s.dim]||5;
       const leftPct=Math.round(sc*10);
       const rightPct=100-leftPct;
       const leftDom=leftPct>=rightPct;
-      // Dimension name (centered, colored)
-      tx(s.dim,IX+IW/2,y+24,"700 24px 'Noto Sans Thai',sans-serif",s.color,"center");
+      // Dimension name
+      tx(s.dim,IX+IW/2,y+26,"700 24px 'Noto Sans Thai',sans-serif",s.color,"center");
       y+=36;
-      // Left percentage
-      tx("%"+leftPct,IX+10,y+24,"700 26px 'Noto Sans Thai',sans-serif",leftDom?s.color:"#64748B");
-      // Right percentage
-      tx("%"+rightPct,IX+IW-10,y+24,"700 26px 'Noto Sans Thai',sans-serif",!leftDom?s.color:"#64748B","right");
-      // Bar (clipped rounded rect)
+      // Left %
+      tx("%"+leftPct,IX+8,y+28,"700 28px 'Noto Sans Thai',sans-serif",leftDom?s.color:"#64748B");
+      // Right %
+      tx("%"+rightPct,IX+IW-8,y+28,"700 28px 'Noto Sans Thai',sans-serif",!leftDom?s.color:"#64748B","right");
+      // Bar
       const bx=IX+barPadL,bw=barTotalW;
       const leftW=bw*leftPct/100;
       ctx.save();
-      ctx.beginPath();ctx.roundRect(bx,y+8,bw,barH,barH/2);ctx.clip();
-      ctx.fillStyle=leftDom?s.color:"#E2E8F0";ctx.fillRect(bx,y+8,leftW,barH);
-      ctx.fillStyle=leftDom?"#E2E8F0":s.color;ctx.fillRect(bx+leftW,y+8,bw-leftW,barH);
+      ctx.beginPath();ctx.roundRect(bx,y+6,bw,barH,barH/2);ctx.clip();
+      ctx.fillStyle=leftDom?s.color:"#E2E8F0";ctx.fillRect(bx,y+6,leftW,barH);
+      ctx.fillStyle=leftDom?"#E2E8F0":s.color;ctx.fillRect(bx+leftW,y+6,bw-leftW,barH);
       ctx.restore();
-      y+=40;
+      y+=48;
       // Labels
-      tx(s.left,IX+10,y+18,"500 22px 'Noto Sans Thai',sans-serif",leftDom?s.color:"#94A3B8");
-      tx(s.right,IX+IW-10,y+18,"500 22px 'Noto Sans Thai',sans-serif",!leftDom?s.color:"#94A3B8","right");
-      y+=38;
+      tx(s.left,IX+8,y+18,"600 22px 'Noto Sans Thai',sans-serif",leftDom?s.color:"#94A3B8");
+      tx(s.right,IX+IW-8,y+18,"600 22px 'Noto Sans Thai',sans-serif",!leftDom?s.color:"#94A3B8","right");
+      y+=40;
     });
-    y+=16;
-    // ── CHARACTER TRAITS (top 3 strengths) ──
-    tx("Character Traits",IX,y+42,"800 42px 'Noto Sans Thai',sans-serif","#1E293B");
-    y+=68;
-    top3.forEach(([k,v])=>{
-      const tr=TRAITS[k]||{name:k,icon:"\u2726",bg:"#6366F1"};
-      // Card background
-      fr(IX,y,IW,90,18,"#F3F4F6");
-      // Icon circle
-      fr(IX+16,y+13,64,64,16,tr.bg);
-      tx(tr.icon,IX+48,y+56,"500 34px sans-serif","#fff","center");
-      // Trait name
-      tx(tr.name,IX+IW-24,y+55,"700 32px 'Noto Sans Thai',sans-serif","#1E293B","right");
-      // Score badge
-      tx(v.toFixed(1),IX+100,y+55,"600 24px 'Noto Sans Thai',sans-serif","#94A3B8");
-      y+=106;
-    });
-    y+=16;
-    // ── \uD83D\uDD12 SHADOW ANALYSIS HOOK ──
-    const hookH=160;
-    fr(IX,y,IW,hookH,24,"#F3F4F6");
-    sr(IX,y,IW,hookH,24,"#E2E8F0",2);
-    tx("\uD83D\uDD12",IX+28,y+50,"500 36px sans-serif","#5B21B6");
-    tx("Shadow Analysis",IX+78,y+46,"800 28px 'Noto Sans Thai',sans-serif","#5B21B6");
-    tx("\u0E1B\u0E25\u0E14\u0E25\u0E47\u0E2D\u0E04\u0E14\u0E49\u0E32\u0E19\u0E21\u0E37\u0E14\u0E17\u0E35\u0E48\u0E04\u0E38\u0E13\u0E44\u0E21\u0E48\u0E40\u0E04\u0E22\u0E23\u0E39\u0E49...",IX+28,y+88,"400 24px 'Noto Sans Thai',sans-serif","#64748B");
-    const btnW2=IW-56;
-    fr(IX+28,y+108,btnW2,42,21,linGrad(IX+28,0,IX+28+btnW2,0,[[0,"#6D28D9"],[1,"#5B21B6"]]));
-    tx("\u0E25\u0E2D\u0E07\u0E17\u0E33\u0E41\u0E1A\u0E1A\u0E1B\u0E23\u0E30\u0E40\u0E21\u0E34\u0E19\u0E1F\u0E23\u0E35  \u2192",IX+28+btnW2/2,y+136,"700 22px 'Noto Sans Thai',sans-serif","#fff","center");
-    y+=hookH+20;
+    y+=20;
+    // ── WEALTH & MARKET VALUE (green card) ──
+    const wCardH=320;
+    fr(IX,y,IW,wCardH,24,"#ECFDF5");
+    sr(IX,y,IW,wCardH,24,"#A7F3D0",2);
+    tx("\uD83D\uDCB0 Wealth & Market Value",IX+28,y+40,"800 30px 'Noto Sans Thai',sans-serif","#065F46");
+    // Skill title
+    tx("\u0E17\u0E31\u0E01\u0E29\u0E30\u0E2B\u0E25\u0E31\u0E01: "+wSkill,IX+28,y+76,"700 24px 'Noto Sans Thai',sans-serif","#047857");
+    // Highlight
+    if(wHighlight)wt(wHighlight,IX+28,y+110,IW-56,28,"400 22px 'Noto Sans Thai',sans-serif","#1E293B",2);
+    // Money maker
+    if(wMoney){tx("\uD83D\uDCB5 "+wMoney,IX+28,y+170,"600 22px 'Noto Sans Thai',sans-serif","#059669");}
+    // Gap card (brown/amber inside green card)
+    const gapY=y+200;const gapH=wCardH-220;
+    fr(IX+20,gapY,IW-40,gapH,16,"#FFFBEB");
+    sr(IX+20,gapY,IW-40,gapH,16,"#FDE68A",2);
+    tx("\u26A0\uFE0F \u0E08\u0E38\u0E14\u0E17\u0E35\u0E48\u0E15\u0E49\u0E2D\u0E07\u0E1E\u0E31\u0E12\u0E19\u0E32",IX+40,gapY+32,"700 24px 'Noto Sans Thai',sans-serif","#92400E");
+    wt(wGap,IX+40,gapY+64,IW-96,28,"400 22px 'Noto Sans Thai',sans-serif","#78350F",2);
+    y+=wCardH+20;
+    // ── SHADOW ANALYSIS ──
+    if(isPaid&&shadowTxt){
+      // Paid plan — show trigger + solution
+      const shLines=shadowTxt.split("\n").filter(l=>l.trim());
+      const triggerLines=[];const solutionLines=[];let inSol=false;
+      shLines.forEach(l=>{if(l.includes("\u0E27\u0E34\u0E18\u0E35\u0E41\u0E01\u0E49")||l.includes("\u0E41\u0E01\u0E49\u0E44\u0E02")||l.includes("solution")||l.includes("Solution"))inSol=true;(inSol?solutionLines:triggerLines).push(l)});
+      const shCardH=280;
+      fr(IX,y,IW,shCardH,24,"#1E1B4B");
+      tx("\u26A1 Shadow Trigger",IX+28,y+40,"800 30px 'Noto Sans Thai',sans-serif","#E0E7FF");
+      const trigTxt=triggerLines.slice(0,3).join(" ").slice(0,200)||shadowTxt.slice(0,200);
+      wt(trigTxt,IX+28,y+76,IW-56,28,"400 22px 'Noto Sans Thai',sans-serif","#C7D2FE",4);
+      if(solutionLines.length>0){
+        tx("\uD83D\uDCA1 \u0E27\u0E34\u0E18\u0E35\u0E41\u0E01\u0E49",IX+28,y+200,"700 24px 'Noto Sans Thai',sans-serif","#A5B4FC");
+        wt(solutionLines.slice(0,2).join(" ").slice(0,120),IX+28,y+232,IW-56,28,"400 22px 'Noto Sans Thai',sans-serif","#C7D2FE",2);
+      }
+      y+=shCardH+20;
+    }else{
+      // Free plan — hook to try assessment
+      const hookH=180;
+      fr(IX,y,IW,hookH,24,"#F3F4F6");
+      sr(IX,y,IW,hookH,24,"#E2E8F0",2);
+      tx("\uD83D\uDD12",IX+28,y+48,"500 36px sans-serif","#5B21B6");
+      tx("Shadow Analysis",IX+78,y+44,"800 28px 'Noto Sans Thai',sans-serif","#5B21B6");
+      tx("\u0E1B\u0E25\u0E14\u0E25\u0E47\u0E2D\u0E04\u0E14\u0E49\u0E32\u0E19\u0E21\u0E37\u0E14\u0E02\u0E2D\u0E07\u0E04\u0E38\u0E13\u0E43\u0E19\u0E2A\u0E34\u0E48\u0E07\u0E17\u0E35\u0E48\u0E04\u0E38\u0E13\u0E44\u0E21\u0E48\u0E40\u0E04\u0E22\u0E23\u0E39\u0E49",IX+28,y+86,"400 24px 'Noto Sans Thai',sans-serif","#64748B");
+      const btnW2=IW-56;
+      fr(IX+28,y+116,btnW2,44,22,linGrad(IX+28,0,IX+28+btnW2,0,[[0,"#6D28D9"],[1,"#5B21B6"]]));
+      tx("\u0E25\u0E2D\u0E07\u0E17\u0E33\u0E41\u0E1A\u0E1A\u0E1B\u0E23\u0E30\u0E40\u0E21\u0E34\u0E19\u0E1F\u0E23\u0E35  \u2192",IX+28+btnW2/2,y+146,"700 22px 'Noto Sans Thai',sans-serif","#fff","center");
+      y+=hookH+20;
+    }
     // ── FOOTER ──
-    tx("\u2726 humansystemstudio.com",W/2,y+20,"600 22px 'Noto Sans Thai',sans-serif","#C7D2FE","center");
+    tx("\u2726 humansystemstudio.com",W/2,y+24,"600 22px 'Noto Sans Thai',sans-serif","#C7D2FE","center");
+    // Cleanup SVG URL
+    URL.revokeObjectURL(svgUrl);
+    // ── Trim canvas to content height ──
+    const finalH=Math.min(y+80,H);
+    const outCanvas=document.createElement("canvas");outCanvas.width=W;outCanvas.height=finalH;
+    const octx=outCanvas.getContext("2d");
+    octx.drawImage(canvas,0,0);
+    // Redraw phone frame on trimmed canvas
+    octx.beginPath();octx.roundRect(14,14,W-28,finalH-28,44);octx.strokeStyle="#2D3561";octx.lineWidth=5;octx.stroke();
     // ── DOWNLOAD PNG ──
-    canvas.toBlob(blob=>{const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`HSS-${nick}-share.png`;
+    outCanvas.toBlob(blob=>{const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`HSS-${nick}-share.png`;
       if(/iPhone|iPad|iPod/.test(navigator.userAgent)){const w=window.open();if(w){w.document.write('<img src="'+url+'" style="width:100%">');w.document.close()}else{document.body.appendChild(a);a.click();document.body.removeChild(a)}}
       else{document.body.appendChild(a);a.click();document.body.removeChild(a)}
       setTimeout(()=>URL.revokeObjectURL(url),1000);},"image/png");};
