@@ -896,8 +896,8 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     fr(IX,y,IW,cardH,24,"#F3F4F6");
     // SVG Character on right (draw first so text overlaps if needed)
     if(charImg){const cW=260,cH=286;ctx.drawImage(charImg,IX+IW-cW+4,y+28,cW,cH);}
-    // "\u0E04\u0E38\u0E13" + nickname
-    tx("\u0E04\u0E38\u0E13 "+nick,IX+28,y+38,"600 26px 'Noto Sans Thai',sans-serif","#64748B");
+    // "\u0E04\u0E38\u0E13" + nickname (larger + more spacing below)
+    tx("\u0E04\u0E38\u0E13 "+nick,IX+28,y+42,"700 32px 'Noto Sans Thai',sans-serif","#374151");
     // Archetype name (narrower to avoid overlap with character)
     const textMaxW=IW*0.44;
     const arcFsz=archEN.length>24?34:archEN.length>16?42:50;
@@ -905,8 +905,8 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     let arcLines=[];let arcLn="";
     for(const word of archEN.split(" ")){const test=arcLn+(arcLn?" ":"")+word;if(ctx.measureText(test).width>textMaxW&&arcLn){arcLines.push(arcLn);arcLn=word;}else arcLn=test;}
     if(arcLn)arcLines.push(arcLn);
-    arcLines.forEach((ln,i)=>{tx(ln,IX+28,y+74+(i)*(arcFsz+6),"800 "+arcFsz+"px 'Noto Sans Thai',sans-serif",arcClr);});
-    const arcBot=y+74+(arcLines.length-1)*(arcFsz+6)+12;
+    arcLines.forEach((ln,i)=>{tx(ln,IX+28,y+86+(i)*(arcFsz+6),"800 "+arcFsz+"px 'Noto Sans Thai',sans-serif",arcClr);});
+    const arcBot=y+86+(arcLines.length-1)*(arcFsz+6)+12;
     // MBTI badge
     tx(mbti,IX+28,arcBot+30,"700 30px 'Noto Sans Thai',sans-serif",arcClr+"BB");
     // Description + planet
@@ -967,16 +967,12 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     // ── SHADOW ANALYSIS ──
     if(isPaid&&shadowTxt){
       // Paid plan — combine trigger + solution in one flowing paragraph
-      const shClean=shadowTxt.replace(/\n+/g," ").replace(/\s+/g," ").trim().slice(0,500);
-      // Measure dynamic height
-      ctx.font="400 22px 'Noto Sans Thai',sans-serif";
-      let tmpLine="",tmpLines=0;
-      for(const ch of [...shClean]){const t=tmpLine+ch;if(ctx.measureText(t).width>(IW-56)&&tmpLine){tmpLines++;tmpLine=ch}else tmpLine=t;}
-      if(tmpLine)tmpLines++;
-      const shCardH=Math.max(120,60+tmpLines*28+20);
+      const shClean=shadowTxt.replace(/\n+/g," ").replace(/\s+/g," ").trim().slice(0,300);
+      // Fixed 3-line layout
+      const shCardH=160;
       fr(IX,y,IW,shCardH,24,"#1E1B4B");
       tx("\u26A1 Shadow Analysis",IX+28,y+38,"800 28px 'Noto Sans Thai',sans-serif","#E0E7FF");
-      wt(shClean,IX+28,y+70,IW-56,28,"400 22px 'Noto Sans Thai',sans-serif","#C7D2FE",16);
+      wt(shClean,IX+28,y+70,IW-56,28,"400 22px 'Noto Sans Thai',sans-serif","#C7D2FE",3);
       y+=shCardH+20;
     }else{
       // Free plan — hook to try assessment
