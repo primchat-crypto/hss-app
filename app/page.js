@@ -1186,7 +1186,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
       <h3 style={{fontSize:14,fontWeight:700,color:"#1E293B"}}>คนที่ใช้แล้วบอกว่า</h3>
       <span style={{fontSize:11,color:"#94A3B8"}}>ปัดดูต่อ →</span>
     </div>
-    <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:8,scrollSnapType:"x mandatory",WebkitOverflowScrolling:"touch",scrollbarWidth:"none",msOverflowStyle:"none"}}>
+    <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:8,paddingRight:20,scrollSnapType:"x mandatory",WebkitOverflowScrolling:"touch",scrollbarWidth:"none",msOverflowStyle:"none"}}>
       {[
         {name:"มิว",age:27,role:"HR Manager",avatar:"👩",stars:5,text:"ตอนแรกคิดว่าจะเหมือนทดสอบทั่วไป แต่ผลที่ได้มันเจาะจงมาก ตรงจุดเลย รู้เลยว่าที่ทำงานอยู่มันไม่ใช่ทาง เดือนเดียวหลังจากนั้นก็ลาออก",tag:"เรื่องงาน"},
         {name:"ปาล์ม",age:34,role:"Freelance Designer",avatar:"👨",stars:5,text:"ส่วน Shadow Analysis แม่นจนขนลุก มันบอกนิสัยที่ทำให้พลาดซ้ำได้เลย ตอนอ่านนั่งยิ้มคนเดียวเพราะมันตรงเกินไป",tag:"เรื่องตัวเอง"},
@@ -1194,7 +1194,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         {name:"โบ",age:31,role:"เจ้าของร้านออนไลน์",avatar:"👩",stars:5,text:"ส่วน timing ชีวิตตรงมาก ช่วงที่ผลบอกว่าควรพัก ตอนนั้นทำอะไรก็ไม่ผ่านจริงๆ พอรู้แล้วก็ไม่ฝืนอีก",tag:"เรื่องจังหวะชีวิต"},
         {name:"เก้",age:29,role:"Product Manager",avatar:"👨",stars:5,text:"ผลมันเชื่อมกันหมด ดวง + นิสัย + timing ไม่ใช่แค่บอกว่าคุณเป็นคนแบบไหน แต่บอกว่า ตอนนี้ควรทำอะไร อันนี้ใช้ได้จริง",tag:"ภาพรวม"}
       ].map((r,i)=>(
-        <div key={i} style={{minWidth:"82%",scrollSnapAlign:"start",background:"#fff",borderRadius:14,padding:"14px 16px",border:"1px solid #E2E8F0",boxShadow:"0 2px 8px rgba(0,0,0,.05)",flexShrink:0}}>
+        <div key={i} style={{minWidth:"72%",scrollSnapAlign:"start",background:"#fff",borderRadius:14,padding:"12px 14px",border:"1px solid #E2E8F0",boxShadow:"0 2px 8px rgba(0,0,0,.05)",flexShrink:0}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
               <div style={{width:36,height:36,borderRadius:"50%",background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>{r.avatar}</div>
