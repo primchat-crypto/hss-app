@@ -34,12 +34,66 @@ const dlCompat=(dow,ns)=>{const dl=DAY_LORD[dow];const str=ns[dl.planet]||5;let 
 const moonTr=(date)=>{const ref=new Date("2024-01-01T00:00:00Z");const days=(date-ref)/864e5;const frac=((days/27.3217%1)+1)%1;return Math.floor((frac*12+5)%12)};
 const marsTr=(date)=>{const ref=new Date("2024-01-01T00:00:00Z");const days=(date-ref)/864e5;return Math.floor(((days/686.97%1)*12+7)%12)};
 const satTr=(date)=>{const ref=new Date("2024-01-01T00:00:00Z");return Math.floor(((date-ref)/864e5/10766*12+10)%12)};
+const venusTr=(date)=>{const ref=new Date("2024-01-01T00:00:00Z");const m=(date-ref)/864e5/30.4375;return Math.floor(((m*1.05+1)%12+12)%12)};
+const jupTr=(date)=>{const ref=new Date("2024-01-01T00:00:00Z");const m=(date-ref)/864e5/30.4375;return Math.floor(((m*0.083+0)%12+12)%12)};
 const natalMoon=(bd)=>{if(!bd||bd==="--")return 0;const d=new Date(bd+"T12:00:00Z");return isNaN(d.getTime())?0:moonTr(d)};
 const getNak=(ri,di)=>NAKSHATRA[(ri*2+(di%3))%27];
 const trAspect=(tr,nr)=>{const d=((tr-nr)%12+12)%12;if(d===0)return{r:"ร่วม",q:"กลาง",m:0};if(d===4||d===8)return{r:"ตรีโกณ",q:"ดีมาก",m:15};if(d===3||d===9)return{r:"จตุโกณ",q:"กดดัน",m:-15};if(d===6)return{r:"ตรงข้าม",q:"ตึง",m:-10};if(d===5)return{r:"ตรีโกณรอง",q:"ดี",m:10};return{r:"ปกติ",q:"กลาง",m:0}};
 const marsD=(r)=>{if(r===0||r===7)return{d:"เกษตร",m:10};if(r===9)return{d:"อุจจ์",m:15};if(r===3)return{d:"นิจ",m:-15};return{d:"ปกติ",m:0}};
 
-const gen7Day=(bd)=>{const nm=natalMoon(bd);const ns=natalPStr(bd);const today=new Date();const days=[];for(let i=0;i<7;i++){const dt=new Date(today);dt.setDate(dt.getDate()+i);const mr=moonTr(dt);const mar=marsTr(dt);const sat=satTr(dt);const ma=trAspect(mr,nm);const md=marsD(mar);const dl=dlCompat(dt.getDay(),ns);const moonE=Math.max(30,Math.min(95,65+ma.m));const marsE=Math.max(30,Math.min(95,65+md.m));const dlE=Math.max(30,Math.min(95,65+dl.mod));const ce=Math.round(moonE*.4+marsE*.25+dlE*.35);days.push({date:`${dt.getDate()}/${dt.getMonth()+1}`,dn:DAYNAME[dt.getDay()],moonR:RASHI[mr],nak:getNak(mr,i),marsR:RASHI[mar],satR:RASHI[sat],ma,md,nmR:RASHI[nm],dl,ce})}return days};
+const gen7Day=(bd)=>{
+  const nm=natalMoon(bd);const ns=natalPStr(bd);const today=new Date();const days=[];
+  for(let i=0;i<7;i++){
+    const dt=new Date(today);dt.setDate(dt.getDate()+i);
+    const mr=moonTr(dt);const mar=marsTr(dt);const sat=satTr(dt);
+    const ve=venusTr(dt);const ju=jupTr(dt);
+    const ma=trAspect(mr,nm);const md=marsD(mar);const dl=dlCompat(dt.getDay(),ns);
+    const moonE=Math.max(30,Math.min(95,65+ma.m));const marsE=Math.max(30,Math.min(95,65+md.m));const dlE=Math.max(30,Math.min(95,65+dl.mod));
+    const ce=Math.round(moonE*.4+marsE*.25+dlE*.35);
+    // Domain analysis
+    const satMarConj=sat===mar; // เสาร์-อังคารร่วมราศี = กาลกินี
+    const venDig=planetDignity('ve',ve);const moonDig7=planetDignity('mo',mr);const marsDig7=planetDignity('ma',mar);
+    const juAsp7=thaiAspect(ju,nm);const satAsp7=thaiAspect(sat,nm);
+    const dow=dt.getDay();
+    // Work: เจ้าวัน + พฤหัส
+    const workTxt=satMarConj?'⚠️ เสาร์-อังคารร่วมราศี (กาลกินี) — ระวังความขัดแย้งในที่ทำงาน อย่าตัดสินใจใหญ่':
+      juAsp7.score>=15?`พฤหัส${juAsp7.q} — โอกาสงานดี เหมาะเสนองาน Networking ${dl.gf}`:
+      dlE<50?`เจ้าวัน${dl.lord}อ่อน — ระวังการตัดสินใจสำคัญ เน้นทำงานให้เสร็จ`:
+      `เจ้าวัน${dl.icon}${dl.lord}หนุน — ${dl.gf}`;
+    // Money: ศุกร์ + จันทร์
+    const moneyTxt=venDig.d==='นิจ'?'ศุกร์นิจ — ระวังรายจ่ายเกินตัว หลีกเลี่ยงลงทุนใหญ่ หรือซื้อของราคาสูง':
+      moonDig7.d==='นิจ'?'จันทร์นิจ — กระแสเงินสดตึง ระวังรายจ่ายไม่คาดคิด เก็บเงินไว้ก่อน':
+      venDig.d==='อุจจ์'?'ศุกร์อุจจ์ — โชคด้านการเงิน รายได้เสริมเข้าได้ เหมาะออมทรัพย์':
+      satMarConj?'เสาร์-อังคารร่วม — ระวังค่าใช้จ่ายฉุกเฉิน ไม่เหมาะลงทุน':
+      'การเงินปกติ — ไม่มีโชคพิเศษ แต่ก็ไม่มีอุปสรรค';
+    // Love: ศุกร์ + จันทร์
+    const loveTxt=dow===5?'วันศุกร์ — ดาวศุกร์ครองวัน เสน่ห์แรง เหมาะนัดพบคนสำคัญ':
+      satMarConj?'เสาร์-อังคารร่วม — ระวังอารมณ์ ควรหลีกเลี่ยงทะเลาะกับคนรัก ใจเย็นๆ':
+      venDig.d==='อุจจ์'?'ศุกร์อุจจ์ — ความรักสดใส อารมณ์ดี เสน่ห์ดึงดูดสูง':
+      venDig.d==='นิจ'?'ศุกร์นิจ — ระวังความเข้าใจผิดในความสัมพันธ์ สื่อสารด้วยความใจเย็น':
+      ma.m>0?'จันทร์มุมดี — อารมณ์ดี เข้าใจกัน เหมาะคุยเรื่องสำคัญ':
+      ma.m<0?'จันทร์กดดัน — อาจมีความเข้าใจผิด ให้เวลาคิดก่อนพูด':
+      'ความรักปกติ — ดูแลกันด้วยความใส่ใจ';
+    // Health: อังคาร + เสาร์
+    const healthTxt=satMarConj?'⚠️ กาลกินี — เสาร์-อังคารร่วมราศี ระวังอุบัติเหตุ ขับรถระมัดระวัง งดกิจกรรมเสี่ยง':
+      marsDig7.d==='นิจ'?'อังคารนิจ — พลังกายต่ำ งดออกกำลังกายหนัก พักผ่อนให้เต็มที่':
+      marsDig7.d==='อุจจ์'?'อังคารอุจจ์ — พลังกายดีเยี่ยม เหมาะออกกำลังกายหนัก เริ่มโปรแกรมใหม่':
+      satAsp7.score<0?'เสาร์กดดัน — เหนื่อยง่าย ดูแลสุขภาพด้วยการพักผ่อนให้พอ':
+      'สุขภาพดี — ออกกำลังกายสม่ำเสมอ พักผ่อนเพียงพอ';
+    // Featured topic (most notable deviation)
+    const domScores={work:dlE+(juAsp7.score>0?15:0)+(satMarConj?-20:0),money:65+(venDig.d==='อุจจ์'?15:venDig.d==='นิจ'?-12:0)+(moonDig7.d==='นิจ'?-10:0),love:65+(dow===5?15:0)+(venDig.d==='อุจจ์'?10:venDig.d==='นิจ'?-10:0)+(ma.m>0?5:0),health:65+(marsDig7.d==='อุจจ์'?15:marsDig7.d==='นิจ'?-12:0)+(satMarConj?-20:0)+(satAsp7.score<0?-10:0)};
+    const [featuredKey]=Object.entries(domScores).sort((a,b)=>Math.abs(b[1]-65)-Math.abs(a[1]-65))[0];
+    const featuredLabel={work:'💼 งาน',money:'💰 เงิน',love:'❤️ ความรัก',health:'🏃 สุขภาพ'}[featuredKey];
+    const featuredGood=domScores[featuredKey]>65;
+    // Special event
+    const specialEvent=satMarConj?{type:'danger',text:'⚠️ กาลกินี — เสาร์อังคารร่วมราศี วันนี้ควรระวังอุบัติเหตุ ความขัดแย้ง ไม่ควรตัดสินใจสำคัญ ลงนามสัญญา หรือเดินทางไกล'}:
+      venDig.d==='อุจจ์'&&dow===5?{type:'good',text:'✨ ศุกร์อุจจ์ในวันศุกร์ — วันมงคลที่สุด เหมาะนัดพบ เจรจา ความรัก และการเงิน'}:
+      juAsp7.score>=15?{type:'good',text:`📚 พฤหัส${juAsp7.q} — วันนี้เหมาะวางแผนระยะยาว ปรึกษาผู้รู้ หรือขอคำแนะนำเรื่องสำคัญ`}:
+      null;
+    days.push({date:`${dt.getDate()}/${dt.getMonth()+1}`,dn:DAYNAME[dt.getDay()],moonR:RASHI[mr],nak:getNak(mr,i),marsR:RASHI[mar],satR:RASHI[sat],veR:RASHI[ve],juR:RASHI[ju],ma,md,nmR:RASHI[nm],dl,ce,work:workTxt,money:moneyTxt,love:loveTxt,health:healthTxt,featuredLabel,featuredGood,specialEvent,satMarConj});
+  }
+  return days;
+};
 
 // Vedic Dasha System — Life Phase Map
 const DASHA_SEQ=[{p:"เกตุ",y:7,icon:"🌀",theme:"การค้นหาตัวเอง",desc:"ช่วงเวลาแห่งการทบทวนภายใน ค้นหาทิศทางชีวิต",focus:"สำรวจตัวตน ปล่อยวางสิ่งเก่า",cheer:"นี่คือช่วงที่จักรวาลให้เวลาคุณ 'รีเซ็ต' — ไม่ต้องรีบ ค่อยๆ หาคำตอบ ทุกการเดินทางเริ่มจากก้าวแรก 🌱",warn:"⚠️ ระวัง: อย่าตัดสินใจใหญ่ด้วยอารมณ์ชั่ววูบ ช่วงนี้สิ่งที่เห็นอาจยังไม่ใช่ภาพเต็ม"},{p:"ศุกร์",y:20,icon:"💎",theme:"ความสัมพันธ์และความสุข",desc:"พลังไปทางความสัมพันธ์ ศิลปะ ความงาม ความรัก",focus:"สร้างสัมพันธ์ ลงทุนความสุข",cheer:"ดาวศุกร์ส่งพลังรัก ความสุข ความอุดมสมบูรณ์ — ถ้ารู้สึกดีกับคนรอบข้าง แสดงว่าคุณใช้พลังนี้ถูกทางแล้ว ✨",warn:"⚠️ ระวัง: อย่าหลงความสุขระยะสั้นจนลืมรากฐาน อย่าพึ่งลาออกจากงานเพราะอยากตามความฝัน โดยไม่มีแผนสำรอง"},{p:"อาทิตย์",y:6,icon:"☀️",theme:"การสร้างตัวตน",desc:"ช่วงสร้างตัวตน อำนาจ ชื่อเสียง ความมั่นใจ",focus:"แสดงตัวตน เป็นผู้นำ",cheer:"นี่คือเวลาที่แสงสว่างส่องมาที่คุณ — กล้าขึ้นเวที กล้าบอกโลกว่าคุณเป็นใคร ความมั่นใจของคุณจะดึงดูดโอกาส 🌟",warn:"⚠️ ระวัง: อย่าให้ความมั่นใจกลายเป็นหยิ่ง ฟังคนรอบข้างด้วย"},{p:"จันทร์",y:10,icon:"🌙",theme:"อารมณ์และจิตใจ",desc:"พลังด้านอารมณ์ ครอบครัว การดูแลเอาใจใส่",focus:"ดูแลจิตใจ สร้างความมั่นคงภายใน",cheer:"จันทร์ให้คุณรู้สึกลึกกว่าเดิม — นั่นคือพลัง ไม่ใช่ความอ่อนแอ คนที่เข้าใจอารมณ์ตัวเองคือคนที่แข็งแกร่งที่สุด 💙",warn:"⚠️ ระวัง: อย่าเก็บทุกอย่างไว้คนเดียว หาคนไว้ใจคุยด้วย อย่าตัดสินใจเรื่องเงินตอนอารมณ์ไม่ดี"},{p:"อังคาร",y:7,icon:"🔥",theme:"พลังงานและการกระทำ",desc:"ช่วงลงมือทำ กล้าเสี่ยง พลังกายสูง",focus:"ลงมือทำ เผชิญหน้าความท้าทาย",cheer:"อังคารจุดไฟให้คุณ — พลังกายและใจพร้อมทำสิ่งใหญ่ ใช้พลังนี้ให้คุ้ม ลงมือเลย ไม่ต้องรอ 🚀",warn:"⚠️ ระวัง: พลังสูง = ใจร้อนง่าย อย่าทะเลาะกับคนสำคัญ คิดก่อนพูด"},{p:"ราหู",y:18,icon:"🌑",theme:"การเปลี่ยนแปลงครั้งใหญ่",desc:"บทเรียนใหม่ที่ไม่คุ้นเคย เปลี่ยนแปลงฉับพลัน",focus:"เปิดรับสิ่งใหม่ อย่ายึดติดของเดิม",cheer:"ราหูพาคุณออกจาก comfort zone — อาจรู้สึกไม่สบายใจ แต่นี่คือช่วงที่คุณจะเติบโตมากที่สุด ทุกอย่างจะคุ้มค่า 🦋",warn:"⚠️ ระวัง: อย่าเชื่อคนง่ายเกินไป ตรวจสอบข้อมูลก่อนลงทุนหรือเซ็นสัญญาใหญ่"},{p:"พฤหัส",y:16,icon:"📚",theme:"การขยายตัวและปัญญา",desc:"ช่วงเรียนรู้ ขยายตัว ปัญญาเปิด โชคดี",focus:"ศึกษา ขยายขอบเขต ลงทุนระยะยาว",cheer:"พฤหัสเปิดประตูแห่งโอกาส — ทุกอย่างที่เรียนรู้ตอนนี้จะเป็นทุนให้คุณไปอีก 10 ปี ช่วงนี้โชคอยู่ข้างคุณ 🍀",warn:"⚠️ ระวัง: อย่ากระจายตัวมากเกินไป โฟกัสสิ่งที่สำคัญจริงๆ"},{p:"เสาร์",y:19,icon:"⚙️",theme:"วินัยและความรับผิดชอบ",desc:"บทเรียนเรื่องวินัย ความอดทน สร้างฐาน",focus:"สร้างวินัย ทำงานหนัก ผลมาช้าแต่ยั่งยืน",cheer:"เสาร์สอนให้คุณอดทน — อาจรู้สึกหนัก แต่คนที่ผ่านช่วงเสาร์ไปได้จะแข็งแกร่งกว่าเดิมหลายเท่า ผลที่ได้จะยั่งยืน 💪",warn:"⚠️ ระวัง: อย่าลัดขั้นตอน ทำทางลัดช่วงนี้จะย้อนมาเสียใจทีหลัง ค่อยๆ สร้าง"},{p:"พุธ",y:17,icon:"🧠",theme:"สื่อสารและเรียนรู้",desc:"พลังด้านสื่อสาร ธุรกิจ การค้า ความคิด",focus:"สื่อสาร เรียนรู้ สร้างเครือข่าย",cheer:"พุธเปิดสมองให้คุณ — คิดเร็ว เรียนเร็ว สื่อสารเก่ง ใช้พลังนี้สร้างเครือข่ายและโอกาสใหม่ๆ 🤝",warn:"⚠️ ระวัง: คิดเยอะ = กังวลง่าย อย่าลืมพักสมอง อย่าเสียเวลากับรายละเอียดเล็กน้อยจนลืมภาพใหญ่"}];
@@ -282,6 +336,40 @@ const genTimeline=(bd,year)=>{
       neutral:'เขียนเป้าหมาย Cashflow 3 เดือน วางแผนการเงิน ยิ่งชัดก่อนเดือนพลังสูง ยิ่งใช้โอกาสได้คุ้ม'
     };
 
+    // ─── Domain Analysis per Month (งาน เงิน ความรัก สุขภาพ) ───
+    const veDig=planetDignity('ve',tr.ve);
+    const marsDig2=planetDignity('ma',tr.ma);
+    const juInH7=h.ju===7;const saInH7=h.sa===7;const veInH7=h.ve===7;
+    const juInH11=h.ju===11;const saInH2=h.sa===2;
+    const saInH10=h.sa===10;const maInH10=h.ma===10;
+    const saInH6=h.sa===6;
+    const juH10asp2=thaiAspect(tr.ju,(natalR+9)%12);
+    // Work score
+    const wMs=Math.max(20,Math.min(95,Math.round(60+(juH10asp2.score>0?15:0)+(saInH10?-8:0)+(maInH10?-5:0)+(dashaHigh?10:dashaLow?-10:0))));
+    // Money score
+    const moMs=Math.max(20,Math.min(95,Math.round(60+(veDig.d==='อุจจ์'?15:veDig.d==='นิจ'?-12:0)+(moonDig.d==='นิจ'?-10:0)+(juInH11?12:0)+(saInH2?-12:0))));
+    // Love score
+    const lvMs=Math.max(20,Math.min(95,Math.round(60+(veDig.d==='อุจจ์'?12:veDig.d==='นิจ'?-10:0)+(juInH7?15:0)+(saInH7?-12:0)+(veInH7?10:0))));
+    // Health score
+    const hlMs=Math.max(20,Math.min(95,Math.round(60+(marsDig2.d==='อุจจ์'?15:marsDig2.d==='นิจ'?-12:0)+(moonDig.d==='นิจ'?-8:0)+((h.sa===1||saInH6)?-12:0))));
+    // Domain texts
+    const workFocusTxt=maInH10?'อังคารทับเรือนการงาน — พลังทำงานสูง แต่ระวังขัดแย้งกับเพื่อนร่วมงาน':saInH10?'เสาร์ทับเรือนการงาน — งานหนัก ความรับผิดชอบสูง ผลจะเห็นช้าแต่ยั่งยืน':juH10asp2.score>0?`พฤหัส${juH10asp2.q}เรือนการงาน — โอกาสใหม่ เลื่อนตำแหน่ง/โปรเจกต์สำคัญ`:type==='danger'?'ดาวกดดัน ทำงานให้เสร็จตามเป้า ไม่ใช่เวลาขอเพิ่มงาน':'การงานปกติ เดินหน้าตามแผน';
+    const moneyFocusTxt=veDig.d==='นิจ'?'ศุกร์นิจ — ระวังรายจ่ายเกินตัว หลีกเลี่ยงลงทุนใหญ่ เก็บเงินไว้ก่อน':moonDig.d==='นิจ'?'จันทร์นิจ — กระแสเงินสดตึง ระวังรายจ่ายฉุกเฉิน':juInH11?'พฤหัสอยู่เรือนลาภะ (H11) — โชคด้านการเงิน อาจมีรายได้เสริม/โบนัส/คืนภาษี':saInH2?'เสาร์ทับเรือนทรัพย์ — ควบคุมรายจ่าย สะสมมากกว่าลงทุน':veDig.d==='อุจจ์'?'ศุกร์อุจจ์ — การเงินดี เหมาะสะสมทรัพย์และลงทุนระยะยาว':'การเงินสมดุล รายรับรายจ่ายปกติ';
+    const loveFocusTxt=saInH7?'เสาร์ทับเรือนความรัก (H7) — ความสัมพันธ์อาจรู้สึกหนักหรือห่างเหิน ต้องอดทนและสื่อสาร':juInH7?'พฤหัสอยู่เรือนความรัก — ความสัมพันธ์ราบรื่น อาจมีข่าวดีเรื่องคู่ครอง':veDig.d==='อุจจ์'?'ศุกร์อุจจ์ — ความรักสดใส เสน่ห์แรง เหมาะนัดพบคนสำคัญหรือวางแผนอนาคต':veDig.d==='นิจ'?'ศุกร์นิจ — ระวังความเข้าใจผิดในความสัมพันธ์ พูดคุยด้วยความใจเย็น':'ความรักปกติ ดูแลกันด้วยความใส่ใจ';
+    const healthFocusTxt=(h.sa===1||h.ra===1)?'ดาวบาปทับลัคน์ — ดูแลสุขภาพเป็นพิเศษ นอนให้เพียงพอ ตรวจร่างกาย':marsDig2.d==='นิจ'?'อังคารนิจ — พลังกายต่ำ งดออกกำลังกายหนัก พักผ่อนให้เต็มที่':marsDig2.d==='อุจจ์'?'อังคารอุจจ์ — พลังกายดีเยี่ยม เหมาะเริ่มโปรแกรมออกกำลังกายหรือ detox':saInH6?'เสาร์ทับเรือนโรค — ระวังสุขภาพ ควรตรวจร่างกายประจำปี':'สุขภาพดี ออกกำลังกายสม่ำเสมอ';
+    // Dominant and lowest domain
+    const domainMap={work:wMs,money:moMs,love:lvMs,health:hlMs};
+    const [domTopic]=Object.entries(domainMap).sort((a,b)=>b[1]-a[1])[0];
+    const [lowTopic]=Object.entries(domainMap).sort((a,b)=>a[1]-b[1])[0];
+    const domTopicTH={work:'การงาน',money:'การเงิน',love:'ความรัก',health:'สุขภาพ'}[domTopic];
+    const lowTopicTH={work:'การงาน',money:'การเงิน',love:'ความรัก',health:'สุขภาพ'}[lowTopic];
+    // Decision advice
+    const decisionAdvice=type==='golden'?`✅ เดือนทองแห่งโอกาส: ตัดสินใจเรื่อง${domTopicTH==='การงาน'?'การงานได้เลย — เสนองาน ขอขึ้นเงินเดือน หรือสมัครตำแหน่งที่ดีกว่า':domTopicTH==='การเงิน'?'การเงินได้เลย — ลงทุน เปิดพอร์ต หรือสะสมทรัพย์ระยะยาว':domTopicTH==='ความรัก'?'ความรักได้เลย — นัดสำคัญ สารภาพรัก หรือวางแผนอนาคตร่วมกัน':'สุขภาพได้เลย — เริ่มโปรแกรมสุขภาพ ตรวจร่างกาย หรือปรับพฤติกรรมใหม่'}`:
+      type==='danger'?`⚠️ เดือนระวัง: ${lowTopicTH==='การงาน'?'อย่าลาออกจากงานเพราะอารมณ์ ไม่ใช่เวลาตัดสินใจเรื่องอาชีพใหญ่ รอก่อน':lowTopicTH==='การเงิน'?'อย่าลงทุนใหญ่ กู้เงิน หรือเซ็นสัญญาสำคัญ รอเดือนที่ดีกว่า':lowTopicTH==='ความรัก'?'ระวังตัดสินใจเรื่องความสัมพันธ์ด้วยอารมณ์ชั่ววูบ ใจเย็นๆ':'ระวังสุขภาพ อย่าหักโหมทำงานหรือออกกำลังกายหนัก'} ${balanceText?'· '+balanceText:''}`:
+      type==='side'?`💼 โอกาสรายได้เสริม: รับงานเพิ่มได้ แต่อย่าลาออกจากงานหลัก เก็บรายได้ที่ได้มา 70% ก่อน โอกาสนี้ชั่วคราว`:
+      type==='good'?`😊 เดือนดี: ดำเนินการเรื่อง${domTopicTH}ได้เลย — ${domTopicTH==='การงาน'?'ขอโปรเจกต์/รับผิดชอบใหม่':domTopicTH==='การเงิน'?'วางแผนระยะยาวหรือลงทุนปานกลาง':domTopicTH==='ความรัก'?'ดูแลคนรัก วางแผนอนาคต':'ออกกำลังกาย ดูแลสุขภาพ'}`:
+      `📋 เดือนวางแผน: สะสมพลังและวางแผน ยังไม่ต้องรีบตัดสินใจใหญ่เรื่อง${lowTopicTH}`;
+
     return{
       month:mi,monthFull:TL_MONTHS_FULL[mi],monthShort:TL_MONTHS_TH[mi],
       stars,energy,type,icon,headline,tags,
@@ -293,7 +381,10 @@ const genTimeline=(bd,year)=>{
       balanceType,balanceText,stressors,
       goldenDays,blackDays,
       psychText,psychTip:psychTips[type]||psychTips.neutral,
-      planets,sideJob:type==='side'||type==='good'
+      planets,sideJob:type==='side'||type==='good',
+      workFocus:workFocusTxt,moneyFocus:moneyFocusTxt,loveFocus:loveFocusTxt,healthFocus:healthFocusTxt,
+      domainScores:{work:wMs,money:moMs,love:lvMs,health:hlMs},
+      dominantTopic:domTopic,decisionAdvice
     };
   });
 };
@@ -655,11 +746,11 @@ export default function App(){
     // Energy: show smart fallback FIRST then try GPT
     if(type==="energy"){try{const tr=gen7Day(bd);const MOODS=["🌟 สดใส","😊 สงบ","🔥 กระตือรือร้น","🧠 คิดวิเคราะห์","📚 ปัญญาเปิด","💎 ผ่อนคลาย","⚙️ ต้องใช้วินัย"];
       const today=new Date();
-      const smartFB=tr.map((d,i)=>{const dt=new Date(today);dt.setDate(dt.getDate()+i);const dateStr=`${dt.getDate()}/${dt.getMonth()+1}`;const dayLabel=`${d.dn} ${dateStr}`;return{day:dayLabel,date:dateStr,energy:d.ce,mood:d.ce>75?MOODS[0]:d.ce>65?MOODS[1]:d.ce>55?MOODS[3]:MOODS[6],tip:`เจ้าวัน${d.dl.icon}${d.dl.lord} ${d.dl.q} จันทร์จรราศี${d.moonR}(${d.ma.r})`,transit:`เจ้าวัน${d.dl.icon}${d.dl.lord} + จันทร์จรราศี${d.moonR} + อังคารจรราศี${d.marsR}`,goodFor:d.dl.gf}});
+      const smartFB=tr.map((d,i)=>{const dt=new Date(today);dt.setDate(dt.getDate()+i);const dateStr=`${dt.getDate()}/${dt.getMonth()+1}`;const dayLabel=`${d.dn} ${dateStr}`;return{day:dayLabel,date:dateStr,energy:d.ce,mood:d.ce>75?MOODS[0]:d.ce>65?MOODS[1]:d.ce>55?MOODS[3]:MOODS[6],tip:`เจ้าวัน${d.dl.icon}${d.dl.lord} ${d.dl.q} จันทร์จรราศี${d.moonR}(${d.ma.r})`,transit:`เจ้าวัน${d.dl.icon}${d.dl.lord} + จันทร์${d.moonR} + อังคาร${d.marsR} + ศุกร์${d.veR} + พฤหัส${d.juR}`,goodFor:d.dl.gf,work:d.work,money:d.money,love:d.love,health:d.health,featured:d.featuredLabel,featuredGood:d.featuredGood,specialEvent:d.specialEvent}});
       setAi(p=>({...p,energy:smartFB}));setAiL(p=>({...p,energy:false}));clearTimeout(safetyTm);
       // Try GPT upgrade in background (non-blocking) — delayed 4s so identity/core get queue priority
       const dateLabels=tr.map((d,i)=>{const dt=new Date(today);dt.setDate(dt.getDate()+i);return`${d.dn} ${dt.getDate()}/${dt.getMonth()+1}`});
-      setTimeout(()=>GPT.call(`นักจิตวิทยาอบอุ่นฮีลใจ\nพลังงาน7วัน"${nn}"ราศี${tr[0].nmR}\n${tr.map((d,i)=>(dateLabels[i])+":"+(d.dl.icon)+(d.dl.lord)+" จ"+(d.moonR)+"("+(d.ma.r)+") E="+(d.ce)+"%").join("\n")}\nตอบJSON7obj ใช้วันที่จริงที่ให้:[{"day":"${dateLabels[0]}","date":"${tr[0].date}","energy":30-95,"mood":"emoji+2คำ","tip":"สั้นอ้างดาว+ให้กำลังใจ","transit":"ดาว","goodFor":"สั้น"}]`,`en_${nn}_${new Date().toISOString().slice(0,10)}`,500).then(t=>{const p=pJ(t);if(p&&Array.isArray(p)&&p.length===7){setAi(prev=>({...prev,energy:p.map((d,i)=>({...d,day:d.day||dateLabels[i],date:d.date||tr[i]?.date,energy:d.energy<15?Math.round(d.energy*10):d.energy}))}))}}) ,4000);
+      setTimeout(()=>GPT.call(`โหราศาสตร์พระเวท (Vedic Jyotish) อบอุ่นฮีลใจ ตรงไปตรงมา\nพลังงาน7วัน"${nn}"ราศีเกิด${tr[0].nmR} — อ้างดาวเฉพาะวัน\n${tr.map((d,i)=>(dateLabels[i])+":"+(d.dl.icon)+(d.dl.lord)+(d.satMarConj?" ⚠️กาลกินีเสาร์-อังคาร":"")+` จ${d.moonR}(${d.ma.r}) ศุกร์${d.veR} E=${d.ce}%`).join("\n")}\nให้แต่ละวัน: work=เรื่องงานอ้างดาวเฉพาะวัน, money=การเงินอ้างดาว, love=ความรักอ้างดาว, health=สุขภาพอ้างดาว, mood=emoji+2คำ, tip=ประโยคเดียวฮีลใจ\nตอบJSON7obj ใช้วันที่จริง:[{"day":"${dateLabels[0]}","date":"${tr[0].date}","energy":${tr[0].ce},"mood":"emoji+2คำ","tip":"ฮีลใจ","work":"งานอ้างดาว","money":"เงินอ้างดาว","love":"รักอ้างดาว","health":"สุขภาพอ้างดาว"}]`,`en_${nn}_${new Date().toISOString().slice(0,10)}`,600).then(t=>{const p=pJ(t);if(p&&Array.isArray(p)&&p.length===7){setAi(prev=>({...prev,energy:p.map((d,i)=>({...smartFB[i],...d,day:d.day||dateLabels[i],date:d.date||tr[i]?.date,energy:d.energy<15?Math.round(d.energy*10):d.energy,specialEvent:tr[i]?.specialEvent,featured:tr[i]?.featuredLabel,featuredGood:tr[i]?.featuredGood}))}))}}) ,4000);
       }catch(e){console.log("Energy fallback error:",e);const fb=pJ(GPT.fb("en_x"));setAi(p=>({...p,energy:fb||[]}));setAiL(p=>({...p,energy:false}));clearTimeout(safetyTm)}
       return}
     // Timeline: generate monthly career energy, then try GPT upgrade
@@ -1188,9 +1279,40 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
           </div>)}
         </div>
 
+        {/* Domain breakdown: งาน เงิน ความรัก สุขภาพ */}
+        {m.domainScores&&<div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#1E293B",marginBottom:8,display:"flex",alignItems:"center",gap:4}}>📊 เรื่องเด่นประจำเดือน — Vedic Transit</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+            {[{key:'work',icon:'💼',label:'การงาน',text:m.workFocus,score:m.domainScores.work,bg:'#EEF2FF',fg:'#4338CA',brd:'#C7D2FE'},{key:'money',icon:'💰',label:'การเงิน',text:m.moneyFocus,score:m.domainScores.money,bg:'#FFFBEB',fg:'#92400E',brd:'#FDE68A'},{key:'love',icon:'❤️',label:'ความรัก',text:m.loveFocus,score:m.domainScores.love,bg:'#FFF1F2',fg:'#BE185D',brd:'#FECDD3'},{key:'health',icon:'🏃',label:'สุขภาพ',text:m.healthFocus,score:m.domainScores.health,bg:'#ECFDF5',fg:'#065F46',brd:'#A7F3D0'}].map(({key,icon,label,text,score,bg,fg,brd})=>{
+              const isHighlight=key===m.dominantTopic;
+              const scoreColor=score>=75?'#059669':score>=55?fg:'#DC2626';
+              return<div key={key} style={{background:bg,borderRadius:10,padding:"8px 10px",border:`1px solid ${brd}`,boxShadow:isHighlight?"0 2px 8px rgba(0,0,0,0.08)":"none",position:"relative"}}>
+                {isHighlight&&<span style={{position:"absolute",top:6,right:6,fontSize:8,fontWeight:700,color:"#fff",background:"#6366F1",padding:"1px 5px",borderRadius:6}}>เด่น</span>}
+                <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:4}}>
+                  <span style={{fontSize:14}}>{icon}</span>
+                  <span style={{fontSize:10,fontWeight:700,color:fg}}>{label}</span>
+                  <span style={{fontSize:9,fontWeight:700,color:scoreColor,marginLeft:"auto"}}>{score}%</span>
+                </div>
+                <div style={{height:3,borderRadius:2,background:"rgba(0,0,0,0.08)",marginBottom:6}}>
+                  <div style={{height:3,borderRadius:2,background:scoreColor,width:`${score}%`}}/>
+                </div>
+                <div style={{fontSize:10,color:"#374151",lineHeight:1.5}}>{text}</div>
+              </div>;
+            })}
+          </div>
+        </div>}
+
+        {/* Decision advice */}
+        {m.decisionAdvice&&<div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#1E293B",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>🎯 คำแนะนำการตัดสินใจเดือนนี้</div>
+          <div style={{background:m.type==='golden'?"linear-gradient(135deg,#FFFBEB,#FEF3C7)":m.type==='danger'?"linear-gradient(135deg,#FFF1F2,#FFE4E6)":m.type==='good'?"linear-gradient(135deg,#ECFDF5,#D1FAE5)":"#F8F7FC",borderRadius:10,padding:"10px 12px",border:`1px solid ${m.type==='golden'?"#FDE68A":m.type==='danger'?"#FECDD3":m.type==='good'?"#A7F3D0":"#E2E8F0"}`}}>
+            <div style={{fontSize:11,lineHeight:1.8,color:"#1E293B",fontWeight:500}}>{m.decisionAdvice}</div>
+          </div>
+        </div>}
+
         {/* Psychology × Astrology */}
         <div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#7B6FA0",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>🧠 จิตวิทยา × โหราศาสตร์</div>
+          <div style={{fontSize:11,fontWeight:700,color:"#7B6FA0",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>🧠 วิเคราะห์ดาว × จิตวิทยา</div>
           <div style={{background:"#F8F7FC",borderRadius:10,padding:"10px 12px"}}>
             <div style={{fontSize:11,lineHeight:1.8,color:"#3A3050",marginBottom:8}}>{m.psychText}</div>
             <div style={{background:"#fff",borderRadius:8,padding:"8px 10px",borderLeft:"3px solid #7B6FA0"}}>
@@ -1337,7 +1459,33 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   {!has("weekly")?<Locked planNeeded="deep" title="Do & Don't สัปดาห์นี้" onUpgrade={tryUpgrade}><div style={{marginBottom:8}}><div style={{fontSize:12,fontWeight:700,color:"#10B981",marginBottom:4}}>✅ ควรทำ</div><div style={{padding:"6px 10px",borderRadius:6,background:"#ECFDF5",fontSize:11,marginBottom:3}}>ใช้จุดแข็งที่ดาวหนุนให้เต็มที่</div><div style={{padding:"6px 10px",borderRadius:6,background:"#ECFDF5",fontSize:11,marginBottom:3}}>ฝึกสังเกตอารมณ์ตัวเอง</div></div><div><div style={{fontSize:12,fontWeight:700,color:"#EF4444",marginBottom:4}}>❌ ควรเลี่ยง</div><div style={{padding:"6px 10px",borderRadius:6,background:"#FFF1F2",fontSize:11,marginBottom:3}}>หลีกเลี่ยงการตัดสินใจเร็วเกินไป</div><div style={{padding:"6px 10px",borderRadius:6,background:"#FFF1F2",fontSize:11}}>อย่ารับงานเกินกำลัง</div></div></Locked>:<Sec fKey="weekly" title="Do & Don't สัปดาห์นี้" icon="📋">{aiL.weekly?<Spin/>:ai.weekly&&typeof ai.weekly==="object"?<><div style={{fontSize:11,fontWeight:700,color:"#10B981",marginBottom:3}}>✅ ควรทำ</div>{(ai.weekly.do||[]).map((t,i)=><div key={i} style={{padding:"5px 8px",borderRadius:6,background:"#ECFDF5",border:"1px solid #A7F3D0",fontSize:11,marginBottom:2}}>{t}</div>)}<div style={{fontSize:11,fontWeight:700,color:"#EF4444",marginBottom:3,marginTop:6}}>❌ ควรเลี่ยง</div>{(ai.weekly.dont||[]).map((t,i)=><div key={i} style={{padding:"5px 8px",borderRadius:6,background:"#FFF1F2",border:"1px solid #FECDD3",fontSize:11,marginBottom:2}}>{t}</div>)}</>:<Spin/>}</Sec>}
 
   {/* Locked preview: Energy */}
-  {!has("energy")?<Locked planNeeded="deep" title="7-Day Energy Forecast" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>🌙 พลังงาน 7 วัน — Moon + Mars + Day Lord</div>{["จันทร์ — 🌟 สดใส-เริ่มใหม่","อังคาร — 😊 สงบมั่นคง","พุธ — 🔥 กระตือรือร้น","พฤหัสบดี — 📚 ปัญญาเปิด","ศุกร์ — 💎 ผ่อนคลาย","เสาร์ — ⚙️ ต้องใช้วินัย","อาทิตย์ — ☀️ มีพลัง"].map((d,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 8px",borderRadius:6,background:i%2===0?"#F8FAFC":"#fff",fontSize:11,marginBottom:2}}><span>{d.split("—")[0]}</span><span style={{fontWeight:700}}>{d.split("—")[1]}</span></div>)}<div style={{fontSize:10,color:"#6366F1",marginTop:6}}>🔮 คำนวณจาก Transit จันทร์+อังคาร+เจ้าวัน Vedic</div></Locked>:<Sec fKey="energy" title="7-Day Energy" icon="🌙">{aiL.energy||!ai.energy?<Spin/>:Array.isArray(ai.energy)?<>{ai.energy.map((d,i)=><div key={i} style={{padding:"8px 10px",borderRadius:8,marginBottom:3,background:i===0?"linear-gradient(135deg,#EEF2FF,#F5F3FF)":"#F8FAFC",border:i===0?"2px solid #6366F1":"1px solid #F1F5F9"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><div style={{display:"flex",alignItems:"center",gap:4}}><span style={{fontSize:12,fontWeight:700}}>{i===0?"📍 ":""}{d.day}</span><span style={{fontSize:9,color:"#94A3B8",background:"#fff",padding:"1px 4px",borderRadius:4}}>{d.date}</span></div></div><div style={{fontSize:12,fontWeight:600,color:"#374151",marginBottom:2}}>{d.mood}</div>{d.transit&&<div style={{fontSize:9,color:"#7C3AED"}}>🪐 {d.transit}</div>}{d.goodFor&&<div style={{fontSize:10,color:"#059669",background:"#ECFDF5",borderRadius:4,padding:"2px 6px",marginTop:2}}>✅ {d.goodFor}</div>}{d.tip&&<div style={{fontSize:10,color:"#374151",background:"#fff",borderRadius:4,padding:"2px 6px",marginTop:2,border:"1px solid #F1F5F9"}}>💡 {d.tip}</div>}</div>)}<div style={{marginTop:6,padding:8,background:"#F5F3FF",borderRadius:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>🔮 Vedic Jyotish 3 ชั้น</div><div style={{fontSize:9,color:"#64748B"}}>จันทร์Transit(40%) + อังคาร(25%) + เจ้าวัน(35%)</div></div></>:<Spin/>}</Sec>}
+  {!has("energy")?<Locked planNeeded="deep" title="7-Day Energy Forecast" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>🌙 พลังงาน 7 วัน — Moon + Mars + Day Lord</div>{["จันทร์ — 🌟 สดใส-เริ่มใหม่","อังคาร — 😊 สงบมั่นคง","พุธ — 🔥 กระตือรือร้น","พฤหัสบดี — 📚 ปัญญาเปิด","ศุกร์ — 💎 ผ่อนคลาย","เสาร์ — ⚙️ ต้องใช้วินัย","อาทิตย์ — ☀️ มีพลัง"].map((d,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 8px",borderRadius:6,background:i%2===0?"#F8FAFC":"#fff",fontSize:11,marginBottom:2}}><span>{d.split("—")[0]}</span><span style={{fontWeight:700}}>{d.split("—")[1]}</span></div>)}<div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>{['💼 งาน','💰 เงิน','❤️ ความรัก','🏃 สุขภาพ'].map((t,i)=><span key={i} style={{fontSize:10,padding:"2px 8px",borderRadius:8,background:"#EEF2FF",color:"#4338CA",fontWeight:600}}>{t}</span>)}</div><div style={{fontSize:10,color:"#6366F1",marginTop:6}}>🔮 คำนวณจาก Transit จันทร์+อังคาร+ศุกร์+พฤหัส+เจ้าวัน Vedic</div></Locked>:<Sec fKey="energy" title="7-Day Energy: รู้ก่อนรุ่ง พุ่งก่อนใคร" icon="🌙">{aiL.energy||!ai.energy?<Spin/>:Array.isArray(ai.energy)?<>{ai.energy.map((d,i)=>{const eColor=d.energy>=75?"#059669":d.energy>=55?"#6366F1":"#DC2626";const eBg=d.energy>=75?"#ECFDF5":d.energy>=55?"#EEF2FF":"#FFF1F2";return<div key={i} style={{padding:"10px 12px",borderRadius:10,marginBottom:4,background:i===0?"linear-gradient(135deg,#EEF2FF,#F5F3FF)":"#F8FAFC",border:i===0?"2px solid #6366F1":"1px solid #F1F5F9",boxShadow:i===0?"0 2px 8px rgba(99,102,241,0.08)":"none"}}>
+  {/* Day header */}
+  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+    <div style={{display:"flex",alignItems:"center",gap:6}}>
+      {i===0&&<span style={{fontSize:9,fontWeight:700,color:"#fff",background:"#6366F1",padding:"1px 6px",borderRadius:8}}>วันนี้</span>}
+      <span style={{fontSize:13,fontWeight:700,color:"#1E293B"}}>{d.day}</span>
+    </div>
+    <div style={{display:"flex",alignItems:"center",gap:6}}>
+      <span style={{fontSize:11,fontWeight:800,color:eColor,background:eBg,padding:"2px 8px",borderRadius:8}}>{d.energy}%</span>
+      {d.featured&&<span style={{fontSize:9,fontWeight:700,color:d.featuredGood?"#059669":"#DC2626",background:d.featuredGood?"#ECFDF5":"#FFF1F2",padding:"1px 6px",borderRadius:8}}>{d.featured}</span>}
+    </div>
+  </div>
+  {/* Special event warning */}
+  {d.specialEvent&&<div style={{padding:"6px 10px",borderRadius:8,marginBottom:6,background:d.specialEvent.type==='danger'?"#FFF1F2":"#ECFDF5",border:`1px solid ${d.specialEvent.type==='danger'?"#FECDD3":"#A7F3D0"}`,fontSize:10,fontWeight:600,color:d.specialEvent.type==='danger'?"#B91C1C":"#059669",lineHeight:1.5}}>{d.specialEvent.text}</div>}
+  {/* Mood */}
+  <div style={{fontSize:12,fontWeight:600,color:"#374151",marginBottom:6}}>{d.mood}</div>
+  {/* Domain breakdown */}
+  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4,marginBottom:6}}>
+    {[{icon:'💼',label:'งาน',text:d.work},{icon:'💰',label:'เงิน',text:d.money},{icon:'❤️',label:'ความรัก',text:d.love},{icon:'🏃',label:'สุขภาพ',text:d.health}].map(({icon,label,text},di)=>text?<div key={di} style={{background:"#fff",borderRadius:8,padding:"5px 8px",border:"1px solid #F1F5F9"}}>
+      <div style={{fontSize:9,fontWeight:700,color:"#64748B",marginBottom:2}}>{icon} {label}</div>
+      <div style={{fontSize:10,color:"#374151",lineHeight:1.4}}>{text}</div>
+    </div>:null)}
+  </div>
+  {/* Transit & tip */}
+  {d.goodFor&&<div style={{fontSize:10,color:"#059669",background:"#ECFDF5",borderRadius:6,padding:"3px 8px",marginBottom:3}}>✅ เหมาะสำหรับ: {d.goodFor}</div>}
+  {d.tip&&<div style={{fontSize:10,color:"#374151",background:"#fff",borderRadius:6,padding:"3px 8px",border:"1px solid #F1F5F9"}}>💡 {d.tip}</div>}
+</div>})}<div style={{marginTop:6,padding:8,background:"#F5F3FF",borderRadius:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>🔮 Vedic Jyotish พระเวท — 5 ชั้น</div><div style={{fontSize:9,color:"#64748B"}}>จันทร์(40%) + อังคาร(25%) + เจ้าวัน(35%) + ศุกร์ + พฤหัส · วิเคราะห์งาน เงิน ความรัก สุขภาพ รายวัน</div></div></>:<Spin/>}</Sec>}
 
   {/* Career Timeline */}
   {!has("timeline")?<Locked planNeeded="all" title="Dashboard กราฟชีวิตการงาน: รู้ก่อนรุ่ง พุ่งก่อนใคร" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>📅 กราฟชีวิตการงานรายเดือน — โหราศาสตร์ไทย × จิตวิทยา</div><div style={{display:"flex",gap:4,marginBottom:6,flexWrap:"wrap"}}>{['🌟 เดือนทอง ×3','⚠️ เดือนระวัง ×2','💼 งานเสริม ×4'].map((t,i)=><span key={i} style={{fontSize:10,padding:"3px 8px",borderRadius:8,background:i===0?"#FFF8E1":i===1?"#FFF1F2":"#E4EEFF",fontWeight:600,color:i===0?"#C88A10":i===1?"#C04040":"#3A7AC0"}}>{t}</span>)}</div>{['ม.ค. 🌟 เดือนแห่งโอกาส','ก.พ. ⚠️ Saturn กดทับ','มี.ค. 💼 งานเสริมเข้ามา'].map((d,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 8px",borderRadius:6,background:"#F8FAFC",marginBottom:2,fontSize:11}}><span>{d}</span><span style={{fontSize:10}}>⭐⭐⭐{i===0?"⭐⭐":"☆☆"}</span></div>)}<div style={{fontSize:10,color:"#7B6FA0",marginTop:6}}>🔮 Golden Days + Black Days + คำแนะนำจิตวิทยาเฉพาะดวงคุณ</div></Locked>:
@@ -1395,8 +1543,8 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     {months.map((m,i)=><TimelineMonth key={i} m={m} i={i} typeColors={typeColors} typeBg={typeBg} typeBorder={typeBorder}/>)}
 
     <div style={{marginTop:8,padding:8,background:"#F5F3FF",borderRadius:8}}>
-      <div style={{fontSize:10,fontWeight:700,color:"#7B6FA0",marginBottom:2}}>🔮 โหราศาสตร์ไทย (สุริยาตร์/Sidereal) × จิตวิทยา</div>
-      <div style={{fontSize:9,color:"#64748B"}}>คำนวณจากราศีเกิดไทย + ดาวจร 8 ดวง + เรือน 12 + สภาพดาว (อุจจ์/นิจ/เกษตร)</div>
+      <div style={{fontSize:10,fontWeight:700,color:"#7B6FA0",marginBottom:2}}>🔮 Vedic Jyotish พระเวท × โหราศาสตร์ไทย</div>
+      <div style={{fontSize:9,color:"#64748B"}}>คำนวณจากราศีเกิด Sidereal + มหาทศา Dasha + ดาวจร 8 ดวง + เรือน 12 + สภาพดาว (อุจจ์/นิจ/เกษตร) · วิเคราะห์งาน เงิน ความรัก สุขภาพ รายเดือน</div>
     </div>
     </div>})()}</Sec>}
 
