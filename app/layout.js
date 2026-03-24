@@ -1,5 +1,6 @@
 // app/layout.js
 import { Analytics } from '@vercel/analytics/next';
+import Script from 'next/script';
 
 export const metadata = {
   title: "Holistic Self Score — รู้จักตัวเองผ่านดวงดาวและจิตวิทยา",
@@ -15,6 +16,18 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-90KWXQTB76"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-90KWXQTB76');
+          `}
+        </Script>
         <style>{`
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body { font-family: 'Noto Sans Thai', 'DM Sans', -apple-system, sans-serif; background: #F8FAFC; color: #1E293B; -webkit-font-smoothing: antialiased; }
