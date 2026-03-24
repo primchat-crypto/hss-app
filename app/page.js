@@ -1180,6 +1180,38 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     </div>
   </div>
 
+  {/* SOCIAL PROOF — Reviews */}
+  <div style={{marginBottom:20}}>
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+      <h3 style={{fontSize:14,fontWeight:700,color:"#1E293B"}}>คนที่ใช้แล้วบอกว่า</h3>
+      <span style={{fontSize:11,color:"#94A3B8"}}>ปัดดูต่อ →</span>
+    </div>
+    <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:8,scrollSnapType:"x mandatory",WebkitOverflowScrolling:"touch",scrollbarWidth:"none",msOverflowStyle:"none"}}>
+      {[
+        {name:"มิว",age:27,role:"HR Manager",avatar:"👩",stars:5,text:"ตอนแรกคิดว่าจะเหมือนทดสอบทั่วไป แต่ผลที่ได้มันเจาะจงมาก ตรงจุดเลย รู้เลยว่าที่ทำงานอยู่มันไม่ใช่ทาง เดือนเดียวหลังจากนั้นก็ลาออก",tag:"เรื่องงาน"},
+        {name:"ปาล์ม",age:34,role:"Freelance Designer",avatar:"👨",stars:5,text:"ส่วน Shadow Analysis แม่นจนขนลุก มันบอกนิสัยที่ทำให้พลาดซ้ำได้เลย ตอนอ่านนั่งยิ้มคนเดียวเพราะมันตรงเกินไป",tag:"เรื่องตัวเอง"},
+        {name:"แนน",age:24,role:"จบใหม่",avatar:"👩",stars:5,text:"ยังไม่รู้เลยว่าจะทำงานอะไร แต่หลังจากดูผล มันชัดขึ้นมากว่าจุดแข็งตัวเองอยู่ตรงไหน ตอนนี้เริ่ม apply ตรงสาย",tag:"เรื่องเส้นทาง"},
+        {name:"โบ",age:31,role:"เจ้าของร้านออนไลน์",avatar:"👩",stars:5,text:"ส่วน timing ชีวิตตรงมาก ช่วงที่ผลบอกว่าควรพัก ตอนนั้นทำอะไรก็ไม่ผ่านจริงๆ พอรู้แล้วก็ไม่ฝืนอีก",tag:"เรื่องจังหวะชีวิต"},
+        {name:"เก้",age:29,role:"Product Manager",avatar:"👨",stars:5,text:"ผลมันเชื่อมกันหมด ดวง + นิสัย + timing ไม่ใช่แค่บอกว่าคุณเป็นคนแบบไหน แต่บอกว่า ตอนนี้ควรทำอะไร อันนี้ใช้ได้จริง",tag:"ภาพรวม"}
+      ].map((r,i)=>(
+        <div key={i} style={{minWidth:"82%",scrollSnapAlign:"start",background:"#fff",borderRadius:14,padding:"14px 16px",border:"1px solid #E2E8F0",boxShadow:"0 2px 8px rgba(0,0,0,.05)",flexShrink:0}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <div style={{width:36,height:36,borderRadius:"50%",background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>{r.avatar}</div>
+              <div><div style={{fontSize:13,fontWeight:700,color:"#1E293B"}}>{r.name} <span style={{fontSize:11,color:"#94A3B8",fontWeight:400}}>{r.age}</span></div><div style={{fontSize:10,color:"#94A3B8"}}>{r.role}</div></div>
+            </div>
+            <span style={{fontSize:9,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"3px 8px",borderRadius:6,flexShrink:0}}>{r.tag}</span>
+          </div>
+          <div style={{fontSize:11,color:"#F59E0B",marginBottom:6,letterSpacing:1}}>{"★".repeat(r.stars)}</div>
+          <p style={{fontSize:12,color:"#374151",lineHeight:1.7,margin:0}}>"{r.text}"</p>
+        </div>
+      ))}
+    </div>
+    <div style={{display:"flex",justifyContent:"center",gap:5,marginTop:6}}>
+      {[0,1,2,3,4].map(i=><div key={i} style={{width:i===0?16:6,height:6,borderRadius:3,background:i===0?"#4338CA":"#E2E8F0",transition:"width .3s"}}/>)}
+    </div>
+  </div>
+
   {/* CTA */}
   <div style={{marginBottom:20}}><Btn onClick={()=>setSc("profile")}>ดูผลลัพธ์ของฉันตอนนี้ →</Btn><div style={{textAlign:"center",marginTop:8,fontSize:11,color:"#94A3B8"}}>ฟรี · ใช้เวลา 10 นาที · ไม่ต้องใช้บัตรเครดิต</div></div>
 
