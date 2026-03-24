@@ -1148,44 +1148,51 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   <div style={{display:"flex",justifyContent:"flex-end",padding:"12px 20px 0"}}>{logged?<div style={{display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:11,color:"#64748B"}}>{user?.email?.split("@")[0]}</span><button onClick={doLogout} style={{fontSize:11,color:"#64748B",background:"none",border:"1px solid #E2E8F0",borderRadius:6,padding:"4px 10px",cursor:"pointer"}}>ออกจากระบบ</button></div>:<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:12,fontWeight:600,color:"#4338CA",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:8,padding:"6px 16px",cursor:"pointer"}}>เข้าสู่ระบบ / สมัคร</button>}</div>
 
   {/* Hero */}
-  <div style={{textAlign:"center",padding:"40px 20px 32px",position:"relative",overflow:"hidden"}}><div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 30% 20%,rgba(67,56,202,.08),transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(139,92,246,.06),transparent 50%)",zIndex:0}}/><div style={{position:"relative",zIndex:1}}><div style={{width:52,height:52,borderRadius:14,background:"linear-gradient(135deg,#4338CA,#6D28D9)",display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:24,color:"#fff",boxShadow:"0 8px 24px rgba(67,56,202,.3)",animation:"hfl 3s ease-in-out infinite",marginBottom:16}}>✦</div><h1 style={{fontSize:26,fontWeight:800,color:"#1E293B",marginBottom:6}}>{BRAND}</h1><h2 style={{fontSize:22,fontWeight:800,color:"#1E293B",lineHeight:1.4,marginBottom:8,maxWidth:340,margin:"0 auto 8px"}}>ยังไม่รู้ว่าควรไปทางไหนในชีวิต?<br/><span style={{color:"#4338CA"}}>รู้คำตอบใน 10 นาที</span></h2><p style={{fontSize:13,color:"#64748B",lineHeight:1.7,maxWidth:340,margin:"0 auto 20px"}}>AI วิเคราะห์ตัวตน เพื่อบอก "งาน เงิน ความรัก" ที่เหมาะกับคุณ</p><div style={{maxWidth:280,margin:"0 auto"}}><Btn onClick={()=>setSc("profile")}>เริ่มทดสอบฟรี →</Btn>{logged&&scores&&<button onClick={()=>setSc("results")} style={{width:"100%",marginTop:8,padding:10,borderRadius:8,border:"2px solid #6366F1",background:"#fff",color:"#4338CA",fontSize:13,fontWeight:700,cursor:"pointer"}}>📊 ดูผลลัพธ์เดิม</button>}</div></div></div>
+  <div style={{textAlign:"center",padding:"40px 20px 32px",position:"relative",overflow:"hidden"}}><div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 30% 20%,rgba(67,56,202,.08),transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(139,92,246,.06),transparent 50%)",zIndex:0}}/><div style={{position:"relative",zIndex:1}}><div style={{width:52,height:52,borderRadius:14,background:"linear-gradient(135deg,#4338CA,#6D28D9)",display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:24,color:"#fff",boxShadow:"0 8px 24px rgba(67,56,202,.3)",animation:"hfl 3s ease-in-out infinite",marginBottom:16}}>✦</div><h1 style={{fontSize:26,fontWeight:800,color:"#1E293B",marginBottom:6}}>{BRAND}</h1><h2 style={{fontSize:22,fontWeight:800,color:"#1E293B",lineHeight:1.4,marginBottom:8,maxWidth:340,margin:"0 auto 8px"}}>ยังไม่รู้ว่าชีวิตควรไปทางไหน?<br/><span style={{color:"#4338CA"}}>รู้คำตอบที่ชัดขึ้นใน 10 นาที</span></h2><p style={{fontSize:13,color:"#64748B",lineHeight:1.7,maxWidth:340,margin:"0 auto 20px"}}>เข้าใจตัวเองให้ชัดขึ้น แล้วตัดสินใจเรื่องงาน เงิน และความรักได้ดีขึ้น</p><div style={{maxWidth:280,margin:"0 auto"}}><Btn onClick={()=>setSc("profile")}>ดูผลลัพธ์ของฉัน →</Btn><div style={{textAlign:"center",marginTop:8,fontSize:11,color:"#94A3B8"}}>ฟรี · ใช้เวลาไม่เกิน 10 นาที · ไม่ต้องใช้บัตรเครดิต</div>{logged&&scores&&<button onClick={()=>setSc("results")} style={{width:"100%",marginTop:8,padding:10,borderRadius:8,border:"2px solid #6366F1",background:"#fff",color:"#4338CA",fontSize:13,fontWeight:700,cursor:"pointer"}}>📊 ดูผลลัพธ์เดิม</button>}</div></div></div>
 
   <div style={{padding:"0 20px",maxWidth:520,margin:"0 auto"}}>
 
   {/* PAIN */}
   <Card style={{background:"linear-gradient(135deg,#FEF3C7,#FFF7ED)",border:"1px solid #FDE68A",marginBottom:12}}>
-    <div style={{fontSize:13,fontWeight:700,color:"#92400E",marginBottom:10,lineHeight:1.6}}>บางคน "ดวงดี" แต่ชีวิตไม่ไปไหน<br/>บางคน "ธรรมดา" แต่โตเร็วมาก</div>
-    <div style={{fontSize:12,color:"#78350F",lineHeight:1.8,fontWeight:600}}>ความต่าง = คุณใช้ตัวเองเป็นหรือยัง</div>
+    <div style={{fontSize:14,fontWeight:700,color:"#92400E",marginBottom:8,lineHeight:1.6}}>คุณอาจกำลังพยายามเต็มที่<br/>แต่ชีวิตยังไม่ไปไหน</div>
+    <div style={{fontSize:12,color:"#78350F",lineHeight:1.7}}>ไม่ใช่เพราะคุณไม่เก่ง แต่อาจเป็นเพราะคุณยังใช้ตัวเองไม่ถูกทาง</div>
   </Card>
 
-  {/* VALUE — คุณจะได้อะไร */}
+  {/* VALUE */}
   <div style={{marginBottom:16}}>
-    <h3 style={{fontSize:14,fontWeight:700,marginBottom:10,color:"#1E293B"}}>คุณจะได้อะไร</h3>
-    {[{icon:"💼",text:"รู้ว่าคุณควรทำงานอะไร"},{icon:"🔁",text:"รู้ว่าทำไมคุณพังซ้ำ"},{icon:"⚡",text:"รู้ว่าควรลุยหรือควรรอ"}].map((x,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 14px",background:"#F8FAFC",borderRadius:10,marginBottom:6,border:"1px solid #E2E8F0"}}><span style={{fontSize:20}}>{x.icon}</span><span style={{fontSize:13,fontWeight:600,color:"#1E293B"}}>{x.text}</span></div>)}
+    <h3 style={{fontSize:14,fontWeight:700,marginBottom:10,color:"#1E293B"}}>คุณจะได้คำตอบที่ใช้ได้จริง</h3>
+    {[{icon:"💼",text:"รู้ว่าเส้นทางงานแบบไหนเหมาะกับจุดแข็งของคุณจริง ๆ"},{icon:"🔁",text:"เห็นนิสัยหรือรูปแบบที่ทำให้คุณพลาดโอกาสซ้ำ ๆ"},{icon:"⚡",text:"รู้ว่าช่วงนี้ควรลุย เปลี่ยน หรือรอให้จังหวะชัดขึ้น"}].map((x,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"11px 14px",background:"#F8FAFC",borderRadius:10,marginBottom:6,border:"1px solid #E2E8F0"}}><span style={{fontSize:18,flexShrink:0,marginTop:1}}>{x.icon}</span><span style={{fontSize:13,fontWeight:600,color:"#1E293B",lineHeight:1.5}}>{x.text}</span></div>)}
   </div>
 
   {/* RESULT PREVIEW */}
   <div style={{marginBottom:16}}>
-    <h3 style={{fontSize:14,fontWeight:700,marginBottom:10,color:"#1E293B"}}>ตัวอย่างผลลัพธ์ของคุณ</h3>
-    <Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #C7D2FE",position:"relative",overflow:"hidden"}}>
+    <h3 style={{fontSize:14,fontWeight:700,marginBottom:10,color:"#1E293B"}}>ตัวอย่างผลลัพธ์ที่รอคุณอยู่</h3>
+    <Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #C7D2FE",position:"relative",overflow:"hidden",marginBottom:0}}>
       <div style={{position:"absolute",top:10,right:10,background:"#4338CA",color:"#fff",fontSize:9,fontWeight:800,padding:"3px 8px",borderRadius:6}}>ตัวอย่าง</div>
-      <div style={{marginBottom:10}}><div style={{fontSize:11,color:"#94A3B8",marginBottom:2}}>บุคลิกภาพของคุณ</div><div style={{fontSize:16,fontWeight:800,color:"#4338CA"}}>Visionary Leader <span style={{fontSize:11,color:"#6366F1",fontWeight:500}}>(Top 5%)</span></div></div>
-      <div style={{display:"flex",gap:6,marginBottom:10}}>{[{l:"จุดเสี่ยง",v:"Overthinking",c:"#DC2626",bg:"#FEF2F2"},{l:"พลังเด่น",v:"Creative Vision",c:"#059669",bg:"#ECFDF5"}].map((t,i)=><div key={i} style={{flex:1,background:t.bg,borderRadius:8,padding:"8px 10px"}}><div style={{fontSize:10,color:"#94A3B8",marginBottom:2}}>{t.l}</div><div style={{fontSize:12,fontWeight:700,color:t.c}}>{t.v}</div></div>)}</div>
-      <div style={{background:"#fff",borderRadius:8,padding:"8px 12px",border:"1px solid #DDD6FE"}}><div style={{fontSize:10,color:"#94A3B8",marginBottom:3}}>Next Move แนะนำ</div><div style={{fontSize:12,fontWeight:600,color:"#4338CA"}}>เปลี่ยน role ภายใน 6 เดือน</div></div>
-      <div style={{marginTop:10,fontSize:11,color:"#6366F1",textAlign:"center",fontStyle:"italic"}}>อยากรู้ผลของตัวเองไหม?</div>
+      <div style={{marginBottom:10}}><div style={{fontSize:11,color:"#94A3B8",marginBottom:4}}>บุคลิกภาพของคุณ</div><div style={{fontSize:16,fontWeight:800,color:"#4338CA",lineHeight:1.3}}>Visionary Leader<div style={{fontSize:11,color:"#6366F1",fontWeight:500,marginTop:2}}>ผู้นำที่มองภาพใหญ่และสื่อสารได้โดดเด่น</div></div></div>
+      <div style={{display:"flex",gap:6,marginBottom:10}}>{[{l:"จุดที่ต้องระวัง",v:"Overthinking",c:"#DC2626",bg:"#FEF2F2"},{l:"จุดแข็งเด่น",v:"Creative Vision",c:"#059669",bg:"#ECFDF5"}].map((t,i)=><div key={i} style={{flex:1,background:t.bg,borderRadius:8,padding:"8px 10px"}}><div style={{fontSize:10,color:"#94A3B8",marginBottom:2}}>{t.l}</div><div style={{fontSize:12,fontWeight:700,color:t.c}}>{t.v}</div></div>)}</div>
+      <div style={{background:"#fff",borderRadius:8,padding:"8px 12px",border:"1px solid #DDD6FE"}}><div style={{fontSize:10,color:"#94A3B8",marginBottom:3}}>Next Move แนะนำ</div><div style={{fontSize:12,fontWeight:600,color:"#4338CA",lineHeight:1.5}}>ช่วง 6 เดือนข้างหน้า เหมาะกับการเปลี่ยนบทบาท ขยับตำแหน่ง หรือเริ่มต้นสิ่งใหม่อย่างจริงจัง</div></div>
     </Card>
+    {/* LOCKED PREVIEW */}
+    <div style={{background:"#1E1B4B",borderRadius:"0 0 12px 12px",padding:"12px 14px",marginBottom:0}}>
+      <div style={{fontSize:11,fontWeight:700,color:"#A5B4FC",marginBottom:8}}>และนี่คือสิ่งที่คุณจะเห็นต่อหลังปลดล็อก</div>
+      {["งานที่เหมาะกับจุดแข็งและรายได้สูงสุดของคุณ","ช่วงเวลาที่ชีวิตคุณมีโอกาสพุ่งแรงที่สุด","จุดบอดที่ทำให้คุณเสียโอกาสซ้ำ ๆ","รูปแบบความรักและคนที่เหมาะกับคุณจริง","คำแนะนำเฉพาะตัวว่าตอนนี้ควรลุย เปลี่ยน หรือรอ"].map((t,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"4px 0",fontSize:12,color:"#C7D2FE"}}><span style={{fontSize:13}}>🔒</span><span>{t}</span></div>)}
+    </div>
   </div>
 
   {/* CTA */}
-  <div style={{marginBottom:16}}><Btn onClick={()=>setSc("profile")}>ค้นหาทิศทางชีวิตของคุณ →</Btn><div style={{textAlign:"center",marginTop:8,fontSize:11,color:"#94A3B8"}}>ฟรี · ใช้เวลา 10 นาที · ไม่ต้องใช้บัตรเครดิต</div></div>
+  <div style={{marginBottom:20}}><Btn onClick={()=>setSc("profile")}>ดูผลลัพธ์ของฉันตอนนี้ →</Btn><div style={{textAlign:"center",marginTop:8,fontSize:11,color:"#94A3B8"}}>ฟรี · ใช้เวลา 10 นาที · ไม่ต้องใช้บัตรเครดิต</div></div>
 
-  {/* METHOD (credibility) */}
+  {/* TRUST */}
+  <Card style={{background:"#F0FDF4",border:"1px solid #BBF7D0",marginBottom:12}}><div style={{fontSize:12,fontWeight:700,color:"#166534",marginBottom:6}}>🛡 ข้อมูลของคุณเป็นเรื่องส่วนตัว</div><div style={{fontSize:11,color:"#15803D",lineHeight:1.7}}>คำตอบและผลลัพธ์ของคุณจะไม่ถูกเผยแพร่หรือขายต่อ ทุกอย่างถูกออกแบบให้คุณสำรวจตัวเองได้อย่างปลอดภัยและเป็นส่วนตัว</div></Card>
+
+  {/* METHODOLOGY */}
   <Card style={{background:"#F8FAFC",border:"1px solid #E2E8F0",marginBottom:12}}>
-    <div style={{fontSize:12,fontWeight:700,color:"#64748B",marginBottom:8}}>วิเคราะห์จาก 3 แหล่งข้อมูล</div>
-    {[{i:"🪐",t:"Vedic Astrology",d:"พลังดาวประจำตัว 9 ดวง"},{i:"📋",t:"Psychology 36 ข้อ",d:"พฤติกรรมจริง 12 มิติ"},{i:"🤖",t:"AI Insight Engine",d:"เชื่อมข้อมูลเป็นแผนที่ชีวิต"}].map((x,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 0",borderBottom:i<2?"1px solid #F1F5F9":"none"}}><span style={{fontSize:16}}>{x.i}</span><div><div style={{fontSize:11,fontWeight:700,color:"#374151"}}>{x.t}</div><div style={{fontSize:10,color:"#94A3B8"}}>{x.d}</div></div></div>)}
+    <div style={{fontSize:12,fontWeight:700,color:"#64748B",marginBottom:2}}>สร้างจากการวิเคราะห์หลายมิติ</div>
+    <div style={{fontSize:11,color:"#94A3B8",marginBottom:8}}>เพื่อให้ผลลัพธ์มีทั้งมุมมองเชิงบุคลิก พฤติกรรม และจังหวะชีวิต</div>
+    {[{i:"🪐",t:"พลังประจำตัวและจังหวะชีวิต"},{i:"📋",t:"แบบประเมินพฤติกรรมเชิงลึก"},{i:"🤖",t:"AI ที่ช่วยเชื่อมข้อมูลให้เข้าใจง่ายขึ้น"}].map((x,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 0",borderBottom:i<2?"1px solid #F1F5F9":"none"}}><span style={{fontSize:15}}>{x.i}</span><div style={{fontSize:11,color:"#374151"}}>{x.t}</div></div>)}
   </Card>
 
-  <Card style={{background:"#F0FDF4",border:"1px solid #BBF7D0"}}><div style={{fontSize:12,fontWeight:700,color:"#166534",marginBottom:4}}>🛡 ความเป็นส่วนตัว</div><div style={{fontSize:11,color:"#15803D"}}>ไม่ขายข้อมูล · ไม่เผยแพร่ผล · ผลลัพธ์เป็นของคุณ</div></Card>
   <div style={{padding:"16px 0 40px"}}><Btn onClick={()=>setSc("profile")}>ดูผลลัพธ์ของฉัน →</Btn></div>
   </div></div>;
 
