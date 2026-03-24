@@ -1245,71 +1245,71 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const TW=290,TH=70;const xs=tlPts.map((_,i)=>12+i*((TW-24)/(tlPts.length-1)));const ys=tlPts.map(p=>8+TH*(1-p.e/100)*0.9);
     let tlP=`M${xs[0].toFixed(1)},${ys[0].toFixed(1)}`;for(let i=1;i<tlPts.length;i++){const dx=(xs[i]-xs[i-1])/2.5;tlP+=` C${(xs[i-1]+dx).toFixed(1)},${ys[i-1].toFixed(1)} ${(xs[i]-dx).toFixed(1)},${ys[i].toFixed(1)} ${xs[i].toFixed(1)},${ys[i].toFixed(1)}`;}
     if(!has("love")) return <Locked planNeeded="deep" title="Love & Compatibility ชะตาความรัก & ไทม์ไลน์คู่แท้" onUpgrade={tryUpgrade}><div style={{padding:12,borderRadius:10,background:"linear-gradient(135deg,#1E1035,#3B1054)",color:"#fff",marginBottom:8}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>💕 Love & Compatibility</div><div style={{fontSize:11,color:"#C4B5FD"}}>ทำไมถึงเจอแต่รักพังๆ? คู่ครองแบบไหนเสริมดวงจริงๆ?</div></div><div style={{fontSize:12,lineHeight:1.8,color:"#374151"}}>💔 Root Cause: รูปแบบความสัมพันธ์ที่ซ้ำซาก...<br/>💑 Ideal Partner: ลักษณะคู่ครองที่เสริมดวงคุณ...<br/>⏳ Destiny Timeline: ช่วงเวลาที่จะพบคู่แท้...</div></Locked>;
-    return <Card style={{background:"#0F172A",border:"1px solid rgba(139,92,246,0.25)",padding:"14px 16px"}}>
-      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><span style={{fontSize:18}}>💕</span><div><div style={{fontSize:14,fontWeight:800,color:"#E9D5FF"}}>Love & Compatibility</div><div style={{fontSize:10,color:"#8B5CF6"}}>ชะตาความรัก & ไทม์ไลน์คู่แท้ · Vedic × Attachment Psychology</div></div></div>
+    return <Card style={{background:"#FFFFFF",border:"1px solid #C7D2FE",padding:"14px 16px"}}>
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><span style={{fontSize:18}}>💕</span><div><div style={{fontSize:14,fontWeight:800,color:"#4338CA"}}>Love & Compatibility</div><div style={{fontSize:10,color:"#7C3AED"}}>ชะตาความรัก & ไทม์ไลน์คู่แท้ · Vedic × Attachment Psychology</div></div></div>
       {aiL.love?<Spin t="วิเคราะห์ชะตาความรัก..."/>:ai.love?<>
       <div style={{marginBottom:14}}>
         <div style={{fontSize:12,fontWeight:800,color:"#F43F5E",borderLeft:"3px solid #F43F5E",paddingLeft:8,marginBottom:2}}>1. Root Cause Diagnostic</div>
-        <div style={{fontSize:10,color:"#EC4899",paddingLeft:11,marginBottom:10,fontStyle:"italic"}}>"ทำไมถึงเจอแต่รักพังๆ?"</div>
+        <div style={{fontSize:10,color:"#BE185D",paddingLeft:11,marginBottom:10,fontStyle:"italic"}}>"ทำไมถึงเจอแต่รักพังๆ?"</div>
         <div style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:10}}>
           <div style={{flexShrink:0}}>
             <div style={{fontSize:9,color:"#64748B",textAlign:"center",marginBottom:3}}>สัดส่วนสาเหตุ</div>
             <svg viewBox="0 0 140 140" style={{width:130}}>
-              <rect width="140" height="140" fill="#1E293B" rx="8"/>
+              <rect width="140" height="140" fill="#F8FAFC" rx="8"/>
               {dSegs.map((s,i)=><path key={i} d={dP(70,70,54,32,s.sa,s.ea)} fill={s.c}/>)}
-              <text x="70" y="67" textAnchor="middle" fontSize="10" fill="#E2E8F0" fontWeight="bold">สาเหตุ</text>
-              <text x="70" y="80" textAnchor="middle" fontSize="8" fill="#64748B">หลัก</text>
+              <text x="70" y="67" textAnchor="middle" fontSize="10" fill="#1E293B" fontWeight="bold">สาเหตุ</text>
+              <text x="70" y="80" textAnchor="middle" fontSize="8" fill="#94A3B8">หลัก</text>
             </svg>
           </div>
-          <div style={{flex:1}}>{dSegs.map((s,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:7}}><div style={{width:8,height:8,borderRadius:2,background:s.c,flexShrink:0,marginTop:3}}/><div><div style={{fontSize:10,fontWeight:600,color:"#E2E8F0"}}>{s.l}</div><div style={{fontSize:8,color:"#64748B",marginBottom:1}}>{s.s}</div><div style={{fontSize:11,fontWeight:700,color:s.c}}>{Math.round(s.pct*100)}%</div></div></div>)}</div>
+          <div style={{flex:1}}>{dSegs.map((s,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:7}}><div style={{width:8,height:8,borderRadius:2,background:s.c,flexShrink:0,marginTop:3}}/><div><div style={{fontSize:10,fontWeight:600,color:"#1E293B"}}>{s.l}</div><div style={{fontSize:8,color:"#94A3B8",marginBottom:1}}>{s.s}</div><div style={{fontSize:11,fontWeight:700,color:s.c}}>{Math.round(s.pct*100)}%</div></div></div>)}</div>
         </div>
-        <div style={{background:"#1E293B",borderRadius:8,padding:"10px 12px",borderLeft:"3px solid #6366F1"}}><Typer text={ai.love}/></div>
+        <div style={{background:"#F8FAFC",borderRadius:8,padding:"10px 12px",borderLeft:"3px solid #6366F1"}}><Typer text={ai.love}/></div>
       </div>
       <div style={{marginBottom:14}}>
-        <div style={{fontSize:12,fontWeight:800,color:"#22D3EE",borderLeft:"3px solid #22D3EE",paddingLeft:8,marginBottom:2}}>2. The Ideal Partner & Destiny Timeline</div>
-        <div style={{fontSize:10,color:"#67E8F9",paddingLeft:11,marginBottom:10,fontStyle:"italic"}}>"คู่ครองลักษณะไหนเสริมดวง และจะเจอเมื่อไหร่?"</div>
+        <div style={{fontSize:12,fontWeight:800,color:"#0891B2",borderLeft:"3px solid #0891B2",paddingLeft:8,marginBottom:2}}>2. The Ideal Partner & Destiny Timeline</div>
+        <div style={{fontSize:10,color:"#0E7490",paddingLeft:11,marginBottom:10,fontStyle:"italic"}}>"คู่ครองลักษณะไหนเสริมดวง และจะเจอเมื่อไหร่?"</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
-          <div style={{background:"#1E293B",borderRadius:8,padding:"10px 12px",border:"1px solid rgba(139,92,246,0.3)"}}><div style={{fontSize:8,fontWeight:700,color:"#8B5CF6",marginBottom:1}}>⚠️ วัฏจักรเสาร์</div><div style={{fontSize:11,fontWeight:800,color:"#E2E8F0"}}>บทเรียนผ่านมาแล้ว</div><div style={{fontSize:8,color:"#64748B",lineHeight:1.5,marginTop:2}}>เสาร์จรผ่านลัคนา ช่วงล้างความสัมพันธ์ที่ไม่เหมาะสม</div></div>
-          <div style={{background:"#1E293B",borderRadius:8,padding:"10px 12px",border:"2px solid rgba(34,211,238,0.4)"}}><div style={{fontSize:8,fontWeight:700,color:"#22D3EE",marginBottom:1}}>⏳ Soulmate Window</div><div style={{fontSize:13,fontWeight:800,color:"#22D3EE"}}>{`ปี ${nowY+1}–${nowY+2}`}</div><div style={{fontSize:8,color:"#64748B",lineHeight:1.5,marginTop:2}}>พฤหัสบดีจรส่งผลเรือนคู่ครอง</div></div>
+          <div style={{background:"#F5F3FF",borderRadius:8,padding:"10px 12px",border:"1px solid #DDD6FE"}}><div style={{fontSize:8,fontWeight:700,color:"#7C3AED",marginBottom:1}}>⚠️ วัฏจักรเสาร์</div><div style={{fontSize:11,fontWeight:800,color:"#1E293B"}}>บทเรียนผ่านมาแล้ว</div><div style={{fontSize:8,color:"#64748B",lineHeight:1.5,marginTop:2}}>เสาร์จรผ่านลัคนา ช่วงล้างความสัมพันธ์ที่ไม่เหมาะสม</div></div>
+          <div style={{background:"#ECFEFF",borderRadius:8,padding:"10px 12px",border:"2px solid #A5F3FC"}}><div style={{fontSize:8,fontWeight:700,color:"#0891B2",marginBottom:1}}>⏳ Soulmate Window</div><div style={{fontSize:13,fontWeight:800,color:"#0891B2"}}>{`ปี ${nowY+1}–${nowY+2}`}</div><div style={{fontSize:8,color:"#64748B",lineHeight:1.5,marginTop:2}}>พฤหัสบดีจรส่งผลเรือนคู่ครอง</div></div>
         </div>
-        <div style={{background:"#1E293B",borderRadius:8,padding:"10px 8px"}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#E2E8F0",marginBottom:4,paddingLeft:6}}>📈 กราฟระดับพลังงานความสัมพันธ์ (Destiny Timeline)</div>
+        <div style={{background:"#F8FAFC",borderRadius:8,padding:"10px 8px",border:"1px solid #E2E8F0"}}>
+          <div style={{fontSize:10,fontWeight:700,color:"#1E293B",marginBottom:4,paddingLeft:6}}>📈 กราฟระดับพลังงานความสัมพันธ์ (Destiny Timeline)</div>
           <svg viewBox={`0 0 ${TW} ${TH+20}`} style={{width:"100%"}}>
-            <defs><linearGradient id="lvGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#22D3EE" stopOpacity="0.35"/><stop offset="100%" stopColor="#22D3EE" stopOpacity="0"/></linearGradient></defs>
-            <line x1="12" y1={(TH*0.5+8).toFixed(1)} x2={(TW-12).toFixed(1)} y2={(TH*0.5+8).toFixed(1)} stroke="#334155" strokeWidth="0.5" strokeDasharray="3,3"/>
+            <defs><linearGradient id="lvGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#0891B2" stopOpacity="0.2"/><stop offset="100%" stopColor="#0891B2" stopOpacity="0"/></linearGradient></defs>
+            <line x1="12" y1={(TH*0.5+8).toFixed(1)} x2={(TW-12).toFixed(1)} y2={(TH*0.5+8).toFixed(1)} stroke="#E2E8F0" strokeWidth="0.8" strokeDasharray="3,3"/>
             <path d={`${tlP} L${xs[tlPts.length-1].toFixed(1)},${(TH+8)} L${xs[0].toFixed(1)},${(TH+8)}Z`} fill="url(#lvGrad)"/>
-            <path d={tlP} fill="none" stroke="#22D3EE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            {tlPts.map((p,i)=><circle key={i} cx={xs[i].toFixed(1)} cy={ys[i].toFixed(1)} r={p.t==="soulmate"?5:p.t==="karmic"?4:3} fill={p.t==="soulmate"?"#F59E0B":p.t==="karmic"?"#EC4899":p.t==="now"?"#A78BFA":"#22D3EE"} stroke="#0F172A" strokeWidth="1.5"/>)}
+            <path d={tlP} fill="none" stroke="#0891B2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            {tlPts.map((p,i)=><circle key={i} cx={xs[i].toFixed(1)} cy={ys[i].toFixed(1)} r={p.t==="soulmate"?5:p.t==="karmic"?4:3} fill={p.t==="soulmate"?"#F59E0B":p.t==="karmic"?"#EC4899":p.t==="now"?"#7C3AED":"#0891B2"} stroke="#fff" strokeWidth="1.5"/>)}
             {tlPts.map((p,i)=><text key={i} x={xs[i].toFixed(1)} y={(TH+18).toFixed(1)} textAnchor="middle" fontSize="6" fill="#64748B">{p.lbl.split("\n")[0]}</text>)}
           </svg>
           <div style={{display:"flex",flexWrap:"wrap",gap:10,justifyContent:"center",marginTop:4}}>
             <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#64748B"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#EC4899"}}/> คู่กรรม</div>
-            <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#64748B"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#A78BFA"}}/> ปัจจุบัน</div>
+            <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#64748B"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#7C3AED"}}/> ปัจจุบัน</div>
             <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#64748B"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#F59E0B"}}/> คู่แท้</div>
           </div>
         </div>
       </div>
       <div>
-        <div style={{fontSize:12,fontWeight:800,color:"#A78BFA",borderLeft:"3px solid #A78BFA",paddingLeft:8,marginBottom:2}}>เปรียบเทียบ: สิ่งที่จิตใต้สำนึกเรียกร้อง VS สเปคเสริมดวง</div>
-        <div style={{fontSize:10,color:"#C4B5FD",paddingLeft:11,marginBottom:10}}>บ่อยครั้งที่โหยหาความตื่นเต้น แต่ดวงบอกว่าต้องการความมั่นคง</div>
+        <div style={{fontSize:12,fontWeight:800,color:"#6D28D9",borderLeft:"3px solid #7C3AED",paddingLeft:8,marginBottom:2}}>เปรียบเทียบ: สิ่งที่จิตใต้สำนึกเรียกร้อง VS สเปคเสริมดวง</div>
+        <div style={{fontSize:10,color:"#64748B",paddingLeft:11,marginBottom:10}}>บ่อยครั้งที่โหยหาความตื่นเต้น แต่ดวงบอกว่าต้องการความมั่นคง</div>
         <div style={{display:"flex",gap:10,alignItems:"flex-start"}}>
           <div style={{flexShrink:0}}>
             <svg viewBox="0 0 200 200" style={{width:165}}>
-              <rect width="200" height="200" fill="#1E293B" rx="8"/>
-              {[0.25,0.5,0.75,1].map((r,i)=><circle key={i} cx="100" cy="100" r={r*58} fill="none" stroke="#334155" strokeWidth="0.5" strokeDasharray={r<1?"3,3":"none"}/>)}
-              {[0,1,2,3,4].map(i=><line key={i} x1="100" y1="100" x2={rAx(i).x} y2={rAx(i).y} stroke="#475569" strokeWidth="0.5"/>)}
+              <rect width="200" height="200" fill="#F8FAFC" rx="8"/>
+              {[0.25,0.5,0.75,1].map((r,i)=><circle key={i} cx="100" cy="100" r={r*58} fill="none" stroke="#E2E8F0" strokeWidth="0.8" strokeDasharray={r<1?"3,3":"none"}/>)}
+              {[0,1,2,3,4].map(i=><line key={i} x1="100" y1="100" x2={rAx(i).x} y2={rAx(i).y} stroke="#CBD5E1" strokeWidth="0.5"/>)}
               <polygon points={[0,1,2,3,4].map(i=>{const p=rPt(i,sub[i],58);return`${p.x},${p.y}`}).join(" ")} fill="#EC4899" fillOpacity="0.2" stroke="#EC4899" strokeWidth="1.5"/>
               <polygon points={[0,1,2,3,4].map(i=>{const p=rPt(i,idl[i],58);return`${p.x},${p.y}`}).join(" ")} fill="#22D3EE" fillOpacity="0.2" stroke="#22D3EE" strokeWidth="1.5"/>
-              {[0,1,2,3,4].map(i=>{const p=rPt(i,sub[i],58);return<circle key={i} cx={p.x} cy={p.y} r="2.5" fill="#EC4899"/>;})}{[0,1,2,3,4].map(i=>{const p=rPt(i,idl[i],58);return<circle key={i} cx={p.x} cy={p.y} r="2.5" fill="#22D3EE"/>;})}{rlbls.map((l,i)=><text key={i} x={rLb(i).x} y={rLb(i).y} textAnchor="middle" fontSize="7" fill="#94A3B8" dominantBaseline="central">{l}</text>)}
+              {[0,1,2,3,4].map(i=>{const p=rPt(i,sub[i],58);return<circle key={i} cx={p.x} cy={p.y} r="2.5" fill="#EC4899"/>;})}{[0,1,2,3,4].map(i=>{const p=rPt(i,idl[i],58);return<circle key={i} cx={p.x} cy={p.y} r="2.5" fill="#22D3EE"/>;})}{rlbls.map((l,i)=><text key={i} x={rLb(i).x} y={rLb(i).y} textAnchor="middle" fontSize="7" fill="#475569" dominantBaseline="central">{l}</text>)}
             </svg>
             <div style={{display:"flex",flexDirection:"column",gap:4,marginTop:6}}>
-              <div style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"#94A3B8"}}><div style={{width:14,height:2,background:"#EC4899",borderRadius:1}}/> จิตใต้สำนึก</div>
-              <div style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"#94A3B8"}}><div style={{width:14,height:2,background:"#22D3EE",borderRadius:1}}/> สเปคเสริมดวง</div>
+              <div style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"#64748B"}}><div style={{width:14,height:2,background:"#EC4899",borderRadius:1}}/> จิตใต้สำนึก</div>
+              <div style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"#64748B"}}><div style={{width:14,height:2,background:"#22D3EE",borderRadius:1}}/> สเปคเสริมดวง</div>
             </div>
           </div>
           <div style={{flex:1,paddingTop:4}}>
-            <div style={{background:"rgba(236,72,153,0.1)",border:"1px solid rgba(236,72,153,0.3)",borderRadius:8,padding:"8px 10px",marginBottom:8}}><div style={{fontSize:9,fontWeight:700,color:"#EC4899",marginBottom:3}}>Your Subconscious (สีชมพู)</div><div style={{fontSize:9,color:"#C4B5FD",lineHeight:1.6}}>ต้องการความตื่นเต้นและอิสระสูง แต่อาจดึงดูดคนที่ไม่เสถียรทางอารมณ์</div></div>
-            <div style={{background:"rgba(34,211,238,0.1)",border:"1px solid rgba(34,211,238,0.3)",borderRadius:8,padding:"8px 10px"}}><div style={{fontSize:9,fontWeight:700,color:"#22D3EE",marginBottom:3}}>Ideal Match (สีฟ้า)</div><div style={{fontSize:9,color:"#C4B5FD",lineHeight:1.6}}>คู่ที่เสริมดวงจริงคือคนที่มั่นคงทางอารมณ์ สื่อสารดี และเข้าใจอย่างลึกซึ้ง</div></div>
+            <div style={{background:"#FFF1F2",border:"1px solid #FECDD3",borderRadius:8,padding:"8px 10px",marginBottom:8}}><div style={{fontSize:9,fontWeight:700,color:"#BE185D",marginBottom:3}}>Your Subconscious (สีชมพู)</div><div style={{fontSize:9,color:"#374151",lineHeight:1.6}}>ต้องการความตื่นเต้นและอิสระสูง แต่อาจดึงดูดคนที่ไม่เสถียรทางอารมณ์</div></div>
+            <div style={{background:"#ECFEFF",border:"1px solid #A5F3FC",borderRadius:8,padding:"8px 10px"}}><div style={{fontSize:9,fontWeight:700,color:"#0891B2",marginBottom:3}}>Ideal Match (สีฟ้า)</div><div style={{fontSize:9,color:"#374151",lineHeight:1.6}}>คู่ที่เสริมดวงจริงคือคนที่มั่นคงทางอารมณ์ สื่อสารดี และเข้าใจอย่างลึกซึ้ง</div></div>
           </div>
         </div>
       </div>
