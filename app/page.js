@@ -1216,8 +1216,8 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   return<div><div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:12,fontWeight:700,color:"#64748B"}}>{qI+1}/36</span><span style={{fontSize:10,color:"#94A3B8"}}>{q.dim}</span></div><div style={{height:4,background:"#E2E8F0",borderRadius:2,overflow:"hidden",marginBottom:12}}><div style={{height:"100%",width:`${pct}%`,background:"linear-gradient(90deg,#4338CA,#A78BFA)",borderRadius:2,transition:"width .3s"}}/></div><Card><div style={{display:"inline-flex",alignItems:"center",gap:4,padding:"2px 10px",borderRadius:10,background:`${q.c}15`,marginBottom:8,fontSize:10,fontWeight:600,color:q.c}}>{q.icon} {q.dim} · {q.pl}</div><p style={{fontSize:14,fontWeight:500,lineHeight:1.7,marginBottom:12,color:"#1E293B"}}>{q.q}</p><div style={{display:"flex",flexDirection:"column",gap:4}}>{SCALE.map((l,i)=><button key={i} onClick={()=>answer(i)} style={{padding:"9px 12px",fontSize:12,fontWeight:ans[key]===i?700:500,border:`2px solid ${ans[key]===i?"#4338CA":"#E2E8F0"}`,borderRadius:8,cursor:"pointer",textAlign:"left",background:ans[key]===i?"#EEF2FF":"#fff",color:ans[key]===i?"#4338CA":"#374151",display:"flex",alignItems:"center",gap:8}}><span style={{width:20,height:20,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,background:ans[key]===i?"#4338CA":"#F1F5F9",color:ans[key]===i?"#fff":"#94A3B8",flexShrink:0}}>{i}</span>{l}</button>)}</div></Card><div style={{display:"flex",gap:8,marginTop:8}}><button onClick={()=>setQI(Math.max(0,qI-1))} disabled={qI===0} style={{flex:1,padding:10,border:"2px solid #E2E8F0",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:qI>0?"pointer":"not-allowed",color:qI>0?"#374151":"#CBD5E1"}}>←</button>{allD?<Btn onClick={finish} style={{flex:2}}>ดูผลลัพธ์ ✦</Btn>:<button onClick={()=>{if(ans[key]!==undefined&&qI<35)setQI(qI+1)}} style={{flex:2,padding:10,borderRadius:8,border:"none",background:ans[key]!==undefined?"linear-gradient(135deg,#4338CA,#6D28D9)":"#E2E8F0",color:ans[key]!==undefined?"#fff":"#94A3B8",fontSize:12,fontWeight:600,cursor:ans[key]!==undefined?"pointer":"not-allowed"}}>ถัดไป →</button>}</div></div>};
 
   // ─── TIMELINE MONTH COMPONENT ───
-  const TimelineMonth=({m,i,typeColors,typeBg,typeBorder})=>{
-    const[open,setOpen]=useState(false);
+  const TimelineMonth=({m,i,typeColors,typeBg,typeBorder,defaultOpen})=>{
+    const[open,setOpen]=useState(defaultOpen||false);
     const borderC=typeBorder[m.type]||'#C0B8D0';
     const headlineC={golden:'#C88A10',danger:'#C04040',good:'#2E8A58',side:'#3A7AC0',neutral:'#7060A0'}[m.type]||'#7060A0';
     return<div style={{marginBottom:6}}>
@@ -1539,8 +1539,15 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     </div>
 
     {/* Month cards */}
-    <div style={{fontSize:12,fontWeight:700,color:"#1E293B",marginBottom:6}}>🗓️ ทุกเดือนในปีนี้</div>
-    {months.map((m,i)=><TimelineMonth key={i} m={m} i={i} typeColors={typeColors} typeBg={typeBg} typeBorder={typeBorder}/>)}
+    <div style={{marginBottom:10}}>
+      <div style={{fontSize:12,fontWeight:700,color:"#1E293B",marginBottom:4}}>🗓️ ทุกเดือนในปีนี้</div>
+      <div style={{fontSize:10,color:"#8A8090",background:"#F5F3FF",borderRadius:8,padding:"6px 10px",display:"flex",alignItems:"center",gap:6}}>
+        <span style={{fontSize:13}}>👆</span>
+        <span>แตะที่การ์ดรายเดือนเพื่อดูรายละเอียด — งาน เงิน ความรัก สุขภาพ + คำแนะนำตัดสินใจ<br/>
+        <span style={{color:"#6366F1",fontWeight:600}}>ม.ค. เปิดไว้ให้ดูตัวอย่าง · แตะอีกครั้งเพื่อปิด</span></span>
+      </div>
+    </div>
+    {months.map((m,i)=><TimelineMonth key={i} m={m} i={i} typeColors={typeColors} typeBg={typeBg} typeBorder={typeBorder} defaultOpen={i===0}/>)}
 
     <div style={{marginTop:8,padding:8,background:"#F5F3FF",borderRadius:8}}>
       <div style={{fontSize:10,fontWeight:700,color:"#7B6FA0",marginBottom:2}}>🔮 Vedic Jyotish พระเวท × โหราศาสตร์ไทย</div>
