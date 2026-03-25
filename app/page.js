@@ -1493,37 +1493,53 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     </div>};
 
   // ─── ASK & DECIDE RESULTS ───
-  const AskResults=()=>{const days=gen7Day(bday);const t=days[0];const ec=v=>v>=75?"#059669":v>=55?"#6366F1":"#DC2626";const eb=v=>v>=75?"#ECFDF5":v>=55?"#EEF2FF":"#FFF1F2";
-  return<div>
-    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><button onClick={()=>setSc("landing")} style={{background:"none",border:"none",fontSize:18,cursor:"pointer"}}>←</button><div><div style={{fontSize:16,fontWeight:800}}>Ask & Decide AI</div><div style={{fontSize:11,color:"#94A3B8"}}>{nick?`${nick} · `:""}วิเคราะห์จากวันเดือนปีเกิด</div></div></div>
-    {/* Today card */}
-    <div style={{background:"linear-gradient(135deg,#0F172A,#1E1B4B)",borderRadius:14,padding:"14px 16px",marginBottom:12}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-        <div><span style={{fontSize:9,fontWeight:700,color:"#fff",background:"#6366F1",padding:"2px 8px",borderRadius:8,marginRight:6}}>วันนี้</span><span style={{fontSize:13,fontWeight:700,color:"#E2E8F0"}}>{t?.dn} {t?.date}</span></div>
-        <span style={{fontSize:14,fontWeight:800,color:ec(t?.ce),background:eb(t?.ce),padding:"3px 10px",borderRadius:8}}>{t?.ce}%</span>
-      </div>
-      {t?.specialEvent&&<div style={{padding:"6px 10px",borderRadius:8,marginBottom:8,background:t.specialEvent.type==="danger"?"rgba(220,38,38,.15)":"rgba(5,150,105,.15)",border:`1px solid ${t.specialEvent.type==="danger"?"#7F1D1D":"#065F46"}`,fontSize:10,fontWeight:600,color:t.specialEvent.type==="danger"?"#FCA5A5":"#6EE7B7",lineHeight:1.5}}>{t.specialEvent.text}</div>}
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4}}>
-        {[{icon:"💼",l:"งาน",v:t?.work},{icon:"💰",l:"เงิน",v:t?.money},{icon:"❤️",l:"ความรัก",v:t?.love},{icon:"🏃",l:"สุขภาพ",v:t?.health}].map(({icon,l,v},i)=><div key={i} style={{background:"rgba(255,255,255,.06)",borderRadius:8,padding:"6px 8px"}}><div style={{fontSize:9,fontWeight:700,color:"#94A3B8",marginBottom:2}}>{icon} {l}</div><div style={{fontSize:10,color:"#C7D2FE",lineHeight:1.4}}>{v}</div></div>)}
-      </div>
+  const AskResults=()=>{
+    const days=gen7Day(bday);const t=days[0];
+    const isPaid=plan!=="free";
+    const[freeKey,setFreeKey]=useState(null);
+    useEffect(()=>{
+      if(isPaid)return;
+      const today=new Date().toISOString().slice(0,10);
+      try{const raw=localStorage.getItem("hss_ask_daily");if(raw){const s=JSON.parse(raw);if(s.date===today){setFreeKey(s.key);return;}}}catch(e){}
+      const keys=["work","money","love","health"];
+      const picked=keys[Math.floor(Math.random()*keys.length)];
+      localStorage.setItem("hss_ask_daily",JSON.stringify({date:today,key:picked}));
+      setFreeKey(picked);
+    },[]);
+    const domains=[{key:"work",icon:"💼",label:"งาน",value:t?.work},{key:"money",icon:"💰",label:"เงิน",value:t?.money},{key:"love",icon:"❤️",label:"ความรัก",value:t?.love},{key:"health",icon:"🏃",label:"สุขภาพ",value:t?.health}];
+    const aiSummary=t?`วันนี้พลังงานโดยรวมของคุณอยู่ที่ ${t.ce}% — ${t.ce>=75?"วันนี้เหมาะมากสำหรับการตัดสินใจและลงมือทำ พลังงานอยู่ในระดับสูง ใช้โมเมนตัมนี้ให้เกิดประโยชน์สูงสุด":t.ce>=55?"พลังงานอยู่ในระดับกลาง เลือกทำสิ่งสำคัญที่สุดก่อน หลีกเลี่ยงการตัดสินใจใหญ่ช่วงเย็น":"ควรพักฟื้นพลังงาน หลีกเลี่ยงการตัดสินใจสำคัญหรือลงทุนเพิ่มวันนี้"} ในแต่ละด้านมีพลังงานต่างกัน — ใช้ข้อมูลนี้วางแผนวันให้ฉลาดขึ้น`:"";
+    return<div>
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><button onClick={()=>setSc("landing")} style={{background:"none",border:"none",fontSize:18,cursor:"pointer"}}>←</button><div><div style={{fontSize:16,fontWeight:800}}>Ask & Decide AI</div><div style={{fontSize:11,color:"#94A3B8"}}>{nick?`${nick} · `:""}คำตอบแยกรายด้าน · {t?.dn} {t?.date}</div></div></div>
+      {!isPaid&&<div style={{background:"#FFF7ED",border:"1px solid #FED7AA",borderRadius:10,padding:"8px 12px",marginBottom:12,fontSize:11,color:"#92400E"}}>⏰ <strong>ฟรี 1 คำตอบ/วัน</strong> — สุ่มแสดง 1 ด้านให้คุณวันนี้ · ปลดล็อกทุกด้านด้วย Deep ฿49</div>}
+      {domains.map(({key,icon,label,value})=>{
+        const unlocked=isPaid||(freeKey===key);
+        return<div key={key} style={{borderRadius:12,marginBottom:10,overflow:"hidden",border:"1px solid #E2E8F0"}}>
+          <div style={{background:unlocked?"linear-gradient(135deg,#0F172A,#1E1B4B)":"#F8FAFC",padding:"10px 14px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:16}}>{icon}</span><span style={{fontSize:13,fontWeight:700,color:unlocked?"#E2E8F0":"#94A3B8"}}>{label}</span></div>
+            {!unlocked&&<span style={{fontSize:10,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"2px 8px",borderRadius:8}}>🔒 ล็อก</span>}
+            {unlocked&&freeKey===key&&!isPaid&&<span style={{fontSize:9,fontWeight:700,color:"#10B981",background:"rgba(16,185,129,.15)",padding:"2px 8px",borderRadius:8}}>✓ วันนี้</span>}
+          </div>
+          <div style={{padding:"10px 14px",background:unlocked?"#0F172A":"#F8FAFC"}}>
+            {unlocked?<div style={{fontSize:12,color:"#C7D2FE",lineHeight:1.7}}>{value}</div>:<div style={{fontSize:12,color:"#CBD5E1",lineHeight:1.5}}>🔒 ปลดล็อกเพื่อดูคำตอบด้านนี้</div>}
+          </div>
+        </div>;
+      })}
+      {isPaid?<Card style={{background:"linear-gradient(135deg,#0F172A,#1E1B4B)",border:"none",marginBottom:12}}>
+        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}><span style={{fontSize:12,fontWeight:700,color:"#A5B4FC"}}>✦ AI Summary</span><span style={{fontSize:9,background:"#4338CA",color:"#fff",padding:"1px 6px",borderRadius:6,fontWeight:600}}>รวมทุกด้าน</span></div>
+        <div style={{fontSize:12,color:"#C7D2FE",lineHeight:1.7}}>{aiSummary}</div>
+      </Card>:<Card style={{background:"linear-gradient(135deg,#1E1B4B,#2D1B4E)",border:"1px solid #4338CA",marginBottom:12}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}><span style={{fontSize:12,fontWeight:700,color:"#A5B4FC"}}>✦ AI Summary</span><span style={{fontSize:10,fontWeight:700,color:"#6366F1",background:"rgba(99,102,241,.2)",padding:"2px 8px",borderRadius:8}}>🔒 Deep+</span></div>
+        <div style={{fontSize:11,color:"#64748B",lineHeight:1.5,marginBottom:10}}>สรุปภาพรวมพลังงานทุกด้านและคำแนะนำเชิงกลยุทธ์สำหรับวันนี้</div>
+        <button onClick={()=>tryUpgrade("deep")} style={{width:"100%",padding:"9px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer"}}>ปลดล็อก Deep ฿49 →</button>
+      </Card>}
+      <Card style={{background:"linear-gradient(135deg,#F5F3FF,#EEF2FF)",border:"2px solid #C7D2FE",marginBottom:12}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}><div style={{fontSize:13,fontWeight:700,color:"#4338CA"}}>✦ Identity Snapshot</div><span style={{fontSize:10,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"2px 8px",borderRadius:8}}>🔒 ทำแบบทดสอบก่อน</span></div>
+        <div style={{fontSize:12,color:"#64748B",lineHeight:1.6,marginBottom:10}}>เพิ่มความแม่นยำด้วยการทำแบบประเมิน 36 ข้อ — เข้าใจบุคลิกภาพ จุดแข็ง และ Shadow Pattern ของคุณ</div>
+        <button onClick={()=>{setAskMode(false);setSc("quiz")}} style={{width:"100%",padding:"10px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>ทำแบบทดสอบ Identity Snapshot →</button>
+      </Card>
+      <div style={{textAlign:"center",padding:"8px 0 40px"}}><button onClick={()=>setSc("landing")} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>← กลับหน้าหลัก</button></div>
     </div>
-    {/* 7-day */}
-    <div style={{marginBottom:16}}>
-      <h3 style={{fontSize:14,fontWeight:700,marginBottom:10,color:"#1E293B"}}>⚡ พลังงาน 7 วันข้างหน้า</h3>
-      {days.map((d,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",background:i===0?"linear-gradient(135deg,#EEF2FF,#F5F3FF)":"#fff",borderRadius:10,marginBottom:4,border:i===0?"2px solid #6366F1":"1px solid #F1F5F9"}}>
-        <div style={{flex:1}}><div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}>{i===0&&<span style={{fontSize:9,fontWeight:700,color:"#fff",background:"#6366F1",padding:"1px 6px",borderRadius:8}}>วันนี้</span>}<span style={{fontSize:12,fontWeight:700,color:"#1E293B"}}>{d.dn} {d.date}</span></div><div style={{fontSize:10,color:"#64748B",lineHeight:1.4}}>{d.work}</div></div>
-        <span style={{fontSize:12,fontWeight:800,color:ec(d.ce),background:eb(d.ce),padding:"2px 8px",borderRadius:8,flexShrink:0}}>{d.ce}%</span>
-      </div>)}
-    </div>
-    {/* Locked Identity Snapshot CTA */}
-    <Card style={{background:"linear-gradient(135deg,#F5F3FF,#EEF2FF)",border:"2px solid #C7D2FE",marginBottom:12}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}><div style={{fontSize:13,fontWeight:700,color:"#4338CA"}}>✦ Identity Snapshot</div><span style={{fontSize:10,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"2px 8px",borderRadius:8}}>🔒 ทำแบบทดสอบก่อน</span></div>
-      <div style={{fontSize:12,color:"#64748B",lineHeight:1.6,marginBottom:10}}>ค้นพบบุคลิกภาพ จุดแข็ง และจุดบอดของคุณ ผ่านแบบประเมินพฤติกรรม 36 ข้อ ใช้เวลา ~10 นาที</div>
-      <div style={{display:"flex",gap:6,marginBottom:10}}>{["พลังงานดาว 5 ดวง","บุคลิกหลัก","จุดแข็ง & จุดบอด"].map((t,i)=><div key={i} style={{flex:1,background:"rgba(99,102,241,.1)",borderRadius:6,padding:"4px 6px",textAlign:"center",fontSize:9,color:"#6366F1",fontWeight:600}}>{t}</div>)}</div>
-      <button onClick={()=>{setAskMode(false);setSc("quiz")}} style={{width:"100%",padding:"10px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>ทำแบบทดสอบ Identity Snapshot →</button>
-    </Card>
-    <div style={{textAlign:"center",padding:"8px 0 40px"}}><button onClick={()=>setSc("landing")} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>← กลับหน้าหลัก</button></div>
-  </div>};
+  };
 
   // ─── RESULTS ───
   const Sec=({fKey,title,icon,children})=>{const ok=has(fKey);return<Card style={{position:"relative"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:ok?8:4}}><div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:15}}>{icon}</span><span style={{fontSize:13,fontWeight:700}}>{title}</span></div>{!ok&&<span style={{fontSize:10,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"2px 8px",borderRadius:8}}>🔒</span>}</div>{ok?children:<><p style={{fontSize:11,color:"#94A3B8",marginBottom:6}}>ปลดล็อกเพื่อดู</p><div style={{display:"flex",gap:6}}>{plan==="free"&&<button onClick={()=>tryUpgrade("deep")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #F59E0B",background:"#FFFBEB",color:"#92400E",fontSize:11,fontWeight:700,cursor:"pointer"}}>Deep ฿49</button>}{plan!=="all"&&<button onClick={()=>tryUpgrade("all")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>All ฿99</button>}</div></>}</Card>};
