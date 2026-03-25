@@ -1493,13 +1493,22 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const isPaid=plan!=="free";
     const[activeTab,setActiveTab]=useState("work");
     const[quotaUsed,setQuotaUsed]=useState(false);
+    const[selectedQ,setSelectedQ]=useState(null);
+    const[resultShown,setResultShown]=useState(false);
+    const[showCustom,setShowCustom]=useState(false);
+    const customRef=useRef(null);
     useEffect(()=>{
-      if(isPaid)return;
       const today=new Date().toISOString().slice(0,10);
-      try{const raw=localStorage.getItem("hss_ask_daily");if(raw){const s=JSON.parse(raw);if(s.date===today){setQuotaUsed(true);return;}}}catch(e){}
-      localStorage.setItem("hss_ask_daily",JSON.stringify({date:today}));
-      setQuotaUsed(true);
+      try{const raw=localStorage.getItem("hss_ask_daily");if(raw){const s=JSON.parse(raw);if(s.date===today){setQuotaUsed(true);if(s.q){setSelectedQ(s.q);if(s.tab)setActiveTab(s.tab);setResultShown(true);}}}}catch(e){}
     },[]);
+    const askQ=(q)=>{
+      setSelectedQ(q);setShowCustom(false);
+      if(isPaid||!quotaUsed){
+        setResultShown(true);
+        if(!isPaid){const today=new Date().toISOString().slice(0,10);localStorage.setItem("hss_ask_daily",JSON.stringify({date:today,q,tab:activeTab}));setQuotaUsed(true);}
+      }
+    };
+    const submitCustom=()=>{const q=customRef.current?.value?.trim();if(q)askQ(q);};
     const TABS=[{key:"work",icon:"💼",label:"งาน"},{key:"money",icon:"💰",label:"เงิน"},{key:"love",icon:"❤️",label:"ความรัก"},{key:"timing",icon:"⏱️",label:"Timing"}];
     const CHIPS={work:["ลาออกดีไหม?","เปลี่ยนงานตอนนี้ไหม?","งานนี้เหมาะไหม?","ธุรกิจนี้จะสำเร็จไหม?","ควรรับงานใหม่ไหม?"],money:["ลงทุนตอนนี้ไหม?","ซื้อบ้านดีไหม?","กู้เงินได้ไหม?","ควรออมหรือลงทุน?","ธุรกิจคุ้มค่าไหม?"],love:["บอกรักไหม?","ความสัมพันธ์นี้ดีไหม?","ควรแยกทางไหม?","เขา/เธอใช่ไหม?","รอหรือก้าวต่อ?"],timing:["วันนี้เหมาะไหม?","เดือนนี้ดีไหม?","ควรรอหรือลุย?","ช่วงนี้ฤกษ์ดีไหม?","เวลาไหนดีที่สุด?"]};
     const domTxt={work:t?.work,money:t?.money,love:t?.love,timing:t?.work};
@@ -1512,7 +1521,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const rC=cs>=72?"#065F46":cs>=52?"#92400E":"#991B1B";
     const VT={work:s10>=7?"ดาวพฤหัสอยู่ในช่วงที่ส่งเสริมการเติบโต":s10>=5?"พลังงานการงานปานกลาง — เลือกทำงานสำคัญ":"เสาร์กดดัน — ระวังการตัดสินใจใหญ่",money:s10>=7?"ศุกร์เสริมโชคลาภ — การเงินไหลดี":s10>=5?"การเงินปกติ — ไม่มีโชคพิเศษ":"ศุกร์/จันทร์นิจ — ระวังรายจ่ายเกินตัว",love:s10>=7?"ศุกร์อุจจ์ — ความรักสดใส เสน่ห์ดึงดูดสูง":s10>=5?"ความสัมพันธ์ปกติ — ดูแลกันด้วยใจ":"จันทร์กดดัน — ระวังความเข้าใจผิด",timing:s10>=7?"ฤกษ์ดี — พลังงานสูง เหมาะลงมือทำ":s10>=5?"ช่วงกลาง — เลือกจังหวะให้ดี":"ช่วงระวัง — รอดาวดีขึ้นก่อน"};
     const VA={work:s10>=7?"ใช้เวลาในการเรียนรู้และพัฒนาทักษะ":s10>=5?"โฟกัสงานที่ทำอยู่ ไม่ต้องรีบเปลี่ยน":"งดตัดสินใจใหญ่ รักษาสถานะเดิมไว้ก่อน",money:s10>=7?"เหมาะออมทรัพย์หรือลงทุนระยะยาว":s10>=5?"ระวังรายจ่าย เก็บเงินเผื่อไว้":"หลีกเลี่ยงลงทุนใหม่ ดูแลเงินที่มีอยู่",love:s10>=7?"บอกรักหรือนัดพบได้เลย วันนี้ดวงรักดี":s10>=5?"ใส่ใจและสื่อสารด้วยความเข้าใจ":"ใจเย็นๆ สื่อสารระมัดระวัง",timing:s10>=7?"วันนี้ลุยได้เลย ไม่ต้องรอ":s10>=5?"เลือกช่วงเช้า พลังงานดีกว่า":"รอจังหวะที่ดีกว่า อย่าฝืน"};
-    const SCHOOLS=[{name:"Vedic",icon:"🪐",grad:"linear-gradient(135deg,#4338CA,#6366F1)"},{name:"เลขศาสตร์",icon:"🔢",grad:"linear-gradient(135deg,#7C3AED,#8B5CF6)"},{name:"โหราศาสตร์ไทย",icon:"🌙",grad:"linear-gradient(135deg,#0369A1,#0EA5E9)"},{name:"จิตวิทยา",icon:"🧠",grad:"linear-gradient(135deg,#065F46,#10B981)"}];
+    const SCHOOLS=[{name:"โหราศาสตร์พระเวท",icon:"🪐",grad:"linear-gradient(135deg,#4338CA,#6366F1)"},{name:"โหราศาสตร์ไทย",icon:"🌙",grad:"linear-gradient(135deg,#0369A1,#0EA5E9)"},{name:"โหราศาสตร์จีน",icon:"☯️",grad:"linear-gradient(135deg,#7C3AED,#8B5CF6)"},{name:"โหราศาสตร์สากล",icon:"⭐",grad:"linear-gradient(135deg,#065F46,#10B981)"}];
     return<div style={{margin:"-12px -16px"}}>
       <div style={{background:"linear-gradient(135deg,#0F172A,#1E1B4B)",padding:"14px 16px 0"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
@@ -1524,48 +1533,61 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
           <div style={{fontSize:10,fontWeight:700,color:"#F59E0B",background:"rgba(245,158,11,.15)",padding:"3px 10px",borderRadius:8,flexShrink:0}}>{isPaid?"∞":"1"}/1 คำถาม/วัน</div>
         </div>
         <div style={{display:"flex",gap:6,marginBottom:12,overflowX:"auto",paddingBottom:2}}>
-          {TABS.map(tab=><button key={tab.key} onClick={()=>setActiveTab(tab.key)} style={{flexShrink:0,padding:"6px 14px",borderRadius:20,border:"none",background:activeTab===tab.key?"#6366F1":"rgba(255,255,255,.08)",color:activeTab===tab.key?"#fff":"#A5B4FC",fontSize:12,fontWeight:600,cursor:"pointer"}}>{tab.icon} {tab.label}</button>)}
+          {TABS.map(tab=><button key={tab.key} onClick={()=>{setActiveTab(tab.key);setShowCustom(false);}} style={{flexShrink:0,padding:"6px 14px",borderRadius:20,border:"none",background:activeTab===tab.key?"#6366F1":"rgba(255,255,255,.08)",color:activeTab===tab.key?"#fff":"#A5B4FC",fontSize:12,fontWeight:600,cursor:"pointer"}}>{tab.icon} {tab.label}</button>)}
         </div>
-        <div style={{display:"flex",flexWrap:"wrap",gap:6,paddingBottom:14}}>
-          {(CHIPS[activeTab]||[]).map((q,i)=><button key={i} style={{padding:"5px 12px",borderRadius:16,border:"1px solid rgba(255,255,255,.15)",background:"rgba(255,255,255,.06)",color:"#C7D2FE",fontSize:11,cursor:"pointer"}}>{q}</button>)}
-          <button style={{padding:"5px 12px",borderRadius:16,border:"1px dashed rgba(255,255,255,.25)",background:"transparent",color:"#94A3B8",fontSize:11,cursor:"pointer"}}>✏️ พิมพ์เอง</button>
+        <div style={{display:"flex",flexWrap:"wrap",gap:6,paddingBottom:showCustom?8:14}}>
+          {(CHIPS[activeTab]||[]).map((q,i)=><button key={i} onClick={()=>askQ(q)} style={{padding:"5px 12px",borderRadius:16,border:selectedQ===q?"2px solid #A5B4FC":"1px solid rgba(255,255,255,.15)",background:selectedQ===q?"rgba(99,102,241,.3)":"rgba(255,255,255,.06)",color:"#C7D2FE",fontSize:11,cursor:"pointer",fontWeight:selectedQ===q?700:400}}>{q}</button>)}
+          <button onClick={()=>setShowCustom(v=>!v)} style={{padding:"5px 12px",borderRadius:16,border:showCustom?"2px solid #A5B4FC":"1px dashed rgba(255,255,255,.25)",background:showCustom?"rgba(99,102,241,.2)":"transparent",color:showCustom?"#C7D2FE":"#94A3B8",fontSize:11,cursor:"pointer"}}>✏️ พิมพ์เอง</button>
         </div>
+        {showCustom&&<div style={{paddingBottom:14,display:"flex",gap:8}}>
+          <input ref={customRef} defaultValue="" placeholder="พิมพ์คำถามของคุณ..." onKeyDown={e=>{if(e.key==="Enter")submitCustom();}} style={{flex:1,padding:"8px 12px",borderRadius:10,border:"1px solid rgba(255,255,255,.25)",background:"rgba(255,255,255,.08)",color:"#fff",fontSize:12,outline:"none"}} autoFocus/>
+          <button onClick={submitCustom} style={{padding:"8px 14px",borderRadius:10,border:"none",background:"#6366F1",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",flexShrink:0}}>ถาม</button>
+        </div>}
       </div>
       <div style={{background:"#F8FAFC",borderRadius:"20px 20px 0 0",marginTop:-8,padding:"16px 16px 0"}}>
-        {!isPaid&&<div style={{background:"#F1F5F9",borderRadius:10,padding:"10px 14px",marginBottom:12,display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:14}}>🔒</span><span style={{fontSize:11,color:"#64748B",fontWeight:600}}>ใช้ครบโควต้าวันนี้แล้ว (Free = 1/วัน)</span></div>}
-        <div style={{background:rBg,border:`1.5px solid ${rBd}`,borderRadius:12,padding:"12px 14px",marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
-          <div><div style={{fontSize:14,fontWeight:800,color:rC}}>{rI} แนะนำ: {rec}</div><div style={{fontSize:11,color:rC,opacity:.75,marginTop:2}}>ความมั่นใจ: {cs}% · วิเคราะห์จาก 4 ศาสตร์</div></div>
-          <div style={{width:46,height:46,borderRadius:"50%",background:`conic-gradient(${rC} ${cs}%,#E2E8F0 0)`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-            <div style={{width:34,height:34,borderRadius:"50%",background:rBg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:rC}}>{cs}%</div>
-          </div>
-        </div>
-        <div style={{fontSize:12,fontWeight:700,color:"#64748B",marginBottom:10}}>🔮 วิเคราะห์รายศาสตร์</div>
-        {SCHOOLS.map((sch,i)=>{
-          const ul=isPaid||(i===0);
-          return<div key={i} style={{borderRadius:12,overflow:"hidden",marginBottom:8,border:"1px solid #E2E8F0"}}>
-            {ul?<><div style={{background:sch.grad,padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:26,height:26,borderRadius:8,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>{sch.icon}</div><span style={{fontSize:13,fontWeight:700,color:"#fff"}}>{sch.name}</span></div>
-              <div style={{textAlign:"right"}}><div style={{fontSize:9,color:"rgba(255,255,255,.6)"}}>คะแนน</div><div style={{fontSize:14,fontWeight:800,color:"#fff"}}>{s10}/10</div></div>
+        {!resultShown&&<div style={{textAlign:"center",padding:"32px 16px 40px"}}>
+          <div style={{fontSize:36,marginBottom:10}}>🔮</div>
+          <div style={{fontSize:14,fontWeight:700,color:"#1E293B",marginBottom:6}}>เลือกคำถามด้านบนเพื่อดูคำตอบ</div>
+          <div style={{fontSize:12,color:"#94A3B8",marginBottom:16}}>แตะที่คำถามหรือพิมพ์คำถามของคุณเอง</div>
+          {!isPaid&&quotaUsed&&<div style={{padding:"10px 14px",background:"#FFF7ED",border:"1px solid #FED7AA",borderRadius:10,fontSize:11,color:"#92400E",textAlign:"left"}}>⏰ ใช้ครบโควต้าวันนี้แล้ว (1/วัน) · <button onClick={()=>tryUpgrade("deep")} style={{background:"none",border:"none",color:"#4338CA",fontWeight:700,cursor:"pointer",fontSize:11,padding:0}}>ปลดล็อก Deep ฿49</button></div>}
+        </div>}
+        {resultShown&&<>
+          {!isPaid&&<div style={{background:"#F1F5F9",borderRadius:10,padding:"10px 14px",marginBottom:12,display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:13}}>🔒</span><span style={{fontSize:11,color:"#64748B",fontWeight:600}}>ใช้ครบโควต้าวันนี้แล้ว (Free = 1/วัน)</span></div>}
+          <div style={{background:"#EEF2FF",borderRadius:10,padding:"9px 14px",marginBottom:12,fontSize:12,color:"#4338CA",fontWeight:600}}>💬 {selectedQ}</div>
+          <div style={{background:rBg,border:`1.5px solid ${rBd}`,borderRadius:12,padding:"12px 14px",marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
+            <div><div style={{fontSize:14,fontWeight:800,color:rC}}>{rI} แนะนำ: {rec}</div><div style={{fontSize:11,color:rC,opacity:.75,marginTop:2}}>ความมั่นใจ: {cs}% · วิเคราะห์จาก 4 ศาสตร์</div></div>
+            <div style={{width:46,height:46,borderRadius:"50%",background:`conic-gradient(${rC} ${cs}%,#E2E8F0 0)`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+              <div style={{width:34,height:34,borderRadius:"50%",background:rBg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:rC}}>{cs}%</div>
             </div>
-            <div style={{background:"#fff",padding:"12px 14px"}}>
-              <div style={{fontSize:12,fontWeight:700,color:"#1E293B",marginBottom:5}}>{VT[activeTab]}</div>
-              <div style={{fontSize:11,color:"#64748B",lineHeight:1.6,marginBottom:10}}>{domTxt[activeTab]}</div>
-              <button style={{background:"#FFF7ED",border:"1px solid #FED7AA",borderRadius:8,padding:"7px 12px",fontSize:11,fontWeight:600,color:"#92400E",cursor:"pointer",width:"100%",textAlign:"left"}}>▶ {VA[activeTab]}</button>
-            </div></>
-            :<div style={{background:"#F8FAFC",padding:"14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:26,height:26,borderRadius:8,background:"#E2E8F0",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,filter:"grayscale(1)"}}>{sch.icon}</div><span style={{fontSize:13,fontWeight:600,color:"#94A3B8"}}>{sch.name}</span></div>
-              <button onClick={()=>tryUpgrade("deep")} style={{padding:"6px 14px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>🔒 ดูครบ ฿49</button>
-            </div>}
-          </div>;
-        })}
-        <div style={{borderRadius:12,overflow:"hidden",marginBottom:12,border:"1px solid #E2E8F0"}}>
-          <div style={{background:"#F8FAFC",padding:"14px"}}>
-            <div style={{textAlign:"center",marginBottom:isPaid?10:6}}><div style={{fontSize:13,fontWeight:700,color:isPaid?"#1E293B":"#94A3B8"}}>AI Summary + Action Plan</div><div style={{fontSize:10,color:"#94A3B8",marginTop:2}}>รวมคำแนะนำ 3 ขั้นตอน</div></div>
-            {isPaid?<div style={{fontSize:11,color:"#475569",lineHeight:1.8}}><div>1️⃣ {VA[activeTab]}</div><div style={{marginTop:4}}>2️⃣ {VT[activeTab]}</div><div style={{marginTop:4}}>3️⃣ พลังงานวันนี้ {cs}% — {cs>=72?"เหมาะลงมือทำและตัดสินใจ":cs>=52?"เลือกทำสิ่งสำคัญก่อน":"พักฟื้น อย่าตัดสินใจใหญ่"}</div></div>
-            :<button onClick={()=>tryUpgrade("deep")} style={{width:"100%",padding:"9px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer"}}>ดูครบ ฿49 →</button>}
           </div>
-        </div>
-        <button onClick={()=>setSc("landing")} style={{width:"100%",padding:"12px 0",borderRadius:10,border:"none",background:"#1E293B",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",marginBottom:4,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>🔄 ถามคำถามใหม่</button>
+          <div style={{fontSize:12,fontWeight:700,color:"#64748B",marginBottom:10}}>🔮 วิเคราะห์รายศาสตร์</div>
+          {SCHOOLS.map((sch,i)=>{
+            const ul=isPaid||(i===0);
+            return<div key={i} style={{borderRadius:12,overflow:"hidden",marginBottom:8,border:"1px solid #E2E8F0"}}>
+              {ul?<><div style={{background:sch.grad,padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:26,height:26,borderRadius:8,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>{sch.icon}</div><span style={{fontSize:13,fontWeight:700,color:"#fff"}}>{sch.name}</span></div>
+                <div style={{textAlign:"right"}}><div style={{fontSize:9,color:"rgba(255,255,255,.6)"}}>คะแนน</div><div style={{fontSize:14,fontWeight:800,color:"#fff"}}>{s10}/10</div></div>
+              </div>
+              <div style={{background:"#fff",padding:"12px 14px"}}>
+                <div style={{fontSize:12,fontWeight:700,color:"#1E293B",marginBottom:5}}>{VT[activeTab]}</div>
+                <div style={{fontSize:11,color:"#64748B",lineHeight:1.6,marginBottom:10}}>{domTxt[activeTab]}</div>
+                <button style={{background:"#FFF7ED",border:"1px solid #FED7AA",borderRadius:8,padding:"7px 12px",fontSize:11,fontWeight:600,color:"#92400E",cursor:"pointer",width:"100%",textAlign:"left"}}>▶ {VA[activeTab]}</button>
+              </div></>
+              :<div style={{background:"#F8FAFC",padding:"14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:26,height:26,borderRadius:8,background:"#E2E8F0",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,filter:"grayscale(1)"}}>{sch.icon}</div><span style={{fontSize:13,fontWeight:600,color:"#94A3B8"}}>{sch.name}</span></div>
+                <button onClick={()=>tryUpgrade("deep")} style={{padding:"6px 14px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>🔒 ดูครบ ฿49</button>
+              </div>}
+            </div>;
+          })}
+          <div style={{borderRadius:12,overflow:"hidden",marginBottom:12,border:"1px solid #E2E8F0"}}>
+            <div style={{background:"#F8FAFC",padding:"14px"}}>
+              <div style={{textAlign:"center",marginBottom:isPaid?10:6}}><div style={{fontSize:13,fontWeight:700,color:isPaid?"#1E293B":"#94A3B8"}}>AI Summary + Action Plan</div><div style={{fontSize:10,color:"#94A3B8",marginTop:2}}>รวมคำแนะนำ 3 ขั้นตอน</div></div>
+              {isPaid?<div style={{fontSize:11,color:"#475569",lineHeight:1.8}}><div>1️⃣ {VA[activeTab]}</div><div style={{marginTop:4}}>2️⃣ {VT[activeTab]}</div><div style={{marginTop:4}}>3️⃣ พลังงานวันนี้ {cs}% — {cs>=72?"เหมาะลงมือทำและตัดสินใจ":cs>=52?"เลือกทำสิ่งสำคัญก่อน":"พักฟื้น อย่าตัดสินใจใหญ่"}</div></div>
+              :<button onClick={()=>tryUpgrade("deep")} style={{width:"100%",padding:"9px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer"}}>ดูครบ ฿49 →</button>}
+            </div>
+          </div>
+          <button onClick={()=>{setResultShown(false);setSelectedQ(null);setShowCustom(false);if(customRef.current)customRef.current.value="";}} style={{width:"100%",padding:"12px 0",borderRadius:10,border:"none",background:"#1E293B",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",marginBottom:4,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>🔄 ถามคำถามใหม่</button>
+        </>}
         <div style={{textAlign:"center",padding:"8px 0 40px"}}><button onClick={()=>setSc("landing")} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>← กลับหน้าหลัก</button></div>
       </div>
     </div>
