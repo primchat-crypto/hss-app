@@ -569,6 +569,113 @@ const Locked=({planNeeded,title,children,onUpgrade})=><Card style={{position:"re
 
 const DecideTextInput=({value,onChange})=><input value={value} onChange={onChange} placeholder="พิมพ์คำถามของคุณ..." maxLength={80} style={{width:"100%",padding:"10px 14px",borderRadius:10,border:"1px solid rgba(99,102,241,0.4)",background:"rgba(255,255,255,0.08)",color:"#fff",fontSize:13,outline:"none",boxSizing:"border-box"}}/>;
 
+const DecideCard=({c})=><div style={{borderRadius:10,border:`1px solid ${c.color}33`,background:"#fff",padding:"10px 12px",marginBottom:6}}>
+  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:4}}>
+    <div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:16}}>{c.icon}</span><div><div style={{fontSize:11,fontWeight:700,color:"#475569"}}>{c.system}</div><div style={{fontSize:13,fontWeight:800,color:c.color}}>{c.answer}</div></div></div>
+    <div style={{textAlign:"right"}}><div style={{fontSize:9,color:"#94A3B8",marginBottom:2}}>คะแนน</div><div style={{fontSize:15,fontWeight:800,color:c.color}}>{c.score}/10</div></div>
+  </div>
+  <div style={{fontSize:11,color:"#374151",lineHeight:1.6,marginBottom:6}}>{c.reason}</div>
+  <div style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:10,fontWeight:700,color:"#fff",background:c.color,padding:"3px 10px",borderRadius:20}}>▶ {c.action}</div>
+</div>;
+
+const AskDecide=({plan,has,nick,bday,scores,tryUpgrade})=>{
+  const[decQ,setDecQ]=useState("");
+  const[decCat,setDecCat]=useState("work");
+  const[decRes,setDecRes]=useState(null);
+  const[decL,setDecL]=useState(false);
+  const[decCustom,setDecCustom]=useState(false);
+  const decideLimit=()=>{const today=new Date().toDateString();const s=ST.get("dec_day");return s?.date===today?s.count||0:0};
+  const incDecide=()=>{const today=new Date().toDateString();ST.set("dec_day",{date:today,count:decideLimit()+1})};
+  const askDecide=async()=>{
+    const q=decQ.trim();if(!q)return;
+    const maxQ=plan==="free"?1:99;if(decideLimit()>=maxQ&&plan==="free"){alert("ใช้โควต้า 1 คำถาม/วันหมดแล้ว อัปเกรดเพื่อถามไม่จำกัด");return}
+    setDecL(true);setDecRes(null);
+    const catLabel=DEC_CATS[decCat].label;
+    const prompt=`คุณคือ AI ผู้เชี่ยวชาญด้านการตัดสินใจ วิเคราะห์จาก 4 ศาสตร์พร้อมกัน
+ข้อมูลผู้ถาม: ชื่อ ${nick}, วันเกิด ${bday}, คะแนนจิตวิทยา: Cognitive=${scores?.["Cognitive Processing"]?.toFixed(1)||"N/A"}, Shadow=${scores?.["Shadow Pattern"]?.toFixed(1)||"N/A"}
+หมวดหมู่: ${catLabel}
+คำถาม: "${q}"
+
+ตอบเป็น JSON เท่านั้น ตาม schema นี้:
+{
+  "verdict": "ใช่|ไม่ใช่|รอก่อน",
+  "verdictColor": "green|red|yellow",
+  "confidence": 0-100,
+  "cards": [
+    {"system":"Vedic","icon":"🔯","color":"#F59E0B","answer":"...สั้น","reason":"อธิบาย 1-2 ประโยคเชิงดาว","score":1-10,"action":"คำแนะนำ 1 ประโยค"},
+    {"system":"Western","icon":"⭐","color":"#3B82F6","answer":"...สั้น","reason":"...","score":1-10,"action":"..."},
+    {"system":"Chinese","icon":"☯️","color":"#EF4444","answer":"...สั้น","reason":"...","score":1-10,"action":"..."},
+    {"system":"Thai","icon":"🌸","color":"#8B5CF6","answer":"...สั้น","reason":"...","score":1-10,"action":"..."}
+  ],
+  "ai_summary": "สรุปภาพรวมทุกศาสตร์ 2-3 ประโยค",
+  "action_plan": ["ขั้นตอน 1","ขั้นตอน 2","ขั้นตอน 3"]
+}`;
+    const raw=await GPT.call(prompt,`dec_${nick}_${q.slice(0,20)}_${new Date().toDateString()}`,600);
+    const parsed=pJ(raw);
+    setDecRes(parsed||pJ(GPT.fb(`dec_fallback`)));
+    setDecL(false);incDecide();
+  };
+  const cats=Object.entries(DEC_CATS);
+  const catData=DEC_CATS[decCat];
+  const usedToday=decideLimit();
+  const canAsk=plan!=="free"||(usedToday<1);
+  const freeCard=decRes?decRes.cards?.[0]:null;
+  const showAll=has("decide");
+  const vc={green:{bg:"#ECFDF5",border:"#10B981",color:"#059669",label:"✅ แนะนำ: ทำเลย"},red:{bg:"#FFF1F2",border:"#EF4444",color:"#DC2626",label:"❌ แนะนำ: หลีกเลี่ยง"},yellow:{bg:"#FFFBEB",border:"#F59E0B",color:"#92400E",label:"⏳ แนะนำ: รอก่อน"}}[decRes?.verdictColor||"yellow"]||{};
+  return<Card style={{background:"linear-gradient(135deg,#1E1B4B,#312E81)",border:"2px solid #6366F1",padding:"18px 16px",marginBottom:12}}>
+    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
+      <div style={{width:32,height:32,borderRadius:10,background:"linear-gradient(135deg,#6366F1,#8B5CF6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0}}>🔮</div>
+      <div><div style={{fontSize:14,fontWeight:800,color:"#fff"}}>Ask & Decide AI</div><div style={{fontSize:10,color:"#A5B4FC"}}>วิเคราะห์ 4 ศาสตร์ → ตัดสินใจได้ทันที</div></div>
+      {plan==="free"&&<div style={{marginLeft:"auto",textAlign:"right"}}><div style={{fontSize:9,color:"#A5B4FC"}}>{usedToday}/1 คำถาม/วัน</div><div style={{width:40,height:3,borderRadius:2,background:"rgba(255,255,255,0.15)",marginTop:2}}><div style={{width:`${Math.min(100,usedToday*100)}%`,height:"100%",borderRadius:2,background:"#F59E0B"}}/></div></div>}
+    </div>
+    <div style={{display:"flex",gap:6,marginBottom:12,overflowX:"auto",paddingBottom:2}}>
+      {cats.map(([k,v])=><button key={k} onClick={()=>{setDecCat(k);setDecQ("");setDecCustom(false)}} style={{padding:"6px 12px",borderRadius:20,border:"none",background:decCat===k?"#6366F1":"rgba(255,255,255,0.1)",color:decCat===k?"#fff":"#A5B4FC",fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,whiteSpace:"nowrap"}}>{v.icon} {v.label}</button>)}
+    </div>
+    <div style={{marginBottom:10}}>
+      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:8}}>
+        {catData.q.map((q,i)=><button key={i} onClick={()=>{setDecQ(q);setDecCustom(false)}} style={{padding:"6px 12px",borderRadius:20,fontSize:11,fontWeight:600,border:`1px solid ${decQ===q?"#6366F1":"rgba(255,255,255,0.15)"}`,background:decQ===q?"rgba(99,102,241,0.25)":"rgba(255,255,255,0.07)",color:decQ===q?"#C7D2FE":"#CBD5E1",cursor:"pointer"}}>{q}</button>)}
+        <button onClick={()=>{setDecCustom(true);setDecQ("")}} style={{padding:"6px 12px",borderRadius:20,fontSize:11,fontWeight:600,border:`1px solid ${decCustom?"#6366F1":"rgba(255,255,255,0.15)"}`,background:decCustom?"rgba(99,102,241,0.25)":"rgba(255,255,255,0.07)",color:decCustom?"#C7D2FE":"#CBD5E1",cursor:"pointer"}}>✏️ พิมพ์เอง</button>
+      </div>
+      {decCustom&&<DecideTextInput value={decQ} onChange={e=>setDecQ(e.target.value)}/>}
+    </div>
+    <button onClick={askDecide} disabled={!decQ.trim()||decL||!canAsk} style={{width:"100%",padding:"11px",borderRadius:10,border:"none",background:decQ.trim()&&canAsk?"linear-gradient(135deg,#4F46E5,#7C3AED)":"rgba(255,255,255,0.1)",color:decQ.trim()&&canAsk?"#fff":"rgba(255,255,255,0.3)",fontSize:13,fontWeight:700,cursor:decQ.trim()&&canAsk?"pointer":"not-allowed",marginBottom:decRes||decL?12:0,boxShadow:decQ.trim()&&canAsk?"0 4px 14px rgba(79,70,229,0.4)":"none",transition:"all .2s"}}>
+      {decL?"🔮 กำลังวิเคราะห์...":!canAsk?"⏰ ใช้ครบโควต้าวันนี้แล้ว (Free = 1/วัน)":"🔮 วิเคราะห์เลย"}
+    </button>
+    {decL&&<div style={{textAlign:"center",padding:"20px 0"}}><div style={{width:24,height:24,margin:"0 auto 8px",borderRadius:"50%",border:"3px solid rgba(99,102,241,0.2)",borderTopColor:"#6366F1",animation:"hs .7s linear infinite"}}/><div style={{fontSize:12,color:"#A5B4FC"}}>AI กำลังเปรียบเทียบ 4 ศาสตร์...</div></div>}
+    {decRes&&!decL&&<>
+      <div style={{borderRadius:12,padding:"12px 14px",marginBottom:12,background:vc.bg,border:`2px solid ${vc.border}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+        <div><div style={{fontSize:13,fontWeight:800,color:vc.color}}>{vc.label}</div><div style={{fontSize:10,color:"#64748B",marginTop:2}}>ความมั่นใจ: {decRes.confidence}% · วิเคราะห์จาก 4 ศาสตร์</div></div>
+        <div style={{textAlign:"right"}}><div style={{width:44,height:44,borderRadius:"50%",border:`3px solid ${vc.border}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:vc.color,background:"rgba(255,255,255,0.7)"}}>{decRes.confidence}%</div></div>
+      </div>
+      <div style={{marginBottom:12}}>
+        <div style={{fontSize:10,fontWeight:700,color:"#A5B4FC",marginBottom:8,letterSpacing:1}}>📚 วิเคราะห์รายศาสตร์</div>
+        {showAll?decRes.cards?.map((c,i)=><DecideCard key={i} c={c}/>):<>
+          {freeCard&&<DecideCard c={freeCard}/>}
+          {decRes.cards?.slice(1).map((_,i)=><div key={i} style={{borderRadius:10,border:"1px solid #E2E8F0",marginBottom:6,overflow:"hidden",position:"relative",minHeight:72}}>
+            <div style={{filter:"blur(4px)",opacity:.4,padding:"10px 12px",pointerEvents:"none"}}><div style={{fontSize:11,fontWeight:700,marginBottom:2}}>⭐ {["Western","Chinese","Thai"][i]}</div><div style={{fontSize:12,color:"#374151"}}>วิเคราะห์เชิงลึก...</div></div>
+            <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.85)",backdropFilter:"blur(2px)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><span style={{fontSize:18}}>🔒</span><button onClick={()=>tryUpgrade("deep")} style={{padding:"5px 14px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>ดูครบ ฿49</button></div>
+          </div>)}
+        </>}
+      </div>
+      {showAll?<div style={{background:"#F8FAFC",borderRadius:10,padding:"12px 14px",marginBottom:10,border:"1px solid #E2E8F0"}}>
+        <div style={{fontSize:11,fontWeight:700,color:"#4338CA",marginBottom:6}}>🤖 AI Summary</div>
+        <div style={{fontSize:12,color:"#374151",lineHeight:1.8}}>{decRes.ai_summary}</div>
+        <div style={{marginTop:10}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:6}}>⚡ Action Plan</div>
+        {decRes.action_plan?.map((s,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:8,marginBottom:6}}><div style={{width:18,height:18,borderRadius:"50%",background:"#4338CA",color:"#fff",fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}>{i+1}</div><div style={{fontSize:12,color:"#374151",lineHeight:1.6}}>{s}</div></div>)}</div>
+      </div>:<div style={{borderRadius:10,border:"1px solid #E2E8F0",overflow:"hidden",position:"relative",minHeight:80}}>
+        <div style={{filter:"blur(5px)",opacity:.3,padding:"12px 14px",pointerEvents:"none"}}><div style={{fontSize:11,fontWeight:700,color:"#4338CA",marginBottom:4}}>🤖 AI Summary</div><div style={{fontSize:12,color:"#374151",lineHeight:1.8}}>สรุปภาพรวม Action Plan ...</div></div>
+        <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.88)",backdropFilter:"blur(3px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:16}}>
+          <div style={{fontSize:20,marginBottom:6}}>🔒</div>
+          <div style={{fontSize:12,fontWeight:700,color:"#4338CA",marginBottom:4,textAlign:"center"}}>AI Summary + Action Plan</div>
+          <div style={{fontSize:10,color:"#64748B",marginBottom:10}}>รวมถึงคำแนะนำ 3 ขั้นตอน</div>
+          <button onClick={()=>tryUpgrade("deep")} style={{padding:"8px 24px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 12px rgba(79,70,229,.25)"}}>ปลดล็อก Deep ฿49 →</button>
+        </div>
+      </div>}
+      <button onClick={()=>{setDecRes(null);setDecQ("");setDecCustom(false)}} style={{width:"100%",padding:8,borderRadius:8,border:"1px solid rgba(255,255,255,0.2)",background:"transparent",color:"#A5B4FC",fontSize:11,cursor:"pointer",marginTop:4}}>🔄 ถามคำถามใหม่</button>
+    </>}
+  </Card>
+};
+
 export default function App(){
   const[sc,setSc]=useState("landing");
   const[nick,setNick]=useState("");const[email,setEmail]=useState("");const[bday,setBday]=useState("--");
@@ -576,7 +683,6 @@ export default function App(){
   const[qI,setQI]=useState(0);const[ans,setAns]=useState({});
   const[scores,setScores]=useState(null);const[vedic,setVedic]=useState(null);
   const[plan,setPlan]=useState("free");const[ai,setAi]=useState({});const[aiL,setAiL]=useState({});
-  const[decQ,setDecQ]=useState("");const[decCat,setDecCat]=useState("work");const[decRes,setDecRes]=useState(null);const[decL,setDecL]=useState(false);const[decCustom,setDecCustom]=useState(false);
   const[user,setUser]=useState(null);const[loginModal,setLoginModal]=useState(false);const[pendingPlan,setPendingPlan]=useState(null);
   const[authMode,setAuthMode]=useState("login");const[authErr,setAuthErr]=useState("");const[authLoading,setAuthLoading]=useState(false);
   const authEmailRef=useRef(null);const authPwRef=useRef(null);
@@ -725,37 +831,6 @@ export default function App(){
   const has=f=>PLANS[plan].f.includes(f);
 
   // ── Ask & Decide AI ──
-  const decideLimit=()=>{const today=new Date().toDateString();const s=ST.get("dec_day");return s?.date===today?s.count||0:0};
-  const incDecide=()=>{const today=new Date().toDateString();ST.set("dec_day",{date:today,count:decideLimit()+1})};
-  const askDecide=async()=>{
-    const q=decQ.trim();if(!q)return;
-    const maxQ=plan==="free"?1:99;if(decideLimit()>=maxQ&&plan==="free"){alert("ใช้โควต้า 1 คำถาม/วันหมดแล้ว อัปเกรดเพื่อถามไม่จำกัด");return}
-    setDecL(true);setDecRes(null);
-    const catLabel=DEC_CATS[decCat].label;
-    const prompt=`คุณคือ AI ผู้เชี่ยวชาญด้านการตัดสินใจ วิเคราะห์จาก 4 ศาสตร์พร้อมกัน
-ข้อมูลผู้ถาม: ชื่อ ${nick}, วันเกิด ${bday}, คะแนนจิตวิทยา: Cognitive=${scores?.["Cognitive Processing"]?.toFixed(1)||"N/A"}, Shadow=${scores?.["Shadow Pattern"]?.toFixed(1)||"N/A"}
-หมวดหมู่: ${catLabel}
-คำถาม: "${q}"
-
-ตอบเป็น JSON เท่านั้น ตาม schema นี้:
-{
-  "verdict": "ใช่|ไม่ใช่|รอก่อน",
-  "verdictColor": "green|red|yellow",
-  "confidence": 0-100,
-  "cards": [
-    {"system":"Vedic","icon":"🔯","color":"#F59E0B","answer":"...สั้น","reason":"อธิบาย 1-2 ประโยคเชิงดาว","score":1-10,"action":"คำแนะนำ 1 ประโยค"},
-    {"system":"Western","icon":"⭐","color":"#3B82F6","answer":"...สั้น","reason":"...","score":1-10,"action":"..."},
-    {"system":"Chinese","icon":"☯️","color":"#EF4444","answer":"...สั้น","reason":"...","score":1-10,"action":"..."},
-    {"system":"Thai","icon":"🌸","color":"#8B5CF6","answer":"...สั้น","reason":"...","score":1-10,"action":"..."}
-  ],
-  "ai_summary": "สรุปภาพรวมทุกศาสตร์ 2-3 ประโยค",
-  "action_plan": ["ขั้นตอน 1","ขั้นตอน 2","ขั้นตอน 3"]
-}`;
-    const raw=await GPT.call(prompt,`dec_${nick}_${q.slice(0,20)}_${new Date().toDateString()}`,600);
-    const parsed=pJ(raw);
-    setDecRes(parsed||pJ(GPT.fb(`dec_fallback`)));
-    setDecL(false);incDecide();
-  };
   const goQuiz=()=>{ST.set("profile",{nick,email,bday,btime,tSlot,prov});saveProfile();setSc("quiz")};
   const answer=val=>{const q=ALL_Q[qI];const key=`${q.dim}-${q.qi}`;const na={...ans,[key]:val};setAns(na);ST.set("answers",na);if(qI<ALL_Q.length-1)setTimeout(()=>setQI(qI+1),200)};
   const finish=()=>{const ts=knowT?btime:tSlot;const v=calcV(bday,ts);const s=calcS(v,ans);setVedic(v);setScores(s);ST.set("vedic",v);ST.set("scores",s);saveAssessment(s,v,ans);setSc("results");loadAI("identity",s,v);loadAI("core",s,v)};
@@ -1396,107 +1471,6 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
       </div>}
     </div>};
 
-  // ─── ASK & DECIDE AI ───
-  const AskDecide=()=>{
-    const cats=Object.entries(DEC_CATS);
-    const catData=DEC_CATS[decCat];
-    const usedToday=decideLimit();
-    const canAsk=plan!=="free"||(usedToday<1);
-    const freeCard=decRes?decRes.cards?.[0]:null;
-    const showAll=has("decide");
-    const vc={green:{bg:"#ECFDF5",border:"#10B981",color:"#059669",label:"✅ แนะนำ: ทำเลย"},red:{bg:"#FFF1F2",border:"#EF4444",color:"#DC2626",label:"❌ แนะนำ: หลีกเลี่ยง"},yellow:{bg:"#FFFBEB",border:"#F59E0B",color:"#92400E",label:"⏳ แนะนำ: รอก่อน"}}[decRes?.verdictColor||"yellow"]||{};
-    return<Card style={{background:"linear-gradient(135deg,#1E1B4B,#312E81)",border:"2px solid #6366F1",padding:"18px 16px",marginBottom:12}}>
-      {/* Header */}
-      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
-        <div style={{width:32,height:32,borderRadius:10,background:"linear-gradient(135deg,#6366F1,#8B5CF6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0}}>🔮</div>
-        <div>
-          <div style={{fontSize:14,fontWeight:800,color:"#fff"}}>Ask & Decide AI</div>
-          <div style={{fontSize:10,color:"#A5B4FC"}}>วิเคราะห์ 4 ศาสตร์ → ตัดสินใจได้ทันที</div>
-        </div>
-        {plan==="free"&&<div style={{marginLeft:"auto",textAlign:"right"}}><div style={{fontSize:9,color:"#A5B4FC"}}>{usedToday}/1 คำถาม/วัน</div><div style={{width:40,height:3,borderRadius:2,background:"rgba(255,255,255,0.15)",marginTop:2}}><div style={{width:`${Math.min(100,usedToday*100)}%`,height:"100%",borderRadius:2,background:"#F59E0B"}}/></div></div>}
-      </div>
-
-      {/* Category tabs */}
-      <div style={{display:"flex",gap:6,marginBottom:12,overflowX:"auto",paddingBottom:2}}>
-        {cats.map(([k,v])=><button key={k} onClick={()=>{setDecCat(k);setDecQ("");setDecCustom(false)}} style={{padding:"6px 12px",borderRadius:20,border:"none",background:decCat===k?"#6366F1":"rgba(255,255,255,0.1)",color:decCat===k?"#fff":"#A5B4FC",fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,whiteSpace:"nowrap"}}>{v.icon} {v.label}</button>)}
-      </div>
-
-      {/* Question selector */}
-      <div style={{marginBottom:10}}>
-        <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:8}}>
-          {catData.q.map((q,i)=><button key={i} onClick={()=>{setDecQ(q);setDecCustom(false)}} style={{padding:"6px 12px",borderRadius:20,fontSize:11,fontWeight:600,border:`1px solid ${decQ===q?"#6366F1":"rgba(255,255,255,0.15)"}`,background:decQ===q?"rgba(99,102,241,0.25)":"rgba(255,255,255,0.07)",color:decQ===q?"#C7D2FE":"#CBD5E1",cursor:"pointer"}}>{q}</button>)}
-          <button onClick={()=>{setDecCustom(true);setDecQ("")}} style={{padding:"6px 12px",borderRadius:20,fontSize:11,fontWeight:600,border:`1px solid ${decCustom?"#6366F1":"rgba(255,255,255,0.15)"}`,background:decCustom?"rgba(99,102,241,0.25)":"rgba(255,255,255,0.07)",color:decCustom?"#C7D2FE":"#CBD5E1",cursor:"pointer"}}>✏️ พิมพ์เอง</button>
-        </div>
-        {decCustom&&<DecideTextInput value={decQ} onChange={e=>setDecQ(e.target.value)}/>}
-      </div>
-
-      {/* Submit */}
-      <button onClick={askDecide} disabled={!decQ.trim()||decL||!canAsk} style={{width:"100%",padding:"11px",borderRadius:10,border:"none",background:decQ.trim()&&canAsk?"linear-gradient(135deg,#4F46E5,#7C3AED)":"rgba(255,255,255,0.1)",color:decQ.trim()&&canAsk?"#fff":"rgba(255,255,255,0.3)",fontSize:13,fontWeight:700,cursor:decQ.trim()&&canAsk?"pointer":"not-allowed",marginBottom:decRes||decL?12:0,boxShadow:decQ.trim()&&canAsk?"0 4px 14px rgba(79,70,229,0.4)":"none",transition:"all .2s"}}>
-        {decL?"🔮 กำลังวิเคราะห์...":!canAsk?"⏰ ใช้ครบโควต้าวันนี้แล้ว (Free = 1/วัน)":"🔮 วิเคราะห์เลย"}
-      </button>
-
-      {/* Loading */}
-      {decL&&<div style={{textAlign:"center",padding:"20px 0"}}><div style={{width:24,height:24,margin:"0 auto 8px",borderRadius:"50%",border:"3px solid rgba(99,102,241,0.2)",borderTopColor:"#6366F1",animation:"hs .7s linear infinite"}}/><div style={{fontSize:12,color:"#A5B4FC"}}>AI กำลังเปรียบเทียบ 4 ศาสตร์...</div></div>}
-
-      {/* Results */}
-      {decRes&&!decL&&<>
-        {/* Verdict banner */}
-        <div style={{borderRadius:12,padding:"12px 14px",marginBottom:12,background:vc.bg,border:`2px solid ${vc.border}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <div>
-            <div style={{fontSize:13,fontWeight:800,color:vc.color}}>{vc.label}</div>
-            <div style={{fontSize:10,color:"#64748B",marginTop:2}}>ความมั่นใจ: {decRes.confidence}% · วิเคราะห์จาก 4 ศาสตร์</div>
-          </div>
-          <div style={{textAlign:"right"}}><div style={{width:44,height:44,borderRadius:"50%",border:`3px solid ${vc.border}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:vc.color,background:"rgba(255,255,255,0.7)"}}>{decRes.confidence}%</div></div>
-        </div>
-
-        {/* Cards */}
-        <div style={{marginBottom:12}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#A5B4FC",marginBottom:8,letterSpacing:1}}>📚 วิเคราะห์รายศาสตร์</div>
-          {showAll?decRes.cards?.map((c,i)=><DecideCard key={i} c={c}/>):<>
-            {freeCard&&<DecideCard c={freeCard}/>}
-            {decRes.cards?.slice(1).map((_,i)=><div key={i} style={{borderRadius:10,border:"1px solid #E2E8F0",marginBottom:6,overflow:"hidden",position:"relative",minHeight:72}}>
-              <div style={{filter:"blur(4px)",opacity:.4,padding:"10px 12px",pointerEvents:"none"}}>
-                <div style={{fontSize:11,fontWeight:700,marginBottom:2}}>⭐ {["Western","Chinese","Thai"][i]}</div>
-                <div style={{fontSize:12,color:"#374151"}}>วิเคราะห์เชิงลึก...</div>
-              </div>
-              <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.85)",backdropFilter:"blur(2px)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
-                <span style={{fontSize:18}}>🔒</span>
-                <button onClick={()=>tryUpgrade("deep")} style={{padding:"5px 14px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>ดูครบ ฿49</button>
-              </div>
-            </div>)}
-          </>}
-        </div>
-
-        {/* AI Summary */}
-        {showAll?<div style={{background:"#F8FAFC",borderRadius:10,padding:"12px 14px",marginBottom:10,border:"1px solid #E2E8F0"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#4338CA",marginBottom:6}}>🤖 AI Summary</div>
-          <div style={{fontSize:12,color:"#374151",lineHeight:1.8}}>{decRes.ai_summary}</div>
-          <div style={{marginTop:10}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:6}}>⚡ Action Plan</div>
-          {decRes.action_plan?.map((s,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:8,marginBottom:6}}><div style={{width:18,height:18,borderRadius:"50%",background:"#4338CA",color:"#fff",fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}>{i+1}</div><div style={{fontSize:12,color:"#374151",lineHeight:1.6}}>{s}</div></div>)}</div>
-        </div>:<div style={{borderRadius:10,border:"1px solid #E2E8F0",overflow:"hidden",position:"relative",minHeight:80}}>
-          <div style={{filter:"blur(5px)",opacity:.3,padding:"12px 14px",pointerEvents:"none"}}><div style={{fontSize:11,fontWeight:700,color:"#4338CA",marginBottom:4}}>🤖 AI Summary</div><div style={{fontSize:12,color:"#374151",lineHeight:1.8}}>สรุปภาพรวม Action Plan ...</div></div>
-          <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.88)",backdropFilter:"blur(3px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:16}}>
-            <div style={{fontSize:20,marginBottom:6}}>🔒</div>
-            <div style={{fontSize:12,fontWeight:700,color:"#4338CA",marginBottom:4,textAlign:"center"}}>AI Summary + Action Plan</div>
-            <div style={{fontSize:10,color:"#64748B",marginBottom:10}}>รวมถึงคำแนะนำ 3 ขั้นตอน</div>
-            <button onClick={()=>tryUpgrade("deep")} style={{padding:"8px 24px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 12px rgba(79,70,229,.25)"}}>ปลดล็อก Deep ฿49 →</button>
-          </div>
-        </div>}
-
-        {/* Ask again */}
-        <button onClick={()=>{setDecRes(null);setDecQ("");setDecCustom(false)}} style={{width:"100%",padding:8,borderRadius:8,border:"1px solid rgba(255,255,255,0.2)",background:"transparent",color:"#A5B4FC",fontSize:11,cursor:"pointer",marginTop:4}}>🔄 ถามคำถามใหม่</button>
-      </>}
-    </Card>
-  };
-
-  const DecideCard=({c})=><div style={{borderRadius:10,border:`1px solid ${c.color}33`,background:"#fff",padding:"10px 12px",marginBottom:6}}>
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:4}}>
-      <div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:16}}>{c.icon}</span><div><div style={{fontSize:11,fontWeight:700,color:"#475569"}}>{c.system}</div><div style={{fontSize:13,fontWeight:800,color:c.color}}>{c.answer}</div></div></div>
-      <div style={{textAlign:"right"}}><div style={{fontSize:9,color:"#94A3B8",marginBottom:2}}>คะแนน</div><div style={{fontSize:15,fontWeight:800,color:c.color}}>{c.score}/10</div></div>
-    </div>
-    <div style={{fontSize:11,color:"#374151",lineHeight:1.6,marginBottom:6}}>{c.reason}</div>
-    <div style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:10,fontWeight:700,color:"#fff",background:c.color,padding:"3px 10px",borderRadius:20}}>▶ {c.action}</div>
-  </div>;
 
   // ─── RESULTS ───
   const Sec=({fKey,title,icon,children})=>{const ok=has(fKey);return<Card style={{position:"relative"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:ok?8:4}}><div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:15}}>{icon}</span><span style={{fontSize:13,fontWeight:700}}>{title}</span></div>{!ok&&<span style={{fontSize:10,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"2px 8px",borderRadius:8}}>🔒</span>}</div>{ok?children:<><p style={{fontSize:11,color:"#94A3B8",marginBottom:6}}>ปลดล็อกเพื่อดู</p><div style={{display:"flex",gap:6}}>{plan==="free"&&<button onClick={()=>tryUpgrade("deep")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #F59E0B",background:"#FFFBEB",color:"#92400E",fontSize:11,fontWeight:700,cursor:"pointer"}}>Deep ฿49</button>}{plan!=="all"&&<button onClick={()=>tryUpgrade("all")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>All ฿99</button>}</div></>}</Card>};
@@ -1507,7 +1481,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
 
   {plan==="free"&&<Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1"}}><div style={{fontSize:12,fontWeight:700,color:"#4338CA",marginBottom:6}}>🔓 ปลดล็อกความเข้าใจตัวเอง</div><div style={{display:"flex",gap:6}}><button onClick={()=>tryUpgrade("deep")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #F59E0B",background:"#fff",color:"#92400E",fontSize:11,fontWeight:700,cursor:"pointer"}}>Deep ฿49</button><button onClick={()=>tryUpgrade("all")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>All ฿99</button></div></Card>}
 
-  <AskDecide/>
+  <AskDecide plan={plan} has={has} nick={nick} bday={bday} scores={scores} tryUpgrade={tryUpgrade}/>
 
   <Sec fKey="identity" title="Identity Snapshot" icon="✦">{ai.identity&&ai.identity.powerTitle?<IdentitySnapshotCard data={ai.identity} scores={scores}/>:aiL.identity?<Spin t="กำลังถอดรหัสตัวตน..."/>:<Spin t="เชื่อม AI..."/>}</Sec>
   <Sec fKey="core5" title="5 Core Scores" icon="📊">{Object.entries(c5).map(([d,sc])=>{const meta=C5_META[d]||{short:d,pl:"",high:{label:"",desc:""},mid:{label:"",desc:""},low:{label:"",desc:""}};const lv=sc>=7?meta.high:sc>=5?meta.mid:meta.low;const isLow=sc<5;const isMid=sc>=5&&sc<7;const lblColor=isLow?"#DC2626":isMid?"#64748B":"#059669";return<div key={d} style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><span style={{fontSize:11,fontWeight:600}}>{DM[d]?.icon} {meta.short} <span style={{fontSize:9,color:"#94A3B8"}}>({meta.pl})</span></span><span style={{fontSize:13,fontWeight:800,color:DM[d]?.c}}>{sc.toFixed(1)}</span></div><div style={{height:5,background:"#F1F5F9",borderRadius:3,overflow:"hidden",marginBottom:5}}><div style={{height:"100%",width:`${sc*10}%`,background:DM[d]?.c,borderRadius:3}}/></div><div style={{fontSize:10,lineHeight:1.6,color:lblColor}}><span style={{fontWeight:700}}>{lv.label}:</span> {lv.desc}</div></div>})}<div style={{marginTop:8,padding:8,background:"#F8FAFC",borderRadius:8}}>{aiL.core?<Spin/>:ai.core?<Typer text={ai.core}/>:<Spin t="รอ AI..."/>}</div></Sec>
