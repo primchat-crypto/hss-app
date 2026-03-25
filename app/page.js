@@ -1297,10 +1297,21 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     <h3 style={{fontSize:14,fontWeight:700,marginBottom:10,color:"#1E293B"}}>ตัวอย่างผลลัพธ์ที่รอคุณอยู่</h3>
     <Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #C7D2FE",position:"relative",overflow:"hidden",marginBottom:0}}>
       <div style={{position:"absolute",top:10,right:10,background:"#4338CA",color:"#fff",fontSize:9,fontWeight:800,padding:"3px 8px",borderRadius:6}}>ตัวอย่าง</div>
-      <div style={{marginBottom:10}}><div style={{fontSize:11,color:"#94A3B8",marginBottom:4}}>บุคลิกภาพของคุณ</div><div style={{fontSize:16,fontWeight:800,color:"#4338CA",lineHeight:1.3}}>Visionary Leader<div style={{fontSize:11,color:"#6366F1",fontWeight:500,marginTop:2}}>ผู้นำที่มองภาพใหญ่และสื่อสารได้โดดเด่น</div></div></div>
+      <div style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:4}}><div style={{fontSize:11,color:"#94A3B8"}}>บุคลิกภาพของคุณ</div><span style={{fontSize:10,fontWeight:800,color:"#4338CA",background:"#EEF2FF",border:"1px solid #C7D2FE",padding:"2px 8px",borderRadius:6,letterSpacing:.5,flexShrink:0}}>ENFJ</span></div><div style={{fontSize:16,fontWeight:800,color:"#4338CA",lineHeight:1.3}}>Visionary Leader<div style={{fontSize:11,color:"#6366F1",fontWeight:500,marginTop:2}}>ผู้นำที่มองภาพใหญ่และสื่อสารได้โดดเด่น</div></div></div>
       <div style={{display:"flex",gap:6,marginBottom:10}}>{[{l:"จุดที่ต้องระวัง",v:"Overthinking",c:"#DC2626",bg:"#FEF2F2"},{l:"จุดแข็งเด่น",v:"Creative Vision",c:"#059669",bg:"#ECFDF5"}].map((t,i)=><div key={i} style={{flex:1,background:t.bg,borderRadius:8,padding:"8px 10px"}}><div style={{fontSize:10,color:"#94A3B8",marginBottom:2}}>{t.l}</div><div style={{fontSize:12,fontWeight:700,color:t.c}}>{t.v}</div></div>)}</div>
       <div style={{background:"#fff",borderRadius:8,padding:"8px 12px",border:"1px solid #DDD6FE"}}><div style={{fontSize:10,color:"#94A3B8",marginBottom:3}}>Next Move แนะนำ</div><div style={{fontSize:12,fontWeight:600,color:"#4338CA",lineHeight:1.5}}>ช่วง 6 เดือนข้างหน้า เหมาะกับการเปลี่ยนบทบาท ขยับตำแหน่ง หรือเริ่มต้นสิ่งใหม่อย่างจริงจัง</div></div>
     </Card>
+    {/* SHADOW CARD PREVIEW */}
+    <div style={{background:"linear-gradient(135deg,#0F172A,#1E293B)",borderRadius:12,padding:"14px 16px",marginBottom:8}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><div style={{fontSize:11,color:"#94A3B8"}}>🌑 เงาในใจของคุณ</div><span style={{fontSize:9,fontWeight:700,color:"#F87171",background:"rgba(220,38,38,.2)",padding:"2px 8px",borderRadius:6}}>Shadow Analysis</span></div>
+      <div style={{fontSize:15,fontWeight:800,color:"#F8FAFC",marginBottom:2}}>The Avoider Pattern</div>
+      <div style={{fontSize:11,color:"#94A3B8",marginBottom:10}}>รูปแบบที่ทำให้คุณหลีกเลี่ยงความขัดแย้งโดยไม่รู้ตัว</div>
+      <div style={{display:"flex",gap:6,marginBottom:10}}>
+        <div style={{flex:1,background:"rgba(220,38,38,.15)",borderRadius:8,padding:"8px 10px",border:"1px solid rgba(220,38,38,.25)"}}><div style={{fontSize:9,color:"#FCA5A5",marginBottom:2,fontWeight:600}}>Trigger หลัก</div><div style={{fontSize:12,fontWeight:700,color:"#FCA5A5"}}>การถูกวิจารณ์</div></div>
+        <div style={{flex:1,background:"rgba(245,158,11,.15)",borderRadius:8,padding:"8px 10px",border:"1px solid rgba(245,158,11,.25)"}}><div style={{fontSize:9,color:"#FDE68A",marginBottom:2,fontWeight:600}}>Pattern ซ้ำ</div><div style={{fontSize:12,fontWeight:700,color:"#FDE68A"}}>ผลัดวันประกันพรุ่ง</div></div>
+      </div>
+      <div style={{padding:"8px 10px",background:"rgba(99,102,241,.15)",borderRadius:8,border:"1px solid rgba(99,102,241,.25)",fontSize:11,color:"#A5B4FC",lineHeight:1.5}}>💡 เมื่อรู้เท่าทัน Shadow ตัวเอง คุณจะหยุดวนซ้ำรูปแบบนี้ได้</div>
+    </div>
     {/* LOCKED PREVIEW */}
     <div style={{background:"#1E1B4B",borderRadius:"0 0 12px 12px",padding:"12px 14px",marginBottom:0}}>
       <div style={{fontSize:11,fontWeight:700,color:"#A5B4FC",marginBottom:8}}>และนี่คือสิ่งที่คุณจะเห็นต่อหลังปลดล็อก</div>
