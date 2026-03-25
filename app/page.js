@@ -567,7 +567,7 @@ const IdentitySnapshotCard=({data,scores})=>{
 const Locked=({planNeeded,title,children,onUpgrade})=><Card style={{position:"relative",overflow:"hidden",minHeight:120}}><div style={{filter:"blur(3px)",pointerEvents:"none",userSelect:"none",opacity:.4,padding:"8px 0"}}>{children}</div><div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,.75)",backdropFilter:"blur(2px)",padding:16}}><div style={{fontSize:28,marginBottom:6}}>🔒</div><div style={{fontSize:13,fontWeight:700,color:"#4338CA",marginBottom:3,textAlign:"center"}}>{title}</div><div style={{fontSize:11,color:"#64748B",marginBottom:10}}>{planNeeded==="deep"?"Deep Insight ฿49":"All Access ฿99"}</div><button onClick={()=>onUpgrade(planNeeded)} style={{padding:"8px 24px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 12px rgba(79,70,229,.25)"}}>ปลดล็อก →</button></div></Card>;
 
 export default function App(){
-  const[sc,setSc]=useState("landing");
+  const[sc,setSc]=useState("landing");const[askMode,setAskMode]=useState(false);
   const[nick,setNick]=useState("");const[email,setEmail]=useState("");const[bday,setBday]=useState("--");
   const[knowT,setKnowT]=useState(null);const[btime,setBtime]=useState("");const[tSlot,setTSlot]=useState("");const[prov,setProv]=useState("");
   const[qI,setQI]=useState(0);const[ans,setAns]=useState({});
@@ -720,6 +720,7 @@ export default function App(){
   const logged=!!user;
   const has=f=>PLANS[plan].f.includes(f);
   const goQuiz=()=>{ST.set("profile",{nick,email,bday,btime,tSlot,prov});saveProfile();setSc("quiz")};
+  const goAskResults=()=>{ST.set("profile",{nick,email,bday,btime,tSlot,prov});saveProfile();const ts=knowT?btime:tSlot;const v=calcV(bday,ts);setVedic(v);setSc("ask-results");};
   const answer=val=>{const q=ALL_Q[qI];const key=`${q.dim}-${q.qi}`;const na={...ans,[key]:val};setAns(na);ST.set("answers",na);if(qI<ALL_Q.length-1)setTimeout(()=>setQI(qI+1),200)};
   const finish=()=>{const ts=knowT?btime:tSlot;const v=calcV(bday,ts);const s=calcS(v,ans);setVedic(v);setScores(s);ST.set("vedic",v);ST.set("scores",s);saveAssessment(s,v,ans);setSc("results");loadAI("identity",s,v);loadAI("core",s,v)};
 
@@ -1152,6 +1153,26 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
 
   <div style={{padding:"0 20px",maxWidth:520,margin:"0 auto"}}>
 
+  {/* ASK & DECIDE AI */}
+  <Card style={{background:"linear-gradient(135deg,#0F172A,#1E1B4B)",border:"none",marginBottom:12}}>
+    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+      <div style={{width:30,height:30,borderRadius:8,background:"linear-gradient(135deg,#6366F1,#8B5CF6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>🤖</div>
+      <div><div style={{fontSize:13,fontWeight:800,color:"#fff"}}>Ask & Decide AI</div><div style={{fontSize:10,color:"#94A3B8"}}>ตัดสินใจจากดวงและจังหวะชีวิต</div></div>
+    </div>
+    <div style={{fontSize:13,fontWeight:700,color:"#E2E8F0",marginBottom:10}}>มีเรื่องต้องตัดสินใจไหม?</div>
+    <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:12}}>
+      {["ควรเปลี่ยนงานตอนนี้ไหม?","วันไหนเหมาะลงมือทำ?","ควรรอหรือลุยเลย?","ความรักไปทางไหนดี?","ควรลงทุนตอนนี้ไหม?"].map((q,i)=><span key={i} style={{fontSize:10,color:"#A5B4FC",background:"rgba(99,102,241,0.15)",border:"1px solid rgba(99,102,241,0.3)",padding:"4px 10px",borderRadius:20}}>{q}</span>)}
+    </div>
+    <button onClick={()=>{setAskMode(true);setSc("profile")}} style={{width:"100%",padding:"10px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#6366F1,#4338CA)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>👉 วิเคราะห์คำตอบของฉัน</button>
+  </Card>
+
+  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
+    <div style={{flex:1,height:1,background:"#E2E8F0"}}/>
+    <span style={{fontSize:11,color:"#94A3B8",flexShrink:0}}>หรือเริ่มจากรู้จักตัวเองก่อน</span>
+    <div style={{flex:1,height:1,background:"#E2E8F0"}}/>
+  </div>
+  <div style={{marginBottom:14}}><button onClick={()=>{setAskMode(false);setSc("profile")}} style={{width:"100%",padding:"10px 0",borderRadius:8,border:"2px solid #4338CA",background:"#fff",color:"#4338CA",fontSize:13,fontWeight:700,cursor:"pointer"}}>ทำ Identity Snapshot ฟรี →</button></div>
+
   {/* PAIN */}
   <Card style={{background:"linear-gradient(135deg,#FEF3C7,#FFF7ED)",border:"1px solid #FDE68A",marginBottom:12}}>
     <div style={{fontSize:14,fontWeight:700,color:"#92400E",marginBottom:8,lineHeight:1.6}}>คุณอาจกำลังพยายามเต็มที่<br/>แต่ชีวิตยังไม่ไปไหน</div>
@@ -1194,7 +1215,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         {name:"โบ",age:31,role:"เจ้าของร้านออนไลน์",avatar:"👩",stars:5,text:"ส่วน timing ชีวิตตรงมาก ช่วงที่ผลบอกว่าควรพัก ตอนนั้นทำอะไรก็ไม่ผ่านจริงๆ พอรู้แล้วก็ไม่ฝืนอีก",tag:"เรื่องจังหวะชีวิต"},
         {name:"เก้",age:29,role:"Product Manager",avatar:"👨",stars:5,text:"ผลมันเชื่อมกันหมด ดวง + นิสัย + timing ไม่ใช่แค่บอกว่าคุณเป็นคนแบบไหน แต่บอกว่า ตอนนี้ควรทำอะไร อันนี้ใช้ได้จริง",tag:"ภาพรวม"}
       ].map((r,i)=>(
-        <div key={i} style={{minWidth:"72%",scrollSnapAlign:"start",background:"#fff",borderRadius:14,padding:"12px 14px",border:"1px solid #E2E8F0",boxShadow:"0 2px 8px rgba(0,0,0,.05)",flexShrink:0}}>
+        <div key={i} style={{minWidth:"62%",scrollSnapAlign:"start",background:"#fff",borderRadius:14,padding:"10px 12px",border:"1px solid #E2E8F0",boxShadow:"0 2px 8px rgba(0,0,0,.05)",flexShrink:0}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
               <div style={{width:36,height:36,borderRadius:"50%",background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>{r.avatar}</div>
@@ -1203,7 +1224,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
             <span style={{fontSize:9,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"3px 8px",borderRadius:6,flexShrink:0}}>{r.tag}</span>
           </div>
           <div style={{fontSize:11,color:"#F59E0B",marginBottom:6,letterSpacing:1}}>{"★".repeat(r.stars)}</div>
-          <p style={{fontSize:12,color:"#374151",lineHeight:1.7,margin:0}}>"{r.text}"</p>
+          <p style={{fontSize:11,color:"#374151",lineHeight:1.6,margin:0,display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden"}}>"{r.text}"</p>
         </div>
       ))}
     </div>
@@ -1237,7 +1258,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   <div style={{marginBottom:12}}><label style={lbl}>วันเกิด *</label><div style={{display:"flex",gap:6,marginBottom:6}}><select value={bp[2]||""} onChange={e=>setBday(`${bp[0]||"2000"}-${bp[1]||"01"}-${e.target.value}`)} style={{...inp,flex:1}}><option value="">วัน</option>{Array.from({length:31},(_,i)=>i+1).map(d=><option key={d} value={String(d).padStart(2,"0")}>{d}</option>)}</select><select value={bp[1]||""} onChange={e=>setBday(`${bp[0]||"2000"}-${e.target.value}-${bp[2]||"01"}`)} style={{...inp,flex:1.2}}><option value="">เดือน</option>{["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."].map((m,i)=><option key={i} value={String(i+1).padStart(2,"0")}>{m}</option>)}</select><select value={bp[0]||""} onChange={e=>setBday(`${e.target.value}-${bp[1]||"01"}-${bp[2]||"01"}`)} style={{...inp,flex:1}}><option value="">ปี</option>{Array.from({length:80},(_,i)=>2026-i).map(y=><option key={y} value={String(y)}>{y}({y+543})</option>)}</select></div><button onClick={()=>{const t=new Date();setBday(`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,"0")}-${String(t.getDate()).padStart(2,"0")}`)}} style={{fontSize:11,color:"#6366F1",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:6,padding:"4px 10px",cursor:"pointer"}}>📅 ใช้วันนี้</button></div>
   <div style={{marginBottom:12}}><label style={lbl}>เวลาเกิด *</label><div style={{display:"flex",gap:6,marginBottom:8}}><button onClick={()=>{setKnowT(true);setTSlot("")}} style={{flex:1,padding:8,borderRadius:8,border:`2px solid ${knowT===true?"#6366F1":"#E2E8F0"}`,background:knowT===true?"#EEF2FF":"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:knowT===true?"#4338CA":"#64748B"}}>รู้เวลาเกิด</button><button onClick={()=>{setKnowT(false);setBtime("")}} style={{flex:1,padding:8,borderRadius:8,border:`2px solid ${knowT===false?"#F59E0B":"#E2E8F0"}`,background:knowT===false?"#FFFBEB":"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:knowT===false?"#92400E":"#64748B"}}>ไม่รู้เวลาเกิด</button></div>{knowT===true&&<div style={{display:"flex",gap:6}}><select value={btime.split(":")[0]||""} onChange={e=>setBtime(`${e.target.value}:${btime.split(":")[1]||"00"}`)} style={{...inp,flex:1}}><option value="">ชั่วโมง</option>{Array.from({length:24},(_,i)=>i).map(h=><option key={h} value={String(h).padStart(2,"0")}>{String(h).padStart(2,"0")}น.</option>)}</select><select value={btime.split(":")[1]||""} onChange={e=>setBtime(`${btime.split(":")[0]||"00"}:${e.target.value}`)} style={{...inp,flex:1}}><option value="">นาที</option>{[0,5,10,15,20,25,30,35,40,45,50,55].map(m=><option key={m} value={String(m).padStart(2,"0")}>{String(m).padStart(2,"0")}นาที</option>)}</select></div>}{knowT===false&&<div style={{display:"flex",flexDirection:"column",gap:4}}>{TS.map(ts=><button key={ts.id} onClick={()=>setTSlot(ts.id)} style={{padding:"10px 12px",borderRadius:8,border:`2px solid ${tSlot===ts.id?"#F59E0B":"#E2E8F0"}`,background:tSlot===ts.id?"#FFFBEB":"#fff",textAlign:"left",cursor:"pointer"}}><div style={{fontSize:12,fontWeight:tSlot===ts.id?700:500,color:tSlot===ts.id?"#92400E":"#374151"}}>{ts.l}</div><div style={{fontSize:10,color:"#94A3B8"}}>{ts.d}</div></button>)}</div>}</div>
   <div style={{marginBottom:14}}><label style={lbl}>จังหวัด</label><select value={prov} onChange={e=>setProv(e.target.value)} style={{...inp,appearance:"auto"}}><option value="">เลือกจังหวัด</option>{PV.map(p=><option key={p} value={p}>{p}</option>)}</select></div>
-  {scores?<><Btn ok={ok} onClick={ok?()=>{ST.set("profile",{nick,email,bday,btime,tSlot,prov});saveProfile();setSc("results")}:undefined}>💾 บันทึกและกลับดูผลลัพธ์</Btn><button onClick={()=>setSc("results")} style={{width:"100%",marginTop:8,padding:10,borderRadius:8,border:"2px solid #E2E8F0",background:"#fff",color:"#64748B",fontSize:12,fontWeight:600,cursor:"pointer"}}>← กลับดูผลลัพธ์</button></>:<Btn ok={ok} onClick={ok?goQuiz:undefined}>เริ่มแบบประเมิน 36 ข้อ →</Btn>}</Card></div>};
+  {scores?<><Btn ok={ok} onClick={ok?()=>{ST.set("profile",{nick,email,bday,btime,tSlot,prov});saveProfile();setSc("results")}:undefined}>💾 บันทึกและกลับดูผลลัพธ์</Btn><button onClick={()=>setSc("results")} style={{width:"100%",marginTop:8,padding:10,borderRadius:8,border:"2px solid #E2E8F0",background:"#fff",color:"#64748B",fontSize:12,fontWeight:600,cursor:"pointer"}}>← กลับดูผลลัพธ์</button></>:askMode?<Btn ok={ok} onClick={ok?goAskResults:undefined}>👉 วิเคราะห์คำตอบของฉัน</Btn>:<Btn ok={ok} onClick={ok?goQuiz:undefined}>เริ่มแบบประเมิน 36 ข้อ →</Btn>}</Card></div>};
 
   // ─── QUIZ ───
   const Quiz=()=>{const q=ALL_Q[qI];const key=`${q.dim}-${q.qi}`;const pct=((qI+1)/36*100);const allD=Object.keys(ans).length>=36;
@@ -1358,6 +1379,39 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         </div>
       </div>}
     </div>};
+
+  // ─── ASK & DECIDE RESULTS ───
+  const AskResults=()=>{const days=gen7Day(bday);const t=days[0];const ec=v=>v>=75?"#059669":v>=55?"#6366F1":"#DC2626";const eb=v=>v>=75?"#ECFDF5":v>=55?"#EEF2FF":"#FFF1F2";
+  return<div>
+    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><button onClick={()=>setSc("landing")} style={{background:"none",border:"none",fontSize:18,cursor:"pointer"}}>←</button><div><div style={{fontSize:16,fontWeight:800}}>Ask & Decide AI</div><div style={{fontSize:11,color:"#94A3B8"}}>{nick?`${nick} · `:""}วิเคราะห์จากวันเดือนปีเกิด</div></div></div>
+    {/* Today card */}
+    <div style={{background:"linear-gradient(135deg,#0F172A,#1E1B4B)",borderRadius:14,padding:"14px 16px",marginBottom:12}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+        <div><span style={{fontSize:9,fontWeight:700,color:"#fff",background:"#6366F1",padding:"2px 8px",borderRadius:8,marginRight:6}}>วันนี้</span><span style={{fontSize:13,fontWeight:700,color:"#E2E8F0"}}>{t?.dn} {t?.date}</span></div>
+        <span style={{fontSize:14,fontWeight:800,color:ec(t?.ce),background:eb(t?.ce),padding:"3px 10px",borderRadius:8}}>{t?.ce}%</span>
+      </div>
+      {t?.specialEvent&&<div style={{padding:"6px 10px",borderRadius:8,marginBottom:8,background:t.specialEvent.type==="danger"?"rgba(220,38,38,.15)":"rgba(5,150,105,.15)",border:`1px solid ${t.specialEvent.type==="danger"?"#7F1D1D":"#065F46"}`,fontSize:10,fontWeight:600,color:t.specialEvent.type==="danger"?"#FCA5A5":"#6EE7B7",lineHeight:1.5}}>{t.specialEvent.text}</div>}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4}}>
+        {[{icon:"💼",l:"งาน",v:t?.work},{icon:"💰",l:"เงิน",v:t?.money},{icon:"❤️",l:"ความรัก",v:t?.love},{icon:"🏃",l:"สุขภาพ",v:t?.health}].map(({icon,l,v},i)=><div key={i} style={{background:"rgba(255,255,255,.06)",borderRadius:8,padding:"6px 8px"}}><div style={{fontSize:9,fontWeight:700,color:"#94A3B8",marginBottom:2}}>{icon} {l}</div><div style={{fontSize:10,color:"#C7D2FE",lineHeight:1.4}}>{v}</div></div>)}
+      </div>
+    </div>
+    {/* 7-day */}
+    <div style={{marginBottom:16}}>
+      <h3 style={{fontSize:14,fontWeight:700,marginBottom:10,color:"#1E293B"}}>⚡ พลังงาน 7 วันข้างหน้า</h3>
+      {days.map((d,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",background:i===0?"linear-gradient(135deg,#EEF2FF,#F5F3FF)":"#fff",borderRadius:10,marginBottom:4,border:i===0?"2px solid #6366F1":"1px solid #F1F5F9"}}>
+        <div style={{flex:1}}><div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}>{i===0&&<span style={{fontSize:9,fontWeight:700,color:"#fff",background:"#6366F1",padding:"1px 6px",borderRadius:8}}>วันนี้</span>}<span style={{fontSize:12,fontWeight:700,color:"#1E293B"}}>{d.dn} {d.date}</span></div><div style={{fontSize:10,color:"#64748B",lineHeight:1.4}}>{d.work}</div></div>
+        <span style={{fontSize:12,fontWeight:800,color:ec(d.ce),background:eb(d.ce),padding:"2px 8px",borderRadius:8,flexShrink:0}}>{d.ce}%</span>
+      </div>)}
+    </div>
+    {/* Locked Identity Snapshot CTA */}
+    <Card style={{background:"linear-gradient(135deg,#F5F3FF,#EEF2FF)",border:"2px solid #C7D2FE",marginBottom:12}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}><div style={{fontSize:13,fontWeight:700,color:"#4338CA"}}>✦ Identity Snapshot</div><span style={{fontSize:10,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"2px 8px",borderRadius:8}}>🔒 ทำแบบทดสอบก่อน</span></div>
+      <div style={{fontSize:12,color:"#64748B",lineHeight:1.6,marginBottom:10}}>ค้นพบบุคลิกภาพ จุดแข็ง และจุดบอดของคุณ ผ่านแบบประเมินพฤติกรรม 36 ข้อ ใช้เวลา ~10 นาที</div>
+      <div style={{display:"flex",gap:6,marginBottom:10}}>{["พลังงานดาว 5 ดวง","บุคลิกหลัก","จุดแข็ง & จุดบอด"].map((t,i)=><div key={i} style={{flex:1,background:"rgba(99,102,241,.1)",borderRadius:6,padding:"4px 6px",textAlign:"center",fontSize:9,color:"#6366F1",fontWeight:600}}>{t}</div>)}</div>
+      <button onClick={()=>{setAskMode(false);setSc("quiz")}} style={{width:"100%",padding:"10px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>ทำแบบทดสอบ Identity Snapshot →</button>
+    </Card>
+    <div style={{textAlign:"center",padding:"8px 0 40px"}}><button onClick={()=>setSc("landing")} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>← กลับหน้าหลัก</button></div>
+  </div>};
 
   // ─── RESULTS ───
   const Sec=({fKey,title,icon,children})=>{const ok=has(fKey);return<Card style={{position:"relative"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:ok?8:4}}><div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:15}}>{icon}</span><span style={{fontSize:13,fontWeight:700}}>{title}</span></div>{!ok&&<span style={{fontSize:10,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"2px 8px",borderRadius:8}}>🔒</span>}</div>{ok?children:<><p style={{fontSize:11,color:"#94A3B8",marginBottom:6}}>ปลดล็อกเพื่อดู</p><div style={{display:"flex",gap:6}}>{plan==="free"&&<button onClick={()=>tryUpgrade("deep")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #F59E0B",background:"#FFFBEB",color:"#92400E",fontSize:11,fontWeight:700,cursor:"pointer"}}>Deep ฿49</button>}{plan!=="all"&&<button onClick={()=>tryUpgrade("all")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>All ฿99</button>}</div></>}</Card>};
@@ -1592,5 +1646,5 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
 
   <div style={{textAlign:"center",padding:"14px 0 40px"}}><button onClick={()=>{aiTriggered.current=false;setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0)}} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>🔄 ทำแบบทดสอบใหม่</button></div></div>};
 
-  return<div style={{fontFamily:"'Noto Sans Thai','DM Sans',-apple-system,sans-serif",minHeight:"100vh",background:"#F8FAFC",color:"#1E293B"}}><style>{css}</style>{loginModalJSX}<div style={{maxWidth:520,margin:"0 auto",padding:sc==="landing"?"0":"12px 16px 40px"}}>{sc==="landing"&&<Landing/>}{sc==="profile"&&<Profile/>}{sc==="quiz"&&<Quiz/>}{sc==="results"&&<Results/>}</div></div>;
+  return<div style={{fontFamily:"'Noto Sans Thai','DM Sans',-apple-system,sans-serif",minHeight:"100vh",background:"#F8FAFC",color:"#1E293B"}}><style>{css}</style>{loginModalJSX}<div style={{maxWidth:520,margin:"0 auto",padding:sc==="landing"?"0":"12px 16px 40px"}}>{sc==="landing"&&<Landing/>}{sc==="profile"&&<Profile/>}{sc==="quiz"&&<Quiz/>}{sc==="ask-results"&&<AskResults/>}{sc==="results"&&<Results/>}</div></div>;
 }
