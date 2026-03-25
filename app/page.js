@@ -7,7 +7,20 @@ const SB_KEY=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const sb=(SB_URL&&SB_KEY)?createClient(SB_URL,SB_KEY,{auth:{persistSession:true,storageKey:"hss-auth",storage:typeof window!=="undefined"?window.localStorage:undefined}}):null;
 
 const BRAND="Human System Studio";
-const PLANS={free:{name:"Free",price:0,tag:"🟢",c:"#10B981",f:["identity","core5","share"]},deep:{name:"Deep Insight",price:49,tag:"🟡",c:"#F59E0B",badge:"Early Bird",f:["identity","core5","12d","shadow","love","principle","weekly","energy","share"]},all:{name:"All Access",price:99,tag:"🔵",c:"#3B82F6",badge:"Early Bird คุ้มสุด",f:["identity","core5","12d","shadow","love","principle","weekly","energy","timeline","job","dasha","pdf","share"]}};
+const PLANS={
+  free:{name:"Free",price:0,tag:"🟢",c:"#10B981",f:["identity","core5","share"]},
+  quick:{name:"Quick Decision",price:99,tag:"🟡",c:"#F59E0B",f:["identity","core5","share","decision_quick"]},
+  smart:{name:"Smart Decision",price:299,tag:"🟣",c:"#7C3AED",badge:"แนะนำ",f:["identity","core5","12d","shadow","share","decision_smart"]},
+  bundle:{name:"Decision Bundle",price:790,tag:"💜",c:"#6D28D9",badge:"คุ้มสุด",f:["identity","core5","12d","shadow","share","decision_smart","decision_bundle"]},
+  dive:{name:"Deep Dive Report",price:490,tag:"📊",c:"#0891B2",f:["identity","core5","12d","shadow","love","principle","timeline","job","dasha","pdf","share"]},
+  love:{name:"Love & Compat",price:299,tag:"💕",c:"#EC4899",f:["identity","core5","love","share"]},
+  career:{name:"Career Strategy",price:390,tag:"💼",c:"#059669",f:["identity","core5","job","timeline","share"]},
+  life:{name:"Life Shift",price:390,tag:"🌱",c:"#7C3AED",f:["identity","core5","dasha","principle","share"]},
+  lite:{name:"Lite",price:590,tag:"⭐",c:"#F59E0B",monthly:true,f:["identity","core5","12d","shadow","love","principle","weekly","energy","share","decision_smart"]},
+  pro:{name:"Pro",price:990,tag:"✨",c:"#7C3AED",badge:"Power User",monthly:true,f:["identity","core5","12d","shadow","love","principle","weekly","energy","timeline","job","dasha","pdf","share","decision_smart","decision_bundle"]},
+  deep:{name:"Smart Decision",price:299,tag:"🟣",c:"#7C3AED",f:["identity","core5","12d","shadow","love","principle","weekly","energy","share","decision_smart"]},
+  all:{name:"All Access",price:990,tag:"✨",c:"#7C3AED",f:["identity","core5","12d","shadow","love","principle","weekly","energy","timeline","job","dasha","pdf","share","decision_smart","decision_bundle"]}
+};
 const FT=[["Identity Snapshot (AI)","identity",1,1,1],["5 Core Scores + AI วิเคราะห์","core5",1,1,1],["จุดแข็ง / จุดพัฒนา 12 มิติ","12d",0,1,1],["Shadow Analysis เชิงลึก","shadow",0,1,1],["Love & Compatibility ชะตาความรัก","love",0,1,1],["Life Principle หลักการใช้ชีวิต","principle",0,1,1],["Life Phase Map (Dasha)","dasha",0,0,1],["Do & Don't รายสัปดาห์","weekly",0,1,1],["7-Day Energy Forecast","energy",0,1,1],["Dashboard กราฟชีวิตการงาน","timeline",0,0,1],["Job Matching AI","job",0,0,1],["PDF Report ดาวน์โหลด","pdf",0,0,1],["Social Share Card","share",1,1,1]];
 
 const QG={A:{t:"The Foundation",dims:{"Cognitive Processing":{icon:"🧠",c:"#6366F1",pl:"พุธ",q:["ก่อนเริ่มงาน ฉันวางแผนคร่าวๆ อย่างน้อย 1 ครั้ง","เมื่ออธิบายเรื่องยาก ฉันสรุปให้เหลือประเด็นหลักได้","ก่อนส่งงาน ฉันตรวจทานจุดผิดพลาดสำคัญอีกครั้ง"]},"Emotional Regulation":{icon:"🌊",c:"#0EA5E9",pl:"จันทร์",q:["เมื่ออารมณ์แรง ฉันหยุดพักก่อนตอบหรือก่อนตัดสินใจ","ในวันที่อารมณ์ไม่ดี ฉันยังทำงานจำเป็นให้เดินหน้าได้อย่างน้อย 1 อย่าง","หลังเจอเรื่องกระทบใจ ฉันกลับมาใช้ชีวิตปกติได้ภายใน 1–2 วัน"]},"Identity Stability":{icon:"⚓",c:"#EC4899",pl:"อาทิตย์+เสาร์",q:["ฉันตัดสินใจตามหลักของตัวเอง มากกว่าทำตามแรงกดดันจากคนอื่น","เมื่อมีคนติ ฉันโฟกัสที่สิ่งที่ต้องแก้ไข มากกว่าคิดว่าตัวเองไม่มีค่า","ฉันโฟกัสเป้าหมายหลักเรื่องหนึ่งได้ต่อเนื่องอย่างน้อย 2 สัปดาห์"]}}},B:{t:"The Execution",dims:{"Energy Management":{icon:"⚡",c:"#F59E0B",pl:"อังคาร",q:["เมื่อมีงานสำคัญ ฉันเริ่มลงมือภายใน 24 ชั่วโมง","ฉันทำงานต่อเนื่องตามแผนได้ โดยไม่หลุดโฟกัสบ่อย","เมื่อเริ่มล้า ฉันเลือกพักเพื่อฟื้นพลัง แทนฝืนทำต่อ"]},"Decision System":{icon:"⚖️",c:"#3B82F6",pl:"พฤหัส+เสาร์",q:["ก่อนตัดสินใจเรื่องสำคัญ ฉันหาข้อมูลอย่างน้อย 2 มุมมอง","เมื่อตัดสินใจแล้ว ฉันลงมือทำโดยไม่ย้อนลังเลซ้ำ","ฉันคิดถึงผลระยะยาว ก่อนเลือกสิ่งที่มีต้นทุนสูง"]},"Responsibility Load":{icon:"🏋️",c:"#8B5CF6",pl:"เสาร์",q:["ฉันทำงานที่สำคัญที่สุดก่อน แม้ไม่ใช่งานที่อยากทำ","ถ้ารู้ว่าจะไม่ทัน ฉันแจ้งล่วงหน้าและเสนอทางออก","แม้ไม่มีคนตาม ฉันยังทำสิ่งที่รับปากไว้ให้เสร็จ"]}}},C:{t:"The Interaction",dims:{"Motivation Driver":{icon:"🔥",c:"#F97316",pl:"อาทิตย์",q:["ฉันรู้ว่าทำสิ่งนี้ไปเพื่ออะไร และอธิบายเหตุผลได้ชัด","เมื่อเห็นต่าง ฉันกล้าแสดงความเห็นของตัวเอง","เมื่อทำสำเร็จ ฉันยอมรับความสามารถของตัวเอง"]},"Boundary System":{icon:"🛡️",c:"#10B981",pl:"เสาร์+จันทร์",q:["เมื่อถูกขอเกินกำลัง ฉันกล้าปฏิเสธหรือปรับขอบเขต","ฉันมีช่วงเวลาพักจริงอย่างน้อย 1 ครั้งต่อสัปดาห์","หลังเจอคนที่ทำให้เครียด ฉันมีวิธีรีเซ็ตตัวเอง"]},"Stress Response":{icon:"🧊",c:"#64748B",pl:"เสาร์",q:["ภายใต้ความกดดัน ฉันยังรักษาคุณภาพงานขั้นต่ำได้","เมื่อเจอปัญหา ฉันเริ่มแก้ไขภายใน 24 ชั่วโมง","แม้ไม่อยากทำ ฉันยังหาวิธีพาตัวเองลงมือทำ"]}}},D:{t:"The Evolution & Shadow",dims:{"Shadow Pattern":{icon:"🌑",c:"#1E293B",pl:"ราหู/เกตุ",rev:true,q:["ฉันเลี่ยงเรื่องสำคัญ ไปทำสิ่งที่สบายกว่าแทน","ฉันตัดสินใจเพราะกลัวหรืออยากได้ แล้วมานึกเสียใจทีหลัง","ฉันผัดเรื่องที่ควรเผชิญ แม้รู้ว่ามันกระทบซ้ำ"]},"Growth Orientation":{icon:"🌱",c:"#10B981",pl:"พฤหัส",q:["เมื่อได้รับคำแนะนำ ฉันถามต่อเพื่อเข้าใจให้ชัด","ฉันใช้เวลาอย่างน้อยสัปดาห์ละ 30 นาทีพัฒนาตัวเอง","หลังทำพลาด ฉันสรุปบทเรียนเพื่อใช้ครั้งต่อไป"]},"Integration Level":{icon:"🔮",c:"#A78BFA",pl:"ผลรวมทุกดาว",q:["ฉันมีสิ่งสำคัญอันดับ 1 ที่โฟกัสชัดในช่วงนี้","ตารางชีวิตฉันมีจังหวะพักที่ช่วยไม่ให้ล้าเรื้อรัง","ฉันรู้จุดแข็งและจุดเสี่ยงของตัวเอง และใช้วางแผนสัปดาห์นี้จริง"]}}}};
@@ -424,13 +437,35 @@ fb:k=>{if(!k)return"กำลังวิเคราะห์ให้คุณ
 const pJ=t=>{if(!t)return null;try{return JSON.parse(t.replace(/```json\s*/g,"").replace(/```/g,"").trim())}catch{return null}};
 const ST={set:(k,v)=>{try{localStorage.setItem(`hss6_${k}`,JSON.stringify(v))}catch{}},get:k=>{try{const s=localStorage.getItem(`hss6_${k}`);return s?JSON.parse(s):null}catch{return null}}};
 
-const css=`@keyframes hs{to{transform:rotate(360deg)}}@keyframes hb{50%{opacity:0}}@keyframes hfl{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}`;
-const Spin=({t="AI กำลังวิเคราะห์..."})=><div style={{padding:"12px 0",display:"flex",alignItems:"center",gap:8}}><div style={{width:16,height:16,borderRadius:"50%",border:"2.5px solid #E0E7FF",borderTopColor:"#6366F1",animation:"hs .7s linear infinite"}}/><span style={{fontSize:12,color:"#6366F1",fontWeight:600}}>{t}</span></div>;
+const css=`
+@keyframes hs{to{transform:rotate(360deg)}}
+@keyframes hb{50%{opacity:0}}
+@keyframes hfl{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(139,92,246,0.2),0 4px 30px rgba(0,0,0,0.5)}50%{box-shadow:0 0 40px rgba(139,92,246,0.45),0 4px 30px rgba(0,0,0,0.5)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.rg{background:rgba(12,15,40,0.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:22px 20px;margin-bottom:14px;box-shadow:0 8px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.05);animation:fadeInUp .4s ease both}
+.rg-sm{background:rgba(12,15,40,0.6);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.06);border-radius:18px;padding:14px 16px;margin-bottom:8px}
+.rg-score{background:rgba(8,10,30,0.6);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:12px 14px;margin-bottom:8px;transition:border-color .2s}
+.rg-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.4px}
+.rg-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(165,180,252,0.55);margin-bottom:12px}
+.rg-bar{height:5px;border-radius:3px;background:rgba(255,255,255,0.07);overflow:hidden;margin:6px 0}
+.rg-bar-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.rgb{transition:all .25s ease}
+.rgb:hover{transform:translateY(-2px);box-shadow:0 0 28px rgba(124,58,237,0.45),0 8px 24px rgba(0,0,0,0.6)!important}
+.rch:hover{transform:translateY(-3px);box-shadow:0 10px 40px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.1)!important;transition:all .2s ease}
+.rg-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(8,10,30,0) 0%,rgba(8,10,30,0.96) 55%,rgba(8,10,30,1) 100%);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:22px 18px}
+`;
+const Spin=({t="AI กำลังวิเคราะห์..."})=><div style={{padding:"12px 0",display:"flex",alignItems:"center",gap:8}}><div style={{width:16,height:16,borderRadius:"50%",border:"2.5px solid rgba(167,139,250,0.2)",borderTopColor:"#A78BFA",animation:"hs .7s linear infinite"}}/><span style={{fontSize:12,color:"#A78BFA",fontWeight:600}}>{t}</span></div>;
 const fmtAI=t=>t?t.replace(/\n+([🌟⚠️💡⚡🔄✨🌑])/g,'\n\n$1').replace(/\n+(---)/g,'\n\n$1'):t;
-const Typer=({text})=>{const tx=fmtAI(text);const[s,setS]=useState("");const[d,setD]=useState(false);useEffect(()=>{if(!tx)return;let i=0;setS("");setD(false);const iv=setInterval(()=>{i+=3;if(i>=tx.length){setS(tx);setD(true);clearInterval(iv)}else setS(tx.slice(0,i))},12);return()=>clearInterval(iv)},[tx]);return<div style={{fontSize:13,lineHeight:1.8,color:"#374151",whiteSpace:"pre-wrap"}}>{s}{!d&&<span style={{display:"inline-block",width:2,height:14,background:"#6366F1",marginLeft:1,animation:"hb .8s step-end infinite"}}/>}</div>};
-const Spider=({scores,size=260})=>{const keys=Object.keys(scores);const vals=Object.values(scores);const n=keys.length;const cx=size/2,cy=size/2,r=size*.34;const pt=(i,v)=>{const a=Math.PI*2*i/n-Math.PI/2;return{x:cx+Math.cos(a)*v/10*r,y:cy+Math.sin(a)*v/10*r}};return<svg viewBox={`0 0 ${size} ${size}`} style={{width:"100%",maxWidth:300}}><defs><radialGradient id="spBg" cx="50%" cy="50%" r="50%"><stop offset="0%" stopColor="#EEF2FF" stopOpacity="0.6"/><stop offset="100%" stopColor="#F8FAFC" stopOpacity="0.1"/></radialGradient><linearGradient id="spFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#6366F1" stopOpacity="0.35"/><stop offset="50%" stopColor="#8B5CF6" stopOpacity="0.25"/><stop offset="100%" stopColor="#A78BFA" stopOpacity="0.18"/></linearGradient><linearGradient id="spStroke" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#4F46E5"/><stop offset="100%" stopColor="#7C3AED"/></linearGradient><filter id="spGlow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><circle cx={cx} cy={cy} r={r*1.05} fill="url(#spBg)"/>{[2,4,6,8,10].map(l=><polygon key={l} points={keys.map((_,i)=>{const p=pt(i,l);return`${p.x},${p.y}`}).join(" ")} fill="none" stroke={l===10?"#CBD5E1":"#E2E8F0"} strokeWidth={l===10?"0.8":"0.5"} strokeDasharray={l===10?"":"2,2"}/>)}{keys.map((_,i)=>{const p=pt(i,10);return<line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="#E2E8F0" strokeWidth=".4"/>})}<polygon points={keys.map((_,i)=>{const p=pt(i,vals[i]);return`${p.x},${p.y}`}).join(" ")} fill="url(#spFill)" stroke="url(#spStroke)" strokeWidth="2.2" filter="url(#spGlow)" strokeLinejoin="round"/>{keys.map((_,i)=>{const p=pt(i,vals[i]);const v=vals[i];const c=v>=7.5?"#10B981":v>=5?"#6366F1":"#EF4444";return<circle key={i} cx={p.x} cy={p.y} r="3.5" fill={c} stroke="#fff" strokeWidth="1.5"/>})}{keys.map((k,i)=>{const p=pt(i,12.8);const sh=k.length>12?k.slice(0,10)+"…":k;return<text key={i} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle" style={{fontSize:"5.5px",fill:"#475569",fontWeight:600}}>{sh}</text>})}</svg>};
+const Typer=({text})=>{const tx=fmtAI(text);const[s,setS]=useState("");const[d,setD]=useState(false);useEffect(()=>{if(!tx)return;let i=0;setS("");setD(false);const iv=setInterval(()=>{i+=3;if(i>=tx.length){setS(tx);setD(true);clearInterval(iv)}else setS(tx.slice(0,i))},12);return()=>clearInterval(iv)},[tx]);return<div style={{fontSize:13,lineHeight:1.8,color:"rgba(203,213,225,0.9)",whiteSpace:"pre-wrap"}}>{s}{!d&&<span style={{display:"inline-block",width:2,height:14,background:"#A78BFA",marginLeft:1,animation:"hb .8s step-end infinite"}}/>}</div>};
+const Spider=({scores,size=260})=>{const keys=Object.keys(scores);const vals=Object.values(scores);const n=keys.length;const cx=size/2,cy=size/2,r=size*.34;const pt=(i,v)=>{const a=Math.PI*2*i/n-Math.PI/2;return{x:cx+Math.cos(a)*v/10*r,y:cy+Math.sin(a)*v/10*r}};return<svg viewBox={`0 0 ${size} ${size}`} style={{width:"100%",maxWidth:300}}><defs><radialGradient id="spBg" cx="50%" cy="50%" r="50%"><stop offset="0%" stopColor="#4F46E5" stopOpacity="0.08"/><stop offset="100%" stopColor="#0D0F2B" stopOpacity="0.2"/></radialGradient><linearGradient id="spFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#7C3AED" stopOpacity="0.4"/><stop offset="50%" stopColor="#4F46E5" stopOpacity="0.3"/><stop offset="100%" stopColor="#A78BFA" stopOpacity="0.2"/></linearGradient><linearGradient id="spStroke" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#A78BFA"/><stop offset="100%" stopColor="#818CF8"/></linearGradient><filter id="spGlow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><circle cx={cx} cy={cy} r={r*1.05} fill="url(#spBg)"/>{[2,4,6,8,10].map(l=><polygon key={l} points={keys.map((_,i)=>{const p=pt(i,l);return`${p.x},${p.y}`}).join(" ")} fill="none" stroke={l===10?"rgba(167,139,250,0.3)":"rgba(255,255,255,0.06)"} strokeWidth={l===10?"0.8":"0.5"} strokeDasharray={l===10?"":"2,2"}/>)}{keys.map((_,i)=>{const p=pt(i,10);return<line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="rgba(255,255,255,0.07)" strokeWidth=".4"/>})}<polygon points={keys.map((_,i)=>{const p=pt(i,vals[i]);return`${p.x},${p.y}`}).join(" ")} fill="url(#spFill)" stroke="url(#spStroke)" strokeWidth="2" filter="url(#spGlow)" strokeLinejoin="round"/>{keys.map((_,i)=>{const p=pt(i,vals[i]);const v=vals[i];const c=v>=7.5?"#34D399":v>=5?"#A78BFA":"#FCA5A5";return<circle key={i} cx={p.x} cy={p.y} r="3.5" fill={c} stroke="rgba(255,255,255,0.15)" strokeWidth="1.5"/>})}{keys.map((k,i)=>{const p=pt(i,12.8);const sh=k.length>12?k.slice(0,10)+"…":k;return<text key={i} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle" style={{fontSize:"5.5px",fill:"rgba(203,213,225,0.7)",fontWeight:600}}>{sh}</text>})}</svg>};
 const Card=({children,style={}})=><div style={{background:"#fff",borderRadius:14,padding:"16px 18px",marginBottom:10,boxShadow:"0 1px 3px rgba(0,0,0,.04)",border:"1px solid #F1F5F9",...style}}>{children}</div>;
 const Btn=({children,ok=true,onClick,style={}})=><button onClick={ok?onClick:undefined} style={{padding:"12px 20px",fontSize:14,fontWeight:700,background:ok?"linear-gradient(135deg,#4338CA,#6D28D9)":"#E2E8F0",color:ok?"#fff":"#94A3B8",border:"none",borderRadius:10,cursor:ok?"pointer":"not-allowed",width:"100%",boxShadow:ok?"0 4px 14px rgba(79,70,229,.2)":"none",...style}}>{children}</button>;
+// Dark theme components for Results
+const DGlass=({children,style={}})=><div className="rg" style={style}>{children}</div>;
+const DBtn=({children,ok=true,onClick,style={}})=><button onClick={ok?onClick:undefined} className={ok?"rgb":""} style={{padding:"12px 22px",fontSize:13,fontWeight:700,background:ok?"linear-gradient(135deg,#7C3AED,#4F46E5)":"rgba(255,255,255,0.05)",color:ok?"#fff":"rgba(148,163,184,0.5)",border:ok?"none":"1px solid rgba(255,255,255,0.07)",borderRadius:14,cursor:ok?"pointer":"not-allowed",width:"100%",boxShadow:ok?"0 0 24px rgba(124,58,237,0.35),0 4px 20px rgba(0,0,0,0.4)":"none",...style}}>{children}</button>;
 
 // ── Identity Snapshot Card (WHO / WHAT / WHEN) ──
 const IdentitySnapshotCard=({data,scores})=>{
@@ -563,8 +598,16 @@ const IdentitySnapshotCard=({data,scores})=>{
     </div>
   </div>};
 
-// Locked Preview with blur
-const Locked=({planNeeded,title,children,onUpgrade})=><Card style={{position:"relative",overflow:"hidden",minHeight:120}}><div style={{filter:"blur(3px)",pointerEvents:"none",userSelect:"none",opacity:.4,padding:"8px 0"}}>{children}</div><div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,.75)",backdropFilter:"blur(2px)",padding:16}}><div style={{fontSize:28,marginBottom:6}}>🔒</div><div style={{fontSize:13,fontWeight:700,color:"#4338CA",marginBottom:3,textAlign:"center"}}>{title}</div><div style={{fontSize:11,color:"#64748B",marginBottom:10}}>{planNeeded==="deep"?"Deep Insight ฿49":"All Access ฿99"}</div><button onClick={()=>onUpgrade(planNeeded)} style={{padding:"8px 24px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 12px rgba(79,70,229,.25)"}}>ปลดล็อก →</button></div></Card>;
+// Locked Preview with blur — Dark Premium
+const Locked=({planNeeded,title,children,onUpgrade})=><div className="rg" style={{position:"relative",overflow:"hidden",minHeight:120,padding:"20px"}}>
+  <div style={{filter:"blur(5px)",pointerEvents:"none",userSelect:"none",opacity:.25,padding:"8px 0"}}>{children}</div>
+  <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(8,10,30,0) 0%,rgba(8,10,30,0.95) 45%,rgba(8,10,30,1) 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",padding:"24px 20px"}}>
+    <div style={{fontSize:24,marginBottom:8}}>🔒</div>
+    <div style={{fontSize:13,fontWeight:700,color:"#E2E8F0",marginBottom:4,textAlign:"center"}}>{title}</div>
+    <div style={{fontSize:10,color:"rgba(148,163,184,0.6)",marginBottom:14}}>{planNeeded==="smart"||planNeeded==="quick"?"Smart Decision ฿299":planNeeded==="dive"?"Deep Dive ฿490":planNeeded==="lite"?"Lite ฿590/เดือน":"Pro ฿990/เดือน"}</div>
+    <button onClick={()=>onUpgrade(planNeeded||"smart")} className="rgb" style={{padding:"10px 28px",borderRadius:14,border:"none",background:"linear-gradient(135deg,#7C3AED,#4F46E5)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",boxShadow:"0 0 24px rgba(124,58,237,0.4)"}}>ปลดล็อก →</button>
+  </div>
+</div>;
 
 export default function App(){
   const[sc,setSc]=useState("landing");
@@ -1249,130 +1292,149 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const borderC=typeBorder[m.type]||'#C0B8D0';
     const headlineC={golden:'#C88A10',danger:'#C04040',good:'#2E8A58',side:'#3A7AC0',neutral:'#7060A0'}[m.type]||'#7060A0';
     return<div style={{marginBottom:6}}>
-      <div onClick={()=>setOpen(!open)} style={{background:"#fff",borderRadius:10,padding:"10px 12px",cursor:"pointer",border:`1px solid ${open?borderC:"#F1F5F9"}`,borderLeft:`3px solid ${borderC}`,display:"flex",alignItems:"center",gap:10,transition:"all 0.2s",boxShadow:open?"0 2px 8px rgba(0,0,0,0.06)":"none"}}>
+      <div onClick={()=>setOpen(!open)} style={{background:open?"rgba(79,70,229,0.1)":"rgba(255,255,255,0.03)",borderRadius:10,padding:"10px 12px",cursor:"pointer",border:`1px solid ${open?"rgba(139,92,246,0.4)":"rgba(255,255,255,0.06)"}`,borderLeft:`3px solid ${borderC}`,display:"flex",alignItems:"center",gap:10,transition:"all 0.2s",boxShadow:open?"0 0 20px rgba(124,58,237,0.1)":"none"}}>
         <span style={{fontSize:22,minWidth:28,textAlign:"center"}}>{m.icon}</span>
         <div style={{flex:1,minWidth:0}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}>
-            <span style={{fontSize:13,fontWeight:700,color:"#1E293B"}}>{m.monthFull}</span>
+            <span style={{fontSize:13,fontWeight:700,color:"#E2E8F0"}}>{m.monthFull}</span>
             <span style={{fontSize:12,letterSpacing:1}}>{starStr(m.stars)}</span>
           </div>
           <div style={{fontSize:11,fontWeight:600,color:headlineC,marginBottom:2}}>{m.headline}</div>
-          <div style={{fontSize:10,color:"#8A8090"}}>🔭 {m.planetEmoji} {m.planet} · {m.planetEffect}</div>
+          <div style={{fontSize:10,color:"rgba(148,163,184,0.55)"}}>🔭 {m.planetEmoji} {m.planet} · {m.planetEffect}</div>
           <div style={{display:"flex",gap:3,marginTop:4,flexWrap:"wrap"}}>
             {m.tags.map(([label,tagType],ti)=>{
-              const tagBg={golden:'#FFF3D4',danger:'#FFE8E8',good:'#E4F5EC',side:'#E4EEFF',neutral:'#F0ECF8'}[tagType]||'#F0ECF8';
-              const tagFg={golden:'#C88A10',danger:'#C04040',good:'#2E8A58',side:'#3A7AC0',neutral:'#7060A0'}[tagType]||'#7060A0';
+              const tagBg={golden:'rgba(245,166,35,0.12)',danger:'rgba(239,68,68,0.1)',good:'rgba(16,185,129,0.1)',side:'rgba(59,130,246,0.1)',neutral:'rgba(124,58,237,0.08)'}[tagType]||'rgba(124,58,237,0.08)';
+              const tagFg={golden:'#FCD34D',danger:'#FCA5A5',good:'#34D399',side:'#93C5FD',neutral:'#A78BFA'}[tagType]||'#A78BFA';
               return<span key={ti} style={{fontSize:9,padding:"1px 6px",borderRadius:10,fontWeight:600,background:tagBg,color:tagFg}}>{label}</span>})}
           </div>
         </div>
-        <span style={{color:"#C0B8D0",fontSize:14,transition:"transform 0.2s",transform:open?"rotate(90deg)":"none"}}>›</span>
+        <span style={{color:"rgba(167,139,250,0.5)",fontSize:14,transition:"transform 0.2s",transform:open?"rotate(90deg)":"none"}}>›</span>
       </div>
-      {open&&<div style={{background:"#fff",borderRadius:"0 0 12px 12px",border:`1px solid ${borderC}`,borderTop:"none",overflow:"hidden",animation:"slideDown 0.3s ease"}}>
+      {open&&<div style={{background:"rgba(8,10,30,0.6)",borderRadius:"0 0 12px 12px",border:`1px solid rgba(139,92,246,0.3)`,borderTop:"none",overflow:"hidden",animation:"slideDown 0.3s ease"}}>
         {/* Header */}
-        <div style={{padding:"12px 14px",borderBottom:"1px solid #F0ECF8",display:"flex",justifyContent:"space-between"}}>
+        <div style={{padding:"12px 14px",borderBottom:"1px solid rgba(255,255,255,0.05)",display:"flex",justifyContent:"space-between"}}>
           <div>
-            <div style={{fontSize:16,fontWeight:700,color:"#1E293B"}}>{m.icon} {m.monthFull}</div>
+            <div style={{fontSize:16,fontWeight:700,color:"#E2E8F0"}}>{m.icon} {m.monthFull}</div>
             <div style={{fontSize:12,fontWeight:600,color:headlineC,margin:"2px 0"}}>{m.headline}</div>
-            <div style={{fontSize:10,color:"#8A8090"}}>🔭 {m.planetEmoji} {m.planet} · {m.planetEffect}</div>
+            <div style={{fontSize:10,color:"rgba(148,163,184,0.55)"}}>🔭 {m.planetEmoji} {m.planet} · {m.planetEffect}</div>
           </div>
           <div style={{textAlign:"right"}}>
             <div style={{fontSize:16}}>{starStr(m.stars)}</div>
-            <div style={{fontSize:9,color:"#8A8090",fontWeight:600}}>{starLabel(m.stars)}</div>
+            <div style={{fontSize:9,color:"rgba(148,163,184,0.55)",fontWeight:600}}>{starLabel(m.stars)}</div>
           </div>
         </div>
 
         {/* Golden Days */}
-        <div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#C88A10",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>✦ Golden Days — นัดได้เลย</div>
-          {m.goldenDays.map((d,di)=><div key={di} style={{background:"#FFFBF0",borderRadius:8,padding:"7px 10px",marginBottom:4,display:"flex",alignItems:"flex-start",gap:8}}>
-            <span style={{fontSize:14,fontWeight:700,color:"#C88A10",minWidth:24}}>{d.day}</span>
+        <div style={{padding:"10px 14px",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#FCD34D",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>✦ Golden Days — นัดได้เลย</div>
+          {m.goldenDays.map((d,di)=><div key={di} style={{background:"rgba(245,166,35,0.07)",borderRadius:10,padding:"7px 10px",marginBottom:4,display:"flex",alignItems:"flex-start",gap:8,border:"1px solid rgba(245,166,35,0.15)"}}>
+            <span style={{fontSize:14,fontWeight:700,color:"#FCD34D",minWidth:24}}>{d.day}</span>
             <div>
-              <div style={{fontSize:11,fontWeight:600,color:"#1E293B"}}>{d.action}</div>
-              <div style={{fontSize:10,color:"#8A8090"}}>🔭 {d.reason}</div>
-              <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:600,padding:"1px 8px",borderRadius:10,marginTop:3,background:"#E4F5EC",color:"#2E8A58"}}>✅ ทำได้เลย</span>
+              <div style={{fontSize:11,fontWeight:600,color:"#E2E8F0"}}>{d.action}</div>
+              <div style={{fontSize:10,color:"rgba(148,163,184,0.55)"}}>🔭 {d.reason}</div>
+              <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:600,padding:"1px 8px",borderRadius:10,marginTop:3,background:"rgba(16,185,129,0.08)",color:"#34D399",border:"1px solid rgba(52,211,153,0.2)"}}>✅ ทำได้เลย</span>
             </div>
           </div>)}
         </div>
 
         {/* Black Days */}
-        <div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#C04040",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>⚑ Black Days — ระวัง</div>
-          {m.blackDays.map((d,di)=><div key={di} style={{background:"#FFF5F5",borderRadius:8,padding:"7px 10px",marginBottom:4,display:"flex",alignItems:"flex-start",gap:8}}>
-            <span style={{fontSize:14,fontWeight:700,color:"#C04040",minWidth:24}}>{d.day}</span>
+        <div style={{padding:"10px 14px",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#FCA5A5",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>⚑ Black Days — ระวัง</div>
+          {m.blackDays.map((d,di)=><div key={di} style={{background:"rgba(239,68,68,0.06)",borderRadius:10,padding:"7px 10px",marginBottom:4,display:"flex",alignItems:"flex-start",gap:8,border:"1px solid rgba(252,165,165,0.12)"}}>
+            <span style={{fontSize:14,fontWeight:700,color:"#FCA5A5",minWidth:24}}>{d.day}</span>
             <div>
-              <div style={{fontSize:11,fontWeight:600,color:"#1E293B"}}>{d.action}</div>
-              <div style={{fontSize:10,color:"#8A8090"}}>🔭 {d.reason}</div>
-              <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:600,padding:"1px 8px",borderRadius:10,marginTop:3,background:"#FFE8E8",color:"#C04040"}}>⚠️ ระวัง</span>
+              <div style={{fontSize:11,fontWeight:600,color:"#E2E8F0"}}>{d.action}</div>
+              <div style={{fontSize:10,color:"rgba(148,163,184,0.55)"}}>🔭 {d.reason}</div>
+              <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:600,padding:"1px 8px",borderRadius:10,marginTop:3,background:"rgba(239,68,68,0.1)",color:"#FCA5A5",border:"1px solid rgba(252,165,165,0.2)"}}>⚠️ ระวัง</span>
             </div>
           </div>)}
         </div>
 
         {/* Domain breakdown: งาน เงิน ความรัก สุขภาพ */}
-        {m.domainScores&&<div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#1E293B",marginBottom:8,display:"flex",alignItems:"center",gap:4}}>📊 เรื่องเด่นประจำเดือน — Vedic Transit</div>
+        {m.domainScores&&<div style={{padding:"10px 14px",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#CBD5E1",marginBottom:8,display:"flex",alignItems:"center",gap:4}}>📊 เรื่องเด่นประจำเดือน — Vedic Transit</div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-            {[{key:'work',icon:'💼',label:'การงาน',text:m.workFocus,score:m.domainScores.work,bg:'#EEF2FF',fg:'#4338CA',brd:'#C7D2FE'},{key:'money',icon:'💰',label:'การเงิน',text:m.moneyFocus,score:m.domainScores.money,bg:'#FFFBEB',fg:'#92400E',brd:'#FDE68A'},{key:'love',icon:'❤️',label:'ความรัก',text:m.loveFocus,score:m.domainScores.love,bg:'#FFF1F2',fg:'#BE185D',brd:'#FECDD3'},{key:'health',icon:'🏃',label:'สุขภาพ',text:m.healthFocus,score:m.domainScores.health,bg:'#ECFDF5',fg:'#065F46',brd:'#A7F3D0'}].map(({key,icon,label,text,score,bg,fg,brd})=>{
+            {[{key:'work',icon:'💼',label:'การงาน',text:m.workFocus,score:m.domainScores.work,bg:'rgba(79,70,229,0.08)',fg:'#818CF8',brd:'rgba(129,140,248,0.2)'},{key:'money',icon:'💰',label:'การเงิน',text:m.moneyFocus,score:m.domainScores.money,bg:'rgba(245,158,11,0.07)',fg:'#FCD34D',brd:'rgba(252,211,77,0.15)'},{key:'love',icon:'❤️',label:'ความรัก',text:m.loveFocus,score:m.domainScores.love,bg:'rgba(236,72,153,0.07)',fg:'#F9A8D4',brd:'rgba(249,168,212,0.15)'},{key:'health',icon:'🏃',label:'สุขภาพ',text:m.healthFocus,score:m.domainScores.health,bg:'rgba(16,185,129,0.07)',fg:'#34D399',brd:'rgba(52,211,153,0.15)'}].map(({key,icon,label,text,score,bg,fg,brd})=>{
               const isHighlight=key===m.dominantTopic;
-              const scoreColor=score>=75?'#059669':score>=55?fg:'#DC2626';
-              return<div key={key} style={{background:bg,borderRadius:10,padding:"8px 10px",border:`1px solid ${brd}`,boxShadow:isHighlight?"0 2px 8px rgba(0,0,0,0.08)":"none",position:"relative"}}>
-                {isHighlight&&<span style={{position:"absolute",top:6,right:6,fontSize:8,fontWeight:700,color:"#fff",background:"#6366F1",padding:"1px 5px",borderRadius:6}}>เด่น</span>}
+              const scoreColor=score>=75?'#34D399':score>=55?fg:'#FCA5A5';
+              return<div key={key} style={{background:bg,borderRadius:10,padding:"8px 10px",border:`1px solid ${brd}`,boxShadow:isHighlight?"0 0 14px rgba(124,58,237,0.15)":"none",position:"relative"}}>
+                {isHighlight&&<span style={{position:"absolute",top:6,right:6,fontSize:8,fontWeight:700,color:"#fff",background:"rgba(124,58,237,0.8)",padding:"1px 5px",borderRadius:6}}>เด่น</span>}
                 <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:4}}>
                   <span style={{fontSize:14}}>{icon}</span>
                   <span style={{fontSize:10,fontWeight:700,color:fg}}>{label}</span>
                   <span style={{fontSize:9,fontWeight:700,color:scoreColor,marginLeft:"auto"}}>{score}%</span>
                 </div>
-                <div style={{height:3,borderRadius:2,background:"rgba(0,0,0,0.08)",marginBottom:6}}>
+                <div style={{height:3,borderRadius:2,background:"rgba(255,255,255,0.06)",marginBottom:6}}>
                   <div style={{height:3,borderRadius:2,background:scoreColor,width:`${score}%`}}/>
                 </div>
-                <div style={{fontSize:10,color:"#374151",lineHeight:1.5}}>{text}</div>
+                <div style={{fontSize:10,color:"rgba(203,213,225,0.8)",lineHeight:1.5}}>{text}</div>
               </div>;
             })}
           </div>
         </div>}
 
         {/* Decision advice */}
-        {m.decisionAdvice&&<div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#1E293B",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>🎯 คำแนะนำการตัดสินใจเดือนนี้</div>
-          <div style={{background:m.type==='golden'?"linear-gradient(135deg,#FFFBEB,#FEF3C7)":m.type==='danger'?"linear-gradient(135deg,#FFF1F2,#FFE4E6)":m.type==='good'?"linear-gradient(135deg,#ECFDF5,#D1FAE5)":"#F8F7FC",borderRadius:10,padding:"10px 12px",border:`1px solid ${m.type==='golden'?"#FDE68A":m.type==='danger'?"#FECDD3":m.type==='good'?"#A7F3D0":"#E2E8F0"}`}}>
-            <div style={{fontSize:11,lineHeight:1.8,color:"#1E293B",fontWeight:500}}>{m.decisionAdvice}</div>
+        {m.decisionAdvice&&<div style={{padding:"10px 14px",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#CBD5E1",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>🎯 คำแนะนำการตัดสินใจเดือนนี้</div>
+          <div style={{background:m.type==='golden'?"rgba(245,166,35,0.08)":m.type==='danger'?"rgba(239,68,68,0.07)":m.type==='good'?"rgba(16,185,129,0.07)":"rgba(124,58,237,0.07)",borderRadius:10,padding:"10px 12px",border:`1px solid ${m.type==='golden'?"rgba(245,166,35,0.2)":m.type==='danger'?"rgba(252,165,165,0.15)":m.type==='good'?"rgba(52,211,153,0.15)":"rgba(139,92,246,0.2)"}`}}>
+            <div style={{fontSize:11,lineHeight:1.8,color:"rgba(203,213,225,0.9)",fontWeight:500}}>{m.decisionAdvice}</div>
           </div>
         </div>}
 
         {/* Psychology × Astrology */}
-        <div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#7B6FA0",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>🧠 วิเคราะห์ดาว × จิตวิทยา</div>
-          <div style={{background:"#F8F7FC",borderRadius:10,padding:"10px 12px"}}>
-            <div style={{fontSize:11,lineHeight:1.8,color:"#3A3050",marginBottom:8}}>{m.psychText}</div>
-            <div style={{background:"#fff",borderRadius:8,padding:"8px 10px",borderLeft:"3px solid #7B6FA0"}}>
-              <div style={{fontSize:11,color:"#5A4A70",lineHeight:1.6}}>💡 {m.psychTip}</div>
+        <div style={{padding:"10px 14px",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#A78BFA",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>🧠 วิเคราะห์ดาว × จิตวิทยา</div>
+          <div style={{background:"rgba(124,58,237,0.07)",borderRadius:10,padding:"10px 12px"}}>
+            <div style={{fontSize:11,lineHeight:1.8,color:"rgba(203,213,225,0.85)",marginBottom:8}}>{m.psychText}</div>
+            <div style={{background:"rgba(8,10,30,0.4)",borderRadius:8,padding:"8px 10px",borderLeft:"3px solid #7C3AED"}}>
+              <div style={{fontSize:11,color:"rgba(196,181,253,0.9)",lineHeight:1.6}}>💡 {m.psychTip}</div>
             </div>
           </div>
         </div>
 
         {/* Planets */}
         <div style={{padding:"10px 14px"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#5A4A70",marginBottom:6}}>🔭 ดาวที่มีอิทธิพล</div>
+          <div style={{fontSize:11,fontWeight:700,color:"#A78BFA",marginBottom:6}}>🔭 ดาวที่มีอิทธิพล</div>
           <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-            {m.planets.map((p,pi)=><span key={pi} style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:500,padding:"3px 8px",borderRadius:10,background:"#F0ECF8",color:"#5A4A70"}}>{p}</span>)}
+            {m.planets.map((p,pi)=><span key={pi} style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:500,padding:"3px 8px",borderRadius:10,background:"rgba(124,58,237,0.1)",color:"#A78BFA",border:"1px solid rgba(139,92,246,0.2)"}}>{p}</span>)}
           </div>
         </div>
       </div>}
     </div>};
 
   // ─── RESULTS ───
-  const Sec=({fKey,title,icon,children})=>{const ok=has(fKey);return<Card style={{position:"relative"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:ok?8:4}}><div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:15}}>{icon}</span><span style={{fontSize:13,fontWeight:700}}>{title}</span></div>{!ok&&<span style={{fontSize:10,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"2px 8px",borderRadius:8}}>🔒</span>}</div>{ok?children:<><p style={{fontSize:11,color:"#94A3B8",marginBottom:6}}>ปลดล็อกเพื่อดู</p><div style={{display:"flex",gap:6}}>{plan==="free"&&<button onClick={()=>tryUpgrade("deep")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #F59E0B",background:"#FFFBEB",color:"#92400E",fontSize:11,fontWeight:700,cursor:"pointer"}}>Deep ฿49</button>}{plan!=="all"&&<button onClick={()=>tryUpgrade("all")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>All ฿99</button>}</div></>}</Card>};
+  const Sec=({fKey,title,icon,children})=>{const ok=has(fKey);return(
+    <div className="rg" style={{position:"relative"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:ok?14:8}}>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <span style={{fontSize:15}}>{icon}</span>
+          <span style={{fontSize:13,fontWeight:700,color:"#E2E8F0"}}>{title}</span>
+        </div>
+        {!ok&&<span style={{fontSize:9,fontWeight:700,color:"#A78BFA",background:"rgba(139,92,246,0.12)",padding:"3px 10px",borderRadius:20,border:"1px solid rgba(139,92,246,0.25)"}}>🔒</span>}
+      </div>
+      {ok?children:(
+        <>
+          <p style={{fontSize:11,color:"rgba(148,163,184,0.6)",marginBottom:12}}>ปลดล็อกเพื่อดูเนื้อหาส่วนนี้</p>
+          <div style={{display:"flex",gap:8}}>
+            {(plan==="free"||plan==="quick")&&<button onClick={()=>tryUpgrade("smart")} style={{flex:1,padding:"9px 14px",borderRadius:12,border:"1px solid rgba(139,92,246,0.4)",background:"rgba(139,92,246,0.1)",color:"#A78BFA",fontSize:11,fontWeight:700,cursor:"pointer"}}>Smart ฿299</button>}
+            <button onClick={()=>tryUpgrade("pro")} className="rgb" style={{flex:1,padding:"9px 14px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#7C3AED,#4F46E5)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer",boxShadow:"0 0 18px rgba(124,58,237,0.3)"}}>Pro ฿990/เดือน</button>
+          </div>
+        </>
+      )}
+    </div>
+  )};
 
   const Results=()=>{if(!scores)return null;const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);const c5={"Cognitive Processing":scores["Cognitive Processing"],"Emotional Regulation":scores["Emotional Regulation"],"Identity Stability":scores["Identity Stability"],"Shadow Pattern":scores["Shadow Pattern"],"Growth Orientation":scores["Growth Orientation"]};
   return<div>
-  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:26,height:26,borderRadius:8,background:"linear-gradient(135deg,#4338CA,#6D28D9)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff"}}>✦</div><span style={{fontSize:14,fontWeight:800}}>{nick}</span></div><span style={{fontSize:10,color:"#94A3B8"}}>{PLANS[plan].name}{logged?` · ${user?.email?.split("@")[0]}`:""}</span></div><div style={{display:"flex",alignItems:"center",gap:4}}>{plan!=="free"&&<span style={{fontSize:10,fontWeight:700,color:"#fff",background:PLANS[plan].c,padding:"3px 10px",borderRadius:8}}>{PLANS[plan].name}</span>}{logged?<button onClick={doLogout} style={{fontSize:12,color:"#64748B",background:"#F8FAFC",border:"1px solid #E2E8F0",borderRadius:8,padding:"6px 14px",cursor:"pointer",minWidth:60,minHeight:36}}>ออกจากระบบ</button>:<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:12,color:"#4338CA",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:8,padding:"6px 14px",cursor:"pointer"}}>เข้าสู่ระบบ</button>}</div></div>
+  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:26,height:26,borderRadius:8,background:"linear-gradient(135deg,#7C3AED,#4F46E5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff",boxShadow:"0 0 12px rgba(124,58,237,0.5)"}}>✦</div><span style={{fontSize:14,fontWeight:800,color:"#E2E8F0"}}>{nick}</span></div><span style={{fontSize:10,color:"rgba(148,163,184,0.7)"}}>{PLANS[plan].name}{logged?` · ${user?.email?.split("@")[0]}`:""}</span></div><div style={{display:"flex",alignItems:"center",gap:4}}>{plan!=="free"&&<span style={{fontSize:10,fontWeight:700,color:"#fff",background:PLANS[plan].c,padding:"3px 10px",borderRadius:8,boxShadow:`0 0 10px ${PLANS[plan].c}55`}}>{PLANS[plan].name}</span>}{logged?<button onClick={doLogout} style={{fontSize:12,color:"rgba(148,163,184,0.8)",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:8,padding:"6px 14px",cursor:"pointer",minWidth:60,minHeight:36}}>ออกจากระบบ</button>:<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:12,color:"#A78BFA",background:"rgba(139,92,246,0.1)",border:"1px solid rgba(139,92,246,0.3)",borderRadius:8,padding:"6px 14px",cursor:"pointer"}}>เข้าสู่ระบบ</button>}</div></div>
 
-  {plan==="free"&&<Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1"}}><div style={{fontSize:12,fontWeight:700,color:"#4338CA",marginBottom:6}}>🔓 ปลดล็อกความเข้าใจตัวเอง</div><div style={{display:"flex",gap:6}}><button onClick={()=>tryUpgrade("deep")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #F59E0B",background:"#fff",color:"#92400E",fontSize:11,fontWeight:700,cursor:"pointer"}}>Deep ฿49</button><button onClick={()=>tryUpgrade("all")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>All ฿99</button></div></Card>}
+  {plan==="free"&&<div className="rg" style={{background:"linear-gradient(135deg,rgba(124,58,237,0.15),rgba(79,70,229,0.1))",border:"1px solid rgba(139,92,246,0.35)",animation:"glowPulse 3s ease infinite"}}><div style={{fontSize:12,fontWeight:700,color:"#C4B5FD",marginBottom:8}}>🔓 ปลดล็อกความเข้าใจตัวเอง</div><div style={{display:"flex",gap:8}}><button onClick={()=>tryUpgrade("smart")} style={{flex:1,padding:"9px 8px",borderRadius:12,border:"1px solid rgba(245,158,11,0.4)",background:"rgba(245,158,11,0.08)",color:"#FCD34D",fontSize:11,fontWeight:700,cursor:"pointer"}}>Smart ฿299</button><button onClick={()=>tryUpgrade("pro")} className="rgb" style={{flex:1,padding:"9px 8px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#7C3AED,#4F46E5)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer",boxShadow:"0 0 18px rgba(124,58,237,0.4)"}}>Pro ฿990/เดือน</button></div></div>}
 
   <Sec fKey="identity" title="Identity Snapshot" icon="✦">{ai.identity&&ai.identity.powerTitle?<IdentitySnapshotCard data={ai.identity} scores={scores}/>:aiL.identity?<Spin t="กำลังถอดรหัสตัวตน..."/>:<Spin t="เชื่อม AI..."/>}</Sec>
-  <Sec fKey="core5" title="5 Core Scores" icon="📊">{Object.entries(c5).map(([d,sc])=>{const meta=C5_META[d]||{short:d,pl:"",high:{label:"",desc:""},mid:{label:"",desc:""},low:{label:"",desc:""}};const lv=sc>=7?meta.high:sc>=5?meta.mid:meta.low;const isLow=sc<5;const isMid=sc>=5&&sc<7;const lblColor=isLow?"#DC2626":isMid?"#64748B":"#059669";return<div key={d} style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><span style={{fontSize:11,fontWeight:600}}>{DM[d]?.icon} {meta.short} <span style={{fontSize:9,color:"#94A3B8"}}>({meta.pl})</span></span><span style={{fontSize:13,fontWeight:800,color:DM[d]?.c}}>{sc.toFixed(1)}</span></div><div style={{height:5,background:"#F1F5F9",borderRadius:3,overflow:"hidden",marginBottom:5}}><div style={{height:"100%",width:`${sc*10}%`,background:DM[d]?.c,borderRadius:3}}/></div><div style={{fontSize:10,lineHeight:1.6,color:lblColor}}><span style={{fontWeight:700}}>{lv.label}:</span> {lv.desc}</div></div>})}<div style={{marginTop:8,padding:8,background:"#F8FAFC",borderRadius:8}}>{aiL.core?<Spin/>:ai.core?<Typer text={ai.core}/>:<Spin t="รอ AI..."/>}</div></Sec>
+  <Sec fKey="core5" title="5 Core Scores" icon="📊">{Object.entries(c5).map(([d,sc])=>{const meta=C5_META[d]||{short:d,pl:"",high:{label:"",desc:""},mid:{label:"",desc:""},low:{label:"",desc:""}};const lv=sc>=7?meta.high:sc>=5?meta.mid:meta.low;const isLow=sc<5;const isMid=sc>=5&&sc<7;const lblColor=isLow?"#FCA5A5":isMid?"rgba(148,163,184,0.7)":"#34D399";return<div key={d} className="rg-score" style={{marginBottom:8}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}><span style={{fontSize:11,fontWeight:600,color:"#CBD5E1"}}>{DM[d]?.icon} {meta.short} <span style={{fontSize:9,color:"rgba(148,163,184,0.5)"}}>({meta.pl})</span></span><span style={{fontSize:13,fontWeight:800,color:DM[d]?.c}}>{sc.toFixed(1)}</span></div><div className="rg-bar"><div className="rg-bar-fill" style={{width:`${sc*10}%`,background:DM[d]?.c}}/></div><div style={{fontSize:10,lineHeight:1.6,color:lblColor}}><span style={{fontWeight:700}}>{lv.label}:</span> {lv.desc}</div></div>})}<div style={{marginTop:10,padding:"10px 12px",background:"rgba(8,10,30,0.5)",borderRadius:12,border:"1px solid rgba(255,255,255,0.06)"}}>{aiL.core?<Spin/>:ai.core?<Typer text={ai.core}/>:<Spin t="รอ AI..."/>}</div></Sec>
 
   {/* Locked preview: 12D */}
-  {!has("12d")?<Locked planNeeded="deep" title="12D Spider Web + จุดแข็ง/จุดพัฒนา" onUpgrade={tryUpgrade}><div style={{textAlign:"center",padding:16}}><Spider scores={scores}/></div><div style={{padding:"8px 0"}}><div style={{fontSize:12,marginBottom:4}}>💪 จุดแข็ง: {so.slice(0,3).map(([k,v])=>`${DM[k]?.icon}${k}(${v.toFixed(1)})`).join(" · ")}</div><div style={{fontSize:12}}>⚠️ จุดพัฒนา: {so.slice(-3).map(([k,v])=>`${DM[k]?.icon}${k}(${v.toFixed(1)})`).join(" · ")}</div></div></Locked>:<Sec fKey="12d" title="12D Spider Web" icon="🕸️"><div style={{display:"flex",justifyContent:"center",marginBottom:8}}><Spider scores={scores}/></div><div style={{marginBottom:6}}><div style={{fontSize:11,fontWeight:700,color:"#10B981",marginBottom:3}}>💪 จุดแข็ง</div>{so.slice(0,4).map(([d,s])=><div key={d} style={{padding:"4px 8px",borderRadius:6,background:"#ECFDF5",border:"1px solid #A7F3D0",marginBottom:2,display:"flex",justifyContent:"space-between",fontSize:11}}><span>{DM[d]?.icon} {d}</span><span style={{fontWeight:700,color:"#059669"}}>{s.toFixed(1)}</span></div>)}</div><div><div style={{fontSize:11,fontWeight:700,color:"#EF4444",marginBottom:3}}>⚠️ จุดพัฒนา</div>{so.slice(-4).map(([d,s])=><div key={d} style={{padding:"4px 8px",borderRadius:6,background:"#FFF1F2",border:"1px solid #FECDD3",marginBottom:2,display:"flex",justifyContent:"space-between",fontSize:11}}><span>{DM[d]?.icon} {d}</span><span style={{fontWeight:700,color:"#EF4444"}}>{s.toFixed(1)}</span></div>)}</div>{aiL["12d"]?<Spin/>:ai["12d"]?<div style={{marginTop:8,padding:8,background:"#F8FAFC",borderRadius:8}}><Typer text={ai["12d"]}/></div>:null}</Sec>}
+  {!has("12d")?<Locked planNeeded="deep" title="12D Spider Web + จุดแข็ง/จุดพัฒนา" onUpgrade={tryUpgrade}><div style={{textAlign:"center",padding:16}}><Spider scores={scores}/></div><div style={{padding:"8px 0"}}><div style={{fontSize:12,marginBottom:4}}>💪 จุดแข็ง: {so.slice(0,3).map(([k,v])=>`${DM[k]?.icon}${k}(${v.toFixed(1)})`).join(" · ")}</div><div style={{fontSize:12}}>⚠️ จุดพัฒนา: {so.slice(-3).map(([k,v])=>`${DM[k]?.icon}${k}(${v.toFixed(1)})`).join(" · ")}</div></div></Locked>:<Sec fKey="12d" title="12D Spider Web" icon="🕸️"><div style={{display:"flex",justifyContent:"center",marginBottom:8}}><Spider scores={scores}/></div><div style={{marginBottom:8}}><div style={{fontSize:11,fontWeight:700,color:"#34D399",marginBottom:4}}>💪 จุดแข็ง</div>{so.slice(0,4).map(([d,s])=><div key={d} style={{padding:"6px 10px",borderRadius:10,background:"rgba(16,185,129,0.07)",border:"1px solid rgba(52,211,153,0.18)",marginBottom:4,display:"flex",justifyContent:"space-between",fontSize:11,color:"rgba(203,213,225,0.9)"}}><span>{DM[d]?.icon} {d}</span><span style={{fontWeight:700,color:"#34D399"}}>{s.toFixed(1)}</span></div>)}</div><div><div style={{fontSize:11,fontWeight:700,color:"#FCA5A5",marginBottom:4}}>⚠️ จุดพัฒนา</div>{so.slice(-4).map(([d,s])=><div key={d} style={{padding:"6px 10px",borderRadius:10,background:"rgba(239,68,68,0.06)",border:"1px solid rgba(252,165,165,0.15)",marginBottom:4,display:"flex",justifyContent:"space-between",fontSize:11,color:"rgba(203,213,225,0.9)"}}><span>{DM[d]?.icon} {d}</span><span style={{fontWeight:700,color:"#FCA5A5"}}>{s.toFixed(1)}</span></div>)}</div>{aiL["12d"]?<Spin/>:ai["12d"]?<div style={{marginTop:8,padding:"10px 12px",background:"rgba(8,10,30,0.5)",borderRadius:12,border:"1px solid rgba(255,255,255,0.06)"}}><Typer text={ai["12d"]}/></div>:null}</Sec>}
 
   {/* Locked preview: Shadow */}
   {!has("shadow")?<Locked planNeeded="deep" title="Shadow Analysis เชิงลึก" onUpgrade={tryUpgrade}><div style={{padding:12,borderRadius:10,background:"#1E293B",color:"#fff",marginBottom:8}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>🌑 Shadow Pattern: {scores["Shadow Pattern"]?.toFixed(1)}/10</div><div style={{fontSize:11,color:"#94A3B8"}}>Stress Response: {scores["Stress Response"]?.toFixed(1)} · Boundary: {scores["Boundary System"]?.toFixed(1)}</div></div><div style={{fontSize:12,lineHeight:1.8,color:"#374151"}}>⚡ Trigger หลัก: ราหูชี้ว่าคุณมักถูกกระตุ้นเมื่อ...<br/>🔄 Pattern ซ้ำ: เมื่อเจอ trigger คุณมักเลือก...<br/>💡 วิธีแก้: ฝึกจับสัญญาณร่างกาย...</div></Locked>:<Sec fKey="shadow" title="Shadow Analysis" icon="🌑"><div style={{background:"#0F172A",borderRadius:10,padding:"12px 14px",marginBottom:10}}><div style={{fontSize:12,fontWeight:800,color:"#E2E8F0",marginBottom:6}}>🌑 Shadow Pattern คืออะไร?</div><div style={{fontSize:12,color:"#94A3B8",lineHeight:1.8}}>เงามืดที่ขัดขวางความสำเร็จ — คือพฤติกรรมที่คุณมักจะเผลอทำเวลาเสียศูนย์ (เช่น การผลัดวันประกันพรุ่ง การใช้อารมณ์ หรือการหนีความจริง) แม้คุณจะมีศักยภาพดาวกำเนิดที่สูง แต่ถ้า "เงามืด" นี้ทำงานหนักเกินไป มันจะดึงให้คะแนนการใช้งานจริงของคุณต่ำลง</div><div style={{marginTop:8,padding:"8px 10px",background:"rgba(99,102,241,0.15)",borderRadius:8,borderLeft:"3px solid #6366F1"}}><div style={{fontSize:11,color:"#A5B4FC",lineHeight:1.7}}>💡 การรู้เท่าทันเงาของตัวเอง คือกุญแจสำคัญที่จะทำให้คุณกลับมาควบคุมชีวิตได้อีกครั้ง</div></div></div>{aiL.shadow?<Spin/>:ai.shadow?<Typer text={ai.shadow}/>:<Spin t="วิเคราะห์เงามืด..."/>}</Sec>}
@@ -1395,35 +1457,35 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const TW=290,TH=70;const xs=tlPts.map((_,i)=>12+i*((TW-24)/(tlPts.length-1)));const ys=tlPts.map(p=>8+TH*(1-p.e/100)*0.9);
     let tlP=`M${xs[0].toFixed(1)},${ys[0].toFixed(1)}`;for(let i=1;i<tlPts.length;i++){const dx=(xs[i]-xs[i-1])/2.5;tlP+=` C${(xs[i-1]+dx).toFixed(1)},${ys[i-1].toFixed(1)} ${(xs[i]-dx).toFixed(1)},${ys[i].toFixed(1)} ${xs[i].toFixed(1)},${ys[i].toFixed(1)}`;}
     if(!has("love")) return <Locked planNeeded="deep" title="Love & Compatibility ชะตาความรัก & ไทม์ไลน์คู่แท้" onUpgrade={tryUpgrade}><div style={{padding:12,borderRadius:10,background:"linear-gradient(135deg,#1E1035,#3B1054)",color:"#fff",marginBottom:8}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>💕 Love & Compatibility</div><div style={{fontSize:11,color:"#C4B5FD"}}>ทำไมถึงเจอแต่รักพังๆ? คู่ครองแบบไหนเสริมดวงจริงๆ?</div></div><div style={{fontSize:12,lineHeight:1.8,color:"#374151"}}>💔 Root Cause: รูปแบบความสัมพันธ์ที่ซ้ำซาก...<br/>💑 Ideal Partner: ลักษณะคู่ครองที่เสริมดวงคุณ...<br/>⏳ Destiny Timeline: ช่วงเวลาที่จะพบคู่แท้...</div></Locked>;
-    return <Card style={{background:"#FFFFFF",border:"1px solid #C7D2FE",padding:"14px 16px"}}>
-      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><span style={{fontSize:18}}>💕</span><div><div style={{fontSize:14,fontWeight:800,color:"#4338CA"}}>Love & Compatibility</div><div style={{fontSize:10,color:"#7C3AED"}}>ชะตาความรัก & ไทม์ไลน์คู่แท้ · Vedic × Attachment Psychology</div></div></div>
+    return <div className="rg">
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><span style={{fontSize:18}}>💕</span><div><div style={{fontSize:14,fontWeight:800,color:"#E2E8F0"}}>Love & Compatibility</div><div style={{fontSize:10,color:"rgba(167,139,250,0.7)"}}>ชะตาความรัก & ไทม์ไลน์คู่แท้ · Vedic × Attachment Psychology</div></div></div>
       {aiL.love?<Spin t="วิเคราะห์ชะตาความรัก..."/>:ai.love?<>
       <div style={{marginBottom:14}}>
-        <div style={{fontSize:12,fontWeight:800,color:"#F43F5E",borderLeft:"3px solid #F43F5E",paddingLeft:8,marginBottom:2}}>1. Root Cause Diagnostic</div>
-        <div style={{fontSize:10,color:"#BE185D",paddingLeft:11,marginBottom:10,fontStyle:"italic"}}>"ทำไมถึงเจอแต่รักพังๆ?"</div>
+        <div style={{fontSize:12,fontWeight:800,color:"#FDA4AF",borderLeft:"3px solid #F43F5E",paddingLeft:8,marginBottom:2}}>1. Root Cause Diagnostic</div>
+        <div style={{fontSize:10,color:"rgba(253,164,175,0.6)",paddingLeft:11,marginBottom:10,fontStyle:"italic"}}>"ทำไมถึงเจอแต่รักพังๆ?"</div>
         <div style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:10}}>
           <div style={{flexShrink:0}}>
-            <div style={{fontSize:9,color:"#64748B",textAlign:"center",marginBottom:3}}>สัดส่วนสาเหตุ</div>
+            <div style={{fontSize:9,color:"rgba(148,163,184,0.6)",textAlign:"center",marginBottom:3}}>สัดส่วนสาเหตุ</div>
             <svg viewBox="0 0 140 140" style={{width:130}}>
-              <rect width="140" height="140" fill="#F8FAFC" rx="8"/>
+              <rect width="140" height="140" fill="rgba(8,10,30,0.5)" rx="8"/>
               {dSegs.map((s,i)=><path key={i} d={dP(70,70,54,32,s.sa,s.ea)} fill={s.c}/>)}
-              <text x="70" y="67" textAnchor="middle" fontSize="10" fill="#1E293B" fontWeight="bold">สาเหตุ</text>
-              <text x="70" y="80" textAnchor="middle" fontSize="8" fill="#94A3B8">หลัก</text>
+              <text x="70" y="67" textAnchor="middle" fontSize="10" fill="#E2E8F0" fontWeight="bold">สาเหตุ</text>
+              <text x="70" y="80" textAnchor="middle" fontSize="8" fill="rgba(148,163,184,0.6)">หลัก</text>
             </svg>
           </div>
-          <div style={{flex:1}}>{dSegs.map((s,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:7}}><div style={{width:8,height:8,borderRadius:2,background:s.c,flexShrink:0,marginTop:3}}/><div><div style={{fontSize:10,fontWeight:600,color:"#1E293B"}}>{s.l}</div><div style={{fontSize:8,color:"#94A3B8",marginBottom:1}}>{s.s}</div><div style={{fontSize:11,fontWeight:700,color:s.c}}>{Math.round(s.pct*100)}%</div></div></div>)}</div>
+          <div style={{flex:1}}>{dSegs.map((s,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:7}}><div style={{width:8,height:8,borderRadius:2,background:s.c,flexShrink:0,marginTop:3}}/><div><div style={{fontSize:10,fontWeight:600,color:"#CBD5E1"}}>{s.l}</div><div style={{fontSize:8,color:"rgba(148,163,184,0.55)",marginBottom:1}}>{s.s}</div><div style={{fontSize:11,fontWeight:700,color:s.c}}>{Math.round(s.pct*100)}%</div></div></div>)}</div>
         </div>
-        <div style={{background:"#F8FAFC",borderRadius:8,padding:"10px 12px",borderLeft:"3px solid #6366F1"}}><Typer text={ai.love}/></div>
+        <div style={{background:"rgba(8,10,30,0.5)",borderRadius:10,padding:"10px 12px",borderLeft:"3px solid #7C3AED",border:"1px solid rgba(255,255,255,0.06)"}}><Typer text={ai.love}/></div>
       </div>
       <div style={{marginBottom:14}}>
-        <div style={{fontSize:12,fontWeight:800,color:"#0891B2",borderLeft:"3px solid #0891B2",paddingLeft:8,marginBottom:2}}>2. The Ideal Partner & Destiny Timeline</div>
-        <div style={{fontSize:10,color:"#0E7490",paddingLeft:11,marginBottom:10,fontStyle:"italic"}}>"คู่ครองลักษณะไหนเสริมดวง และจะเจอเมื่อไหร่?"</div>
+        <div style={{fontSize:12,fontWeight:800,color:"#67E8F9",borderLeft:"3px solid #0891B2",paddingLeft:8,marginBottom:2}}>2. The Ideal Partner & Destiny Timeline</div>
+        <div style={{fontSize:10,color:"rgba(103,232,249,0.55)",paddingLeft:11,marginBottom:10,fontStyle:"italic"}}>"คู่ครองลักษณะไหนเสริมดวง และจะเจอเมื่อไหร่?"</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
-          <div style={{background:"#F5F3FF",borderRadius:8,padding:"10px 12px",border:"1px solid #DDD6FE"}}><div style={{fontSize:8,fontWeight:700,color:"#7C3AED",marginBottom:1}}>⚠️ วัฏจักรเสาร์</div><div style={{fontSize:11,fontWeight:800,color:"#1E293B"}}>บทเรียนผ่านมาแล้ว</div><div style={{fontSize:8,color:"#64748B",lineHeight:1.5,marginTop:2}}>เสาร์จรผ่านลัคนา ช่วงล้างความสัมพันธ์ที่ไม่เหมาะสม</div></div>
-          <div style={{background:"#ECFEFF",borderRadius:8,padding:"10px 12px",border:"2px solid #A5F3FC"}}><div style={{fontSize:8,fontWeight:700,color:"#0891B2",marginBottom:1}}>⏳ Soulmate Window</div><div style={{fontSize:13,fontWeight:800,color:"#0891B2"}}>{`ปี ${nowY+1}–${nowY+2}`}</div><div style={{fontSize:8,color:"#64748B",lineHeight:1.5,marginTop:2}}>พฤหัสบดีจรส่งผลเรือนคู่ครอง</div></div>
+          <div style={{background:"rgba(124,58,237,0.1)",borderRadius:10,padding:"10px 12px",border:"1px solid rgba(139,92,246,0.2)"}}><div style={{fontSize:8,fontWeight:700,color:"#A78BFA",marginBottom:1}}>⚠️ วัฏจักรเสาร์</div><div style={{fontSize:11,fontWeight:800,color:"#E2E8F0"}}>บทเรียนผ่านมาแล้ว</div><div style={{fontSize:8,color:"rgba(148,163,184,0.6)",lineHeight:1.5,marginTop:2}}>เสาร์จรผ่านลัคนา ช่วงล้างความสัมพันธ์ที่ไม่เหมาะสม</div></div>
+          <div style={{background:"rgba(8,145,178,0.1)",borderRadius:10,padding:"10px 12px",border:"2px solid rgba(103,232,249,0.3)"}}><div style={{fontSize:8,fontWeight:700,color:"#67E8F9",marginBottom:1}}>⏳ Soulmate Window</div><div style={{fontSize:13,fontWeight:800,color:"#67E8F9"}}>{`ปี ${nowY+1}–${nowY+2}`}</div><div style={{fontSize:8,color:"rgba(148,163,184,0.6)",lineHeight:1.5,marginTop:2}}>พฤหัสบดีจรส่งผลเรือนคู่ครอง</div></div>
         </div>
-        <div style={{background:"#F8FAFC",borderRadius:8,padding:"10px 8px",border:"1px solid #E2E8F0"}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#1E293B",marginBottom:4,paddingLeft:6}}>📈 กราฟระดับพลังงานความสัมพันธ์ (Destiny Timeline)</div>
+        <div style={{background:"rgba(8,10,30,0.5)",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(255,255,255,0.06)"}}>
+          <div style={{fontSize:10,fontWeight:700,color:"#CBD5E1",marginBottom:4,paddingLeft:6}}>📈 กราฟระดับพลังงานความสัมพันธ์ (Destiny Timeline)</div>
           <svg viewBox={`0 0 ${TW} ${TH+20}`} style={{width:"100%"}}>
             <defs><linearGradient id="lvGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#0891B2" stopOpacity="0.2"/><stop offset="100%" stopColor="#0891B2" stopOpacity="0"/></linearGradient></defs>
             <line x1="12" y1={(TH*0.5+8).toFixed(1)} x2={(TW-12).toFixed(1)} y2={(TH*0.5+8).toFixed(1)} stroke="#E2E8F0" strokeWidth="0.8" strokeDasharray="3,3"/>
@@ -1433,19 +1495,19 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
             {tlPts.map((p,i)=><text key={i} x={xs[i].toFixed(1)} y={(TH+18).toFixed(1)} textAnchor="middle" fontSize="6" fill="#64748B">{p.lbl.split("\n")[0]}</text>)}
           </svg>
           <div style={{display:"flex",flexWrap:"wrap",gap:10,justifyContent:"center",marginTop:4}}>
-            <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#64748B"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#EC4899"}}/> คู่กรรม</div>
-            <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#64748B"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#7C3AED"}}/> ปัจจุบัน</div>
-            <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#64748B"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#F59E0B"}}/> คู่แท้</div>
+            <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"rgba(148,163,184,0.7)"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#EC4899"}}/> คู่กรรม</div>
+            <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"rgba(148,163,184,0.7)"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#7C3AED"}}/> ปัจจุบัน</div>
+            <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"rgba(148,163,184,0.7)"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#F59E0B"}}/> คู่แท้</div>
           </div>
         </div>
       </div>
       <div>
-        <div style={{fontSize:12,fontWeight:800,color:"#6D28D9",borderLeft:"3px solid #7C3AED",paddingLeft:8,marginBottom:2}}>เปรียบเทียบ: สิ่งที่จิตใต้สำนึกเรียกร้อง VS สเปคเสริมดวง</div>
-        <div style={{fontSize:10,color:"#64748B",paddingLeft:11,marginBottom:10}}>บ่อยครั้งที่โหยหาความตื่นเต้น แต่ดวงบอกว่าต้องการความมั่นคง</div>
+        <div style={{fontSize:12,fontWeight:800,color:"#C4B5FD",borderLeft:"3px solid #7C3AED",paddingLeft:8,marginBottom:2}}>เปรียบเทียบ: สิ่งที่จิตใต้สำนึกเรียกร้อง VS สเปคเสริมดวง</div>
+        <div style={{fontSize:10,color:"rgba(148,163,184,0.6)",paddingLeft:11,marginBottom:10}}>บ่อยครั้งที่โหยหาความตื่นเต้น แต่ดวงบอกว่าต้องการความมั่นคง</div>
         <div style={{display:"flex",gap:10,alignItems:"flex-start"}}>
           <div style={{flexShrink:0}}>
             <svg viewBox="0 0 200 200" style={{width:165}}>
-              <rect width="200" height="200" fill="#F8FAFC" rx="8"/>
+              <rect width="200" height="200" fill="rgba(8,10,30,0.5)" rx="8"/>
               {[0.25,0.5,0.75,1].map((r,i)=><circle key={i} cx="100" cy="100" r={r*58} fill="none" stroke="#E2E8F0" strokeWidth="0.8" strokeDasharray={r<1?"3,3":"none"}/>)}
               {[0,1,2,3,4].map(i=><line key={i} x1="100" y1="100" x2={rAx(i).x} y2={rAx(i).y} stroke="#CBD5E1" strokeWidth="0.5"/>)}
               <polygon points={[0,1,2,3,4].map(i=>{const p=rPt(i,sub[i],58);return`${p.x},${p.y}`}).join(" ")} fill="#EC4899" fillOpacity="0.2" stroke="#EC4899" strokeWidth="1.5"/>
@@ -1453,18 +1515,18 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
               {[0,1,2,3,4].map(i=>{const p=rPt(i,sub[i],58);return<circle key={i} cx={p.x} cy={p.y} r="2.5" fill="#EC4899"/>;})}{[0,1,2,3,4].map(i=>{const p=rPt(i,idl[i],58);return<circle key={i} cx={p.x} cy={p.y} r="2.5" fill="#22D3EE"/>;})}{rlbls.map((l,i)=><text key={i} x={rLb(i).x} y={rLb(i).y} textAnchor="middle" fontSize="7" fill="#475569" dominantBaseline="central">{l}</text>)}
             </svg>
             <div style={{display:"flex",flexDirection:"column",gap:4,marginTop:6}}>
-              <div style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"#64748B"}}><div style={{width:14,height:2,background:"#EC4899",borderRadius:1}}/> จิตใต้สำนึก</div>
-              <div style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"#64748B"}}><div style={{width:14,height:2,background:"#22D3EE",borderRadius:1}}/> สเปคเสริมดวง</div>
+              <div style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"rgba(148,163,184,0.7)"}}><div style={{width:14,height:2,background:"#EC4899",borderRadius:1}}/> จิตใต้สำนึก</div>
+              <div style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"rgba(148,163,184,0.7)"}}><div style={{width:14,height:2,background:"#22D3EE",borderRadius:1}}/> สเปคเสริมดวง</div>
             </div>
           </div>
           <div style={{flex:1,paddingTop:4}}>
-            <div style={{background:"#FFF1F2",border:"1px solid #FECDD3",borderRadius:8,padding:"8px 10px",marginBottom:8}}><div style={{fontSize:9,fontWeight:700,color:"#BE185D",marginBottom:3}}>Your Subconscious (สีชมพู)</div><div style={{fontSize:9,color:"#374151",lineHeight:1.6}}>ต้องการความตื่นเต้นและอิสระสูง แต่อาจดึงดูดคนที่ไม่เสถียรทางอารมณ์</div></div>
-            <div style={{background:"#ECFEFF",border:"1px solid #A5F3FC",borderRadius:8,padding:"8px 10px"}}><div style={{fontSize:9,fontWeight:700,color:"#0891B2",marginBottom:3}}>Ideal Match (สีฟ้า)</div><div style={{fontSize:9,color:"#374151",lineHeight:1.6}}>คู่ที่เสริมดวงจริงคือคนที่มั่นคงทางอารมณ์ สื่อสารดี และเข้าใจอย่างลึกซึ้ง</div></div>
+            <div style={{background:"rgba(236,72,153,0.08)",border:"1px solid rgba(236,72,153,0.2)",borderRadius:10,padding:"8px 10px",marginBottom:8}}><div style={{fontSize:9,fontWeight:700,color:"#F9A8D4",marginBottom:3}}>Your Subconscious (สีชมพู)</div><div style={{fontSize:9,color:"rgba(203,213,225,0.8)",lineHeight:1.6}}>ต้องการความตื่นเต้นและอิสระสูง แต่อาจดึงดูดคนที่ไม่เสถียรทางอารมณ์</div></div>
+            <div style={{background:"rgba(8,145,178,0.08)",border:"1px solid rgba(103,232,249,0.2)",borderRadius:10,padding:"8px 10px"}}><div style={{fontSize:9,fontWeight:700,color:"#67E8F9",marginBottom:3}}>Ideal Match (สีฟ้า)</div><div style={{fontSize:9,color:"rgba(203,213,225,0.8)",lineHeight:1.6}}>คู่ที่เสริมดวงจริงคือคนที่มั่นคงทางอารมณ์ สื่อสารดี และเข้าใจอย่างลึกซึ้ง</div></div>
           </div>
         </div>
       </div>
       </>:<Spin t="กำลังโหลด..."/>}
-    </Card>;
+    </div>;
   })()}
 
   {/* Life Principle */}
@@ -1477,43 +1539,43 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const phases=calcDasha(bd);
     if(!phases||phases.length===0){
       return<div style={{padding:8,textAlign:"center"}}>
-        <div style={{fontSize:12,color:"#64748B",marginBottom:10}}>📅 ต้องระบุวันเกิดเพื่อคำนวณ Life Phase Map</div>
-        <button onClick={()=>setSc("profile")} style={{padding:"10px 24px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer"}}>✏️ ไปกรอกวันเกิด</button>
+        <div style={{fontSize:12,color:"rgba(148,163,184,0.7)",marginBottom:10}}>📅 ต้องระบุวันเกิดเพื่อคำนวณ Life Phase Map</div>
+        <button onClick={()=>setSc("profile")} className="rgb" style={{padding:"10px 24px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#7C3AED,#4F46E5)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",boxShadow:"0 0 18px rgba(124,58,237,0.35)"}}>✏️ ไปกรอกวันเกิด</button>
       </div>
     }
-    const current=phases.find(d=>d.isCurrent);return<>{current&&<Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1"}}><div style={{fontSize:14,fontWeight:800,color:"#4338CA",marginBottom:4}}>{current.icon} ตอนนี้คุณอยู่ในช่วง: {current.theme}</div><div style={{fontSize:11,color:"#64748B"}}>มหาทศา{current.p} (อายุ {current.startAge}–{current.endAge} ปี | พ.ศ.{current.startYear+543}–{current.endYear+543})</div><div style={{fontSize:12,color:"#374151",marginTop:4}}>{current.desc}</div><div style={{fontSize:11,color:"#059669",marginTop:4,background:"#ECFDF5",padding:"6px 8px",borderRadius:6}}>🎯 โฟกัส: {current.focus}</div><div style={{fontSize:11,color:"#374151",marginTop:6,background:"#FFF7ED",padding:"8px",borderRadius:6,lineHeight:1.7}}>{current.cheer}</div><div style={{fontSize:10,color:"#B45309",marginTop:4,background:"#FFFBEB",padding:"6px 8px",borderRadius:6,lineHeight:1.6}}>{current.warn}</div></Card>}{(()=>{const ns=natalPStr(bd);const pKey={"ศุกร์":"ve","อาทิตย์":"su","จันทร์":"mo","อังคาร":"ma","พฤหัส":"ju","เสาร์":"sa","พุธ":"me"};const getE=(p)=>{const k=pKey[p];return k&&ns[k]?Math.round(ns[k]*10):60};const getDig=(e)=>e>=80?"อุจจ์":e>=55?"ปกติ":"นิจ";const getDC=(e)=>e>=80?"#10B981":e>=55?"#6366F1":"#EF4444";const ads=current?calcAntardasha(current,current.startYear):[];const curAD=ads.find(a=>a.isCurrent);return<div style={{marginTop:8}}><div style={{fontSize:11,fontWeight:700,color:"#64748B",marginBottom:6}}>⚡ ทศาย่อย (Antardasha) — {current?.p}มหาทศา</div>{curAD&&<div style={{padding:"8px 10px",borderRadius:8,background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1",marginBottom:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>⭐ ทศาย่อยปัจจุบัน</div><div style={{fontSize:13,fontWeight:800,color:"#1E293B"}}>{curAD.icon} {curAD.p} — {curAD.theme}</div><div style={{fontSize:9,color:"#64748B",marginBottom:4}}>พ.ศ.{Math.round(curAD.startYear+543)}–{Math.round(curAD.endYear+543)}</div><div style={{display:"flex",alignItems:"center",gap:6,marginTop:2}}><span style={{fontSize:9,color:getDC(getE(curAD.p)),fontWeight:700,minWidth:28}}>{getDig(getE(curAD.p))}</span><div style={{flex:1,height:4,borderRadius:2,background:"#E2E8F0"}}><div style={{height:4,borderRadius:2,background:getDC(getE(curAD.p)),width:getE(curAD.p)+"%"}}/></div><span style={{fontSize:9,fontWeight:700,color:getDC(getE(curAD.p))}}>{getE(curAD.p)}%</span></div><div style={{fontSize:11,color:"#374151",marginTop:6,lineHeight:1.6}}>{curAD.cheer}</div></div>}{ads.map((a,i)=>{const e=getE(a.p);const dc=getDC(e);return<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 8px",borderRadius:8,marginBottom:2,background:a.isCurrent?"linear-gradient(135deg,#EEF2FF,#F5F3FF)":a.isPast?"#F8FAFC":"#FAFBFF",border:a.isCurrent?"2px solid #6366F1":a.isPast?"1px solid #F1F5F9":"1px solid #E8EEFF",opacity:a.isPast?0.65:1}}><span style={{fontSize:14}}>{a.icon}</span><div style={{flex:1}}><div style={{fontSize:11,fontWeight:a.isCurrent?700:500,color:a.isCurrent?"#4338CA":a.isPast?"#94A3B8":"#374151"}}>{a.p} — {a.theme}{a.isPast&&<span style={{fontSize:9,color:"#94A3B8",marginLeft:4}}>ผ่านมาแล้ว</span>}</div><div style={{display:"flex",alignItems:"center",gap:4,marginTop:2}}><div style={{width:36,height:3,borderRadius:2,background:"#E2E8F0"}}><div style={{height:3,borderRadius:2,background:dc,width:e+"%"}}/></div><span style={{fontSize:8,color:dc,fontWeight:600}}>{getDig(e)}</span></div></div><div style={{textAlign:"right",minWidth:60}}><div style={{fontSize:9,fontWeight:600,color:a.isCurrent?"#4338CA":"#94A3B8"}}>พ.ศ.{Math.round(a.startYear+543)}</div><div style={{fontSize:9,color:"#94A3B8"}}>–{Math.round(a.endYear+543)}</div></div></div>})}</div>})()}<div style={{marginTop:8,padding:8,background:"#F5F3FF",borderRadius:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>🔮 Vedic Dasha System</div><div style={{fontSize:9,color:"#64748B"}}>คำนวณจากนักษัตรเกิด ใช้ระบบวิมโศตตรีทศา 120 ปี ตามโหราศาสตร์พระเวท</div></div></>}catch(e){return<div style={{fontSize:11,color:"#94A3B8"}}>ไม่สามารถคำนวณ Dasha ได้ กรุณาตรวจสอบวันเกิด</div>}})()}</Sec>}
+    const current=phases.find(d=>d.isCurrent);return<>{current&&<div className="rg" style={{background:"linear-gradient(135deg,rgba(79,70,229,0.15),rgba(124,58,237,0.1))",border:"2px solid rgba(139,92,246,0.4)"}}><div style={{fontSize:14,fontWeight:800,color:"#C4B5FD",marginBottom:4}}>{current.icon} ตอนนี้คุณอยู่ในช่วง: {current.theme}</div><div style={{fontSize:11,color:"rgba(148,163,184,0.7)"}}>มหาทศา{current.p} (อายุ {current.startAge}–{current.endAge} ปี | พ.ศ.{current.startYear+543}–{current.endYear+543})</div><div style={{fontSize:12,color:"rgba(203,213,225,0.9)",marginTop:4}}>{current.desc}</div><div style={{fontSize:11,color:"#34D399",marginTop:4,background:"rgba(16,185,129,0.08)",padding:"6px 8px",borderRadius:8,border:"1px solid rgba(52,211,153,0.15)"}}>🎯 โฟกัส: {current.focus}</div><div style={{fontSize:11,color:"rgba(203,213,225,0.85)",marginTop:6,background:"rgba(245,158,11,0.07)",padding:"8px",borderRadius:8,border:"1px solid rgba(245,158,11,0.15)",lineHeight:1.7}}>{current.cheer}</div><div style={{fontSize:10,color:"rgba(252,165,165,0.8)",marginTop:4,background:"rgba(239,68,68,0.06)",padding:"6px 8px",borderRadius:8,border:"1px solid rgba(252,165,165,0.1)",lineHeight:1.6}}>{current.warn}</div></div>}{(()=>{const ns=natalPStr(bd);const pKey={"ศุกร์":"ve","อาทิตย์":"su","จันทร์":"mo","อังคาร":"ma","พฤหัส":"ju","เสาร์":"sa","พุธ":"me"};const getE=(p)=>{const k=pKey[p];return k&&ns[k]?Math.round(ns[k]*10):60};const getDig=(e)=>e>=80?"อุจจ์":e>=55?"ปกติ":"นิจ";const getDC=(e)=>e>=80?"#10B981":e>=55?"#6366F1":"#EF4444";const ads=current?calcAntardasha(current,current.startYear):[];const curAD=ads.find(a=>a.isCurrent);return<div style={{marginTop:8}}><div style={{fontSize:11,fontWeight:700,color:"rgba(148,163,184,0.7)",marginBottom:6}}>⚡ ทศาย่อย (Antardasha) — {current?.p}มหาทศา</div>{curAD&&<div style={{padding:"8px 10px",borderRadius:10,background:"rgba(79,70,229,0.1)",border:"2px solid rgba(139,92,246,0.35)",marginBottom:8}}><div style={{fontSize:10,fontWeight:700,color:"#A78BFA",marginBottom:2}}>⭐ ทศาย่อยปัจจุบัน</div><div style={{fontSize:13,fontWeight:800,color:"#E2E8F0"}}>{curAD.icon} {curAD.p} — {curAD.theme}</div><div style={{fontSize:9,color:"rgba(148,163,184,0.6)",marginBottom:4}}>พ.ศ.{Math.round(curAD.startYear+543)}–{Math.round(curAD.endYear+543)}</div><div style={{display:"flex",alignItems:"center",gap:6,marginTop:2}}><span style={{fontSize:9,color:getDC(getE(curAD.p)),fontWeight:700,minWidth:28}}>{getDig(getE(curAD.p))}</span><div style={{flex:1,height:4,borderRadius:2,background:"rgba(255,255,255,0.08)"}}><div style={{height:4,borderRadius:2,background:getDC(getE(curAD.p)),width:getE(curAD.p)+"%"}}/></div><span style={{fontSize:9,fontWeight:700,color:getDC(getE(curAD.p))}}>{getE(curAD.p)}%</span></div><div style={{fontSize:11,color:"rgba(203,213,225,0.85)",marginTop:6,lineHeight:1.6}}>{curAD.cheer}</div></div>}{ads.map((a,i)=>{const e=getE(a.p);const dc=getDC(e);return<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 8px",borderRadius:10,marginBottom:2,background:a.isCurrent?"rgba(79,70,229,0.12)":a.isPast?"rgba(255,255,255,0.02)":"rgba(255,255,255,0.03)",border:a.isCurrent?"2px solid rgba(139,92,246,0.4)":a.isPast?"1px solid rgba(255,255,255,0.04)":"1px solid rgba(255,255,255,0.06)",opacity:a.isPast?0.5:1}}><span style={{fontSize:14}}>{a.icon}</span><div style={{flex:1}}><div style={{fontSize:11,fontWeight:a.isCurrent?700:500,color:a.isCurrent?"#A78BFA":a.isPast?"rgba(148,163,184,0.4)":"rgba(203,213,225,0.8)"}}>{a.p} — {a.theme}{a.isPast&&<span style={{fontSize:9,color:"rgba(148,163,184,0.4)",marginLeft:4}}>ผ่านมาแล้ว</span>}</div><div style={{display:"flex",alignItems:"center",gap:4,marginTop:2}}><div style={{width:36,height:3,borderRadius:2,background:"rgba(255,255,255,0.07)"}}><div style={{height:3,borderRadius:2,background:dc,width:e+"%"}}/></div><span style={{fontSize:8,color:dc,fontWeight:600}}>{getDig(e)}</span></div></div><div style={{textAlign:"right",minWidth:60}}><div style={{fontSize:9,fontWeight:600,color:a.isCurrent?"#A78BFA":"rgba(148,163,184,0.45)"}}>พ.ศ.{Math.round(a.startYear+543)}</div><div style={{fontSize:9,color:"rgba(148,163,184,0.35)"}}>–{Math.round(a.endYear+543)}</div></div></div>})}</div>})()}<div style={{marginTop:8,padding:"8px 10px",background:"rgba(79,70,229,0.07)",borderRadius:10,border:"1px solid rgba(139,92,246,0.15)"}}><div style={{fontSize:10,fontWeight:700,color:"#A78BFA",marginBottom:2}}>🔮 Vedic Dasha System</div><div style={{fontSize:9,color:"rgba(148,163,184,0.6)"}}>คำนวณจากนักษัตรเกิด ใช้ระบบวิมโศตตรีทศา 120 ปี ตามโหราศาสตร์พระเวท</div></div></>}catch(e){return<div style={{fontSize:11,color:"rgba(148,163,184,0.5)"}}>ไม่สามารถคำนวณ Dasha ได้ กรุณาตรวจสอบวันเกิด</div>}})()}</Sec>}
 
   {/* Locked preview: Weekly */}
-  {!has("weekly")?<Locked planNeeded="deep" title="Do & Don't สัปดาห์นี้" onUpgrade={tryUpgrade}><div style={{marginBottom:8}}><div style={{fontSize:12,fontWeight:700,color:"#10B981",marginBottom:4}}>✅ ควรทำ</div><div style={{padding:"6px 10px",borderRadius:6,background:"#ECFDF5",fontSize:11,marginBottom:3}}>ใช้จุดแข็งที่ดาวหนุนให้เต็มที่</div><div style={{padding:"6px 10px",borderRadius:6,background:"#ECFDF5",fontSize:11,marginBottom:3}}>ฝึกสังเกตอารมณ์ตัวเอง</div></div><div><div style={{fontSize:12,fontWeight:700,color:"#EF4444",marginBottom:4}}>❌ ควรเลี่ยง</div><div style={{padding:"6px 10px",borderRadius:6,background:"#FFF1F2",fontSize:11,marginBottom:3}}>หลีกเลี่ยงการตัดสินใจเร็วเกินไป</div><div style={{padding:"6px 10px",borderRadius:6,background:"#FFF1F2",fontSize:11}}>อย่ารับงานเกินกำลัง</div></div></Locked>:<Sec fKey="weekly" title="Do & Don't สัปดาห์นี้" icon="📋">{aiL.weekly?<Spin/>:ai.weekly&&typeof ai.weekly==="object"?<><div style={{fontSize:11,fontWeight:700,color:"#10B981",marginBottom:3}}>✅ ควรทำ</div>{(ai.weekly.do||[]).map((t,i)=><div key={i} style={{padding:"5px 8px",borderRadius:6,background:"#ECFDF5",border:"1px solid #A7F3D0",fontSize:11,marginBottom:2}}>{t}</div>)}<div style={{fontSize:11,fontWeight:700,color:"#EF4444",marginBottom:3,marginTop:6}}>❌ ควรเลี่ยง</div>{(ai.weekly.dont||[]).map((t,i)=><div key={i} style={{padding:"5px 8px",borderRadius:6,background:"#FFF1F2",border:"1px solid #FECDD3",fontSize:11,marginBottom:2}}>{t}</div>)}</>:<Spin/>}</Sec>}
+  {!has("weekly")?<Locked planNeeded="deep" title="Do & Don't สัปดาห์นี้" onUpgrade={tryUpgrade}><div style={{marginBottom:8}}><div style={{fontSize:12,fontWeight:700,color:"#10B981",marginBottom:4}}>✅ ควรทำ</div><div style={{padding:"6px 10px",borderRadius:6,background:"#ECFDF5",fontSize:11,marginBottom:3}}>ใช้จุดแข็งที่ดาวหนุนให้เต็มที่</div><div style={{padding:"6px 10px",borderRadius:6,background:"#ECFDF5",fontSize:11,marginBottom:3}}>ฝึกสังเกตอารมณ์ตัวเอง</div></div><div><div style={{fontSize:12,fontWeight:700,color:"#EF4444",marginBottom:4}}>❌ ควรเลี่ยง</div><div style={{padding:"6px 10px",borderRadius:6,background:"#FFF1F2",fontSize:11,marginBottom:3}}>หลีกเลี่ยงการตัดสินใจเร็วเกินไป</div><div style={{padding:"6px 10px",borderRadius:6,background:"#FFF1F2",fontSize:11}}>อย่ารับงานเกินกำลัง</div></div></Locked>:<Sec fKey="weekly" title="Do & Don't สัปดาห์นี้" icon="📋">{aiL.weekly?<Spin/>:ai.weekly&&typeof ai.weekly==="object"?<><div style={{fontSize:11,fontWeight:700,color:"#34D399",marginBottom:6}}>✅ ควรทำ</div>{(ai.weekly.do||[]).map((t,i)=><div key={i} style={{padding:"7px 10px",borderRadius:10,background:"rgba(16,185,129,0.07)",border:"1px solid rgba(52,211,153,0.18)",fontSize:11,marginBottom:4,color:"rgba(203,213,225,0.9)"}}>{t}</div>)}<div style={{fontSize:11,fontWeight:700,color:"#FCA5A5",marginBottom:6,marginTop:10}}>❌ ควรเลี่ยง</div>{(ai.weekly.dont||[]).map((t,i)=><div key={i} style={{padding:"7px 10px",borderRadius:10,background:"rgba(239,68,68,0.06)",border:"1px solid rgba(252,165,165,0.15)",fontSize:11,marginBottom:4,color:"rgba(203,213,225,0.9)"}}>{t}</div>)}</>:<Spin/>}</Sec>}
 
   {/* Locked preview: Energy */}
-  {!has("energy")?<Locked planNeeded="deep" title="7-Day Energy Forecast" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>🌙 พลังงาน 7 วัน — Moon + Mars + Day Lord</div>{["จันทร์ — 🌟 สดใส-เริ่มใหม่","อังคาร — 😊 สงบมั่นคง","พุธ — 🔥 กระตือรือร้น","พฤหัสบดี — 📚 ปัญญาเปิด","ศุกร์ — 💎 ผ่อนคลาย","เสาร์ — ⚙️ ต้องใช้วินัย","อาทิตย์ — ☀️ มีพลัง"].map((d,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 8px",borderRadius:6,background:i%2===0?"#F8FAFC":"#fff",fontSize:11,marginBottom:2}}><span>{d.split("—")[0]}</span><span style={{fontWeight:700}}>{d.split("—")[1]}</span></div>)}<div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>{['💼 งาน','💰 เงิน','❤️ ความรัก','🏃 สุขภาพ'].map((t,i)=><span key={i} style={{fontSize:10,padding:"2px 8px",borderRadius:8,background:"#EEF2FF",color:"#4338CA",fontWeight:600}}>{t}</span>)}</div><div style={{fontSize:10,color:"#6366F1",marginTop:6}}>🔮 คำนวณจาก Transit จันทร์+อังคาร+ศุกร์+พฤหัส+เจ้าวัน Vedic</div></Locked>:<Sec fKey="energy" title="7-Day Energy: รู้ก่อนรุ่ง พุ่งก่อนใคร" icon="🌙">{aiL.energy||!ai.energy?<Spin/>:Array.isArray(ai.energy)?<>{ai.energy.map((d,i)=>{const eColor=d.energy>=75?"#059669":d.energy>=55?"#6366F1":"#DC2626";const eBg=d.energy>=75?"#ECFDF5":d.energy>=55?"#EEF2FF":"#FFF1F2";return<div key={i} style={{padding:"10px 12px",borderRadius:10,marginBottom:4,background:i===0?"linear-gradient(135deg,#EEF2FF,#F5F3FF)":"#F8FAFC",border:i===0?"2px solid #6366F1":"1px solid #F1F5F9",boxShadow:i===0?"0 2px 8px rgba(99,102,241,0.08)":"none"}}>
+  {!has("energy")?<Locked planNeeded="deep" title="7-Day Energy Forecast" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>🌙 พลังงาน 7 วัน — Moon + Mars + Day Lord</div>{["จันทร์ — 🌟 สดใส-เริ่มใหม่","อังคาร — 😊 สงบมั่นคง","พุธ — 🔥 กระตือรือร้น","พฤหัสบดี — 📚 ปัญญาเปิด","ศุกร์ — 💎 ผ่อนคลาย","เสาร์ — ⚙️ ต้องใช้วินัย","อาทิตย์ — ☀️ มีพลัง"].map((d,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 8px",borderRadius:6,background:i%2===0?"#F8FAFC":"#fff",fontSize:11,marginBottom:2}}><span>{d.split("—")[0]}</span><span style={{fontWeight:700}}>{d.split("—")[1]}</span></div>)}<div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>{['💼 งาน','💰 เงิน','❤️ ความรัก','🏃 สุขภาพ'].map((t,i)=><span key={i} style={{fontSize:10,padding:"2px 8px",borderRadius:8,background:"#EEF2FF",color:"#4338CA",fontWeight:600}}>{t}</span>)}</div><div style={{fontSize:10,color:"#6366F1",marginTop:6}}>🔮 คำนวณจาก Transit จันทร์+อังคาร+ศุกร์+พฤหัส+เจ้าวัน Vedic</div></Locked>:<Sec fKey="energy" title="7-Day Energy: รู้ก่อนรุ่ง พุ่งก่อนใคร" icon="🌙">{aiL.energy||!ai.energy?<Spin/>:Array.isArray(ai.energy)?<>{ai.energy.map((d,i)=>{const eColor=d.energy>=75?"#059669":d.energy>=55?"#6366F1":"#DC2626";const eBg=d.energy>=75?"#ECFDF5":d.energy>=55?"#EEF2FF":"#FFF1F2";return<div key={i} style={{padding:"10px 12px",borderRadius:12,marginBottom:6,background:i===0?"rgba(79,70,229,0.12)":"rgba(255,255,255,0.03)",border:i===0?"2px solid rgba(139,92,246,0.4)":"1px solid rgba(255,255,255,0.06)",boxShadow:i===0?"0 0 20px rgba(124,58,237,0.15)":"none"}}>
   {/* Day header */}
   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
     <div style={{display:"flex",alignItems:"center",gap:6}}>
-      {i===0&&<span style={{fontSize:9,fontWeight:700,color:"#fff",background:"#6366F1",padding:"1px 6px",borderRadius:8}}>วันนี้</span>}
-      <span style={{fontSize:13,fontWeight:700,color:"#1E293B"}}>{d.day}</span>
+      {i===0&&<span style={{fontSize:9,fontWeight:700,color:"#fff",background:"#7C3AED",padding:"1px 8px",borderRadius:20,boxShadow:"0 0 10px rgba(124,58,237,0.5)"}}>วันนี้</span>}
+      <span style={{fontSize:13,fontWeight:700,color:"#E2E8F0"}}>{d.day}</span>
     </div>
     <div style={{display:"flex",alignItems:"center",gap:6}}>
-      <span style={{fontSize:11,fontWeight:800,color:eColor,background:eBg,padding:"2px 8px",borderRadius:8}}>{d.energy}%</span>
-      {d.featured&&<span style={{fontSize:9,fontWeight:700,color:d.featuredGood?"#059669":"#DC2626",background:d.featuredGood?"#ECFDF5":"#FFF1F2",padding:"1px 6px",borderRadius:8}}>{d.featured}</span>}
+      <span style={{fontSize:11,fontWeight:800,color:eColor,background:eBg+"18",padding:"2px 8px",borderRadius:8,border:`1px solid ${eColor}40`}}>{d.energy}%</span>
+      {d.featured&&<span style={{fontSize:9,fontWeight:700,color:d.featuredGood?"#34D399":"#FCA5A5",background:d.featuredGood?"rgba(16,185,129,0.1)":"rgba(239,68,68,0.08)",padding:"1px 6px",borderRadius:20,border:`1px solid ${d.featuredGood?"rgba(52,211,153,0.25)":"rgba(252,165,165,0.2)"}`}}>{d.featured}</span>}
     </div>
   </div>
   {/* Special event warning */}
-  {d.specialEvent&&<div style={{padding:"6px 10px",borderRadius:8,marginBottom:6,background:d.specialEvent.type==='danger'?"#FFF1F2":"#ECFDF5",border:`1px solid ${d.specialEvent.type==='danger'?"#FECDD3":"#A7F3D0"}`,fontSize:10,fontWeight:600,color:d.specialEvent.type==='danger'?"#B91C1C":"#059669",lineHeight:1.5}}>{d.specialEvent.text}</div>}
+  {d.specialEvent&&<div style={{padding:"6px 10px",borderRadius:8,marginBottom:6,background:d.specialEvent.type==='danger'?"rgba(239,68,68,0.07)":"rgba(16,185,129,0.07)",border:`1px solid ${d.specialEvent.type==='danger'?"rgba(252,165,165,0.2)":"rgba(52,211,153,0.2)"}`,fontSize:10,fontWeight:600,color:d.specialEvent.type==='danger'?"#FCA5A5":"#34D399",lineHeight:1.5}}>{d.specialEvent.text}</div>}
   {/* Mood */}
-  <div style={{fontSize:12,fontWeight:600,color:"#374151",marginBottom:6}}>{d.mood}</div>
+  <div style={{fontSize:12,fontWeight:600,color:"rgba(203,213,225,0.85)",marginBottom:6}}>{d.mood}</div>
   {/* Domain breakdown */}
   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4,marginBottom:6}}>
-    {[{icon:'💼',label:'งาน',text:d.work},{icon:'💰',label:'เงิน',text:d.money},{icon:'❤️',label:'ความรัก',text:d.love},{icon:'🏃',label:'สุขภาพ',text:d.health}].map(({icon,label,text},di)=>text?<div key={di} style={{background:"#fff",borderRadius:8,padding:"5px 8px",border:"1px solid #F1F5F9"}}>
-      <div style={{fontSize:9,fontWeight:700,color:"#64748B",marginBottom:2}}>{icon} {label}</div>
-      <div style={{fontSize:10,color:"#374151",lineHeight:1.4}}>{text}</div>
+    {[{icon:'💼',label:'งาน',text:d.work},{icon:'💰',label:'เงิน',text:d.money},{icon:'❤️',label:'ความรัก',text:d.love},{icon:'🏃',label:'สุขภาพ',text:d.health}].map(({icon,label,text},di)=>text?<div key={di} style={{background:"rgba(8,10,30,0.45)",borderRadius:8,padding:"5px 8px",border:"1px solid rgba(255,255,255,0.06)"}}>
+      <div style={{fontSize:9,fontWeight:700,color:"rgba(148,163,184,0.6)",marginBottom:2}}>{icon} {label}</div>
+      <div style={{fontSize:10,color:"rgba(203,213,225,0.8)",lineHeight:1.4}}>{text}</div>
     </div>:null)}
   </div>
   {/* Transit & tip */}
-  {d.goodFor&&<div style={{fontSize:10,color:"#059669",background:"#ECFDF5",borderRadius:6,padding:"3px 8px",marginBottom:3}}>✅ เหมาะสำหรับ: {d.goodFor}</div>}
-  {d.tip&&<div style={{fontSize:10,color:"#374151",background:"#fff",borderRadius:6,padding:"3px 8px",border:"1px solid #F1F5F9"}}>💡 {d.tip}</div>}
-</div>})}<div style={{marginTop:6,padding:8,background:"#F5F3FF",borderRadius:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>🔮 Vedic Jyotish พระเวท — 5 ชั้น</div><div style={{fontSize:9,color:"#64748B"}}>จันทร์(40%) + อังคาร(25%) + เจ้าวัน(35%) + ศุกร์ + พฤหัส · วิเคราะห์งาน เงิน ความรัก สุขภาพ รายวัน</div></div></>:<Spin/>}</Sec>}
+  {d.goodFor&&<div style={{fontSize:10,color:"#34D399",background:"rgba(16,185,129,0.07)",borderRadius:8,padding:"3px 8px",marginBottom:3,border:"1px solid rgba(52,211,153,0.15)"}}>✅ เหมาะสำหรับ: {d.goodFor}</div>}
+  {d.tip&&<div style={{fontSize:10,color:"rgba(203,213,225,0.75)",background:"rgba(255,255,255,0.03)",borderRadius:8,padding:"3px 8px",border:"1px solid rgba(255,255,255,0.05)"}}>💡 {d.tip}</div>}
+</div>})}<div style={{marginTop:8,padding:"8px 10px",background:"rgba(79,70,229,0.07)",borderRadius:10,border:"1px solid rgba(139,92,246,0.15)"}}><div style={{fontSize:10,fontWeight:700,color:"#A78BFA",marginBottom:2}}>🔮 Vedic Jyotish พระเวท — 5 ชั้น</div><div style={{fontSize:9,color:"rgba(148,163,184,0.6)"}}>จันทร์(40%) + อังคาร(25%) + เจ้าวัน(35%) + ศุกร์ + พฤหัส · วิเคราะห์งาน เงิน ความรัก สุขภาพ รายวัน</div></div></>:<Spin/>}</Sec>}
 
   {/* Career Timeline */}
   {!has("timeline")?<Locked planNeeded="all" title="Dashboard กราฟชีวิตการงาน: รู้ก่อนรุ่ง พุ่งก่อนใคร" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>📅 กราฟชีวิตการงานรายเดือน — โหราศาสตร์ไทย × จิตวิทยา</div><div style={{display:"flex",gap:4,marginBottom:6,flexWrap:"wrap"}}>{['🌟 เดือนทอง ×3','⚠️ เดือนระวัง ×2','💼 งานเสริม ×4'].map((t,i)=><span key={i} style={{fontSize:10,padding:"3px 8px",borderRadius:8,background:i===0?"#FFF8E1":i===1?"#FFF1F2":"#E4EEFF",fontWeight:600,color:i===0?"#C88A10":i===1?"#C04040":"#3A7AC0"}}>{t}</span>)}</div>{['ม.ค. 🌟 เดือนแห่งโอกาส','ก.พ. ⚠️ Saturn กดทับ','มี.ค. 💼 งานเสริมเข้ามา'].map((d,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 8px",borderRadius:6,background:"#F8FAFC",marginBottom:2,fontSize:11}}><span>{d}</span><span style={{fontSize:10}}>⭐⭐⭐{i===0?"⭐⭐":"☆☆"}</span></div>)}<div style={{fontSize:10,color:"#7B6FA0",marginTop:6}}>🔮 Golden Days + Black Days + คำแนะนำจิตวิทยาเฉพาะดวงคุณ</div></Locked>:
@@ -1530,67 +1592,67 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const typeBorder={golden:'#F5A623',good:'#4CAF7D',danger:'#E05C5C',side:'#5C9BE0',neutral:'#C0B8D0'};
     return<div>
     {/* Year label */}
-    <div style={{textAlign:"center",marginBottom:10}}><span style={{fontSize:16,fontWeight:700,color:"#1E293B",letterSpacing:1}}>พ.ศ. {year}</span><div style={{fontSize:11,color:"#8A8090"}}>กราฟชีวิตการงานรายเดือน · โหราศาสตร์ไทย × จิตวิทยา</div></div>
+    <div style={{textAlign:"center",marginBottom:10}}><span style={{fontSize:16,fontWeight:700,color:"#E2E8F0",letterSpacing:1}}>พ.ศ. {year}</span><div style={{fontSize:11,color:"rgba(148,163,184,0.6)"}}>กราฟชีวิตการงานรายเดือน · โหราศาสตร์ไทย × จิตวิทยา</div></div>
 
     {/* Summary pills */}
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:12}}>
-      <div style={{background:"#FFF8E1",borderRadius:10,padding:"8px 6px",textAlign:"center"}}><div style={{fontSize:16}}>⭐</div><div style={{fontSize:18,fontWeight:700,color:"#C88A10"}}>{goldenC}</div><div style={{fontSize:9,color:"#8A8090",fontWeight:500}}>เดือนทอง</div></div>
-      <div style={{background:"#FFF1F2",borderRadius:10,padding:"8px 6px",textAlign:"center"}}><div style={{fontSize:16}}>⚠️</div><div style={{fontSize:18,fontWeight:700,color:"#C04040"}}>{dangerC}</div><div style={{fontSize:9,color:"#8A8090",fontWeight:500}}>เดือนระวัง</div></div>
-      <div style={{background:"#E4EEFF",borderRadius:10,padding:"8px 6px",textAlign:"center"}}><div style={{fontSize:16}}>💼</div><div style={{fontSize:18,fontWeight:700,color:"#3A7AC0"}}>{sideC}</div><div style={{fontSize:9,color:"#8A8090",fontWeight:500}}>งานเสริม</div></div>
+      <div style={{background:"rgba(245,166,35,0.1)",borderRadius:12,padding:"8px 6px",textAlign:"center",border:"1px solid rgba(245,166,35,0.2)"}}><div style={{fontSize:16}}>⭐</div><div style={{fontSize:18,fontWeight:700,color:"#FCD34D"}}>{goldenC}</div><div style={{fontSize:9,color:"rgba(148,163,184,0.6)",fontWeight:500}}>เดือนทอง</div></div>
+      <div style={{background:"rgba(239,68,68,0.08)",borderRadius:12,padding:"8px 6px",textAlign:"center",border:"1px solid rgba(252,165,165,0.15)"}}><div style={{fontSize:16}}>⚠️</div><div style={{fontSize:18,fontWeight:700,color:"#FCA5A5"}}>{dangerC}</div><div style={{fontSize:9,color:"rgba(148,163,184,0.6)",fontWeight:500}}>เดือนระวัง</div></div>
+      <div style={{background:"rgba(59,130,246,0.08)",borderRadius:12,padding:"8px 6px",textAlign:"center",border:"1px solid rgba(147,197,253,0.15)"}}><div style={{fontSize:16}}>💼</div><div style={{fontSize:18,fontWeight:700,color:"#93C5FD"}}>{sideC}</div><div style={{fontSize:9,color:"rgba(148,163,184,0.6)",fontWeight:500}}>งานเสริม</div></div>
     </div>
 
     {/* Energy Chart (SVG) */}
-    <div style={{background:"#fff",borderRadius:12,padding:"12px 8px",marginBottom:12,border:"1px solid #F1F5F9"}}>
-      <div style={{fontSize:12,fontWeight:700,color:"#1E293B",marginBottom:2}}>📈 กราฟพลังงานการงาน</div>
-      <div style={{fontSize:10,color:"#8A8090",marginBottom:8}}>แตะที่เดือนเพื่อดูรายละเอียด</div>
+    <div style={{background:"rgba(8,10,30,0.5)",borderRadius:12,padding:"12px 8px",marginBottom:12,border:"1px solid rgba(255,255,255,0.06)"}}>
+      <div style={{fontSize:12,fontWeight:700,color:"#CBD5E1",marginBottom:2}}>📈 กราฟพลังงานการงาน</div>
+      <div style={{fontSize:10,color:"rgba(148,163,184,0.5)",marginBottom:8}}>แตะที่เดือนเพื่อดูรายละเอียด</div>
       <svg viewBox="0 0 480 100" style={{width:"100%",height:80}} preserveAspectRatio="none">
-        <line x1="0" y1="25" x2="480" y2="25" stroke="#F0ECF8" strokeWidth="0.5"/>
-        <line x1="0" y1="50" x2="480" y2="50" stroke="#F0ECF8" strokeWidth="0.8"/>
-        <line x1="0" y1="75" x2="480" y2="75" stroke="#F0ECF8" strokeWidth="0.5"/>
+        <line x1="0" y1="25" x2="480" y2="25" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5"/>
+        <line x1="0" y1="50" x2="480" y2="50" stroke="rgba(255,255,255,0.08)" strokeWidth="0.8"/>
+        <line x1="0" y1="75" x2="480" y2="75" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5"/>
         {(()=>{
           const pts=months.map((m,i)=>({x:20+i*(440/11),y:10+(1-m.energy/100)*80}));
           const pathD=pts.map((p,i)=>i===0?`M ${p.x},${p.y}`:`L ${p.x},${p.y}`).join(' ');
           const areaD=pathD+` L ${pts[11].x},95 L ${pts[0].x},95 Z`;
           return<>
-            <defs><linearGradient id="tlAreaG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#7B6FA0" stopOpacity="0.15"/><stop offset="100%" stopColor="#7B6FA0" stopOpacity="0.01"/></linearGradient></defs>
+            <defs><linearGradient id="tlAreaG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#7C3AED" stopOpacity="0.25"/><stop offset="100%" stopColor="#7C3AED" stopOpacity="0.01"/></linearGradient></defs>
             <path d={areaD} fill="url(#tlAreaG)"/>
-            <path d={pathD} fill="none" stroke="#7B6FA0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            {pts.map((p,i)=><circle key={i} cx={p.x} cy={p.y} r={months[i].stars===5?5:3.5} fill={typeColors[months[i].type]} stroke="#fff" strokeWidth="1.5" style={{cursor:"pointer"}}/>)}
+            <path d={pathD} fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            {pts.map((p,i)=><circle key={i} cx={p.x} cy={p.y} r={months[i].stars===5?5:3.5} fill={typeColors[months[i].type]} stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" style={{cursor:"pointer"}}/>)}
           </>})()}
       </svg>
       <div style={{display:"grid",gridTemplateColumns:"repeat(12,1fr)",textAlign:"center",marginTop:4}}>
-        {months.map((m,i)=><span key={i} style={{fontSize:8,color:"#B0A8C0",fontWeight:500}}>{m.monthShort}</span>)}
+        {months.map((m,i)=><span key={i} style={{fontSize:8,color:"rgba(148,163,184,0.45)",fontWeight:500}}>{m.monthShort}</span>)}
       </div>
       <div style={{display:"flex",gap:10,marginTop:8,flexWrap:"wrap"}}>
-        {[['#F5A623','เดือนทอง'],['#4CAF7D','เดือนดี'],['#E05C5C','ระวัง'],['#5C9BE0','งานเสริม']].map(([c,l],i)=><div key={i} style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#8A8090"}}><div style={{width:6,height:6,borderRadius:"50%",background:c}}/>{l}</div>)}
+        {[['#F5A623','เดือนทอง'],['#4CAF7D','เดือนดี'],['#E05C5C','ระวัง'],['#5C9BE0','งานเสริม']].map(([c,l],i)=><div key={i} style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"rgba(148,163,184,0.55)"}}><div style={{width:6,height:6,borderRadius:"50%",background:c}}/>{l}</div>)}
       </div>
     </div>
 
     {/* Month cards */}
     <div style={{marginBottom:10}}>
-      <div style={{fontSize:12,fontWeight:700,color:"#1E293B",marginBottom:4}}>🗓️ ทุกเดือนในปีนี้</div>
-      <div style={{fontSize:10,color:"#8A8090",background:"#F5F3FF",borderRadius:8,padding:"6px 10px",display:"flex",alignItems:"center",gap:6}}>
+      <div style={{fontSize:12,fontWeight:700,color:"#CBD5E1",marginBottom:4}}>🗓️ ทุกเดือนในปีนี้</div>
+      <div style={{fontSize:10,color:"rgba(148,163,184,0.6)",background:"rgba(79,70,229,0.07)",borderRadius:10,padding:"6px 10px",display:"flex",alignItems:"center",gap:6,border:"1px solid rgba(139,92,246,0.15)"}}>
         <span style={{fontSize:13}}>👆</span>
         <span>แตะที่การ์ดรายเดือนเพื่อดูรายละเอียด — งาน เงิน ความรัก สุขภาพ + คำแนะนำตัดสินใจ<br/>
-        <span style={{color:"#6366F1",fontWeight:600}}>ม.ค. เปิดไว้ให้ดูตัวอย่าง · แตะอีกครั้งเพื่อปิด</span></span>
+        <span style={{color:"#A78BFA",fontWeight:600}}>ม.ค. เปิดไว้ให้ดูตัวอย่าง · แตะอีกครั้งเพื่อปิด</span></span>
       </div>
     </div>
     {months.map((m,i)=><TimelineMonth key={i} m={m} i={i} typeColors={typeColors} typeBg={typeBg} typeBorder={typeBorder} defaultOpen={i===0}/>)}
 
-    <div style={{marginTop:8,padding:8,background:"#F5F3FF",borderRadius:8}}>
-      <div style={{fontSize:10,fontWeight:700,color:"#7B6FA0",marginBottom:2}}>🔮 Vedic Jyotish พระเวท × โหราศาสตร์ไทย</div>
-      <div style={{fontSize:9,color:"#64748B"}}>คำนวณจากราศีเกิด Sidereal + มหาทศา Dasha + ดาวจร 8 ดวง + เรือน 12 + สภาพดาว (อุจจ์/นิจ/เกษตร) · วิเคราะห์งาน เงิน ความรัก สุขภาพ รายเดือน</div>
+    <div style={{marginTop:8,padding:"8px 10px",background:"rgba(79,70,229,0.07)",borderRadius:10,border:"1px solid rgba(139,92,246,0.15)"}}>
+      <div style={{fontSize:10,fontWeight:700,color:"#A78BFA",marginBottom:2}}>🔮 Vedic Jyotish พระเวท × โหราศาสตร์ไทย</div>
+      <div style={{fontSize:9,color:"rgba(148,163,184,0.6)"}}>คำนวณจากราศีเกิด Sidereal + มหาทศา Dasha + ดาวจร 8 ดวง + เรือน 12 + สภาพดาว (อุจจ์/นิจ/เกษตร) · วิเคราะห์งาน เงิน ความรัก สุขภาพ รายเดือน</div>
     </div>
     </div>})()}</Sec>}
 
   {/* Locked preview: Job */}
-  {!has("job")?<Locked planNeeded="all" title="Job Matching AI" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>💼 AI แนะนำอาชีพจาก 12D Profile + Vedic</div>{[{t:"Data Analyst",m:88},{t:"Project Manager",m:82},{t:"UX Researcher",m:78}].map((j,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 10px",borderRadius:6,background:"#F8FAFC",marginBottom:3,fontSize:12}}><span>{i+1}. {j.t}</span><span style={{fontWeight:700,color:"#4338CA"}}>Match {j.m}%</span></div>)}<div style={{display:"flex",gap:4,marginTop:4}}><div style={{padding:"5px 10px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:10,fontWeight:700}}>🔍 ค้นหาใน LinkedIn</div></div></Locked>:<Sec fKey="job" title="Job Matching AI" icon="💼">{aiL.job||!ai.job?<Spin/>:Array.isArray(ai.job)?ai.job.map((j,i)=><div key={i} style={{padding:10,borderRadius:8,background:"#F8FAFC",marginBottom:4}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}><span style={{fontSize:13,fontWeight:700}}>{j.titleTH||j.title}</span><span style={{fontSize:10,fontWeight:700,color:"#4338CA",background:"#EEF2FF",padding:"2px 6px",borderRadius:6}}>{j.match}%</span></div>{j.dims&&<div style={{fontSize:10,color:"#6366F1",marginBottom:2}}>📊 {j.dims}</div>}<div style={{fontSize:11,color:"#64748B",lineHeight:1.5}}>{j.reason}</div><a href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(j.title)}&location=Thailand`} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:6,padding:"5px 12px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:11,fontWeight:700,textDecoration:"none"}}>🔍 ค้นหางานในไทย — LinkedIn</a></div>):<Spin/>}</Sec>}
+  {!has("job")?<Locked planNeeded="all" title="Job Matching AI" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>💼 AI แนะนำอาชีพจาก 12D Profile + Vedic</div>{[{t:"Data Analyst",m:88},{t:"Project Manager",m:82},{t:"UX Researcher",m:78}].map((j,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 10px",borderRadius:6,background:"#F8FAFC",marginBottom:3,fontSize:12}}><span>{i+1}. {j.t}</span><span style={{fontWeight:700,color:"#4338CA"}}>Match {j.m}%</span></div>)}<div style={{display:"flex",gap:4,marginTop:4}}><div style={{padding:"5px 10px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:10,fontWeight:700}}>🔍 ค้นหาใน LinkedIn</div></div></Locked>:<Sec fKey="job" title="Job Matching AI" icon="💼">{aiL.job||!ai.job?<Spin/>:Array.isArray(ai.job)?ai.job.map((j,i)=><div key={i} style={{padding:"10px 12px",borderRadius:12,background:"rgba(8,10,30,0.5)",marginBottom:6,border:"1px solid rgba(255,255,255,0.06)"}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={{fontSize:13,fontWeight:700,color:"#E2E8F0"}}>{j.titleTH||j.title}</span><span style={{fontSize:10,fontWeight:700,color:"#A78BFA",background:"rgba(139,92,246,0.12)",padding:"2px 8px",borderRadius:8,border:"1px solid rgba(139,92,246,0.25)"}}>{j.match}%</span></div>{j.dims&&<div style={{fontSize:10,color:"rgba(167,139,250,0.7)",marginBottom:4}}>📊 {j.dims}</div>}<div style={{fontSize:11,color:"rgba(203,213,225,0.75)",lineHeight:1.5}}>{j.reason}</div><a href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(j.title)}&location=Thailand`} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:8,padding:"6px 14px",borderRadius:10,background:"#0A66C2",color:"#fff",fontSize:11,fontWeight:700,textDecoration:"none"}}>🔍 ค้นหางานในไทย — LinkedIn</a></div>):<Spin/>}</Sec>}
 
-  {!has("pdf")?<Locked planNeeded="all" title="PDF Report ดาวน์โหลด" onUpgrade={tryUpgrade}><div style={{fontSize:12,lineHeight:1.8}}>📄 รายงานฉบับเต็ม ประกอบด้วย:<br/>• 12 Dimension Scores + Spider Chart<br/>• Identity + Shadow + 5 Core Analysis<br/>• Do & Don't + 7-Day Energy + transit<br/>• Job Matching + Life Phase Map</div></Locked>:<Sec fKey="pdf" title="PDF Report" icon="📄"><Btn onClick={exportPDF} style={{fontSize:12,padding:8}}>📄 ดาวน์โหลด PDF</Btn></Sec>}
+  {!has("pdf")?<Locked planNeeded="all" title="PDF Report ดาวน์โหลด" onUpgrade={tryUpgrade}><div style={{fontSize:12,lineHeight:1.8,color:"rgba(203,213,225,0.7)"}}>📄 รายงานฉบับเต็ม ประกอบด้วย:<br/>• 12 Dimension Scores + Spider Chart<br/>• Identity + Shadow + 5 Core Analysis<br/>• Do & Don't + 7-Day Energy + transit<br/>• Job Matching + Life Phase Map</div></Locked>:<Sec fKey="pdf" title="PDF Report" icon="📄"><DBtn onClick={exportPDF} style={{fontSize:12,padding:10}}>📄 ดาวน์โหลด PDF</DBtn></Sec>}
 
-  <Sec fKey="share" title="Social Share Card" icon="📸"><div style={{fontSize:11,color:"#64748B",marginBottom:6}}>{plan==="all"?"การ์ด Full — Radar Chart 12 ด้าน + จุดแข็ง + Shadow + คำแนะนำ":"การ์ด Free — 5 Core + จุดแข็ง/Shadow + CTA อัปเกรด"}</div><Btn onClick={shareProfile} style={{fontSize:12,padding:8,background:"linear-gradient(135deg,#7C3AED,#5B21B6)"}}>📸 ดาวน์โหลดการ์ดแชร์</Btn></Sec>
+  <Sec fKey="share" title="Social Share Card" icon="📸"><div style={{fontSize:11,color:"rgba(148,163,184,0.6)",marginBottom:8}}>{plan==="all"?"การ์ด Full — Radar Chart 12 ด้าน + จุดแข็ง + Shadow + คำแนะนำ":"การ์ด Free — 5 Core + จุดแข็ง/Shadow + CTA อัปเกรด"}</div><DBtn onClick={shareProfile} style={{fontSize:12,padding:10,background:"linear-gradient(135deg,#7C3AED,#5B21B6)"}}>📸 ดาวน์โหลดการ์ดแชร์</DBtn></Sec>
 
-  <div style={{textAlign:"center",padding:"14px 0 40px"}}><button onClick={()=>{aiTriggered.current=false;setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0)}} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>🔄 ทำแบบทดสอบใหม่</button></div></div>};
+  <div style={{textAlign:"center",padding:"14px 0 40px"}}><button onClick={()=>{aiTriggered.current=false;setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0)}} style={{fontSize:11,color:"rgba(148,163,184,0.4)",background:"none",border:"none",cursor:"pointer"}}>🔄 ทำแบบทดสอบใหม่</button></div></div>};
 
-  return<div style={{fontFamily:"'Noto Sans Thai','DM Sans',-apple-system,sans-serif",minHeight:"100vh",background:"#F8FAFC",color:"#1E293B"}}><style>{css}</style>{loginModalJSX}<div style={{maxWidth:520,margin:"0 auto",padding:sc==="landing"?"0":"12px 16px 40px"}}>{sc==="landing"&&<Landing/>}{sc==="profile"&&<Profile/>}{sc==="quiz"&&<Quiz/>}{sc==="results"&&<Results/>}</div></div>;
+  return<div style={{fontFamily:"'Noto Sans Thai','DM Sans',-apple-system,sans-serif",minHeight:"100vh",background:sc==="results"?"linear-gradient(160deg,#06071a 0%,#0d0f2b 50%,#060818 100%)":"#F8FAFC",color:sc==="results"?"#E2E8F0":"#1E293B"}}><style>{css}</style>{loginModalJSX}<div style={{maxWidth:520,margin:"0 auto",padding:sc==="landing"?"0":"12px 16px 40px"}}>{sc==="landing"&&<Landing/>}{sc==="profile"&&<Profile/>}{sc==="quiz"&&<Quiz/>}{sc==="results"&&<Results/>}</div></div>;
 }
