@@ -1278,12 +1278,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     <button onClick={()=>{setAskMode(true);setSc("profile")}} style={{width:"100%",padding:"10px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#6366F1,#4338CA)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>👉 วิเคราะห์คำตอบของฉัน</button>
   </Card>
 
-  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-    <div style={{flex:1,height:1,background:"#E2E8F0"}}/>
-    <span style={{fontSize:11,color:"#94A3B8",flexShrink:0}}>หรือเริ่มจากรู้จักตัวเองก่อน</span>
-    <div style={{flex:1,height:1,background:"#E2E8F0"}}/>
-  </div>
-  <div style={{marginBottom:14}}><button onClick={()=>{setAskMode(false);setSc("profile")}} style={{width:"100%",padding:"10px 0",borderRadius:8,border:"2px solid #4338CA",background:"#fff",color:"#4338CA",fontSize:13,fontWeight:700,cursor:"pointer"}}>ทำ Identity Snapshot ฟรี →</button></div>
+  <h2 style={{fontSize:22,fontWeight:900,color:"#1E293B",marginBottom:14,lineHeight:1.3}}>หรือเริ่มจากรู้จักตัวเองก่อน</h2>
 
   {/* PAIN */}
   <Card style={{background:"linear-gradient(135deg,#FEF3C7,#FFF7ED)",border:"1px solid #FDE68A",marginBottom:12}}>
@@ -1346,7 +1341,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   </div>
 
   {/* CTA */}
-  <div style={{marginBottom:20}}><Btn onClick={()=>setSc("profile")}>ดูผลลัพธ์ของฉันตอนนี้ →</Btn><div style={{textAlign:"center",marginTop:8,fontSize:11,color:"#94A3B8"}}>ฟรี · ใช้เวลา 10 นาที · ไม่ต้องใช้บัตรเครดิต</div></div>
+  <div style={{marginBottom:20}}><Btn onClick={()=>{setAskMode(false);setSc("profile")}}>ทำ Identity Snapshot ฟรี →</Btn><div style={{textAlign:"center",marginTop:8,fontSize:11,color:"#94A3B8"}}>ฟรี · ใช้เวลา 10 นาที · ไม่ต้องใช้บัตรเครดิต</div></div>
 
   {/* TRUST */}
   <Card style={{background:"#F0FDF4",border:"1px solid #BBF7D0",marginBottom:12}}><div style={{fontSize:12,fontWeight:700,color:"#166534",marginBottom:6}}>🛡 ข้อมูลของคุณเป็นเรื่องส่วนตัว</div><div style={{fontSize:11,color:"#15803D",lineHeight:1.7}}>คำตอบและผลลัพธ์ของคุณจะไม่ถูกเผยแพร่หรือขายต่อ ทุกอย่างถูกออกแบบให้คุณสำรวจตัวเองได้อย่างปลอดภัยและเป็นส่วนตัว</div></Card>
