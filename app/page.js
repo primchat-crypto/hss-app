@@ -567,6 +567,8 @@ const IdentitySnapshotCard=({data,scores})=>{
 // Locked Preview with blur
 const Locked=({planNeeded,title,children,onUpgrade})=><Card style={{position:"relative",overflow:"hidden",minHeight:120}}><div style={{filter:"blur(3px)",pointerEvents:"none",userSelect:"none",opacity:.4,padding:"8px 0"}}>{children}</div><div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,.75)",backdropFilter:"blur(2px)",padding:16}}><div style={{fontSize:28,marginBottom:6}}>🔒</div><div style={{fontSize:13,fontWeight:700,color:"#4338CA",marginBottom:3,textAlign:"center"}}>{title}</div><div style={{fontSize:11,color:"#64748B",marginBottom:10}}>{planNeeded==="deep"?"Deep Insight ฿49":"All Access ฿99"}</div><button onClick={()=>onUpgrade(planNeeded)} style={{padding:"8px 24px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 12px rgba(79,70,229,.25)"}}>ปลดล็อก →</button></div></Card>;
 
+const DecideTextInput=({value,onChange})=><input value={value} onChange={onChange} placeholder="พิมพ์คำถามของคุณ..." maxLength={80} style={{width:"100%",padding:"10px 14px",borderRadius:10,border:"1px solid rgba(99,102,241,0.4)",background:"rgba(255,255,255,0.08)",color:"#fff",fontSize:13,outline:"none",boxSizing:"border-box"}}/>;
+
 export default function App(){
   const[sc,setSc]=useState("landing");
   const[nick,setNick]=useState("");const[email,setEmail]=useState("");const[bday,setBday]=useState("--");
@@ -1425,7 +1427,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
           {catData.q.map((q,i)=><button key={i} onClick={()=>{setDecQ(q);setDecCustom(false)}} style={{padding:"6px 12px",borderRadius:20,fontSize:11,fontWeight:600,border:`1px solid ${decQ===q?"#6366F1":"rgba(255,255,255,0.15)"}`,background:decQ===q?"rgba(99,102,241,0.25)":"rgba(255,255,255,0.07)",color:decQ===q?"#C7D2FE":"#CBD5E1",cursor:"pointer"}}>{q}</button>)}
           <button onClick={()=>{setDecCustom(true);setDecQ("")}} style={{padding:"6px 12px",borderRadius:20,fontSize:11,fontWeight:600,border:`1px solid ${decCustom?"#6366F1":"rgba(255,255,255,0.15)"}`,background:decCustom?"rgba(99,102,241,0.25)":"rgba(255,255,255,0.07)",color:decCustom?"#C7D2FE":"#CBD5E1",cursor:"pointer"}}>✏️ พิมพ์เอง</button>
         </div>
-        {decCustom&&<input value={decQ} onChange={e=>setDecQ(e.target.value)} placeholder="พิมพ์คำถามของคุณ..." maxLength={80} style={{width:"100%",padding:"10px 14px",borderRadius:10,border:"1px solid rgba(99,102,241,0.4)",background:"rgba(255,255,255,0.08)",color:"#fff",fontSize:13,outline:"none",boxSizing:"border-box"}}/>}
+        {decCustom&&<DecideTextInput value={decQ} onChange={e=>setDecQ(e.target.value)}/>}
       </div>
 
       {/* Submit */}
