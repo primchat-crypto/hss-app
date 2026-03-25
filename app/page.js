@@ -1336,13 +1336,13 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         <div key={i} style={{minWidth:"62%",scrollSnapAlign:"start",background:"#fff",borderRadius:14,padding:"10px 12px",border:"1px solid #E2E8F0",boxShadow:"0 2px 8px rgba(0,0,0,.05)",flexShrink:0}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
-              <div style={{width:36,height:36,borderRadius:"50%",background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>{r.avatar}</div>
+              {(()=>{const ac=[{bg:"#FEE2E2",c:"#F87171"},{bg:"#DBEAFE",c:"#60A5FA"},{bg:"#F3E8FF",c:"#A78BFA"},{bg:"#CCFBF1",c:"#2DD4BF"},{bg:"#FEF3C7",c:"#F59E0B"}][i%5];return<div style={{width:36,height:36,borderRadius:"50%",background:ac.bg,overflow:"hidden",flexShrink:0}}><svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:"100%",height:"100%"}}><circle cx="18" cy="13" r="7" fill={ac.c}/><path d="M4 36c0-7.732 6.268-14 14-14s14 6.268 14 14" fill={ac.c}/></svg></div>;})()}
               <div><div style={{fontSize:13,fontWeight:700,color:"#1E293B"}}>{r.name} <span style={{fontSize:11,color:"#94A3B8",fontWeight:400}}>{r.age}</span></div><div style={{fontSize:10,color:"#94A3B8"}}>{r.role}</div></div>
             </div>
             <span style={{fontSize:9,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"3px 8px",borderRadius:6,flexShrink:0}}>{r.tag}</span>
           </div>
           <div style={{fontSize:11,color:"#F59E0B",marginBottom:6,letterSpacing:1}}>{"★".repeat(r.stars)}</div>
-          <p style={{fontSize:11,color:"#374151",lineHeight:1.6,margin:0,display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden"}}>"{r.text}"</p>
+          <p style={{fontSize:11,color:"#374151",lineHeight:1.6,margin:0,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>"{r.text}"</p>
         </div>
       ))}
     </div>
