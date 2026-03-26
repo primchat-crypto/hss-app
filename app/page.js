@@ -1586,8 +1586,26 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const rBg=cs>=72?"#ECFDF5":cs>=52?"#FFF7ED":"#FFF1F2";
     const rBd=cs>=72?"#6EE7B7":cs>=52?"#FED7AA":"#FECDD3";
     const rC=cs>=72?"#065F46":cs>=52?"#92400E":"#991B1B";
+    const lv=s10>=7?"hi":s10>=5?"mid":"lo";
     const VT={work:s10>=7?"ดาวพฤหัสอยู่ในช่วงที่ส่งเสริมการเติบโต":s10>=5?"พลังงานการงานปานกลาง — เลือกทำงานสำคัญ":"เสาร์กดดัน — ระวังการตัดสินใจใหญ่",money:s10>=7?"ศุกร์เสริมโชคลาภ — การเงินไหลดี":s10>=5?"การเงินปกติ — ไม่มีโชคพิเศษ":"ศุกร์/จันทร์นิจ — ระวังรายจ่ายเกินตัว",love:s10>=7?"ศุกร์อุจจ์ — ความรักสดใส เสน่ห์ดึงดูดสูง":s10>=5?"ความสัมพันธ์ปกติ — ดูแลกันด้วยใจ":"จันทร์กดดัน — ระวังความเข้าใจผิด",timing:s10>=7?"ฤกษ์ดี — พลังงานสูง เหมาะลงมือทำ":s10>=5?"ช่วงกลาง — เลือกจังหวะให้ดี":"ช่วงระวัง — รอดาวดีขึ้นก่อน"};
-    const VA={work:s10>=7?"ใช้เวลาในการเรียนรู้และพัฒนาทักษะ":s10>=5?"โฟกัสงานที่ทำอยู่ ไม่ต้องรีบเปลี่ยน":"งดตัดสินใจใหญ่ รักษาสถานะเดิมไว้ก่อน",money:s10>=7?"เหมาะออมทรัพย์หรือลงทุนระยะยาว":s10>=5?"ระวังรายจ่าย เก็บเงินเผื่อไว้":"หลีกเลี่ยงลงทุนใหม่ ดูแลเงินที่มีอยู่",love:s10>=7?"บอกรักหรือนัดพบได้เลย วันนี้ดวงรักดี":s10>=5?"ใส่ใจและสื่อสารด้วยความเข้าใจ":"ใจเย็นๆ สื่อสารระมัดระวัง",timing:s10>=7?"วันนี้ลุยได้เลย ไม่ต้องรอ":s10>=5?"เลือกช่วงเช้า พลังงานดีกว่า":"รอจังหวะที่ดีกว่า อย่าฝืน"};
+    const SCH_FRAME=[
+      {why_hi:"ดาวพฤหัส (Jupiter) อยู่ในมุมดีกับดวงชาตา เสริมพลังการเติบโต การยอมรับ และโอกาสใหม่",why_mid:"ดาวเคราะห์อยู่ในตำแหน่งกลาง ผลที่ได้ขึ้นอยู่กับความพยายามของคุณมากกว่าโชคชะตา",why_lo:"ดาวเสาร์ (Saturn) ส่งแรงกดดันมาที่ดวงชาตา สร้างอุปสรรคชั่วคราว ต้องอดทนและพิถีพิถันมากขึ้น",tmg_hi:"วันอังคาร/พฤหัสบดี ช่วงเช้า (ก่อน 10.00 น.) — พลังงานดาวพฤหัสสูงสุด เหมาะตัดสินใจสำคัญ",tmg_mid:"เลือกช่วงเช้าก่อน 10.00 น. ใน 3–5 วันข้างหน้า พลังงานดีกว่าช่วงบ่าย",tmg_lo:"รอ 10–14 วัน จนดาวเสาร์เคลื่อนตำแหน่ง หากจำเป็นต้องทำ ใช้ช่วงพระอาทิตย์ขึ้น (6.00–8.00 น.)"},
+      {why_hi:"เจ้าวันหนุน + ดาวมิตร — พลังงานกรรมดีไหลเข้า เป็นวันอันเป็นมงคลสำหรับการตัดสินใจ",why_mid:"เจ้าวันอยู่ในสภาพกลาง ผลขึ้นกับความตั้งใจและวิธีการปฏิบัติของคุณ",why_lo:"เจ้าวันศัตรูหรือช่วงกาลกินี — พลังงานหนัก ระวังคำพูดและการตัดสินใจเร็วเกินไป",tmg_hi:"ช่วงเช้ามืด (04.00–06.00 น.) หรือช่วงสาย (09.00–11.00 น.) ของวันมงคลตามเจ้าวัน",tmg_mid:"หลีกเลี่ยงช่วงกาลกินี เลือกช่วงกลางวันที่เจ้าวันแรง",tmg_lo:"งดตัดสินใจสำคัญ รอฤกษ์ดีตามปฏิทินโหราศาสตร์ไทย"},
+      {why_hi:"พลังงาน Qi ไหลดี — ธาตุไม้และไฟกำลังแรง เหมาะการเริ่มต้น ขยายตัว และลงทุน",why_mid:"ธาตุห้าสมดุล ไม่มีขัดขวางรุนแรง ผลออกมาตามที่ลงแรงทำจริง",why_lo:"ธาตุโลหะ/น้ำกดทับ — พลังงานหดตัว เหมาะหยุดพัก สะสม ไม่ใช่ขยาย",tmg_hi:"ช่วง 07.00–11.00 น. หรือ 13.00–15.00 น. ธาตุไม้-ไฟแรงที่สุด",tmg_mid:"ทำในช่วงกลางวัน ธาตุดินช่วยเสริมความมั่นคงและความสำเร็จ",tmg_lo:"รอจนธาตุดีกลับมา หรือทำในช่วง 05.00–07.00 น. ธาตุไม้เริ่มขึ้น"},
+      {why_hi:"Jupiter/Venus Transit ทำมุมดีกับ Natal Chart — ส่งโอกาสและพลังงานบวกมาโดยตรง",why_mid:"ไม่มี Major Transit รุนแรง ดาวเดินใน Neutral Zone ผลเป็นกลาง",why_lo:"Saturn/Mars Transit กดดัน Natal — ช่วง Testing Phase ต้องพิสูจน์ตัวเองด้วยการกระทำ",tmg_hi:"Moon in favorable sign + Jupiter trine — ช่วง 5–7 วันนี้ดีที่สุด ใช้โอกาสนี้ให้เต็มที่",tmg_mid:"เลือกช่วง Moon in Earth หรือ Air sign — ช่วยให้ตัดสินใจได้ชัดเจน",tmg_lo:"รอ Saturn direct หรือ Mercury out of shadow — ประมาณ 2 สัปดาห์จากนี้"}
+    ];
+    const TAB_HOW={
+      work:{hi:["ยื่นข้อเสนอ เจรจา หรือขอเลื่อนตำแหน่งได้เลย โอกาสตอบรับดีในช่วงนี้","Networking พบผู้มีอำนาจตัดสินใจ — ดาวหนุนให้คนอื่นมองคุณดีขึ้น","เริ่มโปรเจกต์ใหม่หรือเปิดตัวธุรกิจ — พลังงานเอื้อต่อการเติบโต"],mid:["โฟกัสงานค้างให้เสร็จก่อน อย่ารีบเปิดหน้าใหม่","รักษาความสัมพันธ์กับเพื่อนร่วมงานและลูกค้า — ฐานที่มั่นคงสำคัญกว่าการขยาย","เตรียมข้อมูลและแผนให้พร้อม รอจังหวะดีค่อยลงมือ"],lo:["งดลงนามสัญญาหรือตัดสินใจเปลี่ยนงานในช่วงนี้ — ความเสี่ยงสูงกว่าปกติ","ทบทวนแผนงานเดิมให้รัดกุมขึ้น ไม่ขยายเพิ่ม","ใช้เวลานี้เตรียมตัว เก็บพลังงาน — เมื่อดาวดีกลับมาจะพุ่งแรง"]},
+      money:{hi:["ลงทุนหรือออมระยะยาวได้เลย พลังงานดาวหนุนกระแสเงิน","เจรจาขอสินเชื่อ ระดมทุน หรือซื้อสินทรัพย์มูลค่าสูงได้ในช่วงนี้","เหมาะเปิดกระแสรายได้ใหม่ หรือต่อยอดจากสิ่งที่มีอยู่"],mid:["ระวังรายจ่ายเกินตัว เก็บเงินสำรองฉุกเฉินไว้ก่อน","ลงทุนเล็กน้อยได้ แต่อย่า all-in เพราะไม่มีโชคพิเศษหนุน","ตรวจสอบบัญชีและหนี้สินให้ชัดเจน ก่อนตัดสินใจการเงินใหญ่"],lo:["หลีกเลี่ยงการลงทุนใหม่ทุกชนิด — ความเสี่ยงสูงผิดปกติ","ระวังค่าใช้จ่ายฉุกเฉินที่คาดไม่ถึง เก็บเงินสดให้มากที่สุด","ดูแลทรัพย์ที่มีอยู่ให้มั่นคง อย่าให้รั่วไหล"]},
+      love:{hi:["บอกรัก นัดพบ หรือเสนอขอแต่งงานได้เลย — เสน่ห์และโอกาสดี","พูดเรื่องสำคัญในความสัมพันธ์ — คู่ของคุณจะรับฟังได้ดีในช่วงนี้","ทำสิ่งพิเศษให้คนที่รัก — ความประทับใจจะยาวนาน"],mid:["ใส่ใจและสื่อสารด้วยความเข้าใจ อย่าสมมติว่าอีกฝ่ายรู้ใจ","ฟังมากกว่าพูด สร้างความไว้ใจระยะยาวดีกว่าเร่งตัดสินใจ","ไม่รีบตัดสินใจเรื่องความสัมพันธ์ใหญ่ — ดูแลกันในแต่ละวัน"],lo:["ใจเย็นๆ หลีกเลี่ยงการทะเลาะ — อารมณ์อาจวู่วามได้ง่ายในช่วงนี้","อย่าตัดสินใจแยกทางหรือเริ่มความสัมพันธ์ใหม่ — รอดาวดีก่อน","สื่อสารด้วยความระมัดระวัง เลือกคำพูดให้ดี อย่าพูดเพราะอารมณ์"]},
+      timing:{hi:["ลงมือเลย! นี่คือช่วงเวลาของคุณ — อย่าปล่อยโอกาสนี้ผ่านไป","เหมาะเปิดตัว ประกาศ หรือเริ่มต้นสิ่งใหม่อย่างจริงจัง","พลังงานสูง ตัดสินใจได้ชัด ไม่ต้องลังเล"],mid:["เลือกทำสิ่งสำคัญที่สุดก่อน แบ่งลำดับให้ชัดเจน","ใช้เวลาเช้าสำหรับงานที่ต้องการสมาธิและการตัดสินใจ","รอดูสัญญาณอีก 2–3 วัน ก่อนตัดสินใจใหญ่"],lo:["รอจังหวะที่ดีกว่า อย่าฝืนดันทุรัง — ผลจะผิดพลาดได้ง่าย","ใช้เวลานี้วางแผน เตรียมทรัพยากร และทบทวนกลยุทธ์ให้ชัด","ช่วงนี้เหมาะพักฟื้น ทบทวนตัวเอง ไม่ใช่เวลาลงมือใหม่"]}
+    };
+    const SDET_WHAT=[
+      {work:SCH_FRAME[0][`why_${lv}`]+" ส่งผลต่อการงาน อาชีพ และการตัดสินใจด้านหน้าที่โดยตรง",money:SCH_FRAME[0][`why_${lv}`]+" ส่งผลต่อกระแสเงินสด โชคลาภ และการลงทุน",love:SCH_FRAME[0][`why_${lv}`]+" ส่งผลต่อความรัก ความสัมพันธ์ และการสื่อสารทางอารมณ์",timing:SCH_FRAME[0][`why_${lv}`]+" ส่งผลต่อพลังงานโดยรวมและจังหวะที่เหมาะสมในการลงมือทำ"},
+      {work:SCH_FRAME[1][`why_${lv}`]+" ในเรื่องงาน หน้าที่ และการเติบโตในอาชีพ",money:SCH_FRAME[1][`why_${lv}`]+" ในเรื่องทรัพย์ เงินทอง และผลตอบแทนจากความพยายาม",love:SCH_FRAME[1][`why_${lv}`]+" ในเรื่องบุพเพสันนิวาส ความรัก และความสัมพันธ์กับผู้อื่น",timing:SCH_FRAME[1][`why_${lv}`]+" ในเรื่องฤกษ์ยาม และการเลือกเวลาที่เหมาะสม"},
+      {work:SCH_FRAME[2][`why_${lv}`]+" ด้านอาชีพ ชื่อเสียง และความสำเร็จในสังคม (官星)",money:SCH_FRAME[2][`why_${lv}`]+" ด้านทรัพย์สิน การค้า และดวงการเงิน (财星)",love:SCH_FRAME[2][`why_${lv}`]+" ด้านความรัก การพบเนื้อคู่ และพลังดอกท้อ (桃花)",timing:SCH_FRAME[2][`why_${lv}`]+" ด้านการเลือกวัน เวลา และทิศทางมงคล"},
+      {work:SCH_FRAME[3][`why_${lv}`]+" ใน Career House (10th) และ Achievement",money:SCH_FRAME[3][`why_${lv}`]+" ใน 2nd/8th House เรื่องทรัพย์สินและการลงทุน",love:SCH_FRAME[3][`why_${lv}`]+" ใน 5th/7th House เรื่องความรักและคู่ครอง",timing:SCH_FRAME[3][`why_${lv}`]+" ตาม Lunar Cycle และ Planetary Timing"}
+    ];
     const SCHOOLS=[{name:"โหราศาสตร์พระเวท",icon:"🪐",grad:"linear-gradient(135deg,#4338CA,#6366F1)"},{name:"โหราศาสตร์ไทย",icon:"🌙",grad:"linear-gradient(135deg,#0369A1,#0EA5E9)"},{name:"โหราศาสตร์จีน",icon:"☯️",grad:"linear-gradient(135deg,#7C3AED,#8B5CF6)"},{name:"โหราศาสตร์สากล",icon:"⭐",grad:"linear-gradient(135deg,#065F46,#10B981)"}];
     return<div style={{margin:"-12px -16px"}}>
       <div style={{background:"linear-gradient(135deg,#0F172A,#1E1B4B)",padding:"14px 16px 0"}}>
@@ -1635,10 +1653,21 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
                 <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:26,height:26,borderRadius:8,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>{sch.icon}</div><span style={{fontSize:13,fontWeight:700,color:"#fff"}}>{sch.name}</span></div>
                 <div style={{textAlign:"right"}}><div style={{fontSize:9,color:"rgba(255,255,255,.6)"}}>คะแนน</div><div style={{fontSize:14,fontWeight:800,color:"#fff"}}>{s10}/10</div></div>
               </div>
-              <div style={{background:"#fff",padding:"12px 14px"}}>
-                <div style={{fontSize:12,fontWeight:700,color:"#1E293B",marginBottom:5}}>{VT[activeTab]}</div>
-                <div style={{fontSize:11,color:"#64748B",lineHeight:1.6,marginBottom:10}}>{domTxt[activeTab]}</div>
-                <button style={{background:"#FFF7ED",border:"1px solid #FED7AA",borderRadius:8,padding:"7px 12px",fontSize:11,fontWeight:600,color:"#92400E",cursor:"pointer",width:"100%",textAlign:"left"}}>▶ {VA[activeTab]}</button>
+              <div style={{background:"#fff",padding:"14px 16px"}}>
+                <div style={{fontSize:13,fontWeight:800,color:"#1E293B",marginBottom:10}}>{VT[activeTab]}</div>
+                {i===0&&domTxt[activeTab]&&<div style={{fontSize:12,color:"#4338CA",fontWeight:600,padding:"8px 12px",background:"#EEF2FF",borderRadius:8,marginBottom:12,lineHeight:1.6}}>{domTxt[activeTab]}</div>}
+                <div style={{marginBottom:10}}>
+                  <div style={{fontSize:10,fontWeight:700,color:"#94A3B8",textTransform:"uppercase",letterSpacing:.5,marginBottom:4}}>🔍 วิเคราะห์จากดวง</div>
+                  <div style={{fontSize:12,color:"#374151",lineHeight:1.7}}>{(SDET_WHAT[i]||{})[activeTab]||""}</div>
+                </div>
+                <div style={{marginBottom:10}}>
+                  <div style={{fontSize:10,fontWeight:700,color:"#94A3B8",textTransform:"uppercase",letterSpacing:.5,marginBottom:4}}>⏰ จังหวะที่เหมาะสม</div>
+                  <div style={{fontSize:12,color:"#374151",lineHeight:1.7}}>{(SCH_FRAME[i]||{})[`tmg_${lv}`]||""}</div>
+                </div>
+                <div>
+                  <div style={{fontSize:10,fontWeight:700,color:"#94A3B8",textTransform:"uppercase",letterSpacing:.5,marginBottom:6}}>✅ ขั้นตอนที่แนะนำ</div>
+                  {((TAB_HOW[activeTab]||{})[lv]||[]).map((step,si)=><div key={si} style={{display:"flex",gap:8,alignItems:"flex-start",padding:"6px 0",borderBottom:si<2?"1px solid #F1F5F9":"none"}}><span style={{width:20,height:20,borderRadius:"50%",background:"#EEF2FF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:"#4338CA",flexShrink:0}}>{si+1}</span><span style={{fontSize:12,color:"#374151",lineHeight:1.6}}>{step}</span></div>)}
+                </div>
               </div></>
               :<div style={{background:"#F8FAFC",padding:"14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:26,height:26,borderRadius:8,background:"#E2E8F0",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,filter:"grayscale(1)"}}>{sch.icon}</div><span style={{fontSize:13,fontWeight:600,color:"#94A3B8"}}>{sch.name}</span></div>
@@ -1649,7 +1678,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
           <div style={{borderRadius:12,overflow:"hidden",marginBottom:12,border:"1px solid #E2E8F0"}}>
             <div style={{background:"#F8FAFC",padding:"14px"}}>
               <div style={{textAlign:"center",marginBottom:isPaid?10:6}}><div style={{fontSize:13,fontWeight:700,color:isPaid?"#1E293B":"#94A3B8"}}>AI Summary + Action Plan</div><div style={{fontSize:10,color:"#94A3B8",marginTop:2}}>รวมคำแนะนำ 3 ขั้นตอน</div></div>
-              {isPaid?<div style={{fontSize:11,color:"#475569",lineHeight:1.8}}><div>1️⃣ {VA[activeTab]}</div><div style={{marginTop:4}}>2️⃣ {VT[activeTab]}</div><div style={{marginTop:4}}>3️⃣ พลังงานวันนี้ {cs}% — {cs>=72?"เหมาะลงมือทำและตัดสินใจ":cs>=52?"เลือกทำสิ่งสำคัญก่อน":"พักฟื้น อย่าตัดสินใจใหญ่"}</div></div>
+              {isPaid?<div style={{fontSize:11,color:"#475569",lineHeight:1.8}}>{((TAB_HOW[activeTab]||{})[lv]||[]).map((s,si)=><div key={si} style={{marginTop:si>0?5:0}}>{["1️⃣","2️⃣","3️⃣"][si]} {s}</div>)}<div style={{marginTop:8,padding:"7px 10px",background:"#EEF2FF",borderRadius:8,fontSize:11,fontWeight:600,color:"#4338CA"}}>⚡ พลังงานวันนี้ {cs}% — {cs>=72?"เหมาะลงมือทำและตัดสินใจ":cs>=52?"เลือกทำสิ่งสำคัญก่อน":"พักฟื้น อย่าตัดสินใจใหญ่"}</div></div>
               :<button onClick={()=>tryUpgrade("deep")} style={{width:"100%",padding:"9px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer"}}>ดูครบ ฿49 →</button>}
             </div>
           </div>
