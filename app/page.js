@@ -677,7 +677,7 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade})=>{
 };
 
 export default function App(){
-  const[sc,setSc]=useState("landing");const[askMode,setAskMode]=useState(false);
+  const[sc,setSc]=useState("landing");const[askMode,setAskMode]=useState(false);const[preAskQ,setPreAskQ]=useState("");const[preAskTab,setPreAskTab]=useState("work");
   const[nick,setNick]=useState("");const[email,setEmail]=useState("");const[bday,setBday]=useState("--");
   const[knowT,setKnowT]=useState(null);const[btime,setBtime]=useState("");const[tSlot,setTSlot]=useState("");const[prov,setProv]=useState("");
   const[qI,setQI]=useState(0);const[ans,setAns]=useState({});
@@ -1267,15 +1267,62 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
 
   {/* ASK & DECIDE AI */}
   <Card style={{background:"linear-gradient(135deg,#0F172A,#1E1B4B)",border:"none",marginBottom:12}}>
-    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+    {/* Header */}
+    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
       <div style={{width:30,height:30,borderRadius:8,background:"linear-gradient(135deg,#6366F1,#8B5CF6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>🤖</div>
       <div><div style={{fontSize:13,fontWeight:800,color:"#fff"}}>Ask & Decide AI</div><div style={{fontSize:10,color:"#94A3B8"}}>ตัดสินใจจากดวงและจังหวะชีวิต</div></div>
     </div>
-    <div style={{fontSize:13,fontWeight:700,color:"#E2E8F0",marginBottom:10}}>มีเรื่องต้องตัดสินใจไหม?</div>
-    <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:12}}>
-      {["ควรเปลี่ยนงานตอนนี้ไหม?","วันไหนเหมาะลงมือทำ?","ควรรอหรือลุยเลย?","ความรักไปทางไหนดี?","ควรลงทุนตอนนี้ไหม?"].map((q,i)=><span key={i} style={{fontSize:10,color:"#A5B4FC",background:"rgba(99,102,241,0.15)",border:"1px solid rgba(99,102,241,0.3)",padding:"4px 10px",borderRadius:20}}>{q}</span>)}
+    {/* Category tabs */}
+    <div style={{display:"flex",gap:6,marginBottom:10,overflowX:"auto",scrollbarWidth:"none"}}>
+      {Object.entries(DEC_CATS).map(([k,v])=><button key={k} onClick={()=>{setPreAskTab(k);setPreAskQ("");}} style={{padding:"5px 12px",borderRadius:20,border:"none",background:preAskTab===k?"#6366F1":"rgba(255,255,255,0.1)",color:preAskTab===k?"#fff":"#A5B4FC",fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,whiteSpace:"nowrap"}}>{v.icon} {v.label}</button>)}
     </div>
-    <button onClick={()=>{setAskMode(true);setSc("profile")}} style={{width:"100%",padding:"10px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#6366F1,#4338CA)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>👉 วิเคราะห์คำตอบของฉัน</button>
+    {/* Question chips */}
+    <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:10}}>
+      {DEC_CATS[preAskTab].q.map((q,i)=><button key={i} onClick={()=>setPreAskQ(q)} style={{padding:"5px 10px",borderRadius:16,fontSize:11,fontWeight:600,border:`1px solid ${preAskQ===q?"#6366F1":"rgba(255,255,255,0.15)"}`,background:preAskQ===q?"rgba(99,102,241,0.25)":"rgba(255,255,255,0.07)",color:preAskQ===q?"#C7D2FE":"#CBD5E1",cursor:"pointer"}}>{q}</button>)}
+    </div>
+    {/* Custom question input */}
+    <div style={{marginBottom:14}}>
+      <input value={preAskQ.startsWith("__")?"":preAskQ} onChange={e=>setPreAskQ(e.target.value)} placeholder="หรือพิมพ์คำถามของคุณเอง..." style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(99,102,241,0.35)",borderRadius:8,padding:"9px 12px",fontSize:12,color:"#E2E8F0",outline:"none",boxSizing:"border-box"}}/>
+    </div>
+    {/* Divider */}
+    <div style={{borderTop:"1px solid rgba(255,255,255,0.08)",marginBottom:12}}/>
+    {/* Birth date */}
+    <div style={{marginBottom:10}}>
+      <div style={{fontSize:11,fontWeight:700,color:"#94A3B8",marginBottom:6}}>วันเดือนปีเกิด *</div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
+        <select value={bday.split("-")[2]||""} onChange={e=>setBday(`${bday.split("-")[0]||"2000"}-${bday.split("-")[1]||"01"}-${e.target.value}`)} style={{border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:12,color:"#E2E8F0",outline:"none",width:"100%"}}>
+          <option value="" style={{background:"#1E1B4B"}}>วัน</option>{Array.from({length:31},(_,i)=>i+1).map(d=><option key={d} value={String(d).padStart(2,"0")} style={{background:"#1E1B4B"}}>{d}</option>)}
+        </select>
+        <select value={bday.split("-")[1]||""} onChange={e=>setBday(`${bday.split("-")[0]||"2000"}-${e.target.value}-${bday.split("-")[2]||"01"}`)} style={{border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:12,color:"#E2E8F0",outline:"none",width:"100%"}}>
+          <option value="" style={{background:"#1E1B4B"}}>เดือน</option>{["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."].map((m,i)=><option key={i} value={String(i+1).padStart(2,"0")} style={{background:"#1E1B4B"}}>{m}</option>)}
+        </select>
+        <select value={bday.split("-")[0]||""} onChange={e=>setBday(`${e.target.value}-${bday.split("-")[1]||"01"}-${bday.split("-")[2]||"01"}`)} style={{border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:12,color:"#E2E8F0",outline:"none",width:"100%"}}>
+          <option value="" style={{background:"#1E1B4B"}}>ปี</option>{Array.from({length:80},(_,i)=>2026-i).map(y=><option key={y} value={String(y)} style={{background:"#1E1B4B"}}>{y}</option>)}
+        </select>
+      </div>
+    </div>
+    {/* Birth time + Province */}
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
+      <div>
+        <div style={{fontSize:11,fontWeight:700,color:"#94A3B8",marginBottom:6}}>เวลาเกิด (ถ้ารู้)</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4}}>
+          <select value={btime.split(":")[0]||""} onChange={e=>{setKnowT(true);setBtime(`${e.target.value}:${btime.split(":")[1]||"00"}`);}} style={{border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:11,color:"#E2E8F0",outline:"none",width:"100%"}}>
+            <option value="" style={{background:"#1E1B4B"}}>ชม.</option>{Array.from({length:24},(_,i)=>i).map(h=><option key={h} value={String(h).padStart(2,"0")} style={{background:"#1E1B4B"}}>{String(h).padStart(2,"0")}</option>)}
+          </select>
+          <select value={btime.split(":")[1]||""} onChange={e=>{setKnowT(true);setBtime(`${btime.split(":")[0]||"00"}:${e.target.value}`);}} style={{border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:11,color:"#E2E8F0",outline:"none",width:"100%"}}>
+            <option value="" style={{background:"#1E1B4B"}}>นาที</option>{[0,5,10,15,20,25,30,35,40,45,50,55].map(m=><option key={m} value={String(m).padStart(2,"0")} style={{background:"#1E1B4B"}}>{String(m).padStart(2,"0")}</option>)}
+          </select>
+        </div>
+      </div>
+      <div>
+        <div style={{fontSize:11,fontWeight:700,color:"#94A3B8",marginBottom:6}}>จังหวัดที่เกิด</div>
+        <select value={prov} onChange={e=>setProv(e.target.value)} style={{width:"100%",border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:11,color:"#E2E8F0",outline:"none"}}>
+          <option value="" style={{background:"#1E1B4B"}}>เลือกจังหวัด</option>{PV.map(p=><option key={p} value={p} style={{background:"#1E1B4B"}}>{p}</option>)}
+        </select>
+      </div>
+    </div>
+    {/* Submit */}
+    <button onClick={()=>{const bp=bday.split("-");const bdOk=bp[0]&&bp[1]&&bp[2]&&bp[0]!=="--"&&bp[0]!=="undefined";if(!bdOk){alert("กรุณาเลือกวันเดือนปีเกิดก่อนนะคะ");return;}if(!preAskQ.trim()){alert("กรุณาเลือกหรือพิมพ์คำถามที่ต้องการก่อนนะคะ");return;}setAskMode(true);goAskResults();}} style={{width:"100%",padding:"10px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#6366F1,#4338CA)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>👉 วิเคราะห์คำตอบของฉัน</button>
   </Card>
 
   <h2 style={{fontSize:22,fontWeight:900,color:"#1E293B",marginBottom:14,lineHeight:1.3}}>หรือเริ่มจากรู้จักตัวเองก่อน</h2>
@@ -1510,7 +1557,10 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const customRef=useRef(null);
     useEffect(()=>{
       const today=new Date().toISOString().slice(0,10);
-      try{const raw=localStorage.getItem("hss_ask_daily");if(raw){const s=JSON.parse(raw);if(s.date===today){setQuotaUsed(true);if(s.q){setSelectedQ(s.q);if(s.tab)setActiveTab(s.tab);setResultShown(true);}}}}catch(e){}
+      let quotaAlreadyUsed=false;
+      try{const raw=localStorage.getItem("hss_ask_daily");if(raw){const s=JSON.parse(raw);if(s.date===today){setQuotaUsed(true);quotaAlreadyUsed=true;if(s.q){setSelectedQ(s.q);if(s.tab)setActiveTab(s.tab);setResultShown(true);}}}
+      }catch(e){}
+      if(preAskQ.trim()&&!quotaAlreadyUsed){setActiveTab(preAskTab||"work");askQ(preAskQ);setPreAskQ("");}
     },[]);
     const askQ=(q)=>{
       setSelectedQ(q);setShowCustom(false);
