@@ -1325,7 +1325,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
       <h3 style={{fontSize:14,fontWeight:700,color:"#1E293B"}}>คนที่ใช้แล้วบอกว่า</h3>
       <span style={{fontSize:11,color:"#94A3B8"}}>ปัดดูต่อ →</span>
     </div>
-    <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:8,paddingRight:20,scrollSnapType:"x mandatory",WebkitOverflowScrolling:"touch",scrollbarWidth:"none",msOverflowStyle:"none"}}>
+    <div style={{display:"flex",gap:0,overflowX:"auto",paddingBottom:8,scrollSnapType:"x mandatory",WebkitOverflowScrolling:"touch",scrollbarWidth:"none",msOverflowStyle:"none"}}>
       {[
         {name:"มิว",age:27,role:"HR Manager",avatar:"👩",stars:5,text:"ตอนแรกคิดว่าจะเหมือนทดสอบทั่วไป แต่ผลที่ได้มันเจาะจงมาก ตรงจุดเลย รู้เลยว่าที่ทำงานอยู่มันไม่ใช่ทาง เดือนเดียวหลังจากนั้นก็ลาออก",tag:"เรื่องงาน"},
         {name:"ปาล์ม",age:34,role:"Freelance Designer",avatar:"👨",stars:5,text:"ส่วน Shadow Analysis แม่นจนขนลุก มันบอกนิสัยที่ทำให้พลาดซ้ำได้เลย ตอนอ่านนั่งยิ้มคนเดียวเพราะมันตรงเกินไป",tag:"เรื่องตัวเอง"},
