@@ -687,7 +687,7 @@ export default function App(){
   const[authMode,setAuthMode]=useState("login");const[authErr,setAuthErr]=useState("");const[authLoading,setAuthLoading]=useState(false);
   const authEmailRef=useRef(null);const authPwRef=useRef(null);
   const wasAuthedRef=useRef(false);
-  const nickRef=useRef(null);const emailRef=useRef(null);
+  const nickRef=useRef(null);const emailRef=useRef(null);const preAskInputRef=useRef(null);
   // Strip date-sensitive fields so they always regenerate fresh (energy=daily, job=may be stale)
   const stripDateAI=r=>{if(!r)return{};const{energy:_e,job:_j,...rest}=r;
     if(rest["12d"]&&!rest["12d"].includes("🌟 มิติที่เป็นจุดแข็ง"))delete rest["12d"];
@@ -1282,7 +1282,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     </div>
     {/* Custom question input */}
     <div style={{marginBottom:14}}>
-      <input value={preAskQ.startsWith("__")?"":preAskQ} onChange={e=>setPreAskQ(e.target.value)} placeholder="หรือพิมพ์คำถามของคุณเอง..." style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(99,102,241,0.35)",borderRadius:8,padding:"9px 12px",fontSize:12,color:"#E2E8F0",outline:"none",boxSizing:"border-box"}}/>
+      <input key={preAskQ} ref={preAskInputRef} defaultValue={preAskQ} placeholder="หรือพิมพ์คำถามของคุณเอง..." style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(99,102,241,0.35)",borderRadius:8,padding:"9px 12px",fontSize:12,color:"#E2E8F0",outline:"none",boxSizing:"border-box"}}/>
     </div>
     {/* Divider */}
     <div style={{borderTop:"1px solid rgba(255,255,255,0.08)",marginBottom:12}}/>
@@ -1301,28 +1301,34 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         </select>
       </div>
     </div>
-    {/* Birth time + Province */}
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
-      <div>
-        <div style={{fontSize:11,fontWeight:700,color:"#94A3B8",marginBottom:6}}>เวลาเกิด (ถ้ารู้)</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4}}>
-          <select value={btime.split(":")[0]||""} onChange={e=>{setKnowT(true);setBtime(`${e.target.value}:${btime.split(":")[1]||"00"}`);}} style={{border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:11,color:"#E2E8F0",outline:"none",width:"100%"}}>
-            <option value="" style={{background:"#1E1B4B"}}>ชม.</option>{Array.from({length:24},(_,i)=>i).map(h=><option key={h} value={String(h).padStart(2,"0")} style={{background:"#1E1B4B"}}>{String(h).padStart(2,"0")}</option>)}
-          </select>
-          <select value={btime.split(":")[1]||""} onChange={e=>{setKnowT(true);setBtime(`${btime.split(":")[0]||"00"}:${e.target.value}`);}} style={{border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:11,color:"#E2E8F0",outline:"none",width:"100%"}}>
-            <option value="" style={{background:"#1E1B4B"}}>นาที</option>{[0,5,10,15,20,25,30,35,40,45,50,55].map(m=><option key={m} value={String(m).padStart(2,"0")} style={{background:"#1E1B4B"}}>{String(m).padStart(2,"0")}</option>)}
-          </select>
-        </div>
+    {/* Birth time */}
+    <div style={{marginBottom:10}}>
+      <div style={{fontSize:11,fontWeight:700,color:"#94A3B8",marginBottom:6}}>เวลาเกิด</div>
+      <div style={{display:"flex",gap:6,marginBottom:8}}>
+        <button onClick={()=>{setKnowT(true);setTSlot("");}} style={{flex:1,padding:"7px 8px",borderRadius:8,border:`2px solid ${knowT===true?"#6366F1":"rgba(255,255,255,0.15)"}`,background:knowT===true?"rgba(99,102,241,0.2)":"rgba(255,255,255,0.05)",color:knowT===true?"#C7D2FE":"#94A3B8",fontSize:11,fontWeight:700,cursor:"pointer"}}>รู้เวลาเกิด</button>
+        <button onClick={()=>{setKnowT(false);setBtime("");}} style={{flex:1,padding:"7px 8px",borderRadius:8,border:`2px solid ${knowT===false?"#F59E0B":"rgba(255,255,255,0.15)"}`,background:knowT===false?"rgba(245,158,11,0.15)":"rgba(255,255,255,0.05)",color:knowT===false?"#FDE68A":"#94A3B8",fontSize:11,fontWeight:700,cursor:"pointer"}}>ไม่รู้เวลาเกิด</button>
       </div>
-      <div>
-        <div style={{fontSize:11,fontWeight:700,color:"#94A3B8",marginBottom:6}}>จังหวัดที่เกิด</div>
-        <select value={prov} onChange={e=>setProv(e.target.value)} style={{width:"100%",border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:11,color:"#E2E8F0",outline:"none"}}>
-          <option value="" style={{background:"#1E1B4B"}}>เลือกจังหวัด</option>{PV.map(p=><option key={p} value={p} style={{background:"#1E1B4B"}}>{p}</option>)}
+      {knowT===true&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+        <select value={btime.split(":")[0]||""} onChange={e=>setBtime(`${e.target.value}:${btime.split(":")[1]||"00"}`)} style={{border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:11,color:"#E2E8F0",outline:"none",width:"100%"}}>
+          <option value="" style={{background:"#1E1B4B"}}>ชม.</option>{Array.from({length:24},(_,i)=>i).map(h=><option key={h} value={String(h).padStart(2,"0")} style={{background:"#1E1B4B"}}>{String(h).padStart(2,"0")}</option>)}
         </select>
-      </div>
+        <select value={btime.split(":")[1]||""} onChange={e=>setBtime(`${btime.split(":")[0]||"00"}:${e.target.value}`)} style={{border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:11,color:"#E2E8F0",outline:"none",width:"100%"}}>
+          <option value="" style={{background:"#1E1B4B"}}>นาที</option>{[0,5,10,15,20,25,30,35,40,45,50,55].map(m=><option key={m} value={String(m).padStart(2,"0")} style={{background:"#1E1B4B"}}>{String(m).padStart(2,"0")}</option>)}
+        </select>
+      </div>}
+      {knowT===false&&<div style={{display:"flex",flexDirection:"column",gap:4}}>
+        {TS.map(ts=><button key={ts.id} onClick={()=>setTSlot(ts.id)} style={{padding:"8px 10px",borderRadius:8,border:`2px solid ${tSlot===ts.id?"#F59E0B":"rgba(255,255,255,0.15)"}`,background:tSlot===ts.id?"rgba(245,158,11,0.15)":"rgba(255,255,255,0.05)",textAlign:"left",cursor:"pointer",width:"100%"}}><div style={{fontSize:11,fontWeight:tSlot===ts.id?700:500,color:tSlot===ts.id?"#FDE68A":"#CBD5E1"}}>{ts.l}</div><div style={{fontSize:10,color:"#64748B"}}>{ts.d}</div></button>)}
+      </div>}
+    </div>
+    {/* Province */}
+    <div style={{marginBottom:14}}>
+      <div style={{fontSize:11,fontWeight:700,color:"#94A3B8",marginBottom:6}}>จังหวัดที่เกิด</div>
+      <select value={prov} onChange={e=>setProv(e.target.value)} style={{width:"100%",border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:11,color:"#E2E8F0",outline:"none"}}>
+        <option value="" style={{background:"#1E1B4B"}}>เลือกจังหวัด</option>{PV.map(p=><option key={p} value={p} style={{background:"#1E1B4B"}}>{p}</option>)}
+      </select>
     </div>
     {/* Submit */}
-    <button onClick={()=>{const bp=bday.split("-");const bdOk=bp[0]&&bp[1]&&bp[2]&&bp[0]!=="--"&&bp[0]!=="undefined";if(!bdOk){alert("กรุณาเลือกวันเดือนปีเกิดก่อนนะคะ");return;}if(!preAskQ.trim()){alert("กรุณาเลือกหรือพิมพ์คำถามที่ต้องการก่อนนะคะ");return;}setAskMode(true);goAskResults();}} style={{width:"100%",padding:"10px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#6366F1,#4338CA)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>👉 วิเคราะห์คำตอบของฉัน</button>
+    <button onClick={()=>{const q=(preAskInputRef.current?.value?.trim())||preAskQ;const bp=bday.split("-");const bdOk=bp[0]&&bp[1]&&bp[2]&&bp[0]!=="--"&&bp[0]!=="undefined";if(!bdOk){alert("กรุณาเลือกวันเดือนปีเกิดก่อนนะคะ");return;}if(!q){alert("กรุณาเลือกหรือพิมพ์คำถามที่ต้องการก่อนนะคะ");return;}setPreAskQ(q);setAskMode(true);goAskResults();}} style={{width:"100%",padding:"10px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#6366F1,#4338CA)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>👉 วิเคราะห์คำตอบของฉัน</button>
   </Card>
 
   <h2 style={{fontSize:22,fontWeight:900,color:"#1E293B",marginBottom:14,lineHeight:1.3}}>หรือเริ่มจากรู้จักตัวเองก่อน</h2>
