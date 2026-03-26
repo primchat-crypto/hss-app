@@ -1333,7 +1333,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         {name:"โบ",age:31,role:"เจ้าของร้านออนไลน์",avatar:"👩",stars:5,text:"ส่วน timing ชีวิตตรงมาก ช่วงที่ผลบอกว่าควรพัก ตอนนั้นทำอะไรก็ไม่ผ่านจริงๆ พอรู้แล้วก็ไม่ฝืนอีก",tag:"เรื่องจังหวะชีวิต"},
         {name:"เก้",age:29,role:"Product Manager",avatar:"👨",stars:5,text:"ผลมันเชื่อมกันหมด ดวง + นิสัย + timing ไม่ใช่แค่บอกว่าคุณเป็นคนแบบไหน แต่บอกว่า ตอนนี้ควรทำอะไร อันนี้ใช้ได้จริง",tag:"ภาพรวม"}
       ].map((r,i)=>(
-        <div key={i} style={{minWidth:"75%",scrollSnapAlign:"start",background:"#fff",borderRadius:14,padding:"10px 12px",border:"1px solid #E2E8F0",boxShadow:"0 2px 8px rgba(0,0,0,.05)",flexShrink:0}}>
+        <div key={i} style={{minWidth:"100%",scrollSnapAlign:"start",background:"#fff",borderRadius:14,padding:"10px 12px",border:"1px solid #E2E8F0",boxShadow:"0 2px 8px rgba(0,0,0,.05)",flexShrink:0}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
               {(()=>{const ac=[{bg:"#FEE2E2",c:"#F87171"},{bg:"#DBEAFE",c:"#60A5FA"},{bg:"#F3E8FF",c:"#A78BFA"},{bg:"#CCFBF1",c:"#2DD4BF"},{bg:"#FEF3C7",c:"#F59E0B"}][i%5];return<div style={{width:36,height:36,borderRadius:"50%",background:ac.bg,overflow:"hidden",flexShrink:0}}><svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:"100%",height:"100%"}}><circle cx="18" cy="13" r="7" fill={ac.c}/><path d="M4 36c0-7.732 6.268-14 14-14s14 6.268 14 14" fill={ac.c}/></svg></div>;})()}
