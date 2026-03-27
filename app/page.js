@@ -703,8 +703,14 @@ export default function App(){
   // Init: check Supabase session + handle payment redirect
   useEffect(()=>{
     const init=async()=>{
-      // === STEP 1: Detect Stripe redirect ===
+      // === STEP 0: Dev test plan override (?testplan=pro) ===
       const params=new URLSearchParams(window.location.search);
+      const testPlan=params.get("testplan");
+      if(testPlan&&["free","quick","smart","pro","deep","all"].includes(testPlan)){
+        ST.set("plan",testPlan);setPlan(testPlan);
+        window.history.replaceState({},"",window.location.pathname);
+      }
+      // === STEP 1: Detect Stripe redirect ===
       const payOk=params.get("payment")==="success";
       const payPlan=params.get("plan");
       if(payOk&&payPlan){
