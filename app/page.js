@@ -1771,7 +1771,131 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   {!has("principle")?<Locked planNeeded="pro" title="Life Principle หลักการใช้ชีวิต" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#1E1B4B,#312E81)",color:"#C7D2FE",lineHeight:1.8,fontSize:12,fontStyle:"italic"}}>เมื่อดาวส่งแสง ชีวิตจะงดงามที่สุดในแบบของคุณ แต่เมื่อเข้าสู่ช่วงดำมืด ทุกครั้งที่ผ่านได้เพราะพลังจากดาวที่นำทางคุณเสมอ...</div></Locked>:<Sec fKey="principle" title="Life Principle หลักการใช้ชีวิต" icon="✨"><div style={{padding:"16px 18px",borderRadius:10,background:"linear-gradient(135deg,#1E1B4B,#312E81)"}}>{aiL.principle?<Spin/>:ai.principle?<div style={{fontSize:14,lineHeight:1.9,color:"#E0E7FF",fontStyle:"italic",textAlign:"center"}}>{ai.principle}</div>:<Spin t="วิเคราะห์หลักการชีวิต..."/>}</div></Sec>}
 
   {/* Money Strategy */}
-  {!has("money")?<Locked planNeeded="pro" title="Money Strategy — กลยุทธ์การเงินเฉพาะตัวคุณ" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#052e16,#14532d)",color:"#A7F3D0",lineHeight:1.8,fontSize:12}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>💰 Money Strategy</div><div style={{fontSize:11}}>นิสัยการเงิน · สถานการณ์ตามดาว · วิธีแก้ไข</div></div></Locked>:<Sec fKey="money" planNeeded="pro" title="Money Strategy" icon="💰"><div style={{background:"#F0FDF4",borderRadius:10,padding:"12px 14px",border:"1px solid #A7F3D0"}}>{aiL.money?<Spin t="วิเคราะห์กลยุทธ์การเงิน..."/>:ai.money?<div style={{fontSize:12,lineHeight:1.9,color:"#14532D",whiteSpace:"pre-wrap"}}>{ai.money}</div>:<Spin t="กำลังโหลด..."/>}</div></Sec>}
+  {(()=>{
+    if(!has("money")) return <Locked planNeeded="pro" title="Money Strategy — กลยุทธ์การเงินเฉพาะตัวคุณ" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#052e16,#14532d)",color:"#A7F3D0",lineHeight:1.8,fontSize:12}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>💰 Money Strategy</div><div style={{fontSize:11}}>Wealth Catalyst · Destiny Timeline · กลยุทธ์การเงินเฉพาะตัวคุณ</div></div></Locked>;
+    const domP=calcDomPlanet(vedic||{});
+    const nowY=new Date().getFullYear();
+    const bdY=parseInt((bday||"2000").split("-")[0])||2000;
+    const age=nowY-bdY;
+    const scr=scores||{};const vcr=vedic||{};
+    const cogSc=scr["Cognitive Processing"]||5;const emotSc=scr["Emotional Regulation"]||5;const growSc=scr["Growth Orientation"]||5;const idStab=scr["Identity Stability"]||5;const motDr=scr["Motivation Driver"]||5;
+    const vCog=vcr["Cognitive Processing"]||7;const vIdStab=vcr["Identity Stability"]||7;const vGrow=vcr["Growth Orientation"]||7;
+    const rawC=Math.round(20+(cogSc/10)*15);const rawE=Math.round(35-(emotSc/10)*25);const rawK=Math.round(10+(growSc/10)*20);const rawG=Math.max(5,100-rawC-rawE-rawK);const rawT=rawC+rawE+rawK+rawG;
+    const pC=Math.round(rawC/rawT*100);const pE=Math.round(rawE/rawT*100);const pK=Math.round(rawK/rawT*100);const pG=100-pC-pE-pK;
+    const segs=[{label:`Creative Spender (${domP.planet})`,pct:pC,color:"#10b981",desc:"รายได้จากไอเดียและการเจรจา"},{label:"Emotional Impulse",pct:pE,color:"#f59e0b",desc:"การใช้จ่ายตามอารมณ์ที่ยังควบคุมยาก"},{label:"Knowledge Investment",pct:pK,color:"#0ea5e9",desc:"โอกาสจากการเรียนรู้คอร์สใหม่ๆ"},{label:"Financial Gap",pct:pG,color:"#8b5cf6",desc:"จุดที่ขาดระเบียบการออม"}];
+    const radarD=[{label:"ความมั่นคง",sub:Math.round(idStab*10),ideal:Math.min(100,Math.round(vIdStab*10))},{label:"การสื่อสาร",sub:Math.round(cogSc*10),ideal:Math.min(100,Math.round(vCog*10))},{label:"อิสระ",sub:Math.min(95,Math.round(motDr*10+5)),ideal:60},{label:"ความตื่นเต้น",sub:Math.min(85,Math.round(emotSc*8+5)),ideal:30},{label:"การวางแผน",sub:Math.round(growSc*8),ideal:Math.min(100,Math.round(vGrow*10))}];
+    const getRPt=(data,key,cx,cy,maxR)=>data.map((d,i)=>{const a=(Math.PI*2*i/data.length)-Math.PI/2;const val=(d[key]/100)*maxR;return`${(cx+val*Math.cos(a)).toFixed(1)},${(cy+val*Math.sin(a)).toFixed(1)}`;}).join(" ");
+    const getGridPt=(n,gs,cx,cy,maxR)=>[...Array(n)].map((_,i)=>{const a=(Math.PI*2*i/n)-Math.PI/2;return`${(cx+maxR*gs*Math.cos(a)).toFixed(1)},${(cy+maxR*gs*Math.sin(a)).toFixed(1)}`;}).join(" ");
+    return <Sec fKey="money" title="Money Strategy" icon="💰">
+      {aiL.money?<Spin t="วิเคราะห์กลยุทธ์การเงิน..."/>:
+      <div>
+        {/* 1. Wealth Catalyst Diagnostic */}
+        <div style={{background:"#fff",borderRadius:12,border:"1px solid #d1fae5",padding:"14px",marginBottom:10}}>
+          <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}><div style={{width:4,height:20,background:"#10b981",borderRadius:2}}/><div style={{fontSize:13,fontWeight:800,color:"#1e293b"}}>1. Wealth Catalyst Diagnostic</div></div>
+          <div style={{fontSize:10,color:"#94a3b8",fontStyle:"italic",marginBottom:10}}>"วิเคราะห์ต้นตอของกระแสการเงินจากดวงชะตา"</div>
+          <div style={{display:"flex",flexDirection:"row",gap:12,alignItems:"center"}}>
+            <div style={{position:"relative",width:90,height:90,flexShrink:0}}>
+              <svg viewBox="0 0 36 36" style={{width:"100%",height:"100%",transform:"rotate(-90deg)"}}>
+                <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#f1f5f9" strokeWidth="3.5"/>
+                {segs.map((seg,i)=>{const prev=segs.slice(0,i).reduce((a,c)=>a+c.pct,0);return <circle key={i} cx="18" cy="18" r="15.9" fill="transparent" stroke={seg.color} strokeWidth="3.5" strokeDasharray={`${seg.pct} ${100-seg.pct}`} strokeDashoffset={-prev}/>;})}
+              </svg>
+              <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center"}}>
+                <div style={{fontSize:7,color:"#94a3b8",fontWeight:700,textTransform:"uppercase"}}>ขุมทรัพย์</div>
+                <div style={{fontSize:10,fontWeight:900,color:"#059669"}}>{domP.planet}</div>
+              </div>
+            </div>
+            <div style={{flex:1}}>
+              {segs.map((seg,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:6,padding:"5px 6px",borderRadius:8,background:i===2?"#f8fafc":"transparent"}}>
+                  <div style={{width:9,height:9,borderRadius:"50%",background:seg.color,marginTop:3,flexShrink:0}}/>
+                  <div style={{flex:1}}>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:1}}>
+                      <span style={{fontSize:10,fontWeight:700,color:"#334155"}}>{seg.label}</span>
+                      <span style={{fontSize:10,fontWeight:800,color:"#059669",fontFamily:"monospace"}}>{seg.pct}%</span>
+                    </div>
+                    <div style={{fontSize:9,color:"#94a3b8"}}>{seg.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        {/* 2. Wealth Destiny Timeline */}
+        <div style={{background:"#fff",borderRadius:12,border:"1px solid #d1fae5",padding:"14px",marginBottom:10}}>
+          <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}><div style={{width:4,height:20,background:"#0ea5e9",borderRadius:2}}/><div style={{fontSize:13,fontWeight:800,color:"#1e293b"}}>2. Wealth Destiny Timeline</div></div>
+          <div style={{fontSize:10,color:"#94a3b8",fontStyle:"italic",marginBottom:10}}>"กราฟระดับพลังงานความมั่งคั่ง (Destiny Timeline)"</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
+            <div style={{background:"#f0fdf4",border:"1px solid #d1fae5",padding:"8px 10px",borderRadius:10,display:"flex",alignItems:"center",gap:8}}><div style={{background:"#fff",padding:"3px 5px",borderRadius:6,fontSize:13}}>⚠️</div><div><div style={{fontSize:8,fontWeight:700,color:"#059669",textTransform:"uppercase",letterSpacing:"0.05em"}}>Mercury Warning</div><div style={{fontSize:11,fontWeight:700}}>ระวังการจ่ายเกินตัว</div></div></div>
+            <div style={{background:"#fffbeb",border:"1px solid #fde68a",padding:"8px 10px",borderRadius:10,display:"flex",alignItems:"center",gap:8}}><div style={{background:"#fff",padding:"3px 5px",borderRadius:6,fontSize:13}}>⌛</div><div><div style={{fontSize:8,fontWeight:700,color:"#d97706",textTransform:"uppercase",letterSpacing:"0.05em"}}>Wealth Window</div><div style={{fontSize:11,fontWeight:700,fontStyle:"italic"}}>ปี {nowY+1}–{nowY+2}</div></div></div>
+          </div>
+          <div style={{background:"#f8fafc",borderRadius:10,padding:"10px",overflow:"visible"}}>
+            <svg viewBox="0 0 400 100" style={{width:"100%",height:72,overflow:"visible"}}>
+              <path d="M0,80 Q50,70 100,30 T200,60 T300,40 T400,20" fill="none" stroke="#10b981" strokeWidth="4"/>
+              <circle cx="100" cy="30" r="5" fill="#f43f5e"/>
+              <circle cx="200" cy="60" r="5" fill="#8b5cf6"/>
+              <circle cx="400" cy="20" r="7" fill="#f59e0b"/>
+              <text x="100" y="20" fontSize="8" textAnchor="middle" fill="#94a3b8">{"อายุ "}{Math.max(20,age-3)}</text>
+              <text x="200" y="50" fontSize="8" textAnchor="middle" fill="#94a3b8">ปัจจุบัน</text>
+              <text x="400" y="10" fontSize="8" textAnchor="middle" fill="#f59e0b">{"ปี "}{nowY+2}</text>
+            </svg>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:9,fontWeight:700,color:"#94a3b8",textTransform:"uppercase",letterSpacing:"0.04em",marginTop:4,paddingLeft:2,paddingRight:2}}>
+              <span>จุดเริ่มต้น</span>
+              <span style={{color:"#f43f5e"}}>• บทเรียนการเงิน</span>
+              <span style={{color:"#8b5cf6"}}>• จังหวะตั้งตัว</span>
+              <span style={{color:"#d97706"}}>• มั่งคั่งสูงสุด</span>
+            </div>
+          </div>
+        </div>
+        {/* 3. Radar: ตัวตนภายใน vs แผนที่ควรเป็น */}
+        <div style={{background:"#fff",borderRadius:12,border:"1px solid #d1fae5",padding:"14px",marginBottom:10}}>
+          <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}><div style={{width:4,height:20,background:"#8b5cf6",borderRadius:2}}/><div style={{fontSize:13,fontWeight:800,color:"#1e293b"}}>เปรียบเทียบ: ตัวตนภายใน vs แผนที่ควรเป็น</div></div>
+          <div style={{fontSize:10,color:"#94a3b8",fontStyle:"italic",marginBottom:10}}>"บ่อยครั้งที่โหยหาอิสระ แต่ดวงบอกว่าต้องการความมั่นคง"</div>
+          <div style={{display:"flex",flexDirection:"row",gap:10,alignItems:"center"}}>
+            <div style={{flexShrink:0}}>
+              <svg viewBox="0 0 200 200" style={{width:150,height:150}}>
+                {[0.2,0.4,0.6,0.8,1].map((gs,i)=><polygon key={i} points={getGridPt(radarD.length,gs,100,100,80)} fill="none" stroke="#e2e8f0" strokeWidth="1"/>)}
+                {radarD.map((_,i)=>{const a=(Math.PI*2*i/radarD.length)-Math.PI/2;return <line key={i} x1="100" y1="100" x2={(100+80*Math.cos(a)).toFixed(1)} y2={(100+80*Math.sin(a)).toFixed(1)} stroke="#e2e8f0" strokeWidth="1"/>;} )}
+                <polygon points={getRPt(radarD,"ideal",100,100,80)} fill="rgba(14,165,233,0.1)" stroke="#0ea5e9" strokeWidth="2"/>
+                <polygon points={getRPt(radarD,"sub",100,100,80)} fill="rgba(244,63,94,0.1)" stroke="#f43f5e" strokeWidth="2"/>
+                {radarD.map((d,i)=>{const a=(Math.PI*2*i/radarD.length)-Math.PI/2;const x=(100+96*Math.cos(a)).toFixed(1);const y=(100+96*Math.sin(a)).toFixed(1);return <text key={i} x={x} y={y} fontSize="8" textAnchor="middle" fill="#94a3b8" fontWeight="bold">{d.label}</text>;})}
+              </svg>
+            </div>
+            <div style={{flex:1,display:"flex",flexDirection:"column",gap:8}}>
+              <div style={{background:"#fff1f2",padding:"8px 10px",borderRadius:10,border:"1px solid #ffe4e6"}}>
+                <div style={{fontSize:10,fontWeight:700,color:"#f43f5e",marginBottom:3}}>Your Subconscious (สีชมพู)</div>
+                <div style={{fontSize:9,color:"#9f1239",lineHeight:1.6}}>เน้นอิสระและความสุขชั่วคราว ดึงดูดการใช้จ่ายตามอารมณ์สูง (Mercury Impulse)</div>
+              </div>
+              <div style={{background:"#f0f9ff",padding:"8px 10px",borderRadius:10,border:"1px solid #bae6fd"}}>
+                <div style={{fontSize:10,fontWeight:700,color:"#0ea5e9",marginBottom:3}}>Wealth Strategy (สีฟ้า)</div>
+                <div style={{fontSize:9,color:"#0c4a6e",lineHeight:1.6}}>เส้นทางที่ทำให้คุณรวยจริง คือการเปลี่ยน "ไอเดีย" ให้เป็น "สินทรัพย์" และความมั่นคงระยะยาว</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* 4. Action Cards */}
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:10}}>
+          {[{title:"Financial Budget",icon:"💼",bg:"#f0fdf4",border:"#d1fae5",desc:"สร้างระบบงบประมาณเพื่อควบคุมรายจ่ายตามอารมณ์"},{title:"Knowledge Asset",icon:"💡",bg:"#fffbeb",border:"#fde68a",desc:`ลงทุนในคอร์สเรียนเพิ่มทักษะ${domP.planet} (การสื่อสาร/การดีล)`},{title:"Clear Targets",icon:"🎯",bg:"#f0f9ff",border:"#bae6fd",desc:`ตั้งเป้าออมทองหรือลงทุนเพื่อรองรับช่วงปี ${nowY+2}`}].map((card,i)=>(
+            <div key={i} style={{padding:"10px",borderRadius:12,background:card.bg,border:`1px solid ${card.border}`}}>
+              <div style={{background:"#fff",width:32,height:32,borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,marginBottom:6,boxShadow:"0 1px 3px rgba(0,0,0,0.08)"}}>{card.icon}</div>
+              <div style={{fontSize:10,fontWeight:800,color:"#1e293b",marginBottom:3}}>{card.title}</div>
+              <div style={{fontSize:9,color:"#64748b",lineHeight:1.5}}>{card.desc}</div>
+            </div>
+          ))}
+        </div>
+        {/* AI Analysis */}
+        {ai.money&&<div style={{background:"#f8fafc",borderRadius:12,padding:"10px 12px",border:"1px solid #e2e8f0",marginBottom:10}}>
+          <div style={{fontSize:10,fontWeight:700,color:"#059669",marginBottom:5}}>🧠 การวิเคราะห์เชิงลึก</div>
+          <div style={{fontSize:11,lineHeight:1.8,color:"#334155",whiteSpace:"pre-wrap"}}>{ai.money}</div>
+        </div>}
+        {/* CTA */}
+        <div style={{background:"linear-gradient(135deg,#052e16,#14532d)",borderRadius:14,padding:"18px 14px",textAlign:"center",position:"relative",overflow:"hidden"}}>
+          <div style={{fontSize:13,fontWeight:800,color:"#fff",marginBottom:5}}>พร้อมอัปเกรดสถานะการเงินของคุณหรือยัง?</div>
+          <div style={{fontSize:10,color:"#a7f3d0",marginBottom:10,lineHeight:1.6}}>คุณมีศักยภาพในการสร้างความสำเร็จมากกว่าที่คิด ค่อยๆ ก้าวไป ไม่ต้องรีบ ✨</div>
+          <div style={{display:"inline-block",background:"#fbbf24",color:"#052e16",fontWeight:900,padding:"7px 18px",borderRadius:999,fontSize:11}}>เริ่มต้นแผน Wealth Strategy ของคุณ</div>
+        </div>
+      </div>}
+    </Sec>;
+  })()}
 
   {/* Love & Compatibility */}
   {(()=>{
