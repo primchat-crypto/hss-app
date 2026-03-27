@@ -1709,7 +1709,10 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const[selectedQ,setSelectedQ]=useState(null);
     const[resultShown,setResultShown]=useState(false);
     const[showCustom,setShowCustom]=useState(false);
+    const[aiAnswer,setAiAnswer]=useState(null);
+    const[aiLoading,setAiLoading]=useState(false);
     const customRef=useRef(null);
+    const isDecisionQ=(q)=>/ไหม/.test(q||"");
     useEffect(()=>{
       const today=new Date().toISOString().slice(0,10);
       let quotaAlreadyUsed=false;
@@ -1718,10 +1721,18 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
       if(preAskQ.trim()&&!quotaAlreadyUsed){setActiveTab(preAskTab||"work");askQ(preAskQ);setPreAskQ("");}
     },[]);
     const askQ=(q)=>{
-      setSelectedQ(q);setShowCustom(false);
+      setSelectedQ(q);setShowCustom(false);setAiAnswer(null);
       if(isPaid||!quotaUsed){
         setResultShown(true);
         if(!isPaid){const today=new Date().toISOString().slice(0,10);localStorage.setItem("hss_ask_daily",JSON.stringify({date:today,q,tab:activeTab}));setQuotaUsed(true);}
+        if(!isDecisionQ(q)){
+          setAiLoading(true);
+          fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+            system:"คุณเป็นที่ปรึกษาโหราศาสตร์และจิตวิทยาชีวิต ตอบภาษาไทยกระชับ ตรงประเด็น ไม่เกิน 120 คำ ใช้ข้อมูลวันเดือนปีเกิดที่ให้มาวิเคราะห์จริง",
+            prompt:`วันเดือนปีเกิด: ${bday||"ไม่ระบุ"}, เวลาเกิด: ${btime||"ไม่ทราบ"}, จังหวัด: ${prov||"กรุงเทพฯ"}\nคำถาม: ${q}`,
+            maxTokens:300
+          })}).then(r=>r.json()).then(d=>{if(d.text)setAiAnswer(d.text);setAiLoading(false);}).catch(()=>setAiLoading(false));
+        }
       }
     };
     const submitCustom=()=>{const q=customRef.current?.value?.trim();if(q)askQ(q);};
@@ -1788,12 +1799,30 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         {resultShown&&<>
           {!isPaid&&<div style={{background:"#F1F5F9",borderRadius:10,padding:"10px 14px",marginBottom:12,display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:13}}>🔒</span><span style={{fontSize:11,color:"#64748B",fontWeight:600}}>ใช้ครบโควต้าวันนี้แล้ว (Free = 1/วัน)</span></div>}
           <div style={{background:"#EEF2FF",borderRadius:10,padding:"9px 14px",marginBottom:12,fontSize:12,color:"#4338CA",fontWeight:600}}>💬 {selectedQ}</div>
-          <div style={{background:rBg,border:`1.5px solid ${rBd}`,borderRadius:12,padding:"12px 14px",marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
-            <div><div style={{fontSize:14,fontWeight:800,color:rC}}>{rI} แนะนำ: {rec}</div><div style={{fontSize:11,color:rC,opacity:.75,marginTop:2}}>ความมั่นใจ: {cs}% · วิเคราะห์จาก 4 ศาสตร์</div></div>
-            <div style={{width:46,height:46,borderRadius:"50%",background:`conic-gradient(${rC} ${cs}%,#E2E8F0 0)`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-              <div style={{width:34,height:34,borderRadius:"50%",background:rBg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:rC}}>{cs}%</div>
+          {isDecisionQ(selectedQ)
+            ?<div style={{background:rBg,border:`1.5px solid ${rBd}`,borderRadius:12,padding:"12px 14px",marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
+              <div><div style={{fontSize:14,fontWeight:800,color:rC}}>{rI} แนะนำ: {rec}</div><div style={{fontSize:11,color:rC,opacity:.75,marginTop:2}}>ความมั่นใจ: {cs}% · วิเคราะห์จาก 4 ศาสตร์</div></div>
+              <div style={{width:46,height:46,borderRadius:"50%",background:`conic-gradient(${rC} ${cs}%,#E2E8F0 0)`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                <div style={{width:34,height:34,borderRadius:"50%",background:rBg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:rC}}>{cs}%</div>
+              </div>
             </div>
-          </div>
+            :aiLoading
+              ?<div style={{background:"#EEF2FF",border:"1.5px solid #C7D2FE",borderRadius:12,padding:"16px 14px",marginBottom:14,textAlign:"center"}}>
+                <div style={{fontSize:13,color:"#4338CA",fontWeight:600}}>✦ AI กำลังวิเคราะห์จากดวงชาตาของคุณ...</div>
+                <div style={{fontSize:11,color:"#818CF8",marginTop:4}}>ใช้เวลาสักครู่</div>
+              </div>
+              :aiAnswer
+                ?<div style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"1.5px solid #A5B4FC",borderRadius:12,padding:"14px",marginBottom:14}}>
+                  <div style={{fontSize:11,fontWeight:700,color:"#6366F1",marginBottom:8}}>🤖 AI วิเคราะห์จากวันเดือนปีเกิดของคุณ</div>
+                  <div style={{fontSize:13,color:"#1E293B",lineHeight:1.8,whiteSpace:"pre-line"}}>{aiAnswer}</div>
+                </div>
+                :<div style={{background:rBg,border:`1.5px solid ${rBd}`,borderRadius:12,padding:"12px 14px",marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
+                  <div><div style={{fontSize:14,fontWeight:800,color:rC}}>{rI} พลังงานวันนี้: {cs}%</div><div style={{fontSize:11,color:rC,opacity:.75,marginTop:2}}>วิเคราะห์จาก 4 ศาสตร์</div></div>
+                  <div style={{width:46,height:46,borderRadius:"50%",background:`conic-gradient(${rC} ${cs}%,#E2E8F0 0)`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    <div style={{width:34,height:34,borderRadius:"50%",background:rBg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:rC}}>{cs}%</div>
+                  </div>
+                </div>
+          }
           <div style={{fontSize:12,fontWeight:700,color:"#64748B",marginBottom:10}}>🔮 วิเคราะห์รายศาสตร์</div>
           {SCHOOLS.map((sch,i)=>{
             const ul=isPaid||(i===0);
