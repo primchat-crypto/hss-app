@@ -1353,8 +1353,8 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
             ))}
           </div>
           <div style={{position:"relative"}}>
-            <input key={preAskTab} ref={preAskInputRef} type="text" placeholder="หรือพิมพ์คำถามของคุณเอง..." defaultValue="" onKeyDown={e=>e.key==="Enter"&&setAiStep(2)} style={{width:"100%",background:"rgba(30,41,59,0.8)",border:"1px solid #334155",color:"#fff",borderRadius:16,padding:"14px 120px 14px 20px",fontSize:14,outline:"none",boxSizing:"border-box"}}/>
-            <button onClick={()=>setAiStep(2)} style={{position:"absolute",right:6,top:6,bottom:6,background:"#4F46E5",color:"#fff",padding:"0 20px",borderRadius:12,border:"none",fontWeight:700,cursor:"pointer",fontSize:13}}>ถามเลย</button>
+            <input key={preAskTab} ref={preAskInputRef} type="text" placeholder="หรือพิมพ์คำถามของคุณเอง..." defaultValue="" onKeyDown={e=>{if(e.key==="Enter"){const v=preAskInputRef.current?.value?.trim();if(v)setPreAskQ(v);setAiStep(2);}}} style={{width:"100%",background:"rgba(30,41,59,0.8)",border:"1px solid #334155",color:"#fff",borderRadius:16,padding:"14px 120px 14px 20px",fontSize:14,outline:"none",boxSizing:"border-box"}}/>
+            <button onClick={()=>{const v=preAskInputRef.current?.value?.trim();if(v)setPreAskQ(v);setAiStep(2);}} style={{position:"absolute",right:6,top:6,bottom:6,background:"#4F46E5",color:"#fff",padding:"0 20px",borderRadius:12,border:"none",fontWeight:700,cursor:"pointer",fontSize:13}}>ถามเลย</button>
           </div>
         </div>}
         {/* Step 2 */}
