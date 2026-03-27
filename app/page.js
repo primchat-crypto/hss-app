@@ -1294,7 +1294,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
           ?<button onClick={doLogout} style={{fontSize:14,color:"#64748B",background:"none",border:"1px solid #E2E8F0",borderRadius:6,padding:"6px 12px",cursor:"pointer"}}>ออกจากระบบ</button>
           :<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:14,fontWeight:500,color:"#475569",background:"none",border:"none",cursor:"pointer"}}>เข้าสู่ระบบ</button>
         }
-        <button onClick={()=>setSc("profile")} style={{background:"#0F172A",color:"#fff",fontSize:14,fontWeight:500,padding:"8px 16px",borderRadius:9999,border:"none",cursor:"pointer"}}>เริ่มวิเคราะห์ฟรี</button>
+        <button onClick={()=>{setAskMode(false);setSc("profile");}} style={{background:"#0F172A",color:"#fff",fontSize:14,fontWeight:500,padding:"8px 16px",borderRadius:9999,border:"none",cursor:"pointer"}}>เริ่มวิเคราะห์ฟรี</button>
       </div>
     </div>
   </nav>
@@ -1353,7 +1353,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
             ))}
           </div>
           <div style={{position:"relative"}}>
-            <input ref={preAskInputRef} type="text" placeholder="หรือพิมพ์คำถามของคุณเอง..." defaultValue={preAskQ} onChange={e=>setPreAskQ(e.target.value)} onKeyDown={e=>e.key==="Enter"&&setAiStep(2)} style={{width:"100%",background:"rgba(30,41,59,0.8)",border:"1px solid #334155",color:"#fff",borderRadius:16,padding:"14px 120px 14px 20px",fontSize:14,outline:"none",boxSizing:"border-box"}}/>
+            <input key={preAskTab} ref={preAskInputRef} type="text" placeholder="หรือพิมพ์คำถามของคุณเอง..." defaultValue="" onKeyDown={e=>e.key==="Enter"&&setAiStep(2)} style={{width:"100%",background:"rgba(30,41,59,0.8)",border:"1px solid #334155",color:"#fff",borderRadius:16,padding:"14px 120px 14px 20px",fontSize:14,outline:"none",boxSizing:"border-box"}}/>
             <button onClick={()=>setAiStep(2)} style={{position:"absolute",right:6,top:6,bottom:6,background:"#4F46E5",color:"#fff",padding:"0 20px",borderRadius:12,border:"none",fontWeight:700,cursor:"pointer",fontSize:13}}>ถามเลย</button>
           </div>
         </div>}
@@ -1550,7 +1550,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         <div style={{position:"absolute",top:0,right:0,padding:16,opacity:0.1,fontSize:120,lineHeight:1}}>⚡</div>
         <h2 style={{fontSize:"clamp(1.25rem,3vw,1.875rem)",fontWeight:700,marginBottom:16,position:"relative",zIndex:1,margin:"0 0 16px"}}>พร้อมรู้จักตัวเองในเวอร์ชั่นที่ดีที่สุดหรือยัง?</h2>
         <p style={{color:"#C7D2FE",marginBottom:32,maxWidth:512,margin:"0 auto 32px",position:"relative",zIndex:1}}>เริ่มทำแบบประเมินฟรี ใช้เวลาเพียง 10 นาที เพื่อปลดล็อกเส้นทางชีวิตของคุณ</p>
-        <button onClick={()=>setSc("profile")} style={{background:"#fff",color:"#312E81",fontWeight:900,fontSize:18,padding:"16px 32px",borderRadius:9999,border:"none",cursor:"pointer",position:"relative",zIndex:1}}>เริ่มต้นใช้งานฟรี</button>
+        <button onClick={()=>{setAskMode(false);setSc("profile");}} style={{background:"#fff",color:"#312E81",fontWeight:900,fontSize:18,padding:"16px 32px",borderRadius:9999,border:"none",cursor:"pointer",position:"relative",zIndex:1}}>เริ่มต้นใช้งานฟรี</button>
       </div>
     </div>
   </section>
@@ -1833,6 +1833,12 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
           </div>
           <button onClick={()=>{setResultShown(false);setSelectedQ(null);setShowCustom(false);if(customRef.current)customRef.current.value="";}} style={{width:"100%",padding:"12px 0",borderRadius:10,border:"none",background:"#1E293B",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",marginBottom:4,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>🔄 ถามคำถามใหม่</button>
         </>}
+        <div style={{margin:"24px 0 16px",borderRadius:16,overflow:"hidden",background:"linear-gradient(135deg,#1E1B4B,#312E81)",padding:"24px 20px",textAlign:"center"}}>
+          <div style={{fontSize:18,marginBottom:6}}>✨</div>
+          <div style={{fontSize:15,fontWeight:800,color:"#fff",marginBottom:6}}>ค้นพบตัวเองมากขึ้น</div>
+          <div style={{fontSize:12,color:"#C7D2FE",marginBottom:16,lineHeight:1.6}}>วิเคราะห์จิตวิทยาเชิงลึกจากคำถาม 36 ข้อ<br/>ผสานกับวันเดือนปีเกิด เพื่อ Dashboard ส่วนตัวของคุณ</div>
+          <button onClick={()=>{setAskMode(false);setSc("profile");}} style={{padding:"12px 28px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#6366F1,#8B5CF6)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(99,102,241,0.4)"}}>ค้นพบตัวเองมากขึ้นใน Dashboard ส่วนตัว →</button>
+        </div>
         <div style={{textAlign:"center",padding:"8px 0 40px"}}><button onClick={()=>setSc("landing")} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>← กลับหน้าหลัก</button></div>
       </div>
     </div>
