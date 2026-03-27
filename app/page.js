@@ -707,9 +707,11 @@ export default function App(){
       const params=new URLSearchParams(window.location.search);
       const testPlan=params.get("testplan");
       if(testPlan&&["free","quick","smart","pro","deep","all"].includes(testPlan)){
+        localStorage.setItem("hss_testplan",testPlan);
         ST.set("plan",testPlan);setPlan(testPlan);
         window.history.replaceState({},"",window.location.pathname);
       }
+      const testPlanOverride=localStorage.getItem("hss_testplan");
       // === STEP 1: Detect Stripe redirect ===
       const payOk=params.get("payment")==="success";
       const payPlan=params.get("plan");
@@ -750,7 +752,9 @@ export default function App(){
             hasLocalData=true;
           }
           // Activate paid plan
-          if(hasPaid){
+          if(testPlanOverride){
+            setPlan(testPlanOverride);ST.set("plan",testPlanOverride);
+          } else if(hasPaid){
             setPlan(paidPlan);ST.set("plan",paidPlan);
             await sb.from("profiles").update({plan:paidPlan,updated_at:new Date().toISOString()}).eq("id",session.user.id);
             localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at");
@@ -992,7 +996,10 @@ export default function App(){
         // Check if there's a paid plan waiting to activate
         const paidPlan=localStorage.getItem("hss_paid_plan");
         const paidAt=parseInt(localStorage.getItem("hss_paid_at")||"0");
-        if(paidPlan&&(Date.now()-paidAt<3600000)){
+        const tpo=localStorage.getItem("hss_testplan");
+        if(tpo){
+          setPlan(tpo);ST.set("plan",tpo);if(assess?.scores)setSc("results");
+        } else if(paidPlan&&(Date.now()-paidAt<3600000)){
           setPlan(paidPlan);ST.set("plan",paidPlan);
           await sb.from("profiles").update({plan:paidPlan,updated_at:new Date().toISOString()}).eq("id",data.user.id);
           localStorage.removeItem("hss_paid_plan");localStorage.removeItem("hss_paid_at");
@@ -1015,7 +1022,7 @@ export default function App(){
     // Update UI immediately — don't block on async signOut
     aiTriggered.current=false;
     setUser(null);setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0);setPlan("free");
-    ["hss6_scores","hss6_vedic","hss6_profile","hss6_plan","hss6_answers","hss_want_plan","hss_user_email"].forEach(k=>localStorage.removeItem(k));
+    ["hss6_scores","hss6_vedic","hss6_profile","hss6_plan","hss6_answers","hss_want_plan","hss_user_email","hss_testplan"].forEach(k=>localStorage.removeItem(k));
     // Sign out in background (non-blocking)
     if(sb)sb.auth.signOut().catch(()=>{});
   };
