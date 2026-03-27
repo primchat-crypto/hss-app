@@ -6,9 +6,17 @@ export async function POST(req) {
     const sk = process.env.STRIPE_SECRET_KEY;
     if (!sk) return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
 
-    const priceId = plan === "deep" 
-      ? process.env.STRIPE_PRICE_DEEP 
-      : process.env.STRIPE_PRICE_ALL;
+    const priceId = plan === "quick"
+      ? process.env.STRIPE_PRICE_QUICK
+      : plan === "smart"
+      ? process.env.STRIPE_PRICE_SMART
+      : plan === "pro"
+      ? process.env.STRIPE_PRICE_PRO
+      : plan === "deep"
+      ? process.env.STRIPE_PRICE_QUICK  // legacy alias
+      : plan === "all"
+      ? process.env.STRIPE_PRICE_SMART  // legacy alias
+      : null;
 
     if (!priceId) return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
 
