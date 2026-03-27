@@ -681,7 +681,7 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade})=>{
 };
 
 export default function App(){
-  const[sc,setSc]=useState("landing");const[askMode,setAskMode]=useState(false);const[preAskQ,setPreAskQ]=useState("");const[preAskTab,setPreAskTab]=useState("work");
+  const[sc,setSc]=useState("landing");const[askMode,setAskMode]=useState(false);const[preAskQ,setPreAskQ]=useState("");const[preAskTab,setPreAskTab]=useState("work");const[aiStep,setAiStep]=useState(1);
   const[nick,setNick]=useState("");const[email,setEmail]=useState("");const[bday,setBday]=useState("--");
   const[knowT,setKnowT]=useState(null);const[btime,setBtime]=useState("");const[tSlot,setTSlot]=useState("");const[prov,setProv]=useState("");
   const[qI,setQI]=useState(0);const[ans,setAns]=useState({});
@@ -1279,169 +1279,295 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
 
   // ─── LANDING ───
   const FT_DESC={"Identity Snapshot (AI)":{en:"Identity Snapshot (AI)",th:"สแกนตัวตนด้วย AI",desc:"สรุปภาพรวมว่าคุณเป็นคนแบบไหนใน 1 นาที"},"5 Core Scores + AI วิเคราะห์":{en:"5 Core Scores",th:"5 พลังหลักในตัวคุณ",desc:"วัดระดับความเก่งใน 5 ด้านสำคัญ — จุดแข็ง / จุดพัฒนา"},"จุดแข็ง / จุดพัฒนา 12 มิติ":{en:"12 Dimensions",th:"12 ด้านของชีวิต (ดี/ด้อย)",desc:"เจาะลึกว่าจุดไหนคือ 'บ่อเงินบ่อทอง' จุดไหนคือ 'รูรั่ว'"},"Shadow Analysis เชิงลึก":{en:"Shadow Analysis",th:"วิเคราะห์ 'จุดบอด' ขัดลาภ",desc:"เผยนิสัยลึกๆ ที่มักทำให้พังหรือเสียโอกาส"},"Love & Compatibility ชะตาความรัก":{en:"Love & Compatibility",th:"ชะตาความรัก & ไทม์ไลน์คู่แท้",desc:"วิเคราะห์รากเหง้ารักพัง คู่ครองที่เสริมดวง และช่วงเวลาที่จะพบคู่แท้"},"Life Principle หลักการใช้ชีวิต":{en:"Life Principle",th:"คู่มือการใช้ชีวิตเฉพาะคุณ",desc:"กฎเหล็กที่ถ้าทำตามแล้วชีวิตจะรุ่งเรือง"},"Life Phase Map (Dasha)":{en:"Life Phase Map",th:"แผนที่จังหวะชีวิต (ขาขึ้น/ขาลง)",desc:"บอกว่าตอนนี้คุณอยู่ในช่วง 'สะสมบุญ' หรือ 'ตวงตักโชค'"},"Do & Don't รายสัปดาห์":{en:"Weekly Do & Don't",th:"สิ่งควรทำ-ควรเลี่ยง สัปดาห์นี้",desc:"บอกทางหนีทีไล่รายสัปดาห์ ไม่ให้ก้าวพลาด"},"7-Day Energy Forecast":{en:"7-Day Energy Forecast",th:"พยากรณ์พลังงาน 7 วัน",desc:"วันไหน 'พลังล้น' ควรลุย วันไหน 'พลังตก' ควรพัก"},"Dashboard กราฟชีวิตการงาน":{en:"Career Dashboard",th:"กราฟเส้นทางความสำเร็จ",desc:"ดูภาพรวมการงานตลอดปีแบบเข้าใจง่ายในหน้าเดียว"},"Job Matching AI":{en:"Job Matching AI",th:"AI ค้นหางานที่ 'ถูกโฉลก'",desc:"แนะนำอาชีพที่ทำแล้วรวยและมีความสุข ตามดวงและนิสัย"},"PDF Report ดาวน์โหลด":{en:"PDF Report",th:"รายงานฉบับเต็ม",desc:"ดาวน์โหลดผลวิเคราะห์ทุกด้านในไฟล์เดียว"},"Social Share Card":{en:"Share Card",th:"การ์ดแชร์โซเชียล",desc:"แชร์ผลลัพธ์ให้คนรู้จักคุณในแบบที่คุณเลือก"}};
-  const Landing=()=><div style={{minHeight:"100vh"}}>
-  {/* Nav */}
-  <div style={{display:"flex",justifyContent:"flex-end",padding:"12px 20px 0"}}>{logged?<div style={{display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:11,color:"#64748B"}}>{user?.email?.split("@")[0]}</span><button onClick={doLogout} style={{fontSize:11,color:"#64748B",background:"none",border:"1px solid #E2E8F0",borderRadius:6,padding:"4px 10px",cursor:"pointer"}}>ออกจากระบบ</button></div>:<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:12,fontWeight:600,color:"#4338CA",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:8,padding:"6px 16px",cursor:"pointer"}}>เข้าสู่ระบบ / สมัคร</button>}</div>
-
-  {/* Hero */}
-  <div style={{textAlign:"center",padding:"40px 20px 32px",position:"relative",overflow:"hidden"}}><div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 30% 20%,rgba(67,56,202,.08),transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(139,92,246,.06),transparent 50%)",zIndex:0}}/><div style={{position:"relative",zIndex:1}}><div style={{width:52,height:52,borderRadius:14,background:"linear-gradient(135deg,#4338CA,#6D28D9)",display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:24,color:"#fff",boxShadow:"0 8px 24px rgba(67,56,202,.3)",animation:"hfl 3s ease-in-out infinite",marginBottom:16}}>✦</div><h1 style={{fontSize:26,fontWeight:800,color:"#1E293B",marginBottom:6}}>{BRAND}</h1><h2 style={{fontSize:22,fontWeight:800,color:"#1E293B",lineHeight:1.4,marginBottom:8,maxWidth:340,margin:"0 auto 8px"}}>ยังไม่รู้ว่าชีวิตควรไปทางไหน?<br/><span style={{color:"#4338CA"}}>รู้คำตอบที่ชัดขึ้นใน 10 นาที</span></h2><p style={{fontSize:13,color:"#64748B",lineHeight:1.7,maxWidth:340,margin:"0 auto 20px"}}>เข้าใจตัวเองให้ชัดขึ้น แล้วตัดสินใจเรื่องงาน เงิน และความรักได้ดีขึ้น</p><div style={{maxWidth:280,margin:"0 auto"}}><Btn onClick={()=>setSc("profile")}>ดูผลลัพธ์ของฉัน →</Btn><div style={{textAlign:"center",marginTop:8,fontSize:11,color:"#94A3B8"}}>ฟรี · ใช้เวลาไม่เกิน 10 นาที · ไม่ต้องใช้บัตรเครดิต</div>{logged&&scores&&<button onClick={()=>setSc("results")} style={{width:"100%",marginTop:8,padding:10,borderRadius:8,border:"2px solid #6366F1",background:"#fff",color:"#4338CA",fontSize:13,fontWeight:700,cursor:"pointer"}}>📊 ดูผลลัพธ์เดิม</button>}</div></div></div>
-
-  <div style={{padding:"0 20px",maxWidth:520,margin:"0 auto"}}>
-
-  {/* ASK & DECIDE AI */}
-  <Card style={{background:"linear-gradient(135deg,#0F172A,#1E1B4B)",border:"none",marginBottom:12}}>
-    {/* Header */}
-    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-      <div style={{width:30,height:30,borderRadius:8,background:"linear-gradient(135deg,#6366F1,#8B5CF6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>🤖</div>
-      <div><div style={{fontSize:13,fontWeight:800,color:"#fff"}}>Ask & Decide AI</div><div style={{fontSize:10,color:"#94A3B8"}}>ตัดสินใจจากดวงและจังหวะชีวิต</div></div>
-    </div>
-    {/* Category tabs */}
-    <div style={{display:"flex",gap:6,marginBottom:10,overflowX:"auto",scrollbarWidth:"none"}}>
-      {Object.entries(DEC_CATS).map(([k,v])=><button key={k} onClick={()=>{setPreAskTab(k);setPreAskQ("");}} style={{padding:"5px 12px",borderRadius:20,border:"none",background:preAskTab===k?"#6366F1":"rgba(255,255,255,0.1)",color:preAskTab===k?"#fff":"#A5B4FC",fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,whiteSpace:"nowrap"}}>{v.icon} {v.label}</button>)}
-    </div>
-    {/* Question chips */}
-    <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:10}}>
-      {DEC_CATS[preAskTab].q.map((q,i)=><button key={i} onClick={()=>setPreAskQ(q)} style={{padding:"5px 10px",borderRadius:16,fontSize:11,fontWeight:600,border:`1px solid ${preAskQ===q?"#6366F1":"rgba(255,255,255,0.15)"}`,background:preAskQ===q?"rgba(99,102,241,0.25)":"rgba(255,255,255,0.07)",color:preAskQ===q?"#C7D2FE":"#CBD5E1",cursor:"pointer"}}>{q}</button>)}
-    </div>
-    {/* Custom question input */}
-    <div style={{marginBottom:14}}>
-      <input key={preAskQ} ref={preAskInputRef} defaultValue={preAskQ} placeholder="หรือพิมพ์คำถามของคุณเอง..." style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(99,102,241,0.35)",borderRadius:8,padding:"9px 12px",fontSize:12,color:"#E2E8F0",outline:"none",boxSizing:"border-box"}}/>
-    </div>
-    {/* Divider */}
-    <div style={{borderTop:"1px solid rgba(255,255,255,0.08)",marginBottom:12}}/>
-    {/* Birth date */}
-    <div style={{marginBottom:10}}>
-      <div style={{fontSize:11,fontWeight:700,color:"#94A3B8",marginBottom:6}}>วันเดือนปีเกิด *</div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
-        <select value={bday.split("-")[2]||""} onChange={e=>setBday(`${bday.split("-")[0]||"2000"}-${bday.split("-")[1]||"01"}-${e.target.value}`)} style={{border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:12,color:"#E2E8F0",outline:"none",width:"100%"}}>
-          <option value="" style={{background:"#1E1B4B"}}>วัน</option>{Array.from({length:31},(_,i)=>i+1).map(d=><option key={d} value={String(d).padStart(2,"0")} style={{background:"#1E1B4B"}}>{d}</option>)}
-        </select>
-        <select value={bday.split("-")[1]||""} onChange={e=>setBday(`${bday.split("-")[0]||"2000"}-${e.target.value}-${bday.split("-")[2]||"01"}`)} style={{border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:12,color:"#E2E8F0",outline:"none",width:"100%"}}>
-          <option value="" style={{background:"#1E1B4B"}}>เดือน</option>{["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."].map((m,i)=><option key={i} value={String(i+1).padStart(2,"0")} style={{background:"#1E1B4B"}}>{m}</option>)}
-        </select>
-        <select value={bday.split("-")[0]||""} onChange={e=>setBday(`${e.target.value}-${bday.split("-")[1]||"01"}-${bday.split("-")[2]||"01"}`)} style={{border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:12,color:"#E2E8F0",outline:"none",width:"100%"}}>
-          <option value="" style={{background:"#1E1B4B"}}>ปี</option>{Array.from({length:80},(_,i)=>2026-i).map(y=><option key={y} value={String(y)} style={{background:"#1E1B4B"}}>{y}</option>)}
-        </select>
-      </div>
-    </div>
-    {/* Birth time */}
-    <div style={{marginBottom:10}}>
-      <div style={{fontSize:11,fontWeight:700,color:"#94A3B8",marginBottom:6}}>เวลาเกิด</div>
-      <div style={{display:"flex",gap:6,marginBottom:8}}>
-        <button onClick={()=>{setKnowT(true);setTSlot("");}} style={{flex:1,padding:"7px 8px",borderRadius:8,border:`2px solid ${knowT===true?"#6366F1":"rgba(255,255,255,0.15)"}`,background:knowT===true?"rgba(99,102,241,0.2)":"rgba(255,255,255,0.05)",color:knowT===true?"#C7D2FE":"#94A3B8",fontSize:11,fontWeight:700,cursor:"pointer"}}>รู้เวลาเกิด</button>
-        <button onClick={()=>{setKnowT(false);setBtime("");}} style={{flex:1,padding:"7px 8px",borderRadius:8,border:`2px solid ${knowT===false?"#F59E0B":"rgba(255,255,255,0.15)"}`,background:knowT===false?"rgba(245,158,11,0.15)":"rgba(255,255,255,0.05)",color:knowT===false?"#FDE68A":"#94A3B8",fontSize:11,fontWeight:700,cursor:"pointer"}}>ไม่รู้เวลาเกิด</button>
-      </div>
-      {knowT===true&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-        <select value={btime.split(":")[0]||""} onChange={e=>setBtime(`${e.target.value}:${btime.split(":")[1]||"00"}`)} style={{border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:11,color:"#E2E8F0",outline:"none",width:"100%"}}>
-          <option value="" style={{background:"#1E1B4B"}}>ชม.</option>{Array.from({length:24},(_,i)=>i).map(h=><option key={h} value={String(h).padStart(2,"0")} style={{background:"#1E1B4B"}}>{String(h).padStart(2,"0")}</option>)}
-        </select>
-        <select value={btime.split(":")[1]||""} onChange={e=>setBtime(`${btime.split(":")[0]||"00"}:${e.target.value}`)} style={{border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:11,color:"#E2E8F0",outline:"none",width:"100%"}}>
-          <option value="" style={{background:"#1E1B4B"}}>นาที</option>{[0,5,10,15,20,25,30,35,40,45,50,55].map(m=><option key={m} value={String(m).padStart(2,"0")} style={{background:"#1E1B4B"}}>{String(m).padStart(2,"0")}</option>)}
-        </select>
-      </div>}
-      {knowT===false&&<div style={{display:"flex",flexDirection:"column",gap:4}}>
-        {TS.map(ts=><button key={ts.id} onClick={()=>setTSlot(ts.id)} style={{padding:"8px 10px",borderRadius:8,border:`2px solid ${tSlot===ts.id?"#F59E0B":"rgba(255,255,255,0.15)"}`,background:tSlot===ts.id?"rgba(245,158,11,0.15)":"rgba(255,255,255,0.05)",textAlign:"left",cursor:"pointer",width:"100%"}}><div style={{fontSize:11,fontWeight:tSlot===ts.id?700:500,color:tSlot===ts.id?"#FDE68A":"#CBD5E1"}}>{ts.l}</div><div style={{fontSize:10,color:"#64748B"}}>{ts.d}</div></button>)}
-      </div>}
-    </div>
-    {/* Province */}
-    <div style={{marginBottom:14}}>
-      <div style={{fontSize:11,fontWeight:700,color:"#94A3B8",marginBottom:6}}>จังหวัดที่เกิด</div>
-      <select value={prov} onChange={e=>setProv(e.target.value)} style={{width:"100%",border:"1px solid rgba(99,102,241,0.3)",background:"rgba(255,255,255,0.07)",borderRadius:8,padding:"8px 4px",fontSize:11,color:"#E2E8F0",outline:"none"}}>
-        <option value="" style={{background:"#1E1B4B"}}>เลือกจังหวัด</option>{PV.map(p=><option key={p} value={p} style={{background:"#1E1B4B"}}>{p}</option>)}
-      </select>
-    </div>
-    {/* Submit */}
-    <button onClick={()=>{const q=(preAskInputRef.current?.value?.trim())||preAskQ;const bp=bday.split("-");const bdOk=bp[0]&&bp[1]&&bp[2]&&bp[0]!=="--"&&bp[0]!=="undefined";if(!bdOk){alert("กรุณาเลือกวันเดือนปีเกิดก่อนนะคะ");return;}if(!q){alert("กรุณาเลือกหรือพิมพ์คำถามที่ต้องการก่อนนะคะ");return;}setPreAskQ(q);setAskMode(true);goAskResults();}} style={{width:"100%",padding:"10px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#6366F1,#4338CA)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>👉 วิเคราะห์คำตอบของฉัน</button>
-  </Card>
-
-  <h2 style={{fontSize:22,fontWeight:900,color:"#1E293B",marginBottom:14,lineHeight:1.3}}>หรือเริ่มจากรู้จักตัวเองก่อน</h2>
-
-  {/* PAIN */}
-  <Card style={{background:"linear-gradient(135deg,#FEF3C7,#FFF7ED)",border:"1px solid #FDE68A",marginBottom:12}}>
-    <div style={{fontSize:14,fontWeight:700,color:"#92400E",marginBottom:8,lineHeight:1.6}}>คุณอาจกำลังพยายามเต็มที่<br/>แต่ชีวิตยังไม่ไปไหน</div>
-    <div style={{fontSize:12,color:"#78350F",lineHeight:1.7}}>ไม่ใช่เพราะคุณไม่เก่ง แต่อาจเป็นเพราะคุณยังใช้ตัวเองไม่ถูกทาง</div>
-  </Card>
-
-  {/* VALUE */}
-  <div style={{marginBottom:16}}>
-    <h3 style={{fontSize:14,fontWeight:700,marginBottom:10,color:"#1E293B"}}>คุณจะได้คำตอบที่ใช้ได้จริง</h3>
-    {[{icon:"💼",text:"รู้ว่าเส้นทางงานแบบไหนเหมาะกับจุดแข็งของคุณจริง ๆ"},{icon:"🔁",text:"เห็นนิสัยหรือรูปแบบที่ทำให้คุณพลาดโอกาสซ้ำ ๆ"},{icon:"⚡",text:"รู้ว่าช่วงนี้ควรลุย เปลี่ยน หรือรอให้จังหวะชัดขึ้น"}].map((x,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"11px 14px",background:"#F8FAFC",borderRadius:10,marginBottom:6,border:"1px solid #E2E8F0"}}><span style={{fontSize:18,flexShrink:0,marginTop:1}}>{x.icon}</span><span style={{fontSize:13,fontWeight:600,color:"#1E293B",lineHeight:1.5}}>{x.text}</span></div>)}
-  </div>
-
-  {/* RESULT PREVIEW */}
-  <div style={{marginBottom:16}}>
-    <h3 style={{fontSize:14,fontWeight:700,marginBottom:10,color:"#1E293B"}}>ตัวอย่างผลลัพธ์ที่รอคุณอยู่</h3>
-    <Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #C7D2FE",position:"relative",overflow:"hidden",marginBottom:0}}>
-      <div style={{position:"absolute",top:10,right:10,background:"#4338CA",color:"#fff",fontSize:9,fontWeight:800,padding:"3px 8px",borderRadius:6}}>ตัวอย่าง</div>
-      <div style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:4}}><div style={{fontSize:11,color:"#94A3B8"}}>บุคลิกภาพของคุณ</div><span style={{fontSize:10,fontWeight:800,color:"#4338CA",background:"#EEF2FF",border:"1px solid #C7D2FE",padding:"2px 8px",borderRadius:6,letterSpacing:.5,flexShrink:0}}>ENFJ</span></div><div style={{fontSize:16,fontWeight:800,color:"#4338CA",lineHeight:1.3}}>Visionary Leader<div style={{fontSize:11,color:"#6366F1",fontWeight:500,marginTop:2}}>ผู้นำที่มองภาพใหญ่และสื่อสารได้โดดเด่น</div></div></div>
-      <div style={{display:"flex",gap:6,marginBottom:10}}>{[{l:"จุดที่ต้องระวัง",v:"Overthinking",c:"#DC2626",bg:"#FEF2F2"},{l:"จุดแข็งเด่น",v:"Creative Vision",c:"#059669",bg:"#ECFDF5"}].map((t,i)=><div key={i} style={{flex:1,background:t.bg,borderRadius:8,padding:"8px 10px"}}><div style={{fontSize:10,color:"#94A3B8",marginBottom:2}}>{t.l}</div><div style={{fontSize:12,fontWeight:700,color:t.c}}>{t.v}</div></div>)}</div>
-      <div style={{background:"#fff",borderRadius:8,padding:"8px 12px",border:"1px solid #DDD6FE"}}><div style={{fontSize:10,color:"#94A3B8",marginBottom:3}}>Next Move แนะนำ</div><div style={{fontSize:12,fontWeight:600,color:"#4338CA",lineHeight:1.5}}>ช่วง 6 เดือนข้างหน้า เหมาะกับการเปลี่ยนบทบาท ขยับตำแหน่ง หรือเริ่มต้นสิ่งใหม่อย่างจริงจัง</div></div>
-    </Card>
-    {/* SHADOW CARD PREVIEW */}
-    <div style={{background:"linear-gradient(135deg,#0F172A,#1E293B)",borderRadius:12,padding:"14px 16px",marginBottom:8}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><div style={{fontSize:11,color:"#94A3B8"}}>🌑 เงาในใจของคุณ</div><span style={{fontSize:9,fontWeight:700,color:"#F87171",background:"rgba(220,38,38,.2)",padding:"2px 8px",borderRadius:6}}>Shadow Analysis</span></div>
-      <div style={{fontSize:15,fontWeight:800,color:"#F8FAFC",marginBottom:2}}>The Avoider Pattern</div>
-      <div style={{fontSize:11,color:"#94A3B8",marginBottom:10}}>รูปแบบที่ทำให้คุณหลีกเลี่ยงความขัดแย้งโดยไม่รู้ตัว</div>
-      <div style={{display:"flex",gap:6,marginBottom:10}}>
-        <div style={{flex:1,background:"rgba(220,38,38,.15)",borderRadius:8,padding:"8px 10px",border:"1px solid rgba(220,38,38,.25)"}}><div style={{fontSize:9,color:"#FCA5A5",marginBottom:2,fontWeight:600}}>Trigger หลัก</div><div style={{fontSize:12,fontWeight:700,color:"#FCA5A5"}}>การถูกวิจารณ์</div></div>
-        <div style={{flex:1,background:"rgba(245,158,11,.15)",borderRadius:8,padding:"8px 10px",border:"1px solid rgba(245,158,11,.25)"}}><div style={{fontSize:9,color:"#FDE68A",marginBottom:2,fontWeight:600}}>Pattern ซ้ำ</div><div style={{fontSize:12,fontWeight:700,color:"#FDE68A"}}>ผลัดวันประกันพรุ่ง</div></div>
-      </div>
-      <div style={{padding:"8px 10px",background:"rgba(99,102,241,.15)",borderRadius:8,border:"1px solid rgba(99,102,241,.25)",fontSize:11,color:"#A5B4FC",lineHeight:1.5}}>💡 เมื่อรู้เท่าทัน Shadow ตัวเอง คุณจะหยุดวนซ้ำรูปแบบนี้ได้</div>
-    </div>
-    {/* LOCKED PREVIEW */}
-    <div style={{background:"#1E1B4B",borderRadius:"0 0 12px 12px",padding:"12px 14px",marginBottom:0}}>
-      <div style={{fontSize:11,fontWeight:700,color:"#A5B4FC",marginBottom:8}}>และนี่คือสิ่งที่คุณจะเห็นต่อหลังปลดล็อก</div>
-      {["งานที่เหมาะกับจุดแข็งและรายได้สูงสุดของคุณ","ช่วงเวลาที่ชีวิตคุณมีโอกาสพุ่งแรงที่สุด","จุดบอดที่ทำให้คุณเสียโอกาสซ้ำ ๆ","รูปแบบความรักและคนที่เหมาะกับคุณจริง","คำแนะนำเฉพาะตัวว่าตอนนี้ควรลุย เปลี่ยน หรือรอ"].map((t,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"4px 0",fontSize:12,color:"#C7D2FE"}}><span style={{fontSize:13}}>🔒</span><span>{t}</span></div>)}
-    </div>
-  </div>
-
-  {/* SOCIAL PROOF — Reviews */}
-  <div style={{marginBottom:20}}>
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-      <h3 style={{fontSize:14,fontWeight:700,color:"#1E293B"}}>คนที่ใช้แล้วบอกว่า</h3>
-      <span style={{fontSize:11,color:"#94A3B8"}}>ปัดดูต่อ →</span>
-    </div>
-    <div style={{display:"flex",gap:0,overflowX:"auto",paddingBottom:8,scrollSnapType:"x mandatory",WebkitOverflowScrolling:"touch",scrollbarWidth:"none",msOverflowStyle:"none"}}>
-      {[
-        {name:"มิว",age:27,role:"HR Manager",avatar:"👩",stars:5,text:"ตอนแรกคิดว่าจะเหมือนทดสอบทั่วไป แต่ผลที่ได้มันเจาะจงมาก ตรงจุดเลย รู้เลยว่าที่ทำงานอยู่มันไม่ใช่ทาง เดือนเดียวหลังจากนั้นก็ลาออก",tag:"เรื่องงาน"},
-        {name:"ปาล์ม",age:34,role:"Freelance Designer",avatar:"👨",stars:5,text:"ส่วน Shadow Analysis แม่นจนขนลุก มันบอกนิสัยที่ทำให้พลาดซ้ำได้เลย ตอนอ่านนั่งยิ้มคนเดียวเพราะมันตรงเกินไป",tag:"เรื่องตัวเอง"},
-        {name:"แนน",age:24,role:"จบใหม่",avatar:"👩",stars:5,text:"ยังไม่รู้เลยว่าจะทำงานอะไร แต่หลังจากดูผล มันชัดขึ้นมากว่าจุดแข็งตัวเองอยู่ตรงไหน ตอนนี้เริ่ม apply ตรงสาย",tag:"เรื่องเส้นทาง"},
-        {name:"โบ",age:31,role:"เจ้าของร้านออนไลน์",avatar:"👩",stars:5,text:"ส่วน timing ชีวิตตรงมาก ช่วงที่ผลบอกว่าควรพัก ตอนนั้นทำอะไรก็ไม่ผ่านจริงๆ พอรู้แล้วก็ไม่ฝืนอีก",tag:"เรื่องจังหวะชีวิต"},
-        {name:"เก้",age:29,role:"Product Manager",avatar:"👨",stars:5,text:"ผลมันเชื่อมกันหมด ดวง + นิสัย + timing ไม่ใช่แค่บอกว่าคุณเป็นคนแบบไหน แต่บอกว่า ตอนนี้ควรทำอะไร อันนี้ใช้ได้จริง",tag:"ภาพรวม"}
-      ].map((r,i)=>(
-        <div key={i} style={{minWidth:"100%",scrollSnapAlign:"start",background:"#fff",borderRadius:14,padding:"10px 12px",border:"1px solid #E2E8F0",boxShadow:"0 2px 8px rgba(0,0,0,.05)",flexShrink:0}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
-            <div style={{display:"flex",alignItems:"center",gap:8}}>
-              {(()=>{const ac=[{bg:"#FEE2E2",c:"#F87171"},{bg:"#DBEAFE",c:"#60A5FA"},{bg:"#F3E8FF",c:"#A78BFA"},{bg:"#CCFBF1",c:"#2DD4BF"},{bg:"#FEF3C7",c:"#F59E0B"}][i%5];return<div style={{width:36,height:36,borderRadius:"50%",background:ac.bg,overflow:"hidden",flexShrink:0}}><svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:"100%",height:"100%"}}><circle cx="18" cy="13" r="7" fill={ac.c}/><path d="M4 36c0-7.732 6.268-14 14-14s14 6.268 14 14" fill={ac.c}/></svg></div>;})()}
-              <div><div style={{fontSize:13,fontWeight:700,color:"#1E293B"}}>{r.name} <span style={{fontSize:11,color:"#94A3B8",fontWeight:400}}>{r.age}</span></div><div style={{fontSize:10,color:"#94A3B8"}}>{r.role}</div></div>
-            </div>
-            <span style={{fontSize:9,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"3px 8px",borderRadius:6,flexShrink:0}}>{r.tag}</span>
-          </div>
-          <div style={{fontSize:11,color:"#F59E0B",marginBottom:6,letterSpacing:1}}>{"★".repeat(r.stars)}</div>
-          <p style={{fontSize:11,color:"#374151",lineHeight:1.6,margin:0,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>"{r.text}"</p>
+  const Landing=()=><div style={{minHeight:"100vh",background:"#F8FAFC"}}>
+  {/* Navbar */}
+  <nav style={{position:"fixed",width:"100%",top:0,zIndex:50,background:"rgba(255,255,255,0.85)",backdropFilter:"blur(12px)",borderBottom:"1px solid #E2E8F0"}}>
+    <div style={{maxWidth:1152,margin:"0 auto",padding:"0 16px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        <div style={{background:"#4F46E5",padding:"6px",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <span style={{color:"#fff",fontSize:18}}>✦</span>
         </div>
-      ))}
+        <span style={{fontWeight:700,fontSize:18,letterSpacing:"-0.025em",color:"#0F172A"}}>Human System</span>
+      </div>
+      <div style={{display:"flex",alignItems:"center",gap:16}}>
+        {logged
+          ?<button onClick={doLogout} style={{fontSize:14,color:"#64748B",background:"none",border:"1px solid #E2E8F0",borderRadius:6,padding:"6px 12px",cursor:"pointer"}}>ออกจากระบบ</button>
+          :<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:14,fontWeight:500,color:"#475569",background:"none",border:"none",cursor:"pointer"}}>เข้าสู่ระบบ</button>
+        }
+        <button onClick={()=>setSc("profile")} style={{background:"#0F172A",color:"#fff",fontSize:14,fontWeight:500,padding:"8px 16px",borderRadius:9999,border:"none",cursor:"pointer"}}>เริ่มวิเคราะห์ฟรี</button>
+      </div>
     </div>
-    <div style={{display:"flex",justifyContent:"center",gap:5,marginTop:6}}>
-      {[0,1,2,3,4].map(i=><div key={i} style={{width:i===0?16:6,height:6,borderRadius:3,background:i===0?"#4338CA":"#E2E8F0",transition:"width .3s"}}/>)}
+  </nav>
+
+  {/* Hero Section */}
+  <section style={{paddingTop:96,paddingBottom:64,padding:"96px 16px 64px",overflow:"hidden",position:"relative",background:"#F8FAFC"}}>
+    <div style={{position:"absolute",top:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:768,height:500,background:"rgba(99,102,241,0.08)",filter:"blur(100px)",borderRadius:"50%",pointerEvents:"none"}}/>
+    <div style={{maxWidth:896,margin:"0 auto",textAlign:"center",position:"relative",zIndex:1,marginBottom:48,paddingTop:32}}>
+      {/* Formula badges */}
+      <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",justifyContent:"center",gap:10,marginBottom:32}}>
+        <div style={{display:"flex",alignItems:"center",gap:8,padding:"8px 16px",background:"linear-gradient(to right,#701a75,#581c87)",color:"#fff",borderRadius:9999,boxShadow:"0 0 20px rgba(168,85,247,0.3)",border:"1px solid rgba(168,85,247,0.3)"}}>
+          <span style={{fontSize:18}}>🔮</span>
+          <span style={{fontWeight:700,fontSize:13}}>4 มหาโหราศาสตร์</span>
+          <span style={{fontSize:10,background:"rgba(255,255,255,0.2)",padding:"2px 8px",borderRadius:9999,fontWeight:500}}>ไทย จีน พระเวท สากล</span>
+        </div>
+        <span style={{color:"#CBD5E1",fontWeight:900,fontSize:16}}>✕</span>
+        <div style={{display:"flex",alignItems:"center",gap:8,padding:"8px 16px",background:"linear-gradient(to right,#0369a1,#1e3a8a)",color:"#fff",borderRadius:9999,boxShadow:"0 0 20px rgba(14,165,233,0.3)",border:"1px solid rgba(56,189,248,0.3)"}}>
+          <span style={{fontSize:18}}>🧠</span>
+          <span style={{fontWeight:700,fontSize:13}}>จิตวิทยาเชิงลึก</span>
+        </div>
+        <span style={{color:"#CBD5E1",fontWeight:900,fontSize:16}}>✕</span>
+        <div style={{display:"flex",alignItems:"center",gap:8,padding:"8px 16px",background:"linear-gradient(to right,#4338CA,#1e1b4b)",color:"#fff",borderRadius:9999,boxShadow:"0 0 20px rgba(79,70,229,0.3)",border:"1px solid rgba(129,140,248,0.3)"}}>
+          <span style={{fontSize:18}}>🤖</span>
+          <span style={{fontWeight:700,fontSize:13}}>AI ประมวลผล</span>
+        </div>
+      </div>
+      <h1 style={{fontSize:"clamp(1.75rem,5vw,3.25rem)",fontWeight:900,color:"#0F172A",letterSpacing:"-0.025em",lineHeight:1.1,marginBottom:20,margin:"0 auto 20px"}}>
+        ยังไม่รู้ว่าชีวิตควรไปทางไหน?<br/>
+        <span style={{background:"linear-gradient(to right,#4338CA,#7C3AED)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text"}}>ถาม AI ที่รู้ดวงชะตาคุณสิ</span>
+      </h1>
+      <p style={{fontSize:16,color:"#64748B",marginBottom:16,maxWidth:560,margin:"12px auto 0",lineHeight:1.7}}>ผสานกราฟชีวิต จิตวิทยา และคำทำนาย ไว้ในที่เดียว</p>
     </div>
-  </div>
+    {/* AI Widget */}
+    <div style={{maxWidth:720,margin:"0 auto",position:"relative",zIndex:1}}>
+      <div style={{background:"#0f172a",borderRadius:28,boxShadow:"0 25px 50px -12px rgba(0,0,0,0.35)",border:"1px solid rgba(100,116,139,0.4)",padding:"24px 28px",overflow:"hidden",position:"relative"}}>
+        {/* Widget Header */}
+        <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:28}}>
+          <div style={{background:"linear-gradient(135deg,#6366F1,#7C3AED)",padding:"10px",borderRadius:14,fontSize:22}}>🤖</div>
+          <div>
+            <h3 style={{fontSize:18,fontWeight:700,color:"#fff",margin:0}}>Ask & Decide AI</h3>
+            <p style={{color:"#94A3B8",fontSize:13,margin:0}}>ตัดสินใจจากดวงและจังหวะชีวิต</p>
+          </div>
+        </div>
+        {/* Step 1 */}
+        {aiStep===1&&<div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:20}}>
+            {Object.entries(DEC_CATS).map(([k,v])=>{
+              const activeColors={work:{bg:"#4F46E5",border:"#6366F1"},money:{bg:"#059669",border:"#10B981"},love:{bg:"#DB2777",border:"#EC4899"},timing:{bg:"#D97706",border:"#F59E0B"}};
+              const isAct=preAskTab===k;
+              return<button key={k} onClick={()=>{setPreAskTab(k);setPreAskQ("");}} style={{padding:"7px 16px",borderRadius:9999,fontSize:13,fontWeight:500,border:`1px solid ${isAct?(activeColors[k]||{border:"#6366F1"}).border:"#334155"}`,background:isAct?(activeColors[k]||{bg:"#4F46E5"}).bg:"#1E293B",color:isAct?"#fff":"#CBD5E1",cursor:"pointer"}}>{v.icon} {v.label}</button>;
+            })}
+          </div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:20}}>
+            {DEC_CATS[preAskTab].q.map((q,i)=>(
+              <button key={i} onClick={()=>{setPreAskQ(q);setAiStep(2);}} style={{padding:"7px 14px",borderRadius:9999,fontSize:13,fontWeight:500,background:"rgba(30,41,59,0.6)",color:"#CBD5E1",border:"1px solid #334155",cursor:"pointer"}}>{q}</button>
+            ))}
+          </div>
+          <div style={{position:"relative"}}>
+            <input ref={preAskInputRef} type="text" placeholder="หรือพิมพ์คำถามของคุณเอง..." defaultValue={preAskQ} onChange={e=>setPreAskQ(e.target.value)} onKeyDown={e=>e.key==="Enter"&&setAiStep(2)} style={{width:"100%",background:"rgba(30,41,59,0.8)",border:"1px solid #334155",color:"#fff",borderRadius:16,padding:"14px 120px 14px 20px",fontSize:14,outline:"none",boxSizing:"border-box"}}/>
+            <button onClick={()=>setAiStep(2)} style={{position:"absolute",right:6,top:6,bottom:6,background:"#4F46E5",color:"#fff",padding:"0 20px",borderRadius:12,border:"none",fontWeight:700,cursor:"pointer",fontSize:13}}>ถามเลย</button>
+          </div>
+        </div>}
+        {/* Step 2 */}
+        {aiStep===2&&<div>
+          <div style={{marginBottom:20,borderBottom:"1px solid #1E293B",paddingBottom:16}}>
+            <p style={{color:"#94A3B8",fontSize:13,margin:"0 0 4px"}}>คำถามของคุณ:</p>
+            <p style={{color:"#fff",fontWeight:500,margin:0,fontSize:14,display:"flex",alignItems:"center",gap:8}}>
+              "{preAskQ||'...'}"
+              <button onClick={()=>setAiStep(1)} style={{color:"#818CF8",fontSize:12,background:"none",border:"none",cursor:"pointer",textDecoration:"underline",flexShrink:0}}>(เปลี่ยนคำถาม)</button>
+            </p>
+          </div>
+          <div style={{background:"rgba(99,102,241,0.1)",border:"1px solid rgba(99,102,241,0.2)",borderRadius:12,padding:"12px 16px",marginBottom:20}}>
+            <p style={{color:"#C7D2FE",fontSize:13,margin:0}}>✦ เพื่อความแม่นยำสูงสุด AI ต้องการข้อมูลเวลาเกิดของคุณครับ</p>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",gap:16}}>
+            <div>
+              <label style={{display:"block",color:"#CBD5E1",fontSize:13,fontWeight:500,marginBottom:8}}>วันเดือนปีเกิด *</label>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
+                <select value={bday.split("-")[2]||""} onChange={e=>setBday(`${bday.split("-")[0]||"2000"}-${bday.split("-")[1]||"01"}-${e.target.value}`)} style={{background:"#1E293B",border:"1px solid #334155",color:"#fff",borderRadius:12,padding:"10px 8px",fontSize:13,outline:"none",width:"100%",appearance:"none"}}>
+                  <option value="" style={{background:"#1E293B"}}>วัน</option>{Array.from({length:31},(_,i)=>i+1).map(d=><option key={d} value={String(d).padStart(2,"0")} style={{background:"#1E293B"}}>{d}</option>)}
+                </select>
+                <select value={bday.split("-")[1]||""} onChange={e=>setBday(`${bday.split("-")[0]||"2000"}-${e.target.value}-${bday.split("-")[2]||"01"}`)} style={{background:"#1E293B",border:"1px solid #334155",color:"#fff",borderRadius:12,padding:"10px 8px",fontSize:13,outline:"none",width:"100%",appearance:"none"}}>
+                  <option value="" style={{background:"#1E293B"}}>เดือน</option>{["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."].map((m,i)=><option key={i} value={String(i+1).padStart(2,"0")} style={{background:"#1E293B"}}>{m}</option>)}
+                </select>
+                <select value={bday.split("-")[0]||""} onChange={e=>setBday(`${e.target.value}-${bday.split("-")[1]||"01"}-${bday.split("-")[2]||"01"}`)} style={{background:"#1E293B",border:"1px solid #334155",color:"#fff",borderRadius:12,padding:"10px 8px",fontSize:13,outline:"none",width:"100%",appearance:"none"}}>
+                  <option value="" style={{background:"#1E293B"}}>ปี (ค.ศ.)</option>{Array.from({length:80},(_,i)=>2026-i).map(y=><option key={y} value={String(y)} style={{background:"#1E293B"}}>{y}</option>)}
+                </select>
+              </div>
+            </div>
+            <div>
+              <label style={{display:"block",color:"#CBD5E1",fontSize:13,fontWeight:500,marginBottom:8}}>เวลาเกิด</label>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                <button onClick={()=>{setKnowT(true);setTSlot("");}} style={{background:knowT===true?"#1E293B":"rgba(30,41,59,0.4)",border:`2px solid ${knowT===true?"#4B5563":"#1E293B"}`,color:knowT===true?"#fff":"#64748B",borderRadius:12,padding:10,fontSize:13,fontWeight:500,cursor:"pointer"}}>รู้เวลาเกิด</button>
+                <button onClick={()=>{setKnowT(false);setBtime("");}} style={{background:"rgba(30,41,59,0.4)",border:"1px solid #1E293B",color:"#64748B",borderRadius:12,padding:10,fontSize:13,fontWeight:500,cursor:"pointer"}}>ไม่รู้เวลาเกิด</button>
+              </div>
+              {knowT===true&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginTop:10}}>
+                <select value={btime.split(":")[0]||""} onChange={e=>setBtime(`${e.target.value}:${btime.split(":")[1]||"00"}`)} style={{background:"#1E293B",border:"1px solid #334155",color:"#fff",borderRadius:12,padding:"10px 8px",fontSize:13,outline:"none",width:"100%"}}>
+                  <option value="" style={{background:"#1E293B"}}>ชม.</option>{Array.from({length:24},(_,i)=>i).map(h=><option key={h} value={String(h).padStart(2,"0")} style={{background:"#1E293B"}}>{String(h).padStart(2,"0")}</option>)}
+                </select>
+                <select value={btime.split(":")[1]||""} onChange={e=>setBtime(`${btime.split(":")[0]||"00"}:${e.target.value}`)} style={{background:"#1E293B",border:"1px solid #334155",color:"#fff",borderRadius:12,padding:"10px 8px",fontSize:13,outline:"none",width:"100%"}}>
+                  <option value="" style={{background:"#1E293B"}}>นาที</option>{[0,5,10,15,20,25,30,35,40,45,50,55].map(m=><option key={m} value={String(m).padStart(2,"0")} style={{background:"#1E293B"}}>{String(m).padStart(2,"0")}</option>)}
+                </select>
+              </div>}
+            </div>
+            <div>
+              <label style={{display:"block",color:"#CBD5E1",fontSize:13,fontWeight:500,marginBottom:8}}>จังหวัดที่เกิด</label>
+              <select value={prov} onChange={e=>setProv(e.target.value)} style={{width:"100%",background:"#1E293B",border:"1px solid #334155",color:prov?"#fff":"#64748B",borderRadius:12,padding:"10px 8px",fontSize:13,outline:"none",appearance:"none"}}>
+                <option value="" style={{background:"#1E293B"}}>กรุงเทพมหานคร</option>{PV.map(p=><option key={p} value={p} style={{background:"#1E293B"}}>{p}</option>)}
+              </select>
+            </div>
+            <button onClick={()=>{const q=(preAskInputRef.current?.value?.trim())||preAskQ;const bp=bday.split("-");const bdOk=bp[0]&&bp[1]&&bp[2]&&bp[0]!=="--"&&bp[0]!=="undefined";if(!bdOk){alert("กรุณาเลือกวันเดือนปีเกิดก่อนนะคะ");return;}if(!q){alert("กรุณาเลือกหรือพิมพ์คำถามที่ต้องการก่อนนะคะ");return;}setPreAskQ(q);setAskMode(true);goAskResults();}} style={{width:"100%",marginTop:4,background:"linear-gradient(to right,#4338CA,#7C3AED)",color:"#fff",fontWeight:700,fontSize:16,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",boxShadow:"0 0 20px rgba(79,70,229,0.4)"}}>👉 วิเคราะห์คำตอบของฉัน</button>
+          </div>
+        </div>}
+      </div>
+      {/* Trust badges */}
+      <div style={{marginTop:20,display:"flex",alignItems:"center",justifyContent:"center",gap:24,fontSize:13,fontWeight:500,color:"#64748B",flexWrap:"wrap"}}>
+        <span>🔒 ข้อมูลส่วนตัว 100%</span>
+        <span>⏱ วิเคราะห์ทันทีใน 10 นาที</span>
+      </div>
+    </div>
+  </section>
 
-  {/* CTA */}
-  <div style={{marginBottom:20}}><Btn onClick={()=>{setAskMode(false);setSc("profile")}}>ทำ Identity Snapshot ฟรี →</Btn><div style={{textAlign:"center",marginTop:8,fontSize:11,color:"#94A3B8"}}>ฟรี · ใช้เวลา 10 นาที · ไม่ต้องใช้บัตรเครดิต</div></div>
+  {/* Dashboard Preview */}
+  <section style={{padding:"80px 16px",background:"#0F172A",color:"#fff",overflow:"hidden"}}>
+    <div style={{maxWidth:1152,margin:"0 auto"}}>
+      <div style={{textAlign:"center",marginBottom:64}}>
+        <h2 style={{fontSize:"clamp(1.75rem,4vw,2.25rem)",fontWeight:700,marginBottom:16,margin:"0 0 16px"}}>สิ่งที่คุณจะค้นพบใน Dashboard ส่วนตัว</h2>
+        <p style={{color:"#94A3B8",fontSize:18,margin:0}}>ผสานกราฟชีวิต จิตวิทยา และคำทำนาย ไว้ในที่เดียว</p>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:24}}>
+        <div style={{background:"rgba(30,41,59,0.5)",border:"1px solid #1E293B",borderRadius:24,padding:24,position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",top:0,right:0,padding:24,opacity:0.15,fontSize:64}}>💕</div>
+          <h3 style={{fontSize:20,fontWeight:700,marginBottom:8,display:"flex",alignItems:"center",gap:8,margin:"0 0 8px"}}>
+            <span style={{background:"rgba(244,63,94,0.2)",color:"#FB7185",padding:8,borderRadius:12}}>💕</span> Love & Match
+          </h3>
+          <p style={{color:"#94A3B8",fontSize:14,marginBottom:24}}>เจาะลึก Attachment Style และ Timeline การเจอคู่ครองที่เสริมดวง</p>
+          <div style={{background:"#0F172A",borderRadius:12,padding:16,border:"1px solid rgba(30,41,59,0.5)"}}>
+            <div style={{height:8,width:"100%",background:"#1E293B",borderRadius:4,marginBottom:12,overflow:"hidden"}}>
+              <div style={{height:"100%",background:"#F43F5E",width:"65%"}}/>
+            </div>
+            <p style={{fontSize:12,color:"#CBD5E1",margin:0}}>รูปแบบการยึดติดที่ไม่มั่นคง (35%)</p>
+          </div>
+        </div>
+        <div style={{background:"rgba(30,41,59,0.5)",border:"1px solid #1E293B",borderRadius:24,padding:24,position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",top:0,right:0,padding:24,opacity:0.15,fontSize:64}}>💰</div>
+          <h3 style={{fontSize:20,fontWeight:700,marginBottom:8,display:"flex",alignItems:"center",gap:8,margin:"0 0 8px"}}>
+            <span style={{background:"rgba(16,185,129,0.2)",color:"#34D399",padding:8,borderRadius:12}}>💰</span> Wealth Strategy
+          </h3>
+          <p style={{color:"#94A3B8",fontSize:14,marginBottom:24}}>วิเคราะห์จุดรั่วไหลทางการเงิน และจังหวะกอบโกย (Wealth Window)</p>
+          <div style={{display:"flex",gap:8}}>
+            <span style={{fontSize:10,fontWeight:700,textTransform:"uppercase",padding:"4px 8px",background:"rgba(16,185,129,0.2)",color:"#34D399",borderRadius:6,border:"1px solid rgba(16,185,129,0.3)"}}>Creative Spender</span>
+            <span style={{fontSize:10,fontWeight:700,textTransform:"uppercase",padding:"4px 8px",background:"rgba(245,158,11,0.2)",color:"#FCD34D",borderRadius:6,border:"1px solid rgba(245,158,11,0.3)"}}>Impulsive</span>
+          </div>
+        </div>
+        <div style={{background:"rgba(30,41,59,0.5)",border:"1px solid #1E293B",borderRadius:24,padding:24,position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",top:0,right:0,padding:24,opacity:0.15,fontSize:64}}>⚡</div>
+          <h3 style={{fontSize:20,fontWeight:700,marginBottom:8,display:"flex",alignItems:"center",gap:8,margin:"0 0 8px"}}>
+            <span style={{background:"rgba(99,102,241,0.2)",color:"#818CF8",padding:8,borderRadius:12}}>⏳</span> Destiny Timeline
+          </h3>
+          <p style={{color:"#94A3B8",fontSize:14,marginBottom:24}}>รู้ว่าช่วงนี้ควรลุย เปลี่ยนแปลง หรือรอให้จังหวะชัดขึ้น</p>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",fontSize:12,color:"#CBD5E1",background:"#0F172A",borderRadius:12,padding:12,border:"1px solid rgba(30,41,59,0.5)"}}>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{width:8,height:8,borderRadius:"50%",background:"#475569"}}/><span>อดีต</span></div>
+            <div style={{flex:1,borderTop:"1px dashed #1E293B",margin:"0 8px"}}/>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{width:12,height:12,borderRadius:"50%",background:"#6366F1",boxShadow:"0 0 10px rgba(99,102,241,0.5)"}}/><span style={{color:"#818CF8",fontWeight:700}}>ปัจจุบัน</span></div>
+            <div style={{flex:1,borderTop:"1px dashed #1E293B",margin:"0 8px"}}/>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{width:8,height:8,borderRadius:"50%",background:"#F59E0B"}}/><span>ปี 2027</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  {/* TRUST */}
-  <Card style={{background:"#F0FDF4",border:"1px solid #BBF7D0",marginBottom:12}}><div style={{fontSize:12,fontWeight:700,color:"#166534",marginBottom:6}}>🛡 ข้อมูลของคุณเป็นเรื่องส่วนตัว</div><div style={{fontSize:11,color:"#15803D",lineHeight:1.7}}>คำตอบและผลลัพธ์ของคุณจะไม่ถูกเผยแพร่หรือขายต่อ ทุกอย่างถูกออกแบบให้คุณสำรวจตัวเองได้อย่างปลอดภัยและเป็นส่วนตัว</div></Card>
+  {/* Methodology Section */}
+  <section style={{padding:"80px 16px",background:"#fff"}}>
+    <div style={{maxWidth:896,margin:"0 auto"}}>
+      <div style={{textAlign:"center",marginBottom:64}}>
+        <h2 style={{fontSize:"clamp(1.75rem,4vw,2rem)",fontWeight:700,color:"#0F172A",marginBottom:16,margin:"0 0 16px"}}>ศาสตร์แห่งการเข้าใจตัวเองที่ลึกที่สุด</h2>
+        <p style={{color:"#64748B",margin:0}}>ไม่ใช่แค่การทายใจ แต่คือการผนวกรวมโหราศาสตร์ที่แม่นยำที่สุดเข้ากับจิตวิทยาเชิงลึก</p>
+      </div>
+      <div style={{display:"flex",flexDirection:"column",gap:24}}>
+        {[
+          {icon:"🌙",bg:"#F5F3FF",border:"#EDE9FE",title:"Integrated Astrology (ผสาน 4 โหราศาสตร์ชั้นนำ)",desc:'ดึงจุดแข็งของโหราศาสตร์ ไทย จีน พระเวท และสากล มารวมกันเพื่อวิเคราะห์ "จังหวะเวลา" (Timing) ที่แม่นยำที่สุด ไร้จุดบอด'},
+          {icon:"🧠",bg:"#F0F9FF",border:"#E0F2FE",title:"Depth Psychology (จิตวิทยาเชิงลึก)",desc:"ทำความเข้าใจ Shadow Pattern ปมวัยเด็ก และรูปแบบพฤติกรรมที่คุณเผลอทำซ้ำๆ โดยไม่รู้ตัว เพื่อหยุดวงจรปัญหาเดิมๆ"},
+          {icon:"⚡",bg:"#EEF2FF",border:"#E0E7FF",title:"Ask & Decide AI (ผู้ช่วยส่วนตัว)",desc:'นำข้อมูลเชิงลึกของคุณทั้งหมดมาประมวลผลด้วย AI ให้คุณพิมพ์ถามปัญหาเฉพาะหน้า และได้คำตอบที่อิงจาก "คู่มือชีวิต" ของคุณเอง'}
+        ].map((item,i)=>(
+          <div key={i} style={{padding:"24px 32px",borderRadius:24,border:`1px solid ${item.border}`,background:item.bg,display:"flex",flexWrap:"wrap",gap:24,alignItems:"center"}}>
+            <div style={{background:"#fff",padding:16,borderRadius:16,boxShadow:"0 1px 4px rgba(0,0,0,0.08)",flexShrink:0,fontSize:24,width:56,height:56,display:"flex",alignItems:"center",justifyContent:"center"}}>{item.icon}</div>
+            <div style={{flex:1,minWidth:200}}>
+              <h3 style={{fontSize:18,fontWeight:700,color:"#1E293B",marginBottom:8,margin:"0 0 8px"}}>{item.title}</h3>
+              <p style={{color:"#475569",lineHeight:1.7,margin:0}}>{item.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 
-  {/* METHODOLOGY */}
-  <Card style={{background:"#F8FAFC",border:"1px solid #E2E8F0",marginBottom:12}}>
-    <div style={{fontSize:12,fontWeight:700,color:"#64748B",marginBottom:2}}>สร้างจากการวิเคราะห์หลายมิติ</div>
-    <div style={{fontSize:11,color:"#94A3B8",marginBottom:8}}>เพื่อให้ผลลัพธ์มีทั้งมุมมองเชิงบุคลิก พฤติกรรม และจังหวะชีวิต</div>
-    {[{i:"🪐",t:"พลังประจำตัวและจังหวะชีวิต"},{i:"📋",t:"แบบประเมินพฤติกรรมเชิงลึก"},{i:"🤖",t:"AI ที่ช่วยเชื่อมข้อมูลให้เข้าใจง่ายขึ้น"}].map((x,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 0",borderBottom:i<2?"1px solid #F1F5F9":"none"}}><span style={{fontSize:15}}>{x.i}</span><div style={{fontSize:11,color:"#374151"}}>{x.t}</div></div>)}
-  </Card>
+  {/* AI Feature Highlight */}
+  <section style={{padding:"80px 16px",background:"#F8FAFC",borderTop:"1px solid #E2E8F0"}}>
+    <div style={{maxWidth:1024,margin:"0 auto",display:"flex",flexWrap:"wrap",alignItems:"center",gap:48}}>
+      <div style={{flex:"1 1 280px"}}>
+        <div style={{display:"inline-flex",alignItems:"center",gap:8,padding:"6px 12px",borderRadius:9999,background:"#0F172A",color:"#fff",fontSize:12,fontWeight:700,textTransform:"uppercase",marginBottom:24}}>Premium Feature</div>
+        <h2 style={{fontSize:"clamp(1.5rem,3vw,1.875rem)",fontWeight:700,color:"#0F172A",marginBottom:24,margin:"0 0 24px"}}>
+          ผู้ช่วย AI ส่วนตัวที่ <span style={{color:"#4338CA"}}>"รู้ใจ"</span> คุณที่สุด
+        </h2>
+        <p style={{color:"#475569",marginBottom:24,lineHeight:1.7}}>นอกจากผลลัพธ์ Dashboard แล้ว คุณยังสามารถสนทนากับ Ask & Decide AI ที่ถูก Train มาจากพื้นดวงและจิตวิทยาของคุณโดยเฉพาะ ไม่ว่าปัญหาจะเฉพาะเจาะจงแค่ไหน AI ก็พร้อมให้คำปรึกษา</p>
+        <ul style={{listStyle:"none",padding:0,margin:"0 0 32px",display:"flex",flexDirection:"column",gap:12}}>
+          {["คำตอบอิงจาก Timing ดวงปัจจุบัน","วิเคราะห์เจาะลึกจาก Shadow Pattern ของคุณ","ให้คำแนะนำที่นำไปใช้ได้จริง (Actionable)"].map((item,i)=>(
+            <li key={i} style={{display:"flex",alignItems:"center",gap:12,fontSize:14,fontWeight:500,color:"#374151"}}>
+              <div style={{width:20,height:20,borderRadius:"50%",background:"#EEF2FF",display:"flex",alignItems:"center",justifyContent:"center",color:"#4338CA",flexShrink:0,fontSize:12,fontWeight:700}}>✓</div>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div style={{flex:"1 1 280px"}}>
+        <div style={{background:"#0F172A",borderRadius:24,boxShadow:"0 25px 50px -12px rgba(0,0,0,0.25)",padding:24,border:"1px solid #1E293B",position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",top:0,right:0,width:128,height:128,background:"rgba(99,102,241,0.2)",filter:"blur(48px)",borderRadius:"50%"}}/>
+          <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:24,paddingBottom:16,borderBottom:"1px solid #1E293B"}}>
+            <div style={{background:"#4338CA",padding:8,borderRadius:12,fontSize:16}}>💬</div>
+            <span style={{color:"#fff",fontWeight:700,fontSize:16}}>Ask & Decide AI</span>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",gap:16}}>
+            <div style={{background:"#1E293B",color:"#CBD5E1",fontSize:14,padding:16,borderRadius:"16px 16px 4px 16px",marginLeft:"auto",width:"80%",border:"1px solid #334155"}}>มีเกณฑ์ได้เปลี่ยนงานช่วงนี้ไหม รู้สึกหมดไฟมากๆ</div>
+            <div style={{background:"rgba(67,56,202,0.4)",color:"#C7D2FE",fontSize:14,padding:16,borderRadius:"16px 16px 16px 4px",marginRight:"auto",width:"90%",border:"1px solid rgba(99,102,241,0.3)"}}>
+              <p style={{marginBottom:8,margin:"0 0 8px"}}>จากการวิเคราะห์ Timeline ของคุณ:</p>
+              <p style={{margin:0}}>ช่วงนี้ดาวเสาร์กำลังทับเรือนการงาน ทำให้เกิดความรู้สึกกดดันและอยากหนี (The Avoider Pattern กำลังทำงาน) <strong>แต่อย่าเพิ่งรีบตัดสินใจครับ</strong></p>
+              <p style={{marginTop:8,color:"#A5B4FC",fontSize:12,margin:"8px 0 0"}}>⭐ รอจังหวะหน้าต่างเปิดในอีก 2 เดือนข้างหน้า จะมีโอกาสที่ดีกว่าเข้ามา</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <div style={{padding:"16px 0 40px"}}><Btn onClick={()=>setSc("profile")}>ดูผลลัพธ์ของฉัน →</Btn></div>
-  </div></div>;
+  {/* Testimonial & CTA */}
+  <section style={{padding:"80px 16px",background:"#4338CA",color:"#fff",textAlign:"center"}}>
+    <div style={{maxWidth:768,margin:"0 auto"}}>
+      <div style={{display:"flex",justifyContent:"center",marginBottom:24}}>
+        <span style={{color:"#FCD34D",fontSize:24,letterSpacing:4}}>★★★★★</span>
+      </div>
+      <blockquote style={{fontSize:"clamp(1rem,2.5vw,1.375rem)",fontWeight:500,lineHeight:1.7,marginBottom:32,margin:"0 0 32px"}}>
+        "ตอนแรกคิดว่าจะเป็นเหมือนบททดสอบทั่วไป แต่ผลที่ได้มันเจาะจงมาก ตรงจุดเลย รู้เลยว่าที่ทำอยู่มันไม่ใช่ทาง และบอกจังหวะเวลาชัดเจนมาก"
+      </blockquote>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:12,marginBottom:64}}>
+        <div style={{width:40,height:40,background:"#6366F1",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>ม</div>
+        <div style={{textAlign:"left"}}>
+          <p style={{fontWeight:700,margin:0}}>มิว, 27</p>
+          <p style={{color:"#A5B4FC",fontSize:12,margin:0}}>HR Manager</p>
+        </div>
+      </div>
+      <div style={{background:"rgba(255,255,255,0.1)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:24,padding:"32px 40px",position:"relative",overflow:"hidden"}}>
+        <div style={{position:"absolute",top:0,right:0,padding:16,opacity:0.1,fontSize:120,lineHeight:1}}>⚡</div>
+        <h2 style={{fontSize:"clamp(1.25rem,3vw,1.875rem)",fontWeight:700,marginBottom:16,position:"relative",zIndex:1,margin:"0 0 16px"}}>พร้อมรู้จักตัวเองในเวอร์ชั่นที่ดีที่สุดหรือยัง?</h2>
+        <p style={{color:"#C7D2FE",marginBottom:32,maxWidth:512,margin:"0 auto 32px",position:"relative",zIndex:1}}>เริ่มทำแบบประเมินฟรี ใช้เวลาเพียง 10 นาที เพื่อปลดล็อกเส้นทางชีวิตของคุณ</p>
+        <button onClick={()=>setSc("profile")} style={{background:"#fff",color:"#312E81",fontWeight:900,fontSize:18,padding:"16px 32px",borderRadius:9999,border:"none",cursor:"pointer",position:"relative",zIndex:1}}>เริ่มต้นใช้งานฟรี</button>
+      </div>
+    </div>
+  </section>
+
+  {/* Footer */}
+  <footer style={{padding:"48px 16px",textAlign:"center",color:"#64748B",fontSize:14,background:"#0F172A",borderTop:"1px solid #1E293B"}}>
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:16}}>
+      <div style={{background:"#4F46E5",padding:4,borderRadius:6,display:"flex",alignItems:"center",justifyContent:"center"}}>
+        <span style={{color:"#fff",fontSize:14}}>✦</span>
+      </div>
+      <span style={{fontWeight:700,color:"#CBD5E1"}}>Human System Studio</span>
+    </div>
+    <p style={{margin:0}}>© 2026 Human System Studio. All rights reserved.</p>
+  </footer>
+
+  </div>;
+
 
   // ─── PROFILE (fixed input) ───
   const Profile=()=>{const inp={width:"100%",padding:"10px 14px",fontSize:14,border:"2px solid #E2E8F0",borderRadius:10,outline:"none",background:"#fff",boxSizing:"border-box"};const lbl={fontSize:12,fontWeight:600,color:"#64748B",marginBottom:4,display:"block"};const bp=bday.split("-");const ok=nick&&email&&bp.length===3&&bp[0]&&bp[1]&&bp[2]&&bp[0]!=="undefined"&&(knowT===true?(btime&&btime.includes(":")):(knowT===false?tSlot:false));
@@ -2086,5 +2212,5 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
 
   <div style={{textAlign:"center",padding:"14px 0 40px"}}><button onClick={()=>{aiTriggered.current=false;setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0)}} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>🔄 ทำแบบทดสอบใหม่</button></div></div>};
 
-  return<div style={{fontFamily:"'Noto Sans Thai','DM Sans',-apple-system,sans-serif",minHeight:"100vh",background:"#F8FAFC",color:"#1E293B"}}><style>{css}</style>{loginModalJSX}<div style={{maxWidth:520,margin:"0 auto",padding:sc==="landing"?"0":"12px 16px 40px"}}>{sc==="landing"&&<Landing/>}{sc==="profile"&&<Profile/>}{sc==="quiz"&&<Quiz/>}{sc==="ask-results"&&<AskResults/>}{sc==="results"&&<Results/>}</div></div>;
+  return<div style={{fontFamily:"'Noto Sans Thai','DM Sans',-apple-system,sans-serif",minHeight:"100vh",background:"#F8FAFC",color:"#1E293B"}}><style>{css}</style>{loginModalJSX}<div style={{maxWidth:sc==="landing"?undefined:520,margin:"0 auto",padding:sc==="landing"?"0":"12px 16px 40px"}}>{sc==="landing"&&<Landing/>}{sc==="profile"&&<Profile/>}{sc==="quiz"&&<Quiz/>}{sc==="ask-results"&&<AskResults/>}{sc==="results"&&<Results/>}</div></div>;
 }
