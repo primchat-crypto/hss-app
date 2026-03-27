@@ -1887,12 +1887,6 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
           <div style={{fontSize:10,fontWeight:700,color:"#059669",marginBottom:5}}>🧠 การวิเคราะห์เชิงลึก</div>
           <div style={{fontSize:11,lineHeight:1.8,color:"#334155",whiteSpace:"pre-wrap"}}>{ai.money}</div>
         </div>}
-        {/* CTA */}
-        <div style={{background:"linear-gradient(135deg,#052e16,#14532d)",borderRadius:14,padding:"18px 14px",textAlign:"center",position:"relative",overflow:"hidden"}}>
-          <div style={{fontSize:13,fontWeight:800,color:"#fff",marginBottom:5}}>พร้อมอัปเกรดสถานะการเงินของคุณหรือยัง?</div>
-          <div style={{fontSize:10,color:"#a7f3d0",marginBottom:10,lineHeight:1.6}}>คุณมีศักยภาพในการสร้างความสำเร็จมากกว่าที่คิด ค่อยๆ ก้าวไป ไม่ต้องรีบ ✨</div>
-          <div style={{display:"inline-block",background:"#fbbf24",color:"#052e16",fontWeight:900,padding:"7px 18px",borderRadius:999,fontSize:11}}>เริ่มต้นแผน Wealth Strategy ของคุณ</div>
-        </div>
       </div>}
     </Sec>;
   })()}
