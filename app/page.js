@@ -717,7 +717,7 @@ export default function App(){
   const[authMode,setAuthMode]=useState("login");const[authErr,setAuthErr]=useState("");const[authLoading,setAuthLoading]=useState(false);
   const authEmailRef=useRef(null);const authPwRef=useRef(null);
   const wasAuthedRef=useRef(false);
-  const nickRef=useRef(null);const emailRef=useRef(null);const preAskInputRef=useRef(null);
+  const nickRef=useRef(null);const emailRef=useRef(null);const preAskInputRef=useRef(null);const preAskConsumedRef=useRef(false);
   // Strip date-sensitive fields so they always regenerate fresh (energy=daily, job=may be stale)
   const stripDateAI=r=>{if(!r)return{};const{energy:_e,job:_j,...rest}=r;
     if(rest["12d"]&&!rest["12d"].includes("🌟 มิติที่เป็นจุดแข็ง"))delete rest["12d"];
@@ -875,7 +875,7 @@ export default function App(){
 
   // ── Ask & Decide AI ──
   const goQuiz=()=>{ST.set("profile",{nick,email,bday,btime,tSlot,prov});saveProfile();setSc("quiz")};
-  const goAskResults=()=>{ST.set("profile",{nick,email,bday,btime,tSlot,prov});saveProfile();const ts=knowT?btime:tSlot;const v=calcV(bday,ts);setVedic(v);setSc("ask-results");};
+  const goAskResults=()=>{ST.set("profile",{nick,email,bday,btime,tSlot,prov});saveProfile();const ts=knowT?btime:tSlot;const v=calcV(bday,ts);setVedic(v);preAskConsumedRef.current=false;setSc("ask-results");};
   const answer=val=>{const q=ALL_Q[qI];const key=`${q.dim}-${q.qi}`;const na={...ans,[key]:val};setAns(na);ST.set("answers",na);if(qI<ALL_Q.length-1)setTimeout(()=>setQI(qI+1),200)};
   const finish=()=>{const ts=knowT?btime:tSlot;const v=calcV(bday,ts);const s=calcS(v,ans);setVedic(v);setScores(s);ST.set("vedic",v);ST.set("scores",s);saveAssessment(s,v,ans);setSc("results");loadAI("identity",s,v);loadAI("core",s,v)};
 
@@ -1737,6 +1737,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const[showCustom,setShowCustom]=useState(false);
     const[aiAnswer,setAiAnswer]=useState(null);
     const[aiLoading,setAiLoading]=useState(false);
+    const[decRes,setDecRes]=useState(null);
     const customRef=useRef(null);
     const isDecisionQ=(q)=>/ไหม/.test(q||"");
     useEffect(()=>{
@@ -1744,21 +1745,30 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
       let quotaAlreadyUsed=false;
       try{const raw=localStorage.getItem("hss_ask_daily");if(raw){const s=JSON.parse(raw);if(s.date===today){setQuotaUsed(true);quotaAlreadyUsed=true;if(s.q){setSelectedQ(s.q);if(s.tab)setActiveTab(s.tab);setResultShown(true);}}}
       }catch(e){}
-      if(preAskQ.trim()&&!quotaAlreadyUsed){setActiveTab(preAskTab||"work");askQ(preAskQ);setPreAskQ("");}
+      if(preAskQ.trim()&&!preAskConsumedRef.current){
+        preAskConsumedRef.current=true;
+        setActiveTab(preAskTab||"work");
+        askQ(preAskQ);
+      }
     },[]);
     const askQ=(q)=>{
-      setSelectedQ(q);setShowCustom(false);setAiAnswer(null);
+      setSelectedQ(q);setShowCustom(false);setAiAnswer(null);setDecRes(null);
       if(isPaid||!quotaUsed){
         setResultShown(true);
         if(!isPaid){const today=new Date().toISOString().slice(0,10);localStorage.setItem("hss_ask_daily",JSON.stringify({date:today,q,tab:activeTab}));setQuotaUsed(true);}
-        if(!isDecisionQ(q)){
-          setAiLoading(true);
-          fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-            system:"คุณเป็นที่ปรึกษาโหราศาสตร์และจิตวิทยาชีวิต ตอบภาษาไทยกระชับ ตรงประเด็น ไม่เกิน 120 คำ ใช้ข้อมูลวันเดือนปีเกิดที่ให้มาวิเคราะห์จริง",
-            prompt:`วันเดือนปีเกิด: ${bday||"ไม่ระบุ"}, เวลาเกิด: ${btime||"ไม่ทราบ"}, จังหวัด: ${prov||"กรุงเทพฯ"}\nคำถาม: ${q}`,
-            maxTokens:300
-          })}).then(r=>r.json()).then(d=>{if(d.text)setAiAnswer(d.text);setAiLoading(false);}).catch(()=>setAiLoading(false));
-        }
+        setAiLoading(true);
+        const catLabel=DEC_CATS[activeTab]?.label||activeTab;
+        const isOpen=!/ไหม/.test(q);
+        const prompt=isOpen
+          ?`คุณคือที่ปรึกษาโหราศาสตร์และจิตวิทยาชีวิต วิเคราะห์จาก 4 ศาสตร์พร้อมกัน ตอบตรงคำถามที่ถาม\nข้อมูลผู้ถาม: วันเกิด ${bday||"ไม่ระบุ"}, เวลาเกิด: ${btime||"ไม่ทราบ"}, จังหวัด: ${prov||"กรุงเทพฯ"}\nหมวดหมู่: ${catLabel}\nคำถาม: "${q}"\n\nตอบเป็น JSON เท่านั้น ตาม schema นี้:\n{"isOpen":true,"narrative":"คำตอบตรงๆ ต่อคำถาม 2-3 ประโยค ระบุให้ชัดเจน","cards":[{"system":"Vedic","icon":"🔯","color":"#F59E0B","answer":"สิ่งที่โหราศาสตร์พระเวทบอก (สั้น)","reason":"อธิบาย 1-2 ประโยค","score":5,"action":"คำแนะนำ 1 ประโยค"},{"system":"Western","icon":"⭐","color":"#3B82F6","answer":"...","reason":"...","score":5,"action":"..."},{"system":"Chinese","icon":"☯️","color":"#EF4444","answer":"...","reason":"...","score":5,"action":"..."},{"system":"Thai","icon":"🌸","color":"#8B5CF6","answer":"...","reason":"...","score":5,"action":"..."}],"ai_summary":"สรุปภาพรวมคำตอบจากทุกศาสตร์ 2-3 ประโยค","action_plan":["ขั้นตอน 1","ขั้นตอน 2","ขั้นตอน 3"]}`
+          :`คุณคือ AI ผู้เชี่ยวชาญด้านการตัดสินใจ วิเคราะห์จาก 4 ศาสตร์พร้อมกัน\nข้อมูลผู้ถาม: วันเกิด ${bday||"ไม่ระบุ"}, เวลาเกิด: ${btime||"ไม่ทราบ"}, จังหวัด: ${prov||"กรุงเทพฯ"}\nหมวดหมู่: ${catLabel}\nคำถาม: "${q}"\n\nตอบเป็น JSON เท่านั้น ตาม schema นี้:\n{"verdict":"ใช่|ไม่ใช่|รอก่อน","verdictColor":"green|red|yellow","confidence":70,"cards":[{"system":"Vedic","icon":"🔯","color":"#F59E0B","answer":"...สั้น","reason":"อธิบาย 1-2 ประโยค","score":5,"action":"คำแนะนำ 1 ประโยค"},{"system":"Western","icon":"⭐","color":"#3B82F6","answer":"...","reason":"...","score":5,"action":"..."},{"system":"Chinese","icon":"☯️","color":"#EF4444","answer":"...","reason":"...","score":5,"action":"..."},{"system":"Thai","icon":"🌸","color":"#8B5CF6","answer":"...","reason":"...","score":5,"action":"..."}],"ai_summary":"สรุปภาพรวมทุกศาสตร์ 2-3 ประโยค","action_plan":["ขั้นตอน 1","ขั้นตอน 2","ขั้นตอน 3"]}`;
+        fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:"ตอบเป็น JSON เท่านั้น ห้ามมีข้อความนอก JSON",prompt,maxTokens:600})})
+          .then(r=>r.json()).then(d=>{
+            const parsed=pJ(d.text);
+            if(parsed){setDecRes(parsed);if(parsed.narrative)setAiAnswer(parsed.narrative);}
+            else if(d.text)setAiAnswer(d.text);
+            setAiLoading(false);
+          }).catch(()=>setAiLoading(false));
       }
     };
     const submitCustom=()=>{const q=customRef.current?.value?.trim();if(q)askQ(q);};
@@ -1825,68 +1835,92 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         {resultShown&&<>
           {!isPaid&&<div style={{background:"#F1F5F9",borderRadius:10,padding:"10px 14px",marginBottom:12,display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:13}}>🔒</span><span style={{fontSize:11,color:"#64748B",fontWeight:600}}>ใช้ครบโควต้าวันนี้แล้ว (Free = 1/วัน)</span></div>}
           <div style={{background:"#EEF2FF",borderRadius:10,padding:"9px 14px",marginBottom:12,fontSize:12,color:"#4338CA",fontWeight:600}}>💬 {selectedQ}</div>
-          {isDecisionQ(selectedQ)
-            ?<div style={{background:rBg,border:`1.5px solid ${rBd}`,borderRadius:12,padding:"12px 14px",marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
-              <div><div style={{fontSize:14,fontWeight:800,color:rC}}>{rI} แนะนำ: {rec}</div><div style={{fontSize:11,color:rC,opacity:.75,marginTop:2}}>ความมั่นใจ: {cs}% · วิเคราะห์จาก 4 ศาสตร์</div></div>
-              <div style={{width:46,height:46,borderRadius:"50%",background:`conic-gradient(${rC} ${cs}%,#E2E8F0 0)`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                <div style={{width:34,height:34,borderRadius:"50%",background:rBg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:rC}}>{cs}%</div>
-              </div>
+          {aiLoading
+            ?<div style={{background:"#EEF2FF",border:"1.5px solid #C7D2FE",borderRadius:12,padding:"16px 14px",marginBottom:14,textAlign:"center"}}>
+              <div style={{fontSize:13,color:"#4338CA",fontWeight:600}}>✦ AI กำลังวิเคราะห์จากดวงชาตาของคุณ...</div>
+              <div style={{fontSize:11,color:"#818CF8",marginTop:4}}>ใช้เวลาสักครู่</div>
             </div>
-            :aiLoading
-              ?<div style={{background:"#EEF2FF",border:"1.5px solid #C7D2FE",borderRadius:12,padding:"16px 14px",marginBottom:14,textAlign:"center"}}>
-                <div style={{fontSize:13,color:"#4338CA",fontWeight:600}}>✦ AI กำลังวิเคราะห์จากดวงชาตาของคุณ...</div>
-                <div style={{fontSize:11,color:"#818CF8",marginTop:4}}>ใช้เวลาสักครู่</div>
-              </div>
-              :aiAnswer
+            :<>
+              {/* Section 1: AI narrative or Verdict */}
+              {decRes?.isOpen
                 ?<div style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"1.5px solid #A5B4FC",borderRadius:12,padding:"14px",marginBottom:14}}>
                   <div style={{fontSize:11,fontWeight:700,color:"#6366F1",marginBottom:8}}>🤖 AI วิเคราะห์จากวันเดือนปีเกิดของคุณ</div>
-                  <div style={{fontSize:13,color:"#1E293B",lineHeight:1.8,whiteSpace:"pre-line"}}>{aiAnswer}</div>
+                  <div style={{fontSize:13,color:"#1E293B",lineHeight:1.8,whiteSpace:"pre-line"}}>{decRes.narrative||aiAnswer}</div>
                 </div>
-                :<div style={{background:rBg,border:`1.5px solid ${rBd}`,borderRadius:12,padding:"12px 14px",marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
-                  <div><div style={{fontSize:14,fontWeight:800,color:rC}}>{rI} พลังงานวันนี้: {cs}%</div><div style={{fontSize:11,color:rC,opacity:.75,marginTop:2}}>วิเคราะห์จาก 4 ศาสตร์</div></div>
-                  <div style={{width:46,height:46,borderRadius:"50%",background:`conic-gradient(${rC} ${cs}%,#E2E8F0 0)`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                    <div style={{width:34,height:34,borderRadius:"50%",background:rBg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:rC}}>{cs}%</div>
+                :decRes?.verdict
+                  ?<div style={{background:{green:"#ECFDF5",red:"#FFF1F2",yellow:"#FFFBEB"}[decRes.verdictColor]||rBg,border:`1.5px solid ${{green:"#6EE7B7",red:"#FECDD3",yellow:"#FED7AA"}[decRes.verdictColor]||rBd}`,borderRadius:12,padding:"12px 14px",marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
+                    <div><div style={{fontSize:14,fontWeight:800,color:{green:"#065F46",red:"#991B1B",yellow:"#92400E"}[decRes.verdictColor]||rC}}>{decRes.verdict==="ใช่"?"✅":decRes.verdict==="ไม่ใช่"?"❌":"⏳"} แนะนำ: {decRes.verdict}</div><div style={{fontSize:11,opacity:.75,marginTop:2}}>ความมั่นใจ: {decRes.confidence}% · วิเคราะห์จาก 4 ศาสตร์</div></div>
+                    <div style={{width:46,height:46,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:10,fontWeight:800,border:`2px solid ${{green:"#6EE7B7",red:"#FECDD3",yellow:"#FED7AA"}[decRes.verdictColor]||rBd}`}}>{decRes.confidence}%</div>
+                  </div>
+                :aiAnswer
+                  ?<div style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"1.5px solid #A5B4FC",borderRadius:12,padding:"14px",marginBottom:14}}>
+                    <div style={{fontSize:11,fontWeight:700,color:"#6366F1",marginBottom:8}}>🤖 AI วิเคราะห์จากวันเดือนปีเกิดของคุณ</div>
+                    <div style={{fontSize:13,color:"#1E293B",lineHeight:1.8,whiteSpace:"pre-line"}}>{aiAnswer}</div>
+                  </div>
+                  :<div style={{background:rBg,border:`1.5px solid ${rBd}`,borderRadius:12,padding:"12px 14px",marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
+                    <div><div style={{fontSize:14,fontWeight:800,color:rC}}>{rI} พลังงานวันนี้: {cs}%</div><div style={{fontSize:11,color:rC,opacity:.75,marginTop:2}}>วิเคราะห์จาก 4 ศาสตร์</div></div>
+                    <div style={{width:46,height:46,borderRadius:"50%",background:`conic-gradient(${rC} ${cs}%,#E2E8F0 0)`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                      <div style={{width:34,height:34,borderRadius:"50%",background:rBg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:rC}}>{cs}%</div>
+                    </div>
+                  </div>
+              }
+              {/* Section 2: School breakdown - always show when we have AI result or decision question */}
+              {(decRes?.cards||isDecisionQ(selectedQ))&&<>
+                <div style={{fontSize:12,fontWeight:700,color:"#64748B",marginBottom:10}}>🔮 วิเคราะห์รายศาสตร์</div>
+                {decRes?.cards
+                  ?<>{isPaid
+                    ?decRes.cards.map((c,i)=><DecideCard key={i} c={c}/>)
+                    :<>
+                      {decRes.cards[0]&&<DecideCard c={decRes.cards[0]}/>}
+                      {decRes.cards.slice(1).map((_,i)=><div key={i} style={{borderRadius:10,border:"1px solid #E2E8F0",marginBottom:6,overflow:"hidden",position:"relative",minHeight:72}}>
+                        <div style={{filter:"blur(4px)",opacity:.4,padding:"10px 12px",pointerEvents:"none"}}><div style={{fontSize:11,fontWeight:700,marginBottom:2}}>⭐ {["Western","Chinese","Thai"][i]}</div><div style={{fontSize:12,color:"#374151"}}>วิเคราะห์เชิงลึก...</div></div>
+                        <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.85)",backdropFilter:"blur(2px)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><span style={{fontSize:18}}>🔒</span><button onClick={()=>tryUpgrade("quick")} style={{padding:"5px 14px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>ดูครบ Quick ฿49</button></div>
+                      </div>)}
+                    </>
+                  }</>
+                  :<>{SCHOOLS.map((sch,i)=>{
+                    const ul=isPaid||(i===0);
+                    return<div key={i} style={{borderRadius:12,overflow:"hidden",marginBottom:8,border:"1px solid #E2E8F0"}}>
+                      {ul?<><div style={{background:sch.grad,padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                        <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:26,height:26,borderRadius:8,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>{sch.icon}</div><span style={{fontSize:13,fontWeight:700,color:"#fff"}}>{sch.name}</span></div>
+                        <div style={{textAlign:"right"}}><div style={{fontSize:9,color:"rgba(255,255,255,.6)"}}>คะแนน</div><div style={{fontSize:14,fontWeight:800,color:"#fff"}}>{s10}/10</div></div>
+                      </div>
+                      <div style={{background:"#fff",padding:"14px 16px"}}>
+                        <div style={{fontSize:13,fontWeight:800,color:"#1E293B",marginBottom:10}}>{VT[activeTab]}</div>
+                        {i===0&&domTxt[activeTab]&&<div style={{fontSize:12,color:"#4338CA",fontWeight:600,padding:"8px 12px",background:"#EEF2FF",borderRadius:8,marginBottom:12,lineHeight:1.6}}>{domTxt[activeTab]}</div>}
+                        <div style={{marginBottom:10}}>
+                          <div style={{fontSize:10,fontWeight:700,color:"#94A3B8",textTransform:"uppercase",letterSpacing:.5,marginBottom:4}}>🔍 วิเคราะห์จากดวง</div>
+                          <div style={{fontSize:12,color:"#374151",lineHeight:1.7}}>{(SDET_WHAT[i]||{})[activeTab]||""}</div>
+                        </div>
+                        <div>
+                          <div style={{fontSize:10,fontWeight:700,color:"#94A3B8",textTransform:"uppercase",letterSpacing:.5,marginBottom:6}}>✅ ขั้นตอนที่แนะนำ</div>
+                          {((TAB_HOW[activeTab]||{})[lv]||[]).map((step,si)=><div key={si} style={{display:"flex",gap:8,alignItems:"flex-start",padding:"6px 0",borderBottom:si<2?"1px solid #F1F5F9":"none"}}><span style={{width:20,height:20,borderRadius:"50%",background:"#EEF2FF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:"#4338CA",flexShrink:0}}>{si+1}</span><span style={{fontSize:12,color:"#374151",lineHeight:1.6}}>{step}</span></div>)}
+                        </div>
+                      </div></>
+                      :<div style={{background:"#F8FAFC",padding:"14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                        <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:26,height:26,borderRadius:8,background:"#E2E8F0",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,filter:"grayscale(1)"}}>{sch.icon}</div><span style={{fontSize:13,fontWeight:600,color:"#94A3B8"}}>{sch.name}</span></div>
+                        <button onClick={()=>tryUpgrade("quick")} style={{padding:"6px 14px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>🔒 Quick ฿49</button>
+                      </div>}
+                    </div>;
+                  })}</>
+                }
+                {/* AI Summary section */}
+                <div style={{borderRadius:12,overflow:"hidden",marginBottom:12,border:"1px solid #E2E8F0"}}>
+                  <div style={{background:"#F8FAFC",padding:"14px"}}>
+                    <div style={{textAlign:"center",marginBottom:has("decide_ai")?10:6}}><div style={{fontSize:13,fontWeight:700,color:has("decide_ai")?"#1E293B":"#94A3B8"}}>AI Summary + Action Plan</div><div style={{fontSize:10,color:"#94A3B8",marginTop:2}}>รวมคำแนะนำ 3 ขั้นตอน</div></div>
+                    {has("decide_ai")
+                      ?<div style={{fontSize:11,color:"#475569",lineHeight:1.8}}>
+                        {decRes?.ai_summary&&<div style={{marginBottom:8,padding:"8px 10px",background:"#EEF2FF",borderRadius:8,fontSize:12,color:"#374151",lineHeight:1.7}}>{decRes.ai_summary}</div>}
+                        {(decRes?.action_plan||((TAB_HOW[activeTab]||{})[lv]||[])).map((s,si)=><div key={si} style={{marginTop:si>0?5:0}}>{["1️⃣","2️⃣","3️⃣"][si]} {s}</div>)}
+                        {!decRes&&<div style={{marginTop:8,padding:"7px 10px",background:"#EEF2FF",borderRadius:8,fontSize:11,fontWeight:600,color:"#4338CA"}}>⚡ พลังงานวันนี้ {cs}% — {cs>=72?"เหมาะลงมือทำและตัดสินใจ":cs>=52?"เลือกทำสิ่งสำคัญก่อน":"พักฟื้น อย่าตัดสินใจใหญ่"}</div>}
+                      </div>
+                      :<button onClick={()=>tryUpgrade("smart")} style={{width:"100%",padding:"9px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer"}}>Smart ฿99 — AI Summary →</button>}
                   </div>
                 </div>
+              </>}
+            </>
           }
-          {isDecisionQ(selectedQ)&&<><div style={{fontSize:12,fontWeight:700,color:"#64748B",marginBottom:10}}>🔮 วิเคราะห์รายศาสตร์</div>
-          {SCHOOLS.map((sch,i)=>{
-            const ul=isPaid||(i===0);
-            return<div key={i} style={{borderRadius:12,overflow:"hidden",marginBottom:8,border:"1px solid #E2E8F0"}}>
-              {ul?<><div style={{background:sch.grad,padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:26,height:26,borderRadius:8,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>{sch.icon}</div><span style={{fontSize:13,fontWeight:700,color:"#fff"}}>{sch.name}</span></div>
-                <div style={{textAlign:"right"}}><div style={{fontSize:9,color:"rgba(255,255,255,.6)"}}>คะแนน</div><div style={{fontSize:14,fontWeight:800,color:"#fff"}}>{s10}/10</div></div>
-              </div>
-              <div style={{background:"#fff",padding:"14px 16px"}}>
-                <div style={{fontSize:13,fontWeight:800,color:"#1E293B",marginBottom:10}}>{VT[activeTab]}</div>
-                {i===0&&domTxt[activeTab]&&<div style={{fontSize:12,color:"#4338CA",fontWeight:600,padding:"8px 12px",background:"#EEF2FF",borderRadius:8,marginBottom:12,lineHeight:1.6}}>{domTxt[activeTab]}</div>}
-                <div style={{marginBottom:10}}>
-                  <div style={{fontSize:10,fontWeight:700,color:"#94A3B8",textTransform:"uppercase",letterSpacing:.5,marginBottom:4}}>🔍 วิเคราะห์จากดวง</div>
-                  <div style={{fontSize:12,color:"#374151",lineHeight:1.7}}>{(SDET_WHAT[i]||{})[activeTab]||""}</div>
-                </div>
-                <div style={{marginBottom:10}}>
-                  <div style={{fontSize:10,fontWeight:700,color:"#94A3B8",textTransform:"uppercase",letterSpacing:.5,marginBottom:4}}>⏰ จังหวะที่เหมาะสม</div>
-                  <div style={{fontSize:12,color:"#374151",lineHeight:1.7}}>{(SCH_FRAME[i]||{})[`tmg_${lv}`]||""}</div>
-                </div>
-                <div>
-                  <div style={{fontSize:10,fontWeight:700,color:"#94A3B8",textTransform:"uppercase",letterSpacing:.5,marginBottom:6}}>✅ ขั้นตอนที่แนะนำ</div>
-                  {((TAB_HOW[activeTab]||{})[lv]||[]).map((step,si)=><div key={si} style={{display:"flex",gap:8,alignItems:"flex-start",padding:"6px 0",borderBottom:si<2?"1px solid #F1F5F9":"none"}}><span style={{width:20,height:20,borderRadius:"50%",background:"#EEF2FF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:"#4338CA",flexShrink:0}}>{si+1}</span><span style={{fontSize:12,color:"#374151",lineHeight:1.6}}>{step}</span></div>)}
-                </div>
-              </div></>
-              :<div style={{background:"#F8FAFC",padding:"14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:26,height:26,borderRadius:8,background:"#E2E8F0",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,filter:"grayscale(1)"}}>{sch.icon}</div><span style={{fontSize:13,fontWeight:600,color:"#94A3B8"}}>{sch.name}</span></div>
-                <button onClick={()=>tryUpgrade("quick")} style={{padding:"6px 14px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>🔒 Quick ฿49</button>
-              </div>}
-            </div>;
-          })}</>}
-          {isDecisionQ(selectedQ)&&<div style={{borderRadius:12,overflow:"hidden",marginBottom:12,border:"1px solid #E2E8F0"}}>
-            <div style={{background:"#F8FAFC",padding:"14px"}}>
-              <div style={{textAlign:"center",marginBottom:isPaid?10:6}}><div style={{fontSize:13,fontWeight:700,color:isPaid?"#1E293B":"#94A3B8"}}>AI Summary + Action Plan</div><div style={{fontSize:10,color:"#94A3B8",marginTop:2}}>รวมคำแนะนำ 3 ขั้นตอน</div></div>
-              {isPaid?<div style={{fontSize:11,color:"#475569",lineHeight:1.8}}>{((TAB_HOW[activeTab]||{})[lv]||[]).map((s,si)=><div key={si} style={{marginTop:si>0?5:0}}>{["1️⃣","2️⃣","3️⃣"][si]} {s}</div>)}<div style={{marginTop:8,padding:"7px 10px",background:"#EEF2FF",borderRadius:8,fontSize:11,fontWeight:600,color:"#4338CA"}}>⚡ พลังงานวันนี้ {cs}% — {cs>=72?"เหมาะลงมือทำและตัดสินใจ":cs>=52?"เลือกทำสิ่งสำคัญก่อน":"พักฟื้น อย่าตัดสินใจใหญ่"}</div></div>
-              :<button onClick={()=>tryUpgrade("smart")} style={{width:"100%",padding:"9px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer"}}>Smart ฿99 — AI Summary →</button>}
-            </div>
-          </div>}
-          <button onClick={()=>{setResultShown(false);setSelectedQ(null);setShowCustom(false);setAiAnswer(null);if(customRef.current)customRef.current.value="";}} style={{width:"100%",padding:"12px 0",borderRadius:10,border:"none",background:"#1E293B",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",marginBottom:4,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>🔄 ถามคำถามใหม่</button>
+          <button onClick={()=>{setResultShown(false);setSelectedQ(null);setShowCustom(false);setAiAnswer(null);setDecRes(null);if(customRef.current)customRef.current.value="";}} style={{width:"100%",padding:"12px 0",borderRadius:10,border:"none",background:"#1E293B",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",marginBottom:4,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>🔄 ถามคำถามใหม่</button>
           <div style={{margin:"16px 0",borderRadius:16,overflow:"hidden",background:"linear-gradient(135deg,#1E1B4B,#312E81)",padding:"24px 20px",textAlign:"center"}}>
           <div style={{fontSize:18,marginBottom:6}}>✨</div>
           <div style={{fontSize:15,fontWeight:800,color:"#fff",marginBottom:6}}>ค้นพบตัวเองมากขึ้น</div>
