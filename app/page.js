@@ -425,7 +425,56 @@ fb:k=>{if(!k)return"กำลังวิเคราะห์ให้คุณ
 const pJ=t=>{if(!t)return null;try{return JSON.parse(t.replace(/```json\s*/g,"").replace(/```/g,"").trim())}catch{return null}};
 const ST={set:(k,v)=>{try{localStorage.setItem(`hss6_${k}`,JSON.stringify(v))}catch{}},get:k=>{try{const s=localStorage.getItem(`hss6_${k}`);return s?JSON.parse(s):null}catch{return null}}};
 
-const css=`@keyframes hs{to{transform:rotate(360deg)}}@keyframes hb{50%{opacity:0}}@keyframes hfl{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}`;
+const STICKY_NAV_HEIGHT = 52; // px — ความสูงของ sticky nav, ใช้สำหรับ paddingTop และ scrollMarginTop
+
+const NAV_ITEMS = [
+  { id: "sec-understand", label: "เข้าใจตัวเอง", icon: "🔍", subs: [
+    { id: "sec-identity",   label: "Identity Snapshot", icon: "✦"  },
+    { id: "sec-core5",      label: "5 Core Scores",     icon: "📊" },
+    { id: "sec-shadow",     label: "Shadow Analysis",   icon: "🌑" },
+  ]},
+  { id: "sec-plan", label: "วางแผนสั้น", icon: "📋", subs: [
+    { id: "sec-weekly", label: "Do & Don't สัปดาห์นี้", icon: "✅" },
+    { id: "sec-energy", label: "7-Day Energy",           icon: "🌙" },
+  ]},
+  { id: "sec-strategy", label: "Strategy", icon: "🧠", subs: [
+    { id: "sec-principle", label: "Life Principle",   icon: "✨" },
+    { id: "sec-money",     label: "Money Strategy",   icon: "💰" },
+    { id: "sec-love",      label: "Love & Compat.",   icon: "💕" },
+    { id: "sec-timeline",  label: "Timeline Layer",   icon: "⏳" },
+  ]},
+  { id: "sec-execution", label: "Execution", icon: "🎯", subs: [
+    { id: "sec-job", label: "Job Matching AI", icon: "💼" },
+  ]},
+  { id: "sec-decision", label: "Decision", icon: "🗺️", subs: [
+    { id: "sec-decision-roadmap", label: "Decision Roadmap", icon: "🎯" },
+  ]},
+  { id: "sec-deep", label: "Deep Insight", icon: "📊", subs: [
+    { id: "sec-12d",        label: "12D Spider Web",  icon: "🕸️" },
+    { id: "sec-shadow-deep",label: "Shadow เชิงลึก", icon: "🌑" },
+    { id: "sec-pdf-sec",    label: "PDF Report",      icon: "📄" },
+  ]},
+];
+
+const css = `
+  @keyframes hs  { to { transform: rotate(360deg) } }
+  @keyframes hb  { 50% { opacity: 0 } }
+  @keyframes hfl { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+  @keyframes slideDown { from { opacity:0; transform:translateY(-8px) } to { opacity:1; transform:translateY(0) } }
+  .snav-wrap { position:fixed; top:0; left:0; right:0; z-index:1000; background:rgba(255,255,255,0.97); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid #E2E8F0; box-shadow:0 2px 10px rgba(0,0,0,0.07) }
+  .snav-inner { max-width:520px; margin:0 auto; padding:0 10px }
+  .snav-row { display:flex; overflow-x:auto; gap:1px; padding:6px 0; scrollbar-width:none; -ms-overflow-style:none }
+  .snav-row::-webkit-scrollbar { display:none }
+  .snav-item { position:relative; flex-shrink:0 }
+  .snav-btn { padding:5px 8px; border-radius:8px; border:none; background:transparent; color:#374151; font-size:10px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:3px; white-space:nowrap }
+  .snav-btn-open { background:#EEF2FF; color:#4338CA }
+  .snav-dropdown { position:absolute; top:calc(100% + 4px); left:0; z-index:1001; background:#fff; border-radius:10px; border:1px solid #E2E8F0; box-shadow:0 4px 20px rgba(0,0,0,0.12); min-width:170px; padding:4px; animation:slideDown 0.15s ease }
+  .snav-sub-label { padding:4px 10px 5px; font-size:9px; color:#94A3B8; font-weight:700; letter-spacing:0.5px }
+  .snav-sub-btn { display:flex; align-items:center; gap:8px; width:100%; padding:7px 10px; border-radius:8px; border:none; background:transparent; text-align:left; font-size:11px; color:#374151; cursor:pointer; font-weight:600 }
+  .snav-sub-btn:hover { background:#F8FAFC }
+  .snav-pdf-btn { padding:5px 10px; border-radius:8px; border:none; background:linear-gradient(135deg,#4338CA,#6D28D9); color:#fff; font-size:10px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:3px; white-space:nowrap; box-shadow:0 2px 6px rgba(67,56,202,0.3) }
+  .snav-anchor { scroll-margin-top:${STICKY_NAV_HEIGHT}px }
+`;
 const Spin=({t="AI กำลังวิเคราะห์..."})=><div style={{padding:"12px 0",display:"flex",alignItems:"center",gap:8}}><div style={{width:16,height:16,borderRadius:"50%",border:"2.5px solid #E0E7FF",borderTopColor:"#6366F1",animation:"hs .7s linear infinite"}}/><span style={{fontSize:12,color:"#6366F1",fontWeight:600}}>{t}</span></div>;
 const fmtAI=t=>t?t.replace(/\n+([🌟⚠️💡⚡🔄✨🌑])/g,'\n\n$1').replace(/\n+(---)/g,'\n\n$1'):t;
 const Typer=({text})=>{const tx=fmtAI(text);const[s,setS]=useState("");const[d,setD]=useState(false);useEffect(()=>{if(!tx)return;let i=0;setS("");setD(false);const iv=setInterval(()=>{i+=3;if(i>=tx.length){setS(tx);setD(true);clearInterval(iv)}else setS(tx.slice(0,i))},12);return()=>clearInterval(iv)},[tx]);return<div style={{fontSize:13,lineHeight:1.8,color:"#374151",whiteSpace:"pre-wrap"}}>{s}{!d&&<span style={{display:"inline-block",width:2,height:14,background:"#6366F1",marginLeft:1,animation:"hb .8s step-end infinite"}}/>}</div>};
@@ -1961,11 +2010,70 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   };
 
   // ─── RESULTS ───
-  const StickyNav=()=>{const[om,setOm]=useState(null);const navItems=[{id:"sec-understand",label:"เข้าใจตัวเอง",icon:"🔍",subs:[{id:"sec-identity",label:"Identity Snapshot",icon:"✦"},{id:"sec-core5",label:"5 Core Scores",icon:"📊"},{id:"sec-shadow",label:"Shadow Analysis",icon:"🌑"}]},{id:"sec-plan",label:"วางแผนสั้น",icon:"📋",subs:[{id:"sec-weekly",label:"Do & Don't สัปดาห์นี้",icon:"✅"},{id:"sec-energy",label:"7-Day Energy",icon:"🌙"}]},{id:"sec-strategy",label:"Strategy",icon:"🧠",subs:[{id:"sec-principle",label:"Life Principle",icon:"✨"},{id:"sec-money",label:"Money Strategy",icon:"💰"},{id:"sec-love",label:"Love & Compat.",icon:"💕"},{id:"sec-timeline",label:"Timeline Layer",icon:"⏳"}]},{id:"sec-execution",label:"Execution",icon:"🎯",subs:[{id:"sec-job",label:"Job Matching AI",icon:"💼"}]},{id:"sec-decision",label:"Decision",icon:"🗺️",subs:[{id:"sec-decision-roadmap",label:"Decision Roadmap",icon:"🎯"}]},{id:"sec-deep",label:"Deep Insight",icon:"📊",subs:[{id:"sec-12d",label:"12D Spider Web",icon:"🕸️"},{id:"sec-shadow-deep",label:"Shadow เชิงลึก",icon:"🌑"},{id:"sec-pdf-sec",label:"PDF Report",icon:"📄"}]}];const goTo=(id)=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});setOm(null);};useEffect(()=>{const h=(e)=>{if(!e.target.closest("#sticky-nav"))setOm(null);};document.addEventListener("click",h);return()=>document.removeEventListener("click",h);},[]);return(<div id="sticky-nav" style={{position:"fixed",top:0,left:0,right:0,zIndex:1000,background:"rgba(255,255,255,0.97)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",borderBottom:"1px solid #E2E8F0",boxShadow:"0 2px 10px rgba(0,0,0,0.07)"}}><div style={{maxWidth:520,margin:"0 auto",padding:"0 10px"}}><div style={{display:"flex",overflowX:"auto",gap:1,padding:"6px 0",scrollbarWidth:"none",msOverflowStyle:"none"}}>{navItems.map(item=>(<div key={item.id} style={{position:"relative",flexShrink:0}}><button onClick={(e)=>{e.stopPropagation();setOm(om===item.id?null:item.id);}} style={{padding:"5px 8px",borderRadius:8,border:"none",background:om===item.id?"#EEF2FF":"transparent",color:om===item.id?"#4338CA":"#374151",fontSize:10,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:3,whiteSpace:"nowrap"}}><span style={{fontSize:11}}>{item.icon}</span><span>{item.label}</span><span style={{fontSize:7,opacity:0.5}}>▼</span></button>{om===item.id&&(<div style={{position:"absolute",top:"calc(100% + 4px)",left:0,zIndex:1001,background:"#fff",borderRadius:10,border:"1px solid #E2E8F0",boxShadow:"0 4px 20px rgba(0,0,0,0.12)",minWidth:170,padding:"4px",animation:"slideDown 0.15s ease"}}><div style={{padding:"4px 10px 5px",fontSize:9,color:"#94A3B8",fontWeight:700,letterSpacing:0.5}}>หัวข้อย่อย</div>{item.subs.map(sub=>(<button key={sub.id} onClick={(e)=>{e.stopPropagation();goTo(sub.id);}} style={{display:"flex",alignItems:"center",gap:8,width:"100%",padding:"7px 10px",borderRadius:8,border:"none",background:"transparent",textAlign:"left",fontSize:11,color:"#374151",cursor:"pointer",fontWeight:600}}><span style={{fontSize:12,width:18,flexShrink:0}}>{sub.icon}</span><span>{sub.label}</span></button>))}</div>)}</div>))}<div style={{flexShrink:0,marginLeft:6,display:"flex",alignItems:"center"}}><button onClick={exportPDF} style={{padding:"5px 10px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:10,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:3,whiteSpace:"nowrap",boxShadow:"0 2px 6px rgba(67,56,202,0.3)"}}><span>📄</span><span>PDF</span></button></div></div></div></div>);};
+  const StickyNav = () => {
+    const [openMenuId, setOpenMenuId] = useState(null);
+
+    const goTo = (id) => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      setOpenMenuId(null);
+    };
+
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if (!e.target.closest("#sticky-nav")) setOpenMenuId(null);
+      };
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }, []);
+
+    return (
+      <div id="sticky-nav" className="snav-wrap">
+        <div className="snav-inner">
+          <div className="snav-row">
+            {NAV_ITEMS.map(item => (
+              <div key={item.id} className="snav-item">
+                <button
+                  onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === item.id ? null : item.id); }}
+                  className={openMenuId === item.id ? "snav-btn snav-btn-open" : "snav-btn"}
+                >
+                  <span style={{ fontSize: 11 }}>{item.icon}</span>
+                  <span>{item.label}</span>
+                  <span style={{ fontSize: 7, opacity: 0.5 }}>▼</span>
+                </button>
+                {openMenuId === item.id && (
+                  <div className="snav-dropdown">
+                    <div className="snav-sub-label">หัวข้อย่อย</div>
+                    {item.subs.map(sub => (
+                      <button
+                        key={sub.id}
+                        onClick={(e) => { e.stopPropagation(); goTo(sub.id); }}
+                        className="snav-sub-btn"
+                      >
+                        <span style={{ fontSize: 12, width: 18, flexShrink: 0 }}>{sub.icon}</span>
+                        <span>{sub.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+            <div style={{ flexShrink: 0, marginLeft: 6, display: "flex", alignItems: "center" }}>
+              <button onClick={exportPDF} className="snav-pdf-btn">
+                <span>📄</span>
+                <span>PDF</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const Sec=({fKey,planNeeded,title,icon,children})=>{const ok=has(fKey);const neededPlan=planNeeded||(PLANS.smart.f.includes(fKey)?"smart":"pro");return<Card style={{position:"relative"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:ok?8:4}}><div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:15}}>{icon}</span><span style={{fontSize:13,fontWeight:700}}>{title}</span></div>{!ok&&<span style={{fontSize:10,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"2px 8px",borderRadius:8}}>🔒</span>}</div>{ok?children:<><p style={{fontSize:11,color:"#94A3B8",marginBottom:6}}>ปลดล็อกเพื่อดู</p><div style={{display:"flex",gap:6}}>{(plan==="free"||plan==="quick")&&neededPlan==="smart"&&<button onClick={()=>tryUpgrade("smart")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #3B82F6",background:"#EFF6FF",color:"#1D4ED8",fontSize:11,fontWeight:700,cursor:"pointer"}}>Smart ฿99</button>}{plan!=="pro"&&<button onClick={()=>tryUpgrade(neededPlan==="smart"&&(plan==="free"||plan==="quick")?"smart":"pro")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>Pro ฿259 ⭐</button>}</div></>}</Card>};
 
   const Results=()=>{if(!scores)return null;const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);const c5={"Cognitive Processing":scores["Cognitive Processing"],"Emotional Regulation":scores["Emotional Regulation"],"Identity Stability":scores["Identity Stability"],"Shadow Pattern":scores["Shadow Pattern"],"Growth Orientation":scores["Growth Orientation"]};
-  return<div style={{paddingTop:48}}>
+  return<div style={{paddingTop:STICKY_NAV_HEIGHT}}>
   <StickyNav/>
   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:26,height:26,borderRadius:8,background:"linear-gradient(135deg,#4338CA,#6D28D9)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff"}}>✦</div><span style={{fontSize:14,fontWeight:800}}>{nick}</span></div><span style={{fontSize:10,color:"#94A3B8"}}>{PLANS[plan].name}{logged?` · ${user?.email?.split("@")[0]}`:""}</span></div><div style={{display:"flex",alignItems:"center",gap:4}}>{plan!=="free"&&<span style={{fontSize:10,fontWeight:700,color:"#fff",background:PLANS[plan].c,padding:"3px 10px",borderRadius:8}}>{PLANS[plan].name}</span>}{logged?<button onClick={doLogout} style={{fontSize:12,color:"#64748B",background:"#F8FAFC",border:"1px solid #E2E8F0",borderRadius:8,padding:"6px 14px",cursor:"pointer",minWidth:60,minHeight:36}}>ออกจากระบบ</button>:<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:12,color:"#4338CA",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:8,padding:"6px 14px",cursor:"pointer"}}>เข้าสู่ระบบ</button>}</div></div>
 
@@ -1974,19 +2082,19 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   <SectionHeader icon="👉" label="คุณควรทำอะไร" locked={!has("decide_ai")} planNeeded="smart" onUpgrade={tryUpgrade}/>
   <AskDecide plan={plan} has={has} nick={nick} bday={bday} scores={scores} tryUpgrade={tryUpgrade}/>
 
-  <div id="sec-understand" style={{scrollMarginTop:52}}/><SectionHeader icon="👉" label="เข้าใจตัวเอง" locked={false}/>
-  <div id="sec-identity" style={{scrollMarginTop:52}}/><Sec fKey="identity" planNeeded="free" title="Identity Snapshot" icon="✦">{ai.identity&&ai.identity.powerTitle?<IdentitySnapshotCard data={ai.identity} scores={scores} hasMbti={has("mbti")}/>:aiL.identity?<Spin t="กำลังถอดรหัสตัวตน..."/>:<Spin t="เชื่อม AI..."/>}</Sec>
-  <div id="sec-core5" style={{scrollMarginTop:52}}/><Sec fKey="core5" title="5 Core Scores" icon="📊">{Object.entries(c5).map(([d,sc])=>{const meta=C5_META[d]||{short:d,pl:"",high:{label:"",desc:""},mid:{label:"",desc:""},low:{label:"",desc:""}};const lv=sc>=7?meta.high:sc>=5?meta.mid:meta.low;const isLow=sc<5;const isMid=sc>=5&&sc<7;const lblColor=isLow?"#DC2626":isMid?"#64748B":"#059669";return<div key={d} style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><span style={{fontSize:11,fontWeight:600}}>{DM[d]?.icon} {meta.short} <span style={{fontSize:9,color:"#94A3B8"}}>({meta.pl})</span></span><span style={{fontSize:13,fontWeight:800,color:DM[d]?.c}}>{sc.toFixed(1)}</span></div><div style={{height:5,background:"#F1F5F9",borderRadius:3,overflow:"hidden",marginBottom:5}}><div style={{height:"100%",width:`${sc*10}%`,background:DM[d]?.c,borderRadius:3}}/></div><div style={{fontSize:10,lineHeight:1.6,color:lblColor}}><span style={{fontWeight:700}}>{lv.label}:</span> {lv.desc}</div></div>})}<div style={{marginTop:8,padding:8,background:"#F8FAFC",borderRadius:8}}>{aiL.core?<Spin/>:ai.core?<Typer text={ai.core}/>:<Spin t="รอ AI..."/>}</div></Sec>
+  <div id="sec-understand" className="snav-anchor"/><SectionHeader icon="👉" label="เข้าใจตัวเอง" locked={false}/>
+  <div id="sec-identity" className="snav-anchor"/><Sec fKey="identity" planNeeded="free" title="Identity Snapshot" icon="✦">{ai.identity&&ai.identity.powerTitle?<IdentitySnapshotCard data={ai.identity} scores={scores} hasMbti={has("mbti")}/>:aiL.identity?<Spin t="กำลังถอดรหัสตัวตน..."/>:<Spin t="เชื่อม AI..."/>}</Sec>
+  <div id="sec-core5" className="snav-anchor"/><Sec fKey="core5" title="5 Core Scores" icon="📊">{Object.entries(c5).map(([d,sc])=>{const meta=C5_META[d]||{short:d,pl:"",high:{label:"",desc:""},mid:{label:"",desc:""},low:{label:"",desc:""}};const lv=sc>=7?meta.high:sc>=5?meta.mid:meta.low;const isLow=sc<5;const isMid=sc>=5&&sc<7;const lblColor=isLow?"#DC2626":isMid?"#64748B":"#059669";return<div key={d} style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><span style={{fontSize:11,fontWeight:600}}>{DM[d]?.icon} {meta.short} <span style={{fontSize:9,color:"#94A3B8"}}>({meta.pl})</span></span><span style={{fontSize:13,fontWeight:800,color:DM[d]?.c}}>{sc.toFixed(1)}</span></div><div style={{height:5,background:"#F1F5F9",borderRadius:3,overflow:"hidden",marginBottom:5}}><div style={{height:"100%",width:`${sc*10}%`,background:DM[d]?.c,borderRadius:3}}/></div><div style={{fontSize:10,lineHeight:1.6,color:lblColor}}><span style={{fontWeight:700}}>{lv.label}:</span> {lv.desc}</div></div>})}<div style={{marginTop:8,padding:8,background:"#F8FAFC",borderRadius:8}}>{aiL.core?<Spin/>:ai.core?<Typer text={ai.core}/>:<Spin t="รอ AI..."/>}</div></Sec>
 
-  <div id="sec-shadow" style={{scrollMarginTop:52}}/>{/* Locked preview: Shadow */}
+  <div id="sec-shadow" className="snav-anchor"/>{/* Locked preview: Shadow */}
   {!has("shadow")?<Locked planNeeded="smart" title="Shadow Analysis" onUpgrade={tryUpgrade}><div style={{padding:12,borderRadius:10,background:"#1E293B",color:"#fff",marginBottom:8}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>🌑 Shadow Pattern: {scores["Shadow Pattern"]?.toFixed(1)}/10</div><div style={{fontSize:11,color:"#94A3B8"}}>Stress Response: {scores["Stress Response"]?.toFixed(1)} · Boundary: {scores["Boundary System"]?.toFixed(1)}</div></div><div style={{fontSize:12,lineHeight:1.8,color:"#374151"}}>⚡ Trigger หลัก: ราหูชี้ว่าคุณมักถูกกระตุ้นเมื่อ...<br/>🔄 Pattern ซ้ำ: เมื่อเจอ trigger คุณมักเลือก...<br/>💡 วิธีแก้: ฝึกจับสัญญาณร่างกาย...</div></Locked>:<Sec fKey="shadow" title="Shadow Analysis" icon="🌑"><div style={{background:"#0F172A",borderRadius:10,padding:"12px 14px",marginBottom:10}}><div style={{fontSize:12,fontWeight:800,color:"#E2E8F0",marginBottom:6}}>🌑 Shadow Pattern คืออะไร?</div><div style={{fontSize:12,color:"#94A3B8",lineHeight:1.8}}>เงามืดที่ขัดขวางความสำเร็จ — คือพฤติกรรมที่คุณมักจะเผลอทำเวลาเสียศูนย์ (เช่น การผลัดวันประกันพรุ่ง การใช้อารมณ์ หรือการหนีความจริง) แม้คุณจะมีศักยภาพดาวกำเนิดที่สูง แต่ถ้า "เงามืด" นี้ทำงานหนักเกินไป มันจะดึงให้คะแนนการใช้งานจริงของคุณต่ำลง</div><div style={{marginTop:8,padding:"8px 10px",background:"rgba(99,102,241,0.15)",borderRadius:8,borderLeft:"3px solid #6366F1"}}><div style={{fontSize:11,color:"#A5B4FC",lineHeight:1.7}}>💡 การรู้เท่าทันเงาของตัวเอง คือกุญแจสำคัญที่จะทำให้คุณกลับมาควบคุมชีวิตได้อีกครั้ง</div></div></div>{aiL.shadow?<Spin/>:ai.shadow?<Typer text={ai.shadow}/>:<Spin t="วิเคราะห์เงามืด..."/>}</Sec>}
 
-  <div id="sec-plan" style={{scrollMarginTop:52}}/><SectionHeader icon="👉" label="วางแผนสั้น" locked={!has("weekly")} planNeeded="smart" onUpgrade={tryUpgrade}/>
+  <div id="sec-plan" className="snav-anchor"/><SectionHeader icon="👉" label="วางแผนสั้น" locked={!has("weekly")} planNeeded="smart" onUpgrade={tryUpgrade}/>
 
-  <div id="sec-weekly" style={{scrollMarginTop:52}}/>{/* Locked preview: Weekly */}
+  <div id="sec-weekly" className="snav-anchor"/>{/* Locked preview: Weekly */}
   {!has("weekly")?<Locked planNeeded="smart" title="Do & Don't สัปดาห์นี้" onUpgrade={tryUpgrade}><div style={{marginBottom:8}}><div style={{fontSize:12,fontWeight:700,color:"#10B981",marginBottom:4}}>✅ ควรทำ</div><div style={{padding:"6px 10px",borderRadius:6,background:"#ECFDF5",fontSize:11,marginBottom:3}}>ใช้จุดแข็งที่ดาวหนุนให้เต็มที่</div><div style={{padding:"6px 10px",borderRadius:6,background:"#ECFDF5",fontSize:11,marginBottom:3}}>ฝึกสังเกตอารมณ์ตัวเอง</div></div><div><div style={{fontSize:12,fontWeight:700,color:"#EF4444",marginBottom:4}}>❌ ควรเลี่ยง</div><div style={{padding:"6px 10px",borderRadius:6,background:"#FFF1F2",fontSize:11,marginBottom:3}}>หลีกเลี่ยงการตัดสินใจเร็วเกินไป</div><div style={{padding:"6px 10px",borderRadius:6,background:"#FFF1F2",fontSize:11}}>อย่ารับงานเกินกำลัง</div></div></Locked>:<Sec fKey="weekly" title="Do & Don't สัปดาห์นี้" icon="📋">{aiL.weekly?<Spin/>:ai.weekly&&typeof ai.weekly==="object"?<><div style={{fontSize:11,fontWeight:700,color:"#10B981",marginBottom:3}}>✅ ควรทำ</div>{(ai.weekly.do||[]).map((t,i)=><div key={i} style={{padding:"5px 8px",borderRadius:6,background:"#ECFDF5",border:"1px solid #A7F3D0",fontSize:11,marginBottom:2}}>{t}</div>)}<div style={{fontSize:11,fontWeight:700,color:"#EF4444",marginBottom:3,marginTop:6}}>❌ ควรเลี่ยง</div>{(ai.weekly.dont||[]).map((t,i)=><div key={i} style={{padding:"5px 8px",borderRadius:6,background:"#FFF1F2",border:"1px solid #FECDD3",fontSize:11,marginBottom:2}}>{t}</div>)}</>:<Spin/>}</Sec>}
 
-  <div id="sec-energy" style={{scrollMarginTop:52}}/>{/* Locked preview: Energy */}
+  <div id="sec-energy" className="snav-anchor"/>{/* Locked preview: Energy */}
   {!has("energy")?<Locked planNeeded="smart" title="7-Day Energy Forecast" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>🌙 พลังงาน 7 วัน — Moon + Mars + Day Lord</div>{["จันทร์ — 🌟 สดใส-เริ่มใหม่","อังคาร — 😊 สงบมั่นคง","พุธ — 🔥 กระตือรือร้น","พฤหัสบดี — 📚 ปัญญาเปิด","ศุกร์ — 💎 ผ่อนคลาย","เสาร์ — ⚙️ ต้องใช้วินัย","อาทิตย์ — ☀️ มีพลัง"].map((d,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 8px",borderRadius:6,background:i%2===0?"#F8FAFC":"#fff",fontSize:11,marginBottom:2}}><span>{d.split("—")[0]}</span><span style={{fontWeight:700}}>{d.split("—")[1]}</span></div>)}<div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>{['💼 งาน','💰 เงิน','❤️ ความรัก','🏃 สุขภาพ'].map((t,i)=><span key={i} style={{fontSize:10,padding:"2px 8px",borderRadius:8,background:"#EEF2FF",color:"#4338CA",fontWeight:600}}>{t}</span>)}</div><div style={{fontSize:10,color:"#6366F1",marginTop:6}}>🔮 คำนวณจาก Transit จันทร์+อังคาร+ศุกร์+พฤหัส+เจ้าวัน Vedic</div></Locked>:<Sec fKey="energy" title="7-Day Energy: รู้ก่อนรุ่ง พุ่งก่อนใคร" icon="🌙">{aiL.energy||!ai.energy?<Spin/>:Array.isArray(ai.energy)?<>{ai.energy.map((d,i)=>{const eColor=d.energy>=75?"#059669":d.energy>=55?"#6366F1":"#DC2626";const eBg=d.energy>=75?"#ECFDF5":d.energy>=55?"#EEF2FF":"#FFF1F2";return<div key={i} style={{padding:"10px 12px",borderRadius:10,marginBottom:4,background:i===0?"linear-gradient(135deg,#EEF2FF,#F5F3FF)":"#F8FAFC",border:i===0?"2px solid #6366F1":"1px solid #F1F5F9",boxShadow:i===0?"0 2px 8px rgba(99,102,241,0.08)":"none"}}>
   {/* Day header */}
   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
@@ -2015,12 +2123,12 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   {d.tip&&<div style={{fontSize:10,color:"#374151",background:"#fff",borderRadius:6,padding:"3px 8px",border:"1px solid #F1F5F9"}}>💡 {d.tip}</div>}
 </div>})}<div style={{marginTop:6,padding:8,background:"#F5F3FF",borderRadius:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>🔮 Vedic Jyotish พระเวท — 5 ชั้น</div><div style={{fontSize:9,color:"#64748B"}}>จันทร์(40%) + อังคาร(25%) + เจ้าวัน(35%) + ศุกร์ + พฤหัส · วิเคราะห์งาน เงิน ความรัก สุขภาพ รายวัน</div></div></>:<Spin/>}</Sec>}
 
-  <div id="sec-strategy" style={{scrollMarginTop:52}}/><SectionHeader icon="🧠" label="Strategy Layer" locked={!has("principle")} planNeeded="pro" onUpgrade={tryUpgrade}/>
+  <div id="sec-strategy" className="snav-anchor"/><SectionHeader icon="🧠" label="Strategy Layer" locked={!has("principle")} planNeeded="pro" onUpgrade={tryUpgrade}/>
 
-  <div id="sec-principle" style={{scrollMarginTop:52}}/>{/* Life Principle */}
+  <div id="sec-principle" className="snav-anchor"/>{/* Life Principle */}
   {!has("principle")?<Locked planNeeded="pro" title="Life Principle หลักการใช้ชีวิต" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#1E1B4B,#312E81)",color:"#C7D2FE",lineHeight:1.8,fontSize:12,fontStyle:"italic"}}>เมื่อดาวส่งแสง ชีวิตจะงดงามที่สุดในแบบของคุณ แต่เมื่อเข้าสู่ช่วงดำมืด ทุกครั้งที่ผ่านได้เพราะพลังจากดาวที่นำทางคุณเสมอ...</div></Locked>:<Sec fKey="principle" title="Life Principle หลักการใช้ชีวิต" icon="✨"><div style={{padding:"16px 18px",borderRadius:10,background:"linear-gradient(135deg,#1E1B4B,#312E81)"}}>{aiL.principle?<Spin/>:ai.principle?<div style={{fontSize:14,lineHeight:1.9,color:"#E0E7FF",fontStyle:"italic",textAlign:"center"}}>{ai.principle}</div>:<Spin t="วิเคราะห์หลักการชีวิต..."/>}</div></Sec>}
 
-  <div id="sec-money" style={{scrollMarginTop:52}}/>{/* Money Strategy */}
+  <div id="sec-money" className="snav-anchor"/>{/* Money Strategy */}
   {(()=>{
     if(!has("money")) return <Locked planNeeded="pro" title="Money Strategy — กลยุทธ์การเงินเฉพาะตัวคุณ" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#052e16,#14532d)",color:"#A7F3D0",lineHeight:1.8,fontSize:12}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>💰 Money Strategy</div><div style={{fontSize:11}}>Wealth Catalyst · Destiny Timeline · กลยุทธ์การเงินเฉพาะตัวคุณ</div></div></Locked>;
     const domP=calcDomPlanet(vedic||{});
@@ -2141,7 +2249,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     </Sec>;
   })()}
 
-  <div id="sec-love" style={{scrollMarginTop:52}}/>{/* Love & Compatibility */}
+  <div id="sec-love" className="snav-anchor"/>{/* Love & Compatibility */}
   {(()=>{
     const eS=scores["Emotional Regulation"]||5;const shS=scores["Shadow Pattern"]||5;const bS=scores["Boundary System"]||5;
     const w1=Math.max(1,(10-eS)*3.5),w2=Math.max(1,(10-shS)*2.5),w3=Math.max(1,(10-bS)*2.0),w4=7,wT=w1+w2+w3+w4;
@@ -2231,7 +2339,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     </Card>;
   })()}
 
-  <div id="sec-timeline" style={{scrollMarginTop:52}}/><SectionHeader icon="⏳" label="Timeline Layer" locked={!has("dasha")} planNeeded="pro" onUpgrade={tryUpgrade}/>
+  <div id="sec-timeline" className="snav-anchor"/><SectionHeader icon="⏳" label="Timeline Layer" locked={!has("dasha")} planNeeded="pro" onUpgrade={tryUpgrade}/>
 
   {/* Life Phase Map (Dasha) */}
   {!has("dasha")?<Locked planNeeded="pro" title="Life Phase Map (Dasha)" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:6}}>🗺 แผนที่ช่วงชีวิต — Vedic Dasha System</div>{["🌀 เกตุ — การค้นหาตัวเอง","💎 ศุกร์ — ความสัมพันธ์","☀️ อาทิตย์ — การสร้างตัวตน","🌙 จันทร์ — อารมณ์และจิตใจ"].map((d,i)=><div key={i} style={{fontSize:11,padding:"3px 0",color:"#374151"}}>{d}</div>)}<div style={{fontSize:10,color:"#6366F1",marginTop:6}}>🔮 คำนวณจากนักษัตร + มหาทศา Vedic Jyotish</div></Locked>:<Sec fKey="dasha" title="Life Phase Map" icon="🗺">{(()=>{try{
@@ -2314,23 +2422,23 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     </div>
     </div>})()}</Sec>}
 
-  <div id="sec-execution" style={{scrollMarginTop:52}}/><SectionHeader icon="🎯" label="Execution Layer" locked={!has("job")} planNeeded="pro" onUpgrade={tryUpgrade}/>
+  <div id="sec-execution" className="snav-anchor"/><SectionHeader icon="🎯" label="Execution Layer" locked={!has("job")} planNeeded="pro" onUpgrade={tryUpgrade}/>
 
-  <div id="sec-job" style={{scrollMarginTop:52}}/>{/* Locked preview: Job */}
+  <div id="sec-job" className="snav-anchor"/>{/* Locked preview: Job */}
   {!has("job")?<Locked planNeeded="pro" title="Job Matching AI" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>💼 AI แนะนำอาชีพจาก 12D Profile + Vedic</div>{[{t:"Data Analyst",m:88},{t:"Project Manager",m:82},{t:"UX Researcher",m:78}].map((j,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 10px",borderRadius:6,background:"#F8FAFC",marginBottom:3,fontSize:12}}><span>{i+1}. {j.t}</span><span style={{fontWeight:700,color:"#4338CA"}}>Match {j.m}%</span></div>)}<div style={{display:"flex",gap:4,marginTop:4}}><div style={{padding:"5px 10px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:10,fontWeight:700}}>🔍 ค้นหาใน LinkedIn</div></div></Locked>:<Sec fKey="job" title="Job Matching AI" icon="💼">{aiL.job||!ai.job?<Spin/>:Array.isArray(ai.job)?ai.job.map((j,i)=><div key={i} style={{padding:10,borderRadius:8,background:"#F8FAFC",marginBottom:4}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}><span style={{fontSize:13,fontWeight:700}}>{j.titleTH||j.title}</span><span style={{fontSize:10,fontWeight:700,color:"#4338CA",background:"#EEF2FF",padding:"2px 6px",borderRadius:6}}>{j.match}%</span></div>{j.dims&&<div style={{fontSize:10,color:"#6366F1",marginBottom:2}}>📊 {j.dims}</div>}<div style={{fontSize:11,color:"#64748B",lineHeight:1.5}}>{j.reason}</div><a href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(j.title)}&location=Thailand`} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:6,padding:"5px 12px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:11,fontWeight:700,textDecoration:"none"}}>🔍 ค้นหางานในไทย — LinkedIn</a></div>):<Spin/>}</Sec>}
 
-  <div id="sec-decision" style={{scrollMarginTop:52}}/><div id="sec-decision-roadmap" style={{scrollMarginTop:52}}/>{/* Decision Roadmap */}
+  <div id="sec-decision" className="snav-anchor"/><div id="sec-decision-roadmap" className="snav-anchor"/>{/* Decision Roadmap */}
   {!has("decision_roadmap")?<Locked planNeeded="pro" title="Decision Roadmap — แผนการตัดสินใจจาก 4 ศาสตร์" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#0f172a,#1e1b4b)",color:"#A5B4FC",lineHeight:1.8,fontSize:12}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>🎯 Decision Roadmap</div><div style={{fontSize:11}}>Next step ต้องทำอะไรตามโหราศาสตร์ 4 ศาสตร์</div></div></Locked>:<Sec fKey="decision_roadmap" planNeeded="pro" title="Decision Roadmap" icon="🎯"><div style={{background:"#EEF2FF",borderRadius:10,padding:"12px 14px",border:"1px solid #C7D2FE"}}>{aiL.decision_roadmap?<Spin t="สร้าง Roadmap..."/>:ai.decision_roadmap?<div style={{fontSize:12,lineHeight:1.9,color:"#1E293B",whiteSpace:"pre-wrap"}}>{ai.decision_roadmap}</div>:<Spin t="กำลังโหลด..."/>}</div></Sec>}
 
-  <div id="sec-deep" style={{scrollMarginTop:52}}/><SectionHeader icon="📊" label="Deep Insight" locked={!has("12d")} planNeeded="pro" onUpgrade={tryUpgrade}/>
+  <div id="sec-deep" className="snav-anchor"/><SectionHeader icon="📊" label="Deep Insight" locked={!has("12d")} planNeeded="pro" onUpgrade={tryUpgrade}/>
 
-  <div id="sec-12d" style={{scrollMarginTop:52}}/>{/* Locked preview: 12D */}
+  <div id="sec-12d" className="snav-anchor"/>{/* Locked preview: 12D */}
   {!has("12d")?<Locked planNeeded="pro" title="12D Spider Web + จุดแข็ง/จุดพัฒนา" onUpgrade={tryUpgrade}><div style={{textAlign:"center",padding:16}}><Spider scores={scores}/></div><div style={{padding:"8px 0"}}><div style={{fontSize:12,marginBottom:4}}>💪 จุดแข็ง: {so.slice(0,3).map(([k,v])=>`${DM[k]?.icon}${k}(${v.toFixed(1)})`).join(" · ")}</div><div style={{fontSize:12}}>⚠️ จุดพัฒนา: {so.slice(-3).map(([k,v])=>`${DM[k]?.icon}${k}(${v.toFixed(1)})`).join(" · ")}</div></div></Locked>:<Sec fKey="12d" title="12D Spider Web" icon="🕸️"><div style={{display:"flex",justifyContent:"center",marginBottom:8}}><Spider scores={scores}/></div><div style={{marginBottom:6}}><div style={{fontSize:11,fontWeight:700,color:"#10B981",marginBottom:3}}>💪 จุดแข็ง</div>{so.slice(0,4).map(([d,s])=><div key={d} style={{padding:"4px 8px",borderRadius:6,background:"#ECFDF5",border:"1px solid #A7F3D0",marginBottom:2,display:"flex",justifyContent:"space-between",fontSize:11}}><span>{DM[d]?.icon} {d}</span><span style={{fontWeight:700,color:"#059669"}}>{s.toFixed(1)}</span></div>)}</div><div><div style={{fontSize:11,fontWeight:700,color:"#EF4444",marginBottom:3}}>⚠️ จุดพัฒนา</div>{so.slice(-4).map(([d,s])=><div key={d} style={{padding:"4px 8px",borderRadius:6,background:"#FFF1F2",border:"1px solid #FECDD3",marginBottom:2,display:"flex",justifyContent:"space-between",fontSize:11}}><span>{DM[d]?.icon} {d}</span><span style={{fontWeight:700,color:"#EF4444"}}>{s.toFixed(1)}</span></div>)}</div>{aiL["12d"]?<Spin/>:ai["12d"]?<div style={{marginTop:8,padding:8,background:"#F8FAFC",borderRadius:8}}><Typer text={ai["12d"]}/></div>:null}</Sec>}
 
-  <div id="sec-shadow-deep" style={{scrollMarginTop:52}}/>{/* Shadow Deep */}
+  <div id="sec-shadow-deep" className="snav-anchor"/>{/* Shadow Deep */}
   {!has("shadow_deep")?<Locked planNeeded="pro" title="Shadow Analysis เชิงลึก — ระดับ Deep" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#0a0a0a,#1a1a2e)",color:"#94A3B8",lineHeight:1.8,fontSize:12}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>🌑 Shadow Analysis เชิงลึก</div><div style={{fontSize:11}}>Core Shadow Identity · Integration Map · เส้นทาง Integration</div></div></Locked>:<Sec fKey="shadow_deep" planNeeded="pro" title="Shadow Analysis เชิงลึก" icon="🌑"><div style={{background:"#0F172A",borderRadius:10,padding:"12px 14px"}}>{aiL.shadow_deep?<Spin t="วิเคราะห์ Shadow เชิงลึก..."/>:ai.shadow_deep?<div style={{fontSize:12,lineHeight:1.9,color:"#E2E8F0",whiteSpace:"pre-wrap"}}>{ai.shadow_deep}</div>:<Spin t="กำลังโหลด..."/>}</div></Sec>}
 
-  <div id="sec-pdf-sec" style={{scrollMarginTop:52}}/>{!has("pdf")?<Locked planNeeded="pro" title="PDF Report ดาวน์โหลด" onUpgrade={tryUpgrade}><div style={{fontSize:12,lineHeight:1.8}}>📄 รายงานฉบับเต็ม ประกอบด้วย:<br/>• 12 Dimension Scores + Spider Chart<br/>• Identity + Shadow + 5 Core Analysis<br/>• Do & Don't + 7-Day Energy + transit<br/>• Job Matching + Life Phase Map</div></Locked>:<Sec fKey="pdf" title="PDF Report" icon="📄"><Btn onClick={exportPDF} style={{fontSize:12,padding:8}}>📄 ดาวน์โหลด PDF</Btn></Sec>}
+  <div id="sec-pdf-sec" className="snav-anchor"/>{!has("pdf")?<Locked planNeeded="pro" title="PDF Report ดาวน์โหลด" onUpgrade={tryUpgrade}><div style={{fontSize:12,lineHeight:1.8}}>📄 รายงานฉบับเต็ม ประกอบด้วย:<br/>• 12 Dimension Scores + Spider Chart<br/>• Identity + Shadow + 5 Core Analysis<br/>• Do & Don't + 7-Day Energy + transit<br/>• Job Matching + Life Phase Map</div></Locked>:<Sec fKey="pdf" title="PDF Report" icon="📄"><Btn onClick={exportPDF} style={{fontSize:12,padding:8}}>📄 ดาวน์โหลด PDF</Btn></Sec>}
 
   <Sec fKey="share" title="Social Share Card" icon="📸"><div style={{fontSize:11,color:"#64748B",marginBottom:6}}>{plan==="all"?"การ์ด Full — Radar Chart 12 ด้าน + จุดแข็ง + Shadow + คำแนะนำ":"การ์ด Free — 5 Core + จุดแข็ง/Shadow + CTA อัปเกรด"}</div><Btn onClick={shareProfile} style={{fontSize:12,padding:8,background:"linear-gradient(135deg,#7C3AED,#5B21B6)"}}>📸 ดาวน์โหลดการ์ดแชร์</Btn></Sec>
 
