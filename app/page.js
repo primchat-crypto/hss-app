@@ -462,13 +462,13 @@ const css = `
   @keyframes hfl { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
   @keyframes slideDown { from { opacity:0; transform:translateY(-8px) } to { opacity:1; transform:translateY(0) } }
   .snav-wrap { position:fixed; top:0; left:0; right:0; z-index:1000; background:rgba(255,255,255,0.97); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid #E2E8F0; box-shadow:0 2px 10px rgba(0,0,0,0.07) }
-  .snav-inner { max-width:520px; margin:0 auto; padding:0 10px }
+  .snav-inner { position:relative; max-width:520px; margin:0 auto; padding:0 10px }
   .snav-row { display:flex; overflow-x:auto; gap:1px; padding:6px 0; scrollbar-width:none; -ms-overflow-style:none }
   .snav-row::-webkit-scrollbar { display:none }
-  .snav-item { position:relative; flex-shrink:0 }
+  .snav-item { flex-shrink:0 }
   .snav-btn { padding:5px 8px; border-radius:8px; border:none; background:transparent; color:#374151; font-size:10px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:3px; white-space:nowrap }
   .snav-btn-open { background:#EEF2FF; color:#4338CA }
-  .snav-dropdown { position:absolute; top:calc(100% + 4px); left:0; z-index:1001; background:#fff; border-radius:10px; border:1px solid #E2E8F0; box-shadow:0 4px 20px rgba(0,0,0,0.12); min-width:170px; padding:4px; animation:slideDown 0.15s ease }
+  .snav-dropdown { position:absolute; top:100%; z-index:1001; background:#fff; border-radius:10px; border:1px solid #E2E8F0; box-shadow:0 4px 20px rgba(0,0,0,0.12); min-width:170px; padding:4px; animation:slideDown 0.15s ease }
   .snav-sub-label { padding:4px 10px 5px; font-size:9px; color:#94A3B8; font-weight:700; letter-spacing:0.5px }
   .snav-sub-btn { display:flex; align-items:center; gap:8px; width:100%; padding:7px 10px; border-radius:8px; border:none; background:transparent; text-align:left; font-size:11px; color:#374151; cursor:pointer; font-weight:600 }
   .snav-sub-btn:hover { background:#F8FAFC }
@@ -2012,11 +2012,32 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   // ─── RESULTS ───
   const StickyNav = () => {
     const [openMenuId, setOpenMenuId] = useState(null);
+    const [dropdownLeft, setDropdownLeft] = useState(0);
+    const innerRef = useRef(null);
 
     const goTo = (id) => {
       const el = document.getElementById(id);
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
       setOpenMenuId(null);
+    };
+
+    const handleNavClick = (e, itemId) => {
+      e.stopPropagation();
+      if (openMenuId === itemId) {
+        setOpenMenuId(null);
+        return;
+      }
+      // คำนวณตำแหน่ง left ของปุ่มเทียบกับ snav-inner เพื่อวาง dropdown ให้ถูกที่
+      if (innerRef.current) {
+        const btnRect = e.currentTarget.getBoundingClientRect();
+        const innerRect = innerRef.current.getBoundingClientRect();
+        const left = Math.min(
+          btnRect.left - innerRect.left,
+          innerRect.width - 175 // ป้องกัน dropdown ล้นขอบขวา
+        );
+        setDropdownLeft(Math.max(0, left));
+      }
+      setOpenMenuId(itemId);
     };
 
     useEffect(() => {
@@ -2027,35 +2048,24 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
       return () => document.removeEventListener("click", handleClickOutside);
     }, []);
 
+    const openItem = NAV_ITEMS.find(item => item.id === openMenuId);
+
     return (
       <div id="sticky-nav" className="snav-wrap">
-        <div className="snav-inner">
+        {/* snav-inner มี position:relative เพื่อให้ dropdown วางตำแหน่งได้ถูกต้อง */}
+        <div className="snav-inner" ref={innerRef}>
+          {/* snav-row มี overflow-x:auto — dropdown ต้องอยู่นอก div นี้ */}
           <div className="snav-row">
             {NAV_ITEMS.map(item => (
               <div key={item.id} className="snav-item">
                 <button
-                  onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === item.id ? null : item.id); }}
+                  onClick={(e) => handleNavClick(e, item.id)}
                   className={openMenuId === item.id ? "snav-btn snav-btn-open" : "snav-btn"}
                 >
                   <span style={{ fontSize: 11 }}>{item.icon}</span>
                   <span>{item.label}</span>
                   <span style={{ fontSize: 7, opacity: 0.5 }}>▼</span>
                 </button>
-                {openMenuId === item.id && (
-                  <div className="snav-dropdown">
-                    <div className="snav-sub-label">หัวข้อย่อย</div>
-                    {item.subs.map(sub => (
-                      <button
-                        key={sub.id}
-                        onClick={(e) => { e.stopPropagation(); goTo(sub.id); }}
-                        className="snav-sub-btn"
-                      >
-                        <span style={{ fontSize: 12, width: 18, flexShrink: 0 }}>{sub.icon}</span>
-                        <span>{sub.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
               </div>
             ))}
             <div style={{ flexShrink: 0, marginLeft: 6, display: "flex", alignItems: "center" }}>
@@ -2065,6 +2075,23 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
               </button>
             </div>
           </div>
+
+          {/* Dropdown วางไว้นอก snav-row เพื่อไม่ถูก overflow:auto clip */}
+          {openItem && (
+            <div className="snav-dropdown" style={{ left: dropdownLeft }}>
+              <div className="snav-sub-label">หัวข้อย่อย</div>
+              {openItem.subs.map(sub => (
+                <button
+                  key={sub.id}
+                  onClick={(e) => { e.stopPropagation(); goTo(sub.id); }}
+                  className="snav-sub-btn"
+                >
+                  <span style={{ fontSize: 12, width: 18, flexShrink: 0 }}>{sub.icon}</span>
+                  <span>{sub.label}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );
