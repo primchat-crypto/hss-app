@@ -594,7 +594,27 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade})=>{
     const maxQ=plan==="free"?1:99;if(decideLimit()>=maxQ&&plan==="free"){alert("ใช้โควต้า 1 คำถาม/วันหมดแล้ว อัปเกรด Quick ฿49 เพื่อถามไม่จำกัด");return}
     setDecL(true);setDecRes(null);
     const catLabel=DEC_CATS[decCat].label;
-    const prompt=`คุณคือ AI ผู้เชี่ยวชาญด้านการตัดสินใจ วิเคราะห์จาก 4 ศาสตร์พร้อมกัน
+    const isOpen=!/ไหม/.test(q);
+    const prompt=isOpen
+      ?`คุณคือที่ปรึกษาโหราศาสตร์และจิตวิทยาชีวิต วิเคราะห์จาก 4 ศาสตร์พร้อมกัน ตอบตรงคำถามที่ถาม
+ข้อมูลผู้ถาม: ชื่อ ${nick}, วันเกิด ${bday}, คะแนนจิตวิทยา: Cognitive=${scores?.["Cognitive Processing"]?.toFixed(1)||"N/A"}, Shadow=${scores?.["Shadow Pattern"]?.toFixed(1)||"N/A"}
+หมวดหมู่: ${catLabel}
+คำถาม: "${q}"
+
+ตอบเป็น JSON เท่านั้น ตาม schema นี้:
+{
+  "isOpen": true,
+  "narrative": "คำตอบตรงๆ ต่อคำถาม 2-3 ประโยค ระบุให้ชัดเจน",
+  "cards": [
+    {"system":"Vedic","icon":"🔯","color":"#F59E0B","answer":"สิ่งที่โหราศาสตร์พระเวทบอก (สั้น)","reason":"อธิบาย 1-2 ประโยค","score":1-10,"action":"คำแนะนำ 1 ประโยค"},
+    {"system":"Western","icon":"⭐","color":"#3B82F6","answer":"...","reason":"...","score":1-10,"action":"..."},
+    {"system":"Chinese","icon":"☯️","color":"#EF4444","answer":"...","reason":"...","score":1-10,"action":"..."},
+    {"system":"Thai","icon":"🌸","color":"#8B5CF6","answer":"...","reason":"...","score":1-10,"action":"..."}
+  ],
+  "ai_summary": "สรุปภาพรวมคำตอบจากทุกศาสตร์ 2-3 ประโยค",
+  "action_plan": ["ขั้นตอน 1","ขั้นตอน 2","ขั้นตอน 3"]
+}`
+      :`คุณคือ AI ผู้เชี่ยวชาญด้านการตัดสินใจ วิเคราะห์จาก 4 ศาสตร์พร้อมกัน
 ข้อมูลผู้ถาม: ชื่อ ${nick}, วันเกิด ${bday}, คะแนนจิตวิทยา: Cognitive=${scores?.["Cognitive Processing"]?.toFixed(1)||"N/A"}, Shadow=${scores?.["Shadow Pattern"]?.toFixed(1)||"N/A"}
 หมวดหมู่: ${catLabel}
 คำถาม: "${q}"
@@ -647,10 +667,16 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade})=>{
     </button>
     {decL&&<div style={{textAlign:"center",padding:"20px 0"}}><div style={{width:24,height:24,margin:"0 auto 8px",borderRadius:"50%",border:"3px solid rgba(99,102,241,0.2)",borderTopColor:"#6366F1",animation:"hs .7s linear infinite"}}/><div style={{fontSize:12,color:"#A5B4FC"}}>AI กำลังเปรียบเทียบ 4 ศาสตร์...</div></div>}
     {decRes&&!decL&&<>
-      <div style={{borderRadius:12,padding:"12px 14px",marginBottom:12,background:vc.bg,border:`2px solid ${vc.border}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-        <div><div style={{fontSize:13,fontWeight:800,color:vc.color}}>{vc.label}</div><div style={{fontSize:10,color:"#64748B",marginTop:2}}>ความมั่นใจ: {decRes.confidence}% · วิเคราะห์จาก 4 ศาสตร์</div></div>
-        <div style={{textAlign:"right"}}><div style={{width:44,height:44,borderRadius:"50%",border:`3px solid ${vc.border}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:vc.color,background:"rgba(255,255,255,0.7)"}}>{decRes.confidence}%</div></div>
-      </div>
+      {decRes.isOpen
+        ?<div style={{borderRadius:12,padding:"14px",marginBottom:12,background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #A5B4FC"}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#6366F1",marginBottom:8}}>🤖 AI วิเคราะห์จากวันเดือนปีเกิดของคุณ</div>
+          <div style={{fontSize:13,color:"#1E293B",lineHeight:1.8,whiteSpace:"pre-line"}}>{decRes.narrative}</div>
+        </div>
+        :<div style={{borderRadius:12,padding:"12px 14px",marginBottom:12,background:vc.bg,border:`2px solid ${vc.border}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div><div style={{fontSize:13,fontWeight:800,color:vc.color}}>{vc.label}</div><div style={{fontSize:10,color:"#64748B",marginTop:2}}>ความมั่นใจ: {decRes.confidence}% · วิเคราะห์จาก 4 ศาสตร์</div></div>
+          <div style={{textAlign:"right"}}><div style={{width:44,height:44,borderRadius:"50%",border:`3px solid ${vc.border}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:vc.color,background:"rgba(255,255,255,0.7)"}}>{decRes.confidence}%</div></div>
+        </div>
+      }
       <div style={{marginBottom:12}}>
         <div style={{fontSize:10,fontWeight:700,color:"#A5B4FC",marginBottom:8,letterSpacing:1}}>📚 วิเคราะห์รายศาสตร์</div>
         {showAllCards?decRes.cards?.map((c,i)=><DecideCard key={i} c={c}/>):<>
