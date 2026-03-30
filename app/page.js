@@ -1823,7 +1823,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
                   </div>
                 </div>
           }
-          <div style={{fontSize:12,fontWeight:700,color:"#64748B",marginBottom:10}}>🔮 วิเคราะห์รายศาสตร์</div>
+          {isDecisionQ(selectedQ)&&<><div style={{fontSize:12,fontWeight:700,color:"#64748B",marginBottom:10}}>🔮 วิเคราะห์รายศาสตร์</div>
           {SCHOOLS.map((sch,i)=>{
             const ul=isPaid||(i===0);
             return<div key={i} style={{borderRadius:12,overflow:"hidden",marginBottom:8,border:"1px solid #E2E8F0"}}>
@@ -1852,22 +1852,22 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
                 <button onClick={()=>tryUpgrade("quick")} style={{padding:"6px 14px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>🔒 Quick ฿49</button>
               </div>}
             </div>;
-          })}
-          <div style={{borderRadius:12,overflow:"hidden",marginBottom:12,border:"1px solid #E2E8F0"}}>
+          })}</>}
+          {isDecisionQ(selectedQ)&&<div style={{borderRadius:12,overflow:"hidden",marginBottom:12,border:"1px solid #E2E8F0"}}>
             <div style={{background:"#F8FAFC",padding:"14px"}}>
               <div style={{textAlign:"center",marginBottom:isPaid?10:6}}><div style={{fontSize:13,fontWeight:700,color:isPaid?"#1E293B":"#94A3B8"}}>AI Summary + Action Plan</div><div style={{fontSize:10,color:"#94A3B8",marginTop:2}}>รวมคำแนะนำ 3 ขั้นตอน</div></div>
               {isPaid?<div style={{fontSize:11,color:"#475569",lineHeight:1.8}}>{((TAB_HOW[activeTab]||{})[lv]||[]).map((s,si)=><div key={si} style={{marginTop:si>0?5:0}}>{["1️⃣","2️⃣","3️⃣"][si]} {s}</div>)}<div style={{marginTop:8,padding:"7px 10px",background:"#EEF2FF",borderRadius:8,fontSize:11,fontWeight:600,color:"#4338CA"}}>⚡ พลังงานวันนี้ {cs}% — {cs>=72?"เหมาะลงมือทำและตัดสินใจ":cs>=52?"เลือกทำสิ่งสำคัญก่อน":"พักฟื้น อย่าตัดสินใจใหญ่"}</div></div>
               :<button onClick={()=>tryUpgrade("smart")} style={{width:"100%",padding:"9px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer"}}>Smart ฿99 — AI Summary →</button>}
             </div>
-          </div>
-          <button onClick={()=>{setResultShown(false);setSelectedQ(null);setShowCustom(false);if(customRef.current)customRef.current.value="";}} style={{width:"100%",padding:"12px 0",borderRadius:10,border:"none",background:"#1E293B",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",marginBottom:4,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>🔄 ถามคำถามใหม่</button>
-        </>}
-        <div style={{margin:"24px 0 16px",borderRadius:16,overflow:"hidden",background:"linear-gradient(135deg,#1E1B4B,#312E81)",padding:"24px 20px",textAlign:"center"}}>
+          </div>}
+          <button onClick={()=>{setResultShown(false);setSelectedQ(null);setShowCustom(false);setAiAnswer(null);if(customRef.current)customRef.current.value="";}} style={{width:"100%",padding:"12px 0",borderRadius:10,border:"none",background:"#1E293B",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",marginBottom:4,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>🔄 ถามคำถามใหม่</button>
+          <div style={{margin:"16px 0",borderRadius:16,overflow:"hidden",background:"linear-gradient(135deg,#1E1B4B,#312E81)",padding:"24px 20px",textAlign:"center"}}>
           <div style={{fontSize:18,marginBottom:6}}>✨</div>
           <div style={{fontSize:15,fontWeight:800,color:"#fff",marginBottom:6}}>ค้นพบตัวเองมากขึ้น</div>
           <div style={{fontSize:12,color:"#C7D2FE",marginBottom:16,lineHeight:1.6}}>วิเคราะห์จิตวิทยาเชิงลึกจากคำถาม 36 ข้อ<br/>ผสานกับวันเดือนปีเกิด เพื่อ Dashboard ส่วนตัวของคุณ</div>
           <button onClick={()=>{setAskMode(false);setSc("profile");}} style={{padding:"12px 28px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#6366F1,#8B5CF6)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(99,102,241,0.4)"}}>ค้นพบตัวเองมากขึ้นใน Dashboard ส่วนตัว →</button>
         </div>
+        </>}
         <div style={{textAlign:"center",padding:"8px 0 40px"}}><button onClick={()=>setSc("landing")} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>← กลับหน้าหลัก</button></div>
       </div>
     </div>
