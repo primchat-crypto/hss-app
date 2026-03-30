@@ -1823,8 +1823,8 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
                   </div>
                 </div>
           }
-          <div style={{fontSize:12,fontWeight:700,color:"#64748B",marginBottom:10}}>🔮 วิเคราะห์รายศาสตร์</div>
-          {isDecisionQ(selectedQ)&&SCHOOLS.map((sch,i)=>{
+          {isDecisionQ(selectedQ)&&<><div style={{fontSize:12,fontWeight:700,color:"#64748B",marginBottom:10}}>🔮 วิเคราะห์รายศาสตร์</div>
+          {SCHOOLS.map((sch,i)=>{
             const ul=isPaid||(i===0);
             return<div key={i} style={{borderRadius:12,overflow:"hidden",marginBottom:8,border:"1px solid #E2E8F0"}}>
               {ul?<><div style={{background:sch.grad,padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -1852,7 +1852,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
                 <button onClick={()=>tryUpgrade("quick")} style={{padding:"6px 14px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>🔒 Quick ฿49</button>
               </div>}
             </div>;
-          })}
+          })}</>}
           {isDecisionQ(selectedQ)&&<div style={{borderRadius:12,overflow:"hidden",marginBottom:12,border:"1px solid #E2E8F0"}}>
             <div style={{background:"#F8FAFC",padding:"14px"}}>
               <div style={{textAlign:"center",marginBottom:isPaid?10:6}}><div style={{fontSize:13,fontWeight:700,color:isPaid?"#1E293B":"#94A3B8"}}>AI Summary + Action Plan</div><div style={{fontSize:10,color:"#94A3B8",marginTop:2}}>รวมคำแนะนำ 3 ขั้นตอน</div></div>
