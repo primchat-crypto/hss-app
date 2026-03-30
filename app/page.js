@@ -681,9 +681,14 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade})=>{
         <div style={{fontSize:10,fontWeight:700,color:"#A5B4FC",marginBottom:8,letterSpacing:1}}>📚 วิเคราะห์รายศาสตร์</div>
         {showAllCards?decRes.cards?.map((c,i)=><DecideCard key={i} c={c}/>):<>
           {freeCard&&<DecideCard c={freeCard}/>}
-          {decRes.cards?.slice(1).map((_,i)=><div key={i} style={{borderRadius:10,border:"1px solid #E2E8F0",marginBottom:6,overflow:"hidden",position:"relative",minHeight:72}}>
-            <div style={{filter:"blur(4px)",opacity:.4,padding:"10px 12px",pointerEvents:"none"}}><div style={{fontSize:11,fontWeight:700,marginBottom:2}}>⭐ {["Western","Chinese","Thai"][i]}</div><div style={{fontSize:12,color:"#374151"}}>วิเคราะห์เชิงลึก...</div></div>
-            <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.85)",backdropFilter:"blur(2px)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><span style={{fontSize:18}}>🔒</span><button onClick={()=>tryUpgrade("quick")} style={{padding:"5px 14px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>ดูครบ Quick ฿49</button></div>
+          {decRes.cards?.slice(1).map((c,i)=><div key={i} style={{borderRadius:10,border:"1px solid #E2E8F0",marginBottom:6,overflow:"hidden",position:"relative"}}>
+            <div style={{filter:"blur(5px)",opacity:.55,pointerEvents:"none",userSelect:"none"}}><DecideCard c={c}/></div>
+            <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.78)",backdropFilter:"blur(1px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"12px 16px",textAlign:"center"}}>
+              <div style={{fontSize:18,marginBottom:4}}>🔒</div>
+              <div style={{fontSize:12,fontWeight:800,color:"#1E293B",marginBottom:2}}>ปลดล็อกการวิเคราะห์ {c.system}</div>
+              <div style={{fontSize:10,color:"#64748B",marginBottom:8}}>คะแนน เหตุผล และคำแนะนำเฉพาะสำหรับคุณ</div>
+              <button onClick={()=>tryUpgrade("quick")} style={{padding:"5px 18px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer",boxShadow:"0 2px 8px rgba(79,70,229,.3)"}}>Quick ฿49 — ดูครบทุกศาสตร์</button>
+            </div>
           </div>)}
         </>}
       </div>
@@ -692,13 +697,18 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade})=>{
         <div style={{fontSize:12,color:"#374151",lineHeight:1.8}}>{decRes.ai_summary}</div>
         <div style={{marginTop:10}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:6}}>⚡ Action Plan</div>
         {decRes.action_plan?.map((s,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:8,marginBottom:6}}><div style={{width:18,height:18,borderRadius:"50%",background:"#4338CA",color:"#fff",fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}>{i+1}</div><div style={{fontSize:12,color:"#374151",lineHeight:1.6}}>{s}</div></div>)}</div>
-      </div>:<div style={{borderRadius:10,border:"1px solid #E2E8F0",overflow:"hidden",position:"relative",minHeight:80}}>
-        <div style={{filter:"blur(5px)",opacity:.3,padding:"12px 14px",pointerEvents:"none"}}><div style={{fontSize:11,fontWeight:700,color:"#4338CA",marginBottom:4}}>🤖 AI Summary</div><div style={{fontSize:12,color:"#374151",lineHeight:1.8}}>สรุปภาพรวม Action Plan ...</div></div>
-        <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.88)",backdropFilter:"blur(3px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:16}}>
-          <div style={{fontSize:20,marginBottom:6}}>🔒</div>
-          <div style={{fontSize:12,fontWeight:700,color:"#4338CA",marginBottom:4,textAlign:"center"}}>AI Summary + Action Plan</div>
-          <div style={{fontSize:10,color:"#64748B",marginBottom:10}}>รวมถึงคำแนะนำ 3 ขั้นตอน</div>
-          <button onClick={()=>tryUpgrade("smart")} style={{padding:"8px 24px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 12px rgba(79,70,229,.25)"}}>ปลดล็อก Smart ฿99 →</button>
+      </div>:<div style={{borderRadius:10,border:"1px solid #E2E8F0",overflow:"hidden",position:"relative"}}>
+        <div style={{filter:"blur(5px)",opacity:.5,pointerEvents:"none",userSelect:"none",background:"#F8FAFC",padding:"12px 14px"}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#4338CA",marginBottom:6}}>🤖 AI Summary</div>
+          <div style={{fontSize:12,color:"#374151",lineHeight:1.8,marginBottom:8}}>{decRes.ai_summary||"AI ได้วิเคราะห์ภาพรวมจากทุกศาสตร์และสรุปคำแนะนำเฉพาะสำหรับสถานการณ์ของคุณแล้ว"}</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:6}}>⚡ Action Plan</div>
+          {(decRes.action_plan||["ขั้นตอนที่ 1","ขั้นตอนที่ 2","ขั้นตอนที่ 3"]).map((s,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:4}}><div style={{width:16,height:16,borderRadius:"50%",background:"#4338CA",color:"#fff",fontSize:8,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{i+1}</div><div style={{fontSize:11,color:"#374151"}}>{s}</div></div>)}
+        </div>
+        <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.82)",backdropFilter:"blur(2px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:16,textAlign:"center"}}>
+          <div style={{fontSize:22,marginBottom:6}}>🔒</div>
+          <div style={{fontSize:13,fontWeight:800,color:"#1E293B",marginBottom:4}}>AI Summary + Action Plan</div>
+          <div style={{fontSize:11,color:"#64748B",marginBottom:10}}>สรุปภาพรวมจากทุกศาสตร์ + คำแนะนำ 3 ขั้นตอนที่ทำได้จริง</div>
+          <button onClick={()=>tryUpgrade("smart")} style={{padding:"8px 24px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 12px rgba(79,70,229,.25)"}}>Smart ฿99 — ปลดล็อก AI Summary →</button>
         </div>
       </div>}
       <button onClick={()=>{setDecRes(null);setDecQ("");setDecCustom(false)}} style={{width:"100%",padding:8,borderRadius:8,border:"1px solid rgba(255,255,255,0.2)",background:"transparent",color:"#A5B4FC",fontSize:11,cursor:"pointer",marginTop:4}}>🔄 ถามคำถามใหม่</button>
@@ -1872,9 +1882,14 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
                     ?decRes.cards.map((c,i)=><DecideCard key={i} c={c}/>)
                     :<>
                       {decRes.cards[0]&&<DecideCard c={decRes.cards[0]}/>}
-                      {decRes.cards.slice(1).map((_,i)=><div key={i} style={{borderRadius:10,border:"1px solid #E2E8F0",marginBottom:6,overflow:"hidden",position:"relative",minHeight:72}}>
-                        <div style={{filter:"blur(4px)",opacity:.4,padding:"10px 12px",pointerEvents:"none"}}><div style={{fontSize:11,fontWeight:700,marginBottom:2}}>⭐ {["Western","Chinese","Thai"][i]}</div><div style={{fontSize:12,color:"#374151"}}>วิเคราะห์เชิงลึก...</div></div>
-                        <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.85)",backdropFilter:"blur(2px)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><span style={{fontSize:18}}>🔒</span><button onClick={()=>tryUpgrade("quick")} style={{padding:"5px 14px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>ดูครบ Quick ฿49</button></div>
+                      {decRes.cards.slice(1).map((c,i)=><div key={i} style={{borderRadius:10,border:"1px solid #E2E8F0",marginBottom:6,overflow:"hidden",position:"relative"}}>
+                        <div style={{filter:"blur(5px)",opacity:.55,pointerEvents:"none",userSelect:"none"}}><DecideCard c={c}/></div>
+                        <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.78)",backdropFilter:"blur(1px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"12px 16px",textAlign:"center"}}>
+                          <div style={{fontSize:18,marginBottom:4}}>🔒</div>
+                          <div style={{fontSize:12,fontWeight:800,color:"#1E293B",marginBottom:2}}>ปลดล็อกการวิเคราะห์ {c.system}</div>
+                          <div style={{fontSize:10,color:"#64748B",marginBottom:8}}>คะแนน เหตุผล และคำแนะนำเฉพาะสำหรับคุณ</div>
+                          <button onClick={()=>tryUpgrade("quick")} style={{padding:"5px 18px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer",boxShadow:"0 2px 8px rgba(79,70,229,.3)"}}>Quick ฿49 — ดูครบทุกศาสตร์</button>
+                        </div>
                       </div>)}
                     </>
                   }</>
@@ -1914,7 +1929,19 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
                         {(decRes?.action_plan||((TAB_HOW[activeTab]||{})[lv]||[])).map((s,si)=><div key={si} style={{marginTop:si>0?5:0}}>{["1️⃣","2️⃣","3️⃣"][si]} {s}</div>)}
                         {!decRes&&<div style={{marginTop:8,padding:"7px 10px",background:"#EEF2FF",borderRadius:8,fontSize:11,fontWeight:600,color:"#4338CA"}}>⚡ พลังงานวันนี้ {cs}% — {cs>=72?"เหมาะลงมือทำและตัดสินใจ":cs>=52?"เลือกทำสิ่งสำคัญก่อน":"พักฟื้น อย่าตัดสินใจใหญ่"}</div>}
                       </div>
-                      :<button onClick={()=>tryUpgrade("smart")} style={{width:"100%",padding:"9px 0",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer"}}>Smart ฿99 — AI Summary →</button>}
+                      :<div style={{position:"relative",overflow:"hidden",borderRadius:8}}>
+                        <div style={{filter:"blur(5px)",opacity:.5,pointerEvents:"none",userSelect:"none",padding:"4px 0"}}>
+                          <div style={{fontSize:12,color:"#374151",lineHeight:1.8,marginBottom:6}}>{decRes?.ai_summary||"AI ได้วิเคราะห์ภาพรวมจากทุกศาสตร์และสรุปคำแนะนำเฉพาะสำหรับสถานการณ์ของคุณ"}</div>
+                          <div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:4}}>⚡ Action Plan</div>
+                          {(decRes?.action_plan||["ดำเนินการตามลำดับ","ตรวจสอบความพร้อม","ติดตามผล"]).map((s,si)=><div key={si} style={{display:"flex",gap:6,marginBottom:3}}><div style={{width:14,height:14,borderRadius:"50%",background:"#4338CA",color:"#fff",fontSize:8,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{si+1}</div><div style={{fontSize:10,color:"#374151"}}>{s}</div></div>)}
+                        </div>
+                        <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.82)",backdropFilter:"blur(2px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:12}}>
+                          <div style={{fontSize:18,marginBottom:4}}>🔒</div>
+                          <div style={{fontSize:12,fontWeight:800,color:"#1E293B",marginBottom:3}}>AI Summary + Action Plan</div>
+                          <div style={{fontSize:10,color:"#64748B",marginBottom:8}}>สรุปภาพรวมจากทุกศาสตร์ + คำแนะนำ 3 ขั้นตอนที่ทำได้จริง</div>
+                          <button onClick={()=>tryUpgrade("smart")} style={{padding:"6px 20px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer",boxShadow:"0 2px 8px rgba(79,70,229,.25)"}}>Smart ฿99 — ปลดล็อก AI Summary →</button>
+                        </div>
+                      </div>}
                   </div>
                 </div>
               </>}
