@@ -2059,6 +2059,14 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     }, []);
 
     const openItem = NAV_ITEMS.find(item => item.id === openMenuId);
+    // Translate nav labels (NAV_ITEMS is module-level, labels translated here)
+    const navLabelMap = {
+      "sec-understand": t("snav_understand"),
+      "sec-plan": t("snav_plan"),
+    };
+    const subLabelMap = {
+      "sec-weekly": t("snav_weekly_sub"),
+    };
 
     return (
       <div id="sticky-nav" className="snav-wrap">
@@ -2073,12 +2081,13 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
                   className={openMenuId === item.id ? "snav-btn snav-btn-open" : "snav-btn"}
                 >
                   <span style={{ fontSize: 11 }}>{item.icon}</span>
-                  <span>{item.label}</span>
+                  <span>{navLabelMap[item.id] || item.label}</span>
                   <span style={{ fontSize: 7, opacity: 0.5 }}>▼</span>
                 </button>
               </div>
             ))}
-            <div style={{ flexShrink: 0, marginLeft: 6, display: "flex", alignItems: "center" }}>
+            <div style={{ flexShrink: 0, marginLeft: 6, display: "flex", alignItems: "center", gap: 6 }}>
+              <button onClick={toggleLang} style={{ fontSize: 11, fontWeight: 700, color: "#4F46E5", background: "#EEF2FF", border: "1px solid #C7D2FE", borderRadius: 6, padding: "4px 8px", cursor: "pointer", flexShrink: 0 }}>{t("lang_toggle")}</button>
               <button onClick={exportPDF} className="snav-pdf-btn">
                 <span>📄</span>
                 <span>PDF</span>
@@ -2089,7 +2098,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
           {/* Dropdown วางไว้นอก snav-row เพื่อไม่ถูก overflow:auto clip */}
           {openItem && (
             <div className="snav-dropdown" style={{ left: dropdownLeft }}>
-              <div className="snav-sub-label">หัวข้อย่อย</div>
+              <div className="snav-sub-label">{t("snav_subsections")}</div>
               {openItem.subs.map(sub => (
                 <button
                   key={sub.id}
@@ -2097,7 +2106,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
                   className="snav-sub-btn"
                 >
                   <span style={{ fontSize: 12, width: 18, flexShrink: 0 }}>{sub.icon}</span>
-                  <span>{sub.label}</span>
+                  <span>{subLabelMap[sub.id] || sub.label}</span>
                 </button>
               ))}
             </div>
