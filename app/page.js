@@ -1,5 +1,6 @@
 "use client";
 import{useState,useEffect,useRef,useCallback}from"react";
+import{TRANSLATIONS}from"../lib/translations";
 import{createClient}from"@supabase/supabase-js";
 
 const SB_URL=process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -766,6 +767,9 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade})=>{
 };
 
 export default function App(){
+  const[lang,setLang]=useState(()=>{if(typeof window!=="undefined")return localStorage.getItem("hss_lang")||"th";return"th"});
+  const toggleLang=()=>{const nl=lang==="th"?"en":"th";setLang(nl);if(typeof window!=="undefined")localStorage.setItem("hss_lang",nl)};
+  const t=k=>TRANSLATIONS[lang]?.[k]??TRANSLATIONS.th[k]??k;
   const[sc,setSc]=useState("landing");const[askMode,setAskMode]=useState(false);const[preAskQ,setPreAskQ]=useState("");const[preAskTab,setPreAskTab]=useState("work");const[aiStep,setAiStep]=useState(1);
   const[nick,setNick]=useState("");const[email,setEmail]=useState("");const[bday,setBday]=useState("--");
   const[knowT,setKnowT]=useState(null);const[btime,setBtime]=useState("");const[tSlot,setTSlot]=useState("");const[prov,setProv]=useState("");
@@ -1351,15 +1355,15 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
 
   // Login/Signup Modal rendered inline with stable input refs
   const loginModalJSX=loginModal&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,padding:20}} onClick={()=>{setLoginModal(false);setAuthErr("")}}><div onClick={e=>e.stopPropagation()} style={{background:"#fff",borderRadius:16,padding:24,maxWidth:360,width:"100%"}}>
-  <div style={{fontSize:16,fontWeight:800,marginBottom:4}}>{authMode==="login"?"🔐 เข้าสู่ระบบ":"✨ สมัครสมาชิก"}</div>
-  <div style={{fontSize:12,color:"#64748B",marginBottom:16}}>{authMode==="login"?"เข้าสู่ระบบเพื่อซื้อแพ็คเกจ":"สร้างบัญชีใหม่ (ไม่ต้องใช้เบอร์โทร)"}</div>
+  <div style={{fontSize:16,fontWeight:800,marginBottom:4}}>{authMode==="login"?t("auth_login_title"):t("auth_signup_title")}</div>
+  <div style={{fontSize:12,color:"#64748B",marginBottom:16}}>{authMode==="login"?t("auth_login_sub"):t("auth_signup_sub")}</div>
   {authErr&&<div style={{padding:"8px 12px",borderRadius:8,background:"#FEF2F2",border:"1px solid #FECACA",color:"#DC2626",fontSize:12,marginBottom:12}}>{authErr}</div>}
-  <div style={{marginBottom:12}}><label style={{fontSize:12,fontWeight:600,color:"#64748B",display:"block",marginBottom:4}}>อีเมล</label><input key="auth-email-input" ref={authEmailRef} defaultValue={email||localStorage.getItem("hss_user_email")||""} placeholder="your@email.com" type="email" autoComplete="email" style={{width:"100%",padding:"10px 14px",fontSize:14,border:"2px solid #E2E8F0",borderRadius:10,outline:"none",boxSizing:"border-box"}}/></div>
-  <div style={{marginBottom:16}}><label style={{fontSize:12,fontWeight:600,color:"#64748B",display:"block",marginBottom:4}}>รหัสผ่าน</label><input key="auth-pw-input" ref={authPwRef} defaultValue="" type="password" placeholder={authMode==="signup"?"ตั้งรหัสผ่าน (อย่างน้อย 6 ตัว)":"รหัสผ่าน"} autoComplete={authMode==="signup"?"new-password":"current-password"} onKeyDown={e=>{if(e.key==="Enter"){authMode==="login"?doLogin():doSignup()}}} style={{width:"100%",padding:"10px 14px",fontSize:14,border:"2px solid #E2E8F0",borderRadius:10,outline:"none",boxSizing:"border-box"}}/></div>
-  <Btn onClick={authMode==="login"?doLogin:doSignup} ok={!authLoading}>{authLoading?"กำลังดำเนินการ...":authMode==="login"?"เข้าสู่ระบบ →":"สมัครสมาชิก →"}</Btn>
-  <div style={{textAlign:"center",marginTop:12}}><button onClick={()=>{setAuthMode(authMode==="login"?"signup":"login");setAuthErr("")}} style={{background:"none",border:"none",fontSize:12,color:"#6366F1",fontWeight:600,cursor:"pointer"}}>{authMode==="login"?"ยังไม่มีบัญชี? สมัครสมาชิก":"มีบัญชีแล้ว? เข้าสู่ระบบ"}</button></div>
-  <div style={{display:"flex",alignItems:"center",gap:8,margin:"12px 0"}}><div style={{flex:1,height:1,background:"#E2E8F0"}}/><span style={{fontSize:11,color:"#94A3B8"}}>หรือ</span><div style={{flex:1,height:1,background:"#E2E8F0"}}/></div>
-  <button onClick={doGoogle} disabled={authLoading} style={{width:"100%",padding:10,borderRadius:8,border:"2px solid #E2E8F0",background:"#fff",fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>เข้าด้วย Google</button>
+  <div style={{marginBottom:12}}><label style={{fontSize:12,fontWeight:600,color:"#64748B",display:"block",marginBottom:4}}>{t("auth_email_label")}</label><input key="auth-email-input" ref={authEmailRef} defaultValue={email||localStorage.getItem("hss_user_email")||""} placeholder="your@email.com" type="email" autoComplete="email" style={{width:"100%",padding:"10px 14px",fontSize:14,border:"2px solid #E2E8F0",borderRadius:10,outline:"none",boxSizing:"border-box"}}/></div>
+  <div style={{marginBottom:16}}><label style={{fontSize:12,fontWeight:600,color:"#64748B",display:"block",marginBottom:4}}>{t("auth_pw_label")}</label><input key="auth-pw-input" ref={authPwRef} defaultValue="" type="password" placeholder={authMode==="signup"?t("auth_pw_new"):t("auth_pw_existing")} autoComplete={authMode==="signup"?"new-password":"current-password"} onKeyDown={e=>{if(e.key==="Enter"){authMode==="login"?doLogin():doSignup()}}} style={{width:"100%",padding:"10px 14px",fontSize:14,border:"2px solid #E2E8F0",borderRadius:10,outline:"none",boxSizing:"border-box"}}/></div>
+  <Btn onClick={authMode==="login"?doLogin:doSignup} ok={!authLoading}>{authLoading?t("auth_loading"):authMode==="login"?t("auth_login_btn"):t("auth_signup_btn")}</Btn>
+  <div style={{textAlign:"center",marginTop:12}}><button onClick={()=>{setAuthMode(authMode==="login"?"signup":"login");setAuthErr("")}} style={{background:"none",border:"none",fontSize:12,color:"#6366F1",fontWeight:600,cursor:"pointer"}}>{authMode==="login"?t("auth_switch_signup"):t("auth_switch_login")}</button></div>
+  <div style={{display:"flex",alignItems:"center",gap:8,margin:"12px 0"}}><div style={{flex:1,height:1,background:"#E2E8F0"}}/><span style={{fontSize:11,color:"#94A3B8"}}>{t("auth_or")}</span><div style={{flex:1,height:1,background:"#E2E8F0"}}/></div>
+  <button onClick={doGoogle} disabled={authLoading} style={{width:"100%",padding:10,borderRadius:8,border:"2px solid #E2E8F0",background:"#fff",fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}><svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>{t("auth_google")}</button>
   </div></div>;
 
   // ─── LANDING ───
@@ -1374,12 +1378,13 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         </div>
         <span style={{fontWeight:700,fontSize:18,letterSpacing:"-0.025em",color:"#0F172A"}}>Human System</span>
       </div>
-      <div style={{display:"flex",alignItems:"center",gap:16}}>
+      <div style={{display:"flex",alignItems:"center",gap:12}}>
+        <button onClick={toggleLang} style={{fontSize:12,fontWeight:700,color:"#4F46E5",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:6,padding:"5px 10px",cursor:"pointer",letterSpacing:"0.05em"}}>{t("lang_toggle")}</button>
         {logged
-          ?<button onClick={doLogout} style={{fontSize:14,color:"#64748B",background:"none",border:"1px solid #E2E8F0",borderRadius:6,padding:"6px 12px",cursor:"pointer"}}>ออกจากระบบ</button>
-          :<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:14,fontWeight:500,color:"#475569",background:"none",border:"none",cursor:"pointer"}}>เข้าสู่ระบบ</button>
+          ?<button onClick={doLogout} style={{fontSize:14,color:"#64748B",background:"none",border:"1px solid #E2E8F0",borderRadius:6,padding:"6px 12px",cursor:"pointer"}}>{t("nav_logout")}</button>
+          :<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:14,fontWeight:500,color:"#475569",background:"none",border:"none",cursor:"pointer"}}>{t("nav_login")}</button>
         }
-        <button onClick={()=>{setAskMode(false);setSc("profile");}} style={{background:"#0F172A",color:"#fff",fontSize:14,fontWeight:500,padding:"8px 16px",borderRadius:9999,border:"none",cursor:"pointer"}}>เริ่มวิเคราะห์ฟรี</button>
+        <button onClick={()=>{setAskMode(false);setSc("profile");}} style={{background:"#0F172A",color:"#fff",fontSize:14,fontWeight:500,padding:"8px 16px",borderRadius:9999,border:"none",cursor:"pointer"}}>{t("nav_start")}</button>
       </div>
     </div>
   </nav>
@@ -1392,25 +1397,25 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
       <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",justifyContent:"center",gap:10,marginBottom:32}}>
         <div style={{display:"flex",alignItems:"center",gap:8,padding:"8px 16px",background:"linear-gradient(to right,#701a75,#581c87)",color:"#fff",borderRadius:9999,boxShadow:"0 0 20px rgba(168,85,247,0.3)",border:"1px solid rgba(168,85,247,0.3)"}}>
           <span style={{fontSize:18}}>🔮</span>
-          <span style={{fontWeight:700,fontSize:13}}>4 มหาโหราศาสตร์</span>
-          <span style={{fontSize:10,background:"rgba(255,255,255,0.2)",padding:"2px 8px",borderRadius:9999,fontWeight:500}}>ไทย จีน พระเวท สากล</span>
+          <span style={{fontWeight:700,fontSize:13}}>{t("hero_badge1")}</span>
+          <span style={{fontSize:10,background:"rgba(255,255,255,0.2)",padding:"2px 8px",borderRadius:9999,fontWeight:500}}>{t("hero_badge1_sub")}</span>
         </div>
         <span style={{color:"#CBD5E1",fontWeight:900,fontSize:16}}>✕</span>
         <div style={{display:"flex",alignItems:"center",gap:8,padding:"8px 16px",background:"linear-gradient(to right,#0369a1,#1e3a8a)",color:"#fff",borderRadius:9999,boxShadow:"0 0 20px rgba(14,165,233,0.3)",border:"1px solid rgba(56,189,248,0.3)"}}>
           <span style={{fontSize:18}}>🧠</span>
-          <span style={{fontWeight:700,fontSize:13}}>จิตวิทยาเชิงลึก</span>
+          <span style={{fontWeight:700,fontSize:13}}>{t("hero_badge2")}</span>
         </div>
         <span style={{color:"#CBD5E1",fontWeight:900,fontSize:16}}>✕</span>
         <div style={{display:"flex",alignItems:"center",gap:8,padding:"8px 16px",background:"linear-gradient(to right,#4338CA,#1e1b4b)",color:"#fff",borderRadius:9999,boxShadow:"0 0 20px rgba(79,70,229,0.3)",border:"1px solid rgba(129,140,248,0.3)"}}>
           <span style={{fontSize:18}}>🤖</span>
-          <span style={{fontWeight:700,fontSize:13}}>AI ประมวลผล</span>
+          <span style={{fontWeight:700,fontSize:13}}>{t("hero_badge3")}</span>
         </div>
       </div>
       <h1 style={{fontSize:"clamp(1.75rem,5vw,3.25rem)",fontWeight:900,color:"#0F172A",letterSpacing:"-0.025em",lineHeight:1.1,marginBottom:20,margin:"0 auto 20px"}}>
-        ยังไม่รู้ว่าชีวิตควรไปทางไหน?<br/>
-        <span style={{background:"linear-gradient(to right,#4338CA,#7C3AED)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text"}}>ถาม AI ที่รู้ดวงชะตาคุณสิ</span>
+        {t("hero_title")}<br/>
+        <span style={{background:"linear-gradient(to right,#4338CA,#7C3AED)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text"}}>{t("hero_title_highlight")}</span>
       </h1>
-      <p style={{fontSize:16,color:"#64748B",marginBottom:16,maxWidth:560,margin:"12px auto 0",lineHeight:1.7}}>ผสานกราฟชีวิต จิตวิทยา และคำทำนาย ไว้ในที่เดียว</p>
+      <p style={{fontSize:16,color:"#64748B",marginBottom:16,maxWidth:560,margin:"12px auto 0",lineHeight:1.7}}>{t("hero_sub")}</p>
     </div>
     {/* AI Widget */}
     <div style={{maxWidth:720,margin:"0 auto",position:"relative",zIndex:1}}>
@@ -1420,7 +1425,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
           <div style={{background:"linear-gradient(135deg,#6366F1,#7C3AED)",padding:"10px",borderRadius:14,fontSize:22}}>🤖</div>
           <div>
             <h3 style={{fontSize:18,fontWeight:700,color:"#fff",margin:0}}>Ask & Decide AI</h3>
-            <p style={{color:"#94A3B8",fontSize:13,margin:0}}>ตัดสินใจจากดวงและจังหวะชีวิต</p>
+            <p style={{color:"#94A3B8",fontSize:13,margin:0}}>{t("widget_sub")}</p>
           </div>
         </div>
         {/* Step 1 */}
@@ -1429,7 +1434,8 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
             {Object.entries(DEC_CATS).map(([k,v])=>{
               const activeColors={work:{bg:"#4F46E5",border:"#6366F1"},money:{bg:"#059669",border:"#10B981"},love:{bg:"#DB2777",border:"#EC4899"},timing:{bg:"#D97706",border:"#F59E0B"}};
               const isAct=preAskTab===k;
-              return<button key={k} onClick={()=>{setPreAskTab(k);setPreAskQ("");}} style={{padding:"7px 16px",borderRadius:9999,fontSize:13,fontWeight:500,border:`1px solid ${isAct?(activeColors[k]||{border:"#6366F1"}).border:"#334155"}`,background:isAct?(activeColors[k]||{bg:"#4F46E5"}).bg:"#1E293B",color:isAct?"#fff":"#CBD5E1",cursor:"pointer"}}>{v.icon} {v.label}</button>;
+              const catLabel={work:t("dec_work"),money:t("dec_money"),love:t("dec_love"),timing:"Timing"}[k]||v.label;
+              return<button key={k} onClick={()=>{setPreAskTab(k);setPreAskQ("");}} style={{padding:"7px 16px",borderRadius:9999,fontSize:13,fontWeight:500,border:`1px solid ${isAct?(activeColors[k]||{border:"#6366F1"}).border:"#334155"}`,background:isAct?(activeColors[k]||{bg:"#4F46E5"}).bg:"#1E293B",color:isAct?"#fff":"#CBD5E1",cursor:"pointer"}}>{v.icon} {catLabel}</button>;
             })}
           </div>
           <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:20}}>
@@ -1438,66 +1444,66 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
             ))}
           </div>
           <div style={{position:"relative"}}>
-            <input key={preAskTab} ref={preAskInputRef} type="text" placeholder="หรือพิมพ์คำถามของคุณเอง..." defaultValue="" onKeyDown={e=>{if(e.key==="Enter"){const v=preAskInputRef.current?.value?.trim();if(v)setPreAskQ(v);setAiStep(2);}}} style={{width:"100%",background:"rgba(30,41,59,0.8)",border:"1px solid #334155",color:"#fff",borderRadius:16,padding:"14px 120px 14px 20px",fontSize:14,outline:"none",boxSizing:"border-box"}}/>
-            <button onClick={()=>{const v=preAskInputRef.current?.value?.trim();if(v)setPreAskQ(v);setAiStep(2);}} style={{position:"absolute",right:6,top:6,bottom:6,background:"#4F46E5",color:"#fff",padding:"0 20px",borderRadius:12,border:"none",fontWeight:700,cursor:"pointer",fontSize:13}}>ถามเลย</button>
+            <input key={preAskTab} ref={preAskInputRef} type="text" placeholder={t("widget_placeholder")} defaultValue="" onKeyDown={e=>{if(e.key==="Enter"){const v=preAskInputRef.current?.value?.trim();if(v)setPreAskQ(v);setAiStep(2);}}} style={{width:"100%",background:"rgba(30,41,59,0.8)",border:"1px solid #334155",color:"#fff",borderRadius:16,padding:"14px 120px 14px 20px",fontSize:14,outline:"none",boxSizing:"border-box"}}/>
+            <button onClick={()=>{const v=preAskInputRef.current?.value?.trim();if(v)setPreAskQ(v);setAiStep(2);}} style={{position:"absolute",right:6,top:6,bottom:6,background:"#4F46E5",color:"#fff",padding:"0 20px",borderRadius:12,border:"none",fontWeight:700,cursor:"pointer",fontSize:13}}>{t("widget_ask_btn")}</button>
           </div>
         </div>}
         {/* Step 2 */}
         {aiStep===2&&<div>
           <div style={{marginBottom:20,borderBottom:"1px solid #1E293B",paddingBottom:16}}>
-            <p style={{color:"#94A3B8",fontSize:13,margin:"0 0 4px"}}>คำถามของคุณ:</p>
+            <p style={{color:"#94A3B8",fontSize:13,margin:"0 0 4px"}}>{t("widget_q_label")}</p>
             <p style={{color:"#fff",fontWeight:500,margin:0,fontSize:14,display:"flex",alignItems:"center",gap:8}}>
               "{preAskQ||'...'}"
-              <button onClick={()=>setAiStep(1)} style={{color:"#818CF8",fontSize:12,background:"none",border:"none",cursor:"pointer",textDecoration:"underline",flexShrink:0}}>(เปลี่ยนคำถาม)</button>
+              <button onClick={()=>setAiStep(1)} style={{color:"#818CF8",fontSize:12,background:"none",border:"none",cursor:"pointer",textDecoration:"underline",flexShrink:0}}>{t("widget_q_change")}</button>
             </p>
           </div>
           <div style={{background:"rgba(99,102,241,0.1)",border:"1px solid rgba(99,102,241,0.2)",borderRadius:12,padding:"12px 16px",marginBottom:20}}>
-            <p style={{color:"#C7D2FE",fontSize:13,margin:0}}>✦ เพื่อความแม่นยำสูงสุด AI ต้องการข้อมูลเวลาเกิดของคุณครับ</p>
+            <p style={{color:"#C7D2FE",fontSize:13,margin:0}}>{t("widget_bday_note")}</p>
           </div>
           <div style={{display:"flex",flexDirection:"column",gap:16}}>
             <div>
-              <label style={{display:"block",color:"#CBD5E1",fontSize:13,fontWeight:500,marginBottom:8}}>วันเดือนปีเกิด *</label>
+              <label style={{display:"block",color:"#CBD5E1",fontSize:13,fontWeight:500,marginBottom:8}}>{t("widget_bday_label")}</label>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
                 <select value={bday.split("-")[2]||""} onChange={e=>setBday(`${bday.split("-")[0]||"2000"}-${bday.split("-")[1]||"01"}-${e.target.value}`)} style={{background:"#1E293B",border:"1px solid #334155",color:"#fff",borderRadius:12,padding:"10px 8px",fontSize:13,outline:"none",width:"100%",appearance:"none"}}>
-                  <option value="" style={{background:"#1E293B"}}>วัน</option>{Array.from({length:31},(_,i)=>i+1).map(d=><option key={d} value={String(d).padStart(2,"0")} style={{background:"#1E293B"}}>{d}</option>)}
+                  <option value="" style={{background:"#1E293B"}}>{t("sel_day")}</option>{Array.from({length:31},(_,i)=>i+1).map(d=><option key={d} value={String(d).padStart(2,"0")} style={{background:"#1E293B"}}>{d}</option>)}
                 </select>
                 <select value={bday.split("-")[1]||""} onChange={e=>setBday(`${bday.split("-")[0]||"2000"}-${e.target.value}-${bday.split("-")[2]||"01"}`)} style={{background:"#1E293B",border:"1px solid #334155",color:"#fff",borderRadius:12,padding:"10px 8px",fontSize:13,outline:"none",width:"100%",appearance:"none"}}>
-                  <option value="" style={{background:"#1E293B"}}>เดือน</option>{["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."].map((m,i)=><option key={i} value={String(i+1).padStart(2,"0")} style={{background:"#1E293B"}}>{m}</option>)}
+                  <option value="" style={{background:"#1E293B"}}>{t("sel_month")}</option>{t("months_short").map((m,i)=><option key={i} value={String(i+1).padStart(2,"0")} style={{background:"#1E293B"}}>{m}</option>)}
                 </select>
                 <select value={bday.split("-")[0]||""} onChange={e=>setBday(`${e.target.value}-${bday.split("-")[1]||"01"}-${bday.split("-")[2]||"01"}`)} style={{background:"#1E293B",border:"1px solid #334155",color:"#fff",borderRadius:12,padding:"10px 8px",fontSize:13,outline:"none",width:"100%",appearance:"none"}}>
-                  <option value="" style={{background:"#1E293B"}}>ปี (ค.ศ.)</option>{Array.from({length:80},(_,i)=>2026-i).map(y=><option key={y} value={String(y)} style={{background:"#1E293B"}}>{y}</option>)}
+                  <option value="" style={{background:"#1E293B"}}>{t("sel_year")}</option>{Array.from({length:80},(_,i)=>2026-i).map(y=><option key={y} value={String(y)} style={{background:"#1E293B"}}>{y}</option>)}
                 </select>
               </div>
             </div>
             <div>
-              <label style={{display:"block",color:"#CBD5E1",fontSize:13,fontWeight:500,marginBottom:8}}>เวลาเกิด</label>
+              <label style={{display:"block",color:"#CBD5E1",fontSize:13,fontWeight:500,marginBottom:8}}>{t("widget_time_label")}</label>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-                <button onClick={()=>{setKnowT(true);setTSlot("");}} style={{background:knowT===true?"#1E293B":"rgba(30,41,59,0.4)",border:`2px solid ${knowT===true?"#4B5563":"#1E293B"}`,color:knowT===true?"#fff":"#64748B",borderRadius:12,padding:10,fontSize:13,fontWeight:500,cursor:"pointer"}}>รู้เวลาเกิด</button>
-                <button onClick={()=>{setKnowT(false);setBtime("");}} style={{background:"rgba(30,41,59,0.4)",border:"1px solid #1E293B",color:"#64748B",borderRadius:12,padding:10,fontSize:13,fontWeight:500,cursor:"pointer"}}>ไม่รู้เวลาเกิด</button>
+                <button onClick={()=>{setKnowT(true);setTSlot("");}} style={{background:knowT===true?"#1E293B":"rgba(30,41,59,0.4)",border:`2px solid ${knowT===true?"#4B5563":"#1E293B"}`,color:knowT===true?"#fff":"#64748B",borderRadius:12,padding:10,fontSize:13,fontWeight:500,cursor:"pointer"}}>{t("widget_know_time")}</button>
+                <button onClick={()=>{setKnowT(false);setBtime("");}} style={{background:"rgba(30,41,59,0.4)",border:"1px solid #1E293B",color:"#64748B",borderRadius:12,padding:10,fontSize:13,fontWeight:500,cursor:"pointer"}}>{t("widget_no_time")}</button>
               </div>
               {knowT===true&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginTop:10}}>
                 <select value={btime.split(":")[0]||""} onChange={e=>setBtime(`${e.target.value}:${btime.split(":")[1]||"00"}`)} style={{background:"#1E293B",border:"1px solid #334155",color:"#fff",borderRadius:12,padding:"10px 8px",fontSize:13,outline:"none",width:"100%"}}>
-                  <option value="" style={{background:"#1E293B"}}>ชม.</option>{Array.from({length:24},(_,i)=>i).map(h=><option key={h} value={String(h).padStart(2,"0")} style={{background:"#1E293B"}}>{String(h).padStart(2,"0")}</option>)}
+                  <option value="" style={{background:"#1E293B"}}>{t("sel_hour")}</option>{Array.from({length:24},(_,i)=>i).map(h=><option key={h} value={String(h).padStart(2,"0")} style={{background:"#1E293B"}}>{String(h).padStart(2,"0")}</option>)}
                 </select>
                 <select value={btime.split(":")[1]||""} onChange={e=>setBtime(`${btime.split(":")[0]||"00"}:${e.target.value}`)} style={{background:"#1E293B",border:"1px solid #334155",color:"#fff",borderRadius:12,padding:"10px 8px",fontSize:13,outline:"none",width:"100%"}}>
-                  <option value="" style={{background:"#1E293B"}}>นาที</option>{[0,5,10,15,20,25,30,35,40,45,50,55].map(m=><option key={m} value={String(m).padStart(2,"0")} style={{background:"#1E293B"}}>{String(m).padStart(2,"0")}</option>)}
+                  <option value="" style={{background:"#1E293B"}}>{t("sel_minute")}</option>{[0,5,10,15,20,25,30,35,40,45,50,55].map(m=><option key={m} value={String(m).padStart(2,"0")} style={{background:"#1E293B"}}>{String(m).padStart(2,"0")}</option>)}
                 </select>
               </div>}
             </div>
             <div>
-              <label style={{display:"block",color:"#CBD5E1",fontSize:13,fontWeight:500,marginBottom:8}}>จังหวัดที่เกิด</label>
+              <label style={{display:"block",color:"#CBD5E1",fontSize:13,fontWeight:500,marginBottom:8}}>{t("widget_prov_label")}</label>
               <select value={prov} onChange={e=>setProv(e.target.value)} style={{width:"100%",background:"#1E293B",border:"1px solid #334155",color:prov?"#fff":"#64748B",borderRadius:12,padding:"10px 8px",fontSize:13,outline:"none",appearance:"none"}}>
-                <option value="" style={{background:"#1E293B"}}>กรุงเทพมหานคร</option>{PV.map(p=><option key={p} value={p} style={{background:"#1E293B"}}>{p}</option>)}
+                <option value="" style={{background:"#1E293B"}}>Bangkok</option>{PV.map(p=><option key={p} value={p} style={{background:"#1E293B"}}>{p}</option>)}
               </select>
             </div>
-            <button onClick={()=>{const q=(preAskInputRef.current?.value?.trim())||preAskQ;const bp=bday.split("-");const bdOk=bp[0]&&bp[1]&&bp[2]&&bp[0]!=="--"&&bp[0]!=="undefined";if(!bdOk){alert("กรุณาเลือกวันเดือนปีเกิดก่อนนะคะ");return;}if(!q){alert("กรุณาเลือกหรือพิมพ์คำถามที่ต้องการก่อนนะคะ");return;}setPreAskQ(q);setAskMode(true);goAskResults();}} style={{width:"100%",marginTop:4,background:"linear-gradient(to right,#4338CA,#7C3AED)",color:"#fff",fontWeight:700,fontSize:16,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",boxShadow:"0 0 20px rgba(79,70,229,0.4)"}}>👉 วิเคราะห์คำตอบของฉัน</button>
+            <button onClick={()=>{const q=(preAskInputRef.current?.value?.trim())||preAskQ;const bp=bday.split("-");const bdOk=bp[0]&&bp[1]&&bp[2]&&bp[0]!=="--"&&bp[0]!=="undefined";if(!bdOk){alert(t("alert_bday"));return;}if(!q){alert(t("alert_q"));return;}setPreAskQ(q);setAskMode(true);goAskResults();}} style={{width:"100%",marginTop:4,background:"linear-gradient(to right,#4338CA,#7C3AED)",color:"#fff",fontWeight:700,fontSize:16,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",boxShadow:"0 0 20px rgba(79,70,229,0.4)"}}>{t("widget_analyze_btn")}</button>
           </div>
         </div>}
       </div>
       {/* Trust badges */}
       <div style={{marginTop:20,display:"flex",alignItems:"center",justifyContent:"center",gap:24,fontSize:13,fontWeight:500,color:"#64748B",flexWrap:"wrap"}}>
-        <span>🔒 ข้อมูลส่วนตัว 100%</span>
-        <span>⏱ วิเคราะห์ทันทีใน 10 นาที</span>
+        <span>{t("trust_privacy")}</span>
+        <span>{t("trust_time")}</span>
       </div>
     </div>
   </section>
@@ -1506,8 +1512,8 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   <section style={{padding:"80px 16px",background:"#0F172A",color:"#fff",overflow:"hidden"}}>
     <div style={{maxWidth:1152,margin:"0 auto"}}>
       <div style={{textAlign:"center",marginBottom:64}}>
-        <h2 style={{fontSize:"clamp(1.75rem,4vw,2.25rem)",fontWeight:700,marginBottom:16,margin:"0 0 16px"}}>สิ่งที่คุณจะค้นพบใน Dashboard ส่วนตัว</h2>
-        <p style={{color:"#94A3B8",fontSize:18,margin:0}}>ผสานกราฟชีวิต จิตวิทยา และคำทำนาย ไว้ในที่เดียว</p>
+        <h2 style={{fontSize:"clamp(1.75rem,4vw,2.25rem)",fontWeight:700,marginBottom:16,margin:"0 0 16px"}}>{t("dashboard_title")}</h2>
+        <p style={{color:"#94A3B8",fontSize:18,margin:0}}>{t("dashboard_sub")}</p>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:24}}>
         <div style={{background:"rgba(30,41,59,0.5)",border:"1px solid #1E293B",borderRadius:24,padding:24,position:"relative",overflow:"hidden"}}>
@@ -1556,23 +1562,19 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   <section style={{padding:"80px 16px",background:"#fff"}}>
     <div style={{maxWidth:896,margin:"0 auto"}}>
       <div style={{textAlign:"center",marginBottom:64}}>
-        <h2 style={{fontSize:"clamp(1.75rem,4vw,2rem)",fontWeight:700,color:"#0F172A",marginBottom:16,margin:"0 0 16px"}}>ศาสตร์แห่งการเข้าใจตัวเองที่ลึกที่สุด</h2>
-        <p style={{color:"#64748B",margin:0}}>ไม่ใช่แค่การทายใจ แต่คือการผนวกรวมโหราศาสตร์ที่แม่นยำที่สุดเข้ากับจิตวิทยาเชิงลึก</p>
+        <h2 style={{fontSize:"clamp(1.75rem,4vw,2rem)",fontWeight:700,color:"#0F172A",marginBottom:16,margin:"0 0 16px"}}>{t("method_title")}</h2>
+        <p style={{color:"#64748B",margin:0}}>{t("method_sub")}</p>
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:24}}>
-        {[
-          {icon:"🌙",bg:"#F5F3FF",border:"#EDE9FE",title:"Integrated Astrology (ผสาน 4 โหราศาสตร์ชั้นนำ)",desc:'ดึงจุดแข็งของโหราศาสตร์ ไทย จีน พระเวท และสากล มารวมกันเพื่อวิเคราะห์ "จังหวะเวลา" (Timing) ที่แม่นยำที่สุด ไร้จุดบอด'},
-          {icon:"🧠",bg:"#F0F9FF",border:"#E0F2FE",title:"Depth Psychology (จิตวิทยาเชิงลึก)",desc:"ทำความเข้าใจ Shadow Pattern ปมวัยเด็ก และรูปแบบพฤติกรรมที่คุณเผลอทำซ้ำๆ โดยไม่รู้ตัว เพื่อหยุดวงจรปัญหาเดิมๆ"},
-          {icon:"⚡",bg:"#EEF2FF",border:"#E0E7FF",title:"Ask & Decide AI (ผู้ช่วยส่วนตัว)",desc:'นำข้อมูลเชิงลึกของคุณทั้งหมดมาประมวลผลด้วย AI ให้คุณพิมพ์ถามปัญหาเฉพาะหน้า และได้คำตอบที่อิงจาก "คู่มือชีวิต" ของคุณเอง'}
-        ].map((item,i)=>(
-          <div key={i} style={{padding:"24px 32px",borderRadius:24,border:`1px solid ${item.border}`,background:item.bg,display:"flex",flexWrap:"wrap",gap:24,alignItems:"center"}}>
+        {(t("method_items")||[]).map((item,i)=>{const bgs=["#F5F3FF","#F0F9FF","#EEF2FF"];const borders=["#EDE9FE","#E0F2FE","#E0E7FF"];return(
+          <div key={i} style={{padding:"24px 32px",borderRadius:24,border:`1px solid ${borders[i]||"#E2E8F0"}`,background:bgs[i]||"#F8FAFC",display:"flex",flexWrap:"wrap",gap:24,alignItems:"center"}}>
             <div style={{background:"#fff",padding:16,borderRadius:16,boxShadow:"0 1px 4px rgba(0,0,0,0.08)",flexShrink:0,fontSize:24,width:56,height:56,display:"flex",alignItems:"center",justifyContent:"center"}}>{item.icon}</div>
             <div style={{flex:1,minWidth:200}}>
               <h3 style={{fontSize:18,fontWeight:700,color:"#1E293B",marginBottom:8,margin:"0 0 8px"}}>{item.title}</h3>
               <p style={{color:"#475569",lineHeight:1.7,margin:0}}>{item.desc}</p>
             </div>
           </div>
-        ))}
+        )})}
       </div>
     </div>
   </section>
@@ -1581,11 +1583,9 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   <section style={{padding:"80px 16px",background:"#F8FAFC",borderTop:"1px solid #E2E8F0"}}>
     <div style={{maxWidth:1024,margin:"0 auto",display:"flex",flexWrap:"wrap",alignItems:"center",gap:48}}>
       <div style={{flex:"1 1 280px"}}>
-        <div style={{display:"inline-flex",alignItems:"center",gap:8,padding:"6px 12px",borderRadius:9999,background:"#0F172A",color:"#fff",fontSize:12,fontWeight:700,textTransform:"uppercase",marginBottom:24}}>Premium Feature</div>
-        <h2 style={{fontSize:"clamp(1.5rem,3vw,1.875rem)",fontWeight:700,color:"#0F172A",marginBottom:24,margin:"0 0 24px"}}>
-          ผู้ช่วย AI ส่วนตัวที่ <span style={{color:"#4338CA"}}>"รู้ใจ"</span> คุณที่สุด
-        </h2>
-        <p style={{color:"#475569",marginBottom:24,lineHeight:1.7}}>นอกจากผลลัพธ์ Dashboard แล้ว คุณยังสามารถสนทนากับ Ask & Decide AI ที่ถูก Train มาจากพื้นดวงและจิตวิทยาของคุณโดยเฉพาะ ไม่ว่าปัญหาจะเฉพาะเจาะจงแค่ไหน AI ก็พร้อมให้คำปรึกษา</p>
+        <div style={{display:"inline-flex",alignItems:"center",gap:8,padding:"6px 12px",borderRadius:9999,background:"#0F172A",color:"#fff",fontSize:12,fontWeight:700,textTransform:"uppercase",marginBottom:24}}>{t("ai_badge")}</div>
+        <h2 style={{fontSize:"clamp(1.5rem,3vw,1.875rem)",fontWeight:700,color:"#0F172A",marginBottom:24,margin:"0 0 24px"}}>{t("ai_feature_title")}</h2>
+        <p style={{color:"#475569",marginBottom:24,lineHeight:1.7}}>{t("ai_feature_sub")}</p>
         <ul style={{listStyle:"none",padding:0,margin:"0 0 32px",display:"flex",flexDirection:"column",gap:12}}>
           {["คำตอบอิงจาก Timing ดวงปัจจุบัน","วิเคราะห์เจาะลึกจาก Shadow Pattern ของคุณ","ให้คำแนะนำที่นำไปใช้ได้จริง (Actionable)"].map((item,i)=>(
             <li key={i} style={{display:"flex",alignItems:"center",gap:12,fontSize:14,fontWeight:500,color:"#374151"}}>
@@ -1622,7 +1622,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         <span style={{color:"#FCD34D",fontSize:24,letterSpacing:4}}>★★★★★</span>
       </div>
       <blockquote style={{fontSize:"clamp(1rem,2.5vw,1.375rem)",fontWeight:500,lineHeight:1.7,marginBottom:32,margin:"0 0 32px"}}>
-        "ตอนแรกคิดว่าจะเป็นเหมือนบททดสอบทั่วไป แต่ผลที่ได้มันเจาะจงมาก ตรงจุดเลย รู้เลยว่าที่ทำอยู่มันไม่ใช่ทาง และบอกจังหวะเวลาชัดเจนมาก"
+        {t("testimonial_quote")}
       </blockquote>
       <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:12,marginBottom:64}}>
         <div style={{width:40,height:40,background:"#6366F1",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>ม</div>
@@ -1633,9 +1633,9 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
       </div>
       <div style={{background:"rgba(255,255,255,0.1)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:24,padding:"32px 40px",position:"relative",overflow:"hidden"}}>
         <div style={{position:"absolute",top:0,right:0,padding:16,opacity:0.1,fontSize:120,lineHeight:1}}>⚡</div>
-        <h2 style={{fontSize:"clamp(1.25rem,3vw,1.875rem)",fontWeight:700,marginBottom:16,position:"relative",zIndex:1,margin:"0 0 16px"}}>พร้อมรู้จักตัวเองในเวอร์ชั่นที่ดีที่สุดหรือยัง?</h2>
-        <p style={{color:"#C7D2FE",marginBottom:32,maxWidth:512,margin:"0 auto 32px",position:"relative",zIndex:1}}>เริ่มทำแบบประเมินฟรี ใช้เวลาเพียง 10 นาที เพื่อปลดล็อกเส้นทางชีวิตของคุณ</p>
-        <button onClick={()=>{setAskMode(false);setSc("profile");}} style={{background:"#fff",color:"#312E81",fontWeight:900,fontSize:18,padding:"16px 32px",borderRadius:9999,border:"none",cursor:"pointer",position:"relative",zIndex:1}}>เริ่มต้นใช้งานฟรี</button>
+        <h2 style={{fontSize:"clamp(1.25rem,3vw,1.875rem)",fontWeight:700,marginBottom:16,position:"relative",zIndex:1,margin:"0 0 16px"}}>{t("cta_title")}</h2>
+        <p style={{color:"#C7D2FE",marginBottom:32,maxWidth:512,margin:"0 auto 32px",position:"relative",zIndex:1}}>{t("cta_sub")}</p>
+        <button onClick={()=>{setAskMode(false);setSc("profile");}} style={{background:"#fff",color:"#312E81",fontWeight:900,fontSize:18,padding:"16px 32px",borderRadius:9999,border:"none",cursor:"pointer",position:"relative",zIndex:1}}>{t("cta_btn")}</button>
       </div>
     </div>
   </section>
@@ -1648,7 +1648,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
       </div>
       <span style={{fontWeight:700,color:"#CBD5E1"}}>Human System Studio</span>
     </div>
-    <p style={{margin:0}}>© 2026 Human System Studio. All rights reserved.</p>
+    <p style={{margin:0}}>{t("footer_copy")}</p>
   </footer>
 
   </div>;
@@ -1656,18 +1656,18 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
 
   // ─── PROFILE (fixed input) ───
   const Profile=()=>{const inp={width:"100%",padding:"10px 14px",fontSize:14,border:"2px solid #E2E8F0",borderRadius:10,outline:"none",background:"#fff",boxSizing:"border-box"};const lbl={fontSize:12,fontWeight:600,color:"#64748B",marginBottom:4,display:"block"};const bp=bday.split("-");const ok=nick&&email&&bp.length===3&&bp[0]&&bp[1]&&bp[2]&&bp[0]!=="undefined"&&(knowT===true?(btime&&btime.includes(":")):(knowT===false?tSlot:false));
-  return<div><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><button onClick={()=>setSc("landing")} style={{background:"none",border:"none",fontSize:18,cursor:"pointer"}}>←</button><div><div style={{fontSize:16,fontWeight:800}}>ข้อมูลของคุณ</div><div style={{fontSize:11,color:"#94A3B8"}}>สำหรับ Vedic + พฤติกรรม</div></div></div>
+  return<div><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><button onClick={()=>setSc("landing")} style={{background:"none",border:"none",fontSize:18,cursor:"pointer"}}>←</button><div><div style={{fontSize:16,fontWeight:800}}>{t("profile_title")}</div><div style={{fontSize:11,color:"#94A3B8"}}>{t("profile_sub")}</div></div></div>
   <Card>
-  <div style={{marginBottom:12}}><label style={lbl}>ชื่อเล่น *</label><input ref={nickRef} defaultValue={nick} onBlur={e=>setNick(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")e.target.blur()}} placeholder="เช่น มิว" style={inp}/></div>
-  <div style={{marginBottom:12}}><label style={lbl}>อีเมล *</label><input ref={emailRef} defaultValue={email} onBlur={e=>setEmail(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")e.target.blur()}} placeholder="your@email.com" type="email" style={inp}/></div>
-  <div style={{marginBottom:12}}><label style={lbl}>วันเกิด *</label><div style={{display:"flex",gap:6,marginBottom:6}}><select value={bp[2]||""} onChange={e=>setBday(`${bp[0]||"2000"}-${bp[1]||"01"}-${e.target.value}`)} style={{...inp,flex:1}}><option value="">วัน</option>{Array.from({length:31},(_,i)=>i+1).map(d=><option key={d} value={String(d).padStart(2,"0")}>{d}</option>)}</select><select value={bp[1]||""} onChange={e=>setBday(`${bp[0]||"2000"}-${e.target.value}-${bp[2]||"01"}`)} style={{...inp,flex:1.2}}><option value="">เดือน</option>{["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."].map((m,i)=><option key={i} value={String(i+1).padStart(2,"0")}>{m}</option>)}</select><select value={bp[0]||""} onChange={e=>setBday(`${e.target.value}-${bp[1]||"01"}-${bp[2]||"01"}`)} style={{...inp,flex:1}}><option value="">ปี</option>{Array.from({length:80},(_,i)=>2026-i).map(y=><option key={y} value={String(y)}>{y}({y+543})</option>)}</select></div><button onClick={()=>{const t=new Date();setBday(`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,"0")}-${String(t.getDate()).padStart(2,"0")}`)}} style={{fontSize:11,color:"#6366F1",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:6,padding:"4px 10px",cursor:"pointer"}}>📅 ใช้วันนี้</button></div>
-  <div style={{marginBottom:12}}><label style={lbl}>เวลาเกิด *</label><div style={{display:"flex",gap:6,marginBottom:8}}><button onClick={()=>{setKnowT(true);setTSlot("")}} style={{flex:1,padding:8,borderRadius:8,border:`2px solid ${knowT===true?"#6366F1":"#E2E8F0"}`,background:knowT===true?"#EEF2FF":"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:knowT===true?"#4338CA":"#64748B"}}>รู้เวลาเกิด</button><button onClick={()=>{setKnowT(false);setBtime("")}} style={{flex:1,padding:8,borderRadius:8,border:`2px solid ${knowT===false?"#F59E0B":"#E2E8F0"}`,background:knowT===false?"#FFFBEB":"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:knowT===false?"#92400E":"#64748B"}}>ไม่รู้เวลาเกิด</button></div>{knowT===true&&<div style={{display:"flex",gap:6}}><select value={btime.split(":")[0]||""} onChange={e=>setBtime(`${e.target.value}:${btime.split(":")[1]||"00"}`)} style={{...inp,flex:1}}><option value="">ชั่วโมง</option>{Array.from({length:24},(_,i)=>i).map(h=><option key={h} value={String(h).padStart(2,"0")}>{String(h).padStart(2,"0")}น.</option>)}</select><select value={btime.split(":")[1]||""} onChange={e=>setBtime(`${btime.split(":")[0]||"00"}:${e.target.value}`)} style={{...inp,flex:1}}><option value="">นาที</option>{[0,5,10,15,20,25,30,35,40,45,50,55].map(m=><option key={m} value={String(m).padStart(2,"0")}>{String(m).padStart(2,"0")}นาที</option>)}</select></div>}{knowT===false&&<div style={{display:"flex",flexDirection:"column",gap:4}}>{TS.map(ts=><button key={ts.id} onClick={()=>setTSlot(ts.id)} style={{padding:"10px 12px",borderRadius:8,border:`2px solid ${tSlot===ts.id?"#F59E0B":"#E2E8F0"}`,background:tSlot===ts.id?"#FFFBEB":"#fff",textAlign:"left",cursor:"pointer"}}><div style={{fontSize:12,fontWeight:tSlot===ts.id?700:500,color:tSlot===ts.id?"#92400E":"#374151"}}>{ts.l}</div><div style={{fontSize:10,color:"#94A3B8"}}>{ts.d}</div></button>)}</div>}</div>
-  <div style={{marginBottom:14}}><label style={lbl}>จังหวัด</label><select value={prov} onChange={e=>setProv(e.target.value)} style={{...inp,appearance:"auto"}}><option value="">เลือกจังหวัด</option>{PV.map(p=><option key={p} value={p}>{p}</option>)}</select></div>
-  {scores?<><Btn ok={ok} onClick={ok?()=>{ST.set("profile",{nick,email,bday,btime,tSlot,prov});saveProfile();setSc("results")}:undefined}>💾 บันทึกและกลับดูผลลัพธ์</Btn><button onClick={()=>setSc("results")} style={{width:"100%",marginTop:8,padding:10,borderRadius:8,border:"2px solid #E2E8F0",background:"#fff",color:"#64748B",fontSize:12,fontWeight:600,cursor:"pointer"}}>← กลับดูผลลัพธ์</button></>:askMode?<Btn ok={ok} onClick={ok?goAskResults:undefined}>👉 วิเคราะห์คำตอบของฉัน</Btn>:<Btn ok={ok} onClick={ok?goQuiz:undefined}>เริ่มแบบประเมิน 36 ข้อ →</Btn>}</Card></div>};
+  <div style={{marginBottom:12}}><label style={lbl}>{t("profile_nick")}</label><input ref={nickRef} defaultValue={nick} onBlur={e=>setNick(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")e.target.blur()}} placeholder={t("profile_nick_ph")} style={inp}/></div>
+  <div style={{marginBottom:12}}><label style={lbl}>{t("profile_email")}</label><input ref={emailRef} defaultValue={email} onBlur={e=>setEmail(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")e.target.blur()}} placeholder="your@email.com" type="email" style={inp}/></div>
+  <div style={{marginBottom:12}}><label style={lbl}>{t("profile_bday")}</label><div style={{display:"flex",gap:6,marginBottom:6}}><select value={bp[2]||""} onChange={e=>setBday(`${bp[0]||"2000"}-${bp[1]||"01"}-${e.target.value}`)} style={{...inp,flex:1}}><option value="">{t("sel_day")}</option>{Array.from({length:31},(_,i)=>i+1).map(d=><option key={d} value={String(d).padStart(2,"0")}>{d}</option>)}</select><select value={bp[1]||""} onChange={e=>setBday(`${bp[0]||"2000"}-${e.target.value}-${bp[2]||"01"}`)} style={{...inp,flex:1.2}}><option value="">{t("sel_month")}</option>{t("months_short").map((m,i)=><option key={i} value={String(i+1).padStart(2,"0")}>{m}</option>)}</select><select value={bp[0]||""} onChange={e=>setBday(`${e.target.value}-${bp[1]||"01"}-${bp[2]||"01"}`)} style={{...inp,flex:1}}><option value="">{t("sel_year")}</option>{Array.from({length:80},(_,i)=>2026-i).map(y=><option key={y} value={String(y)}>{y}({y+543})</option>)}</select></div><button onClick={()=>{const t2=new Date();setBday(`${t2.getFullYear()}-${String(t2.getMonth()+1).padStart(2,"0")}-${String(t2.getDate()).padStart(2,"0")}`)}} style={{fontSize:11,color:"#6366F1",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:6,padding:"4px 10px",cursor:"pointer"}}>{t("profile_use_today")}</button></div>
+  <div style={{marginBottom:12}}><label style={lbl}>{t("profile_time")}</label><div style={{display:"flex",gap:6,marginBottom:8}}><button onClick={()=>{setKnowT(true);setTSlot("")}} style={{flex:1,padding:8,borderRadius:8,border:`2px solid ${knowT===true?"#6366F1":"#E2E8F0"}`,background:knowT===true?"#EEF2FF":"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:knowT===true?"#4338CA":"#64748B"}}>{t("profile_know_time")}</button><button onClick={()=>{setKnowT(false);setBtime("")}} style={{flex:1,padding:8,borderRadius:8,border:`2px solid ${knowT===false?"#F59E0B":"#E2E8F0"}`,background:knowT===false?"#FFFBEB":"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:knowT===false?"#92400E":"#64748B"}}>{t("profile_no_time")}</button></div>{knowT===true&&<div style={{display:"flex",gap:6}}><select value={btime.split(":")[0]||""} onChange={e=>setBtime(`${e.target.value}:${btime.split(":")[1]||"00"}`)} style={{...inp,flex:1}}><option value="">{t("sel_hour")}</option>{Array.from({length:24},(_,i)=>i).map(h=><option key={h} value={String(h).padStart(2,"0")}>{String(h).padStart(2,"0")}น.</option>)}</select><select value={btime.split(":")[1]||""} onChange={e=>setBtime(`${btime.split(":")[0]||"00"}:${e.target.value}`)} style={{...inp,flex:1}}><option value="">{t("sel_minute")}</option>{[0,5,10,15,20,25,30,35,40,45,50,55].map(m=><option key={m} value={String(m).padStart(2,"0")}>{String(m).padStart(2,"0")}</option>)}</select></div>}{knowT===false&&<div style={{display:"flex",flexDirection:"column",gap:4}}>{TS.map(ts=><button key={ts.id} onClick={()=>setTSlot(ts.id)} style={{padding:"10px 12px",borderRadius:8,border:`2px solid ${tSlot===ts.id?"#F59E0B":"#E2E8F0"}`,background:tSlot===ts.id?"#FFFBEB":"#fff",textAlign:"left",cursor:"pointer"}}><div style={{fontSize:12,fontWeight:tSlot===ts.id?700:500,color:tSlot===ts.id?"#92400E":"#374151"}}>{ts.l}</div><div style={{fontSize:10,color:"#94A3B8"}}>{ts.d}</div></button>)}</div>}</div>
+  <div style={{marginBottom:14}}><label style={lbl}>{t("profile_prov")}</label><select value={prov} onChange={e=>setProv(e.target.value)} style={{...inp,appearance:"auto"}}><option value="">{t("profile_prov_ph")}</option>{PV.map(p=><option key={p} value={p}>{p}</option>)}</select></div>
+  {scores?<><Btn ok={ok} onClick={ok?()=>{ST.set("profile",{nick,email,bday,btime,tSlot,prov});saveProfile();setSc("results")}:undefined}>{t("profile_save")}</Btn><button onClick={()=>setSc("results")} style={{width:"100%",marginTop:8,padding:10,borderRadius:8,border:"2px solid #E2E8F0",background:"#fff",color:"#64748B",fontSize:12,fontWeight:600,cursor:"pointer"}}>{t("profile_back")}</button></>:askMode?<Btn ok={ok} onClick={ok?goAskResults:undefined}>{t("profile_analyze")}</Btn>:<Btn ok={ok} onClick={ok?goQuiz:undefined}>{t("profile_start_quiz")}</Btn>}</Card></div>};
 
   // ─── QUIZ ───
-  const Quiz=()=>{const q=ALL_Q[qI];const key=`${q.dim}-${q.qi}`;const pct=((qI+1)/36*100);const allD=Object.keys(ans).length>=36;
-  return<div><div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:12,fontWeight:700,color:"#64748B"}}>{qI+1}/36</span><span style={{fontSize:10,color:"#94A3B8"}}>{q.dim}</span></div><div style={{height:4,background:"#E2E8F0",borderRadius:2,overflow:"hidden",marginBottom:12}}><div style={{height:"100%",width:`${pct}%`,background:"linear-gradient(90deg,#4338CA,#A78BFA)",borderRadius:2,transition:"width .3s"}}/></div><Card><div style={{display:"inline-flex",alignItems:"center",gap:4,padding:"2px 10px",borderRadius:10,background:`${q.c}15`,marginBottom:8,fontSize:10,fontWeight:600,color:q.c}}>{q.icon} {q.dim} · {q.pl}</div><p style={{fontSize:14,fontWeight:500,lineHeight:1.7,marginBottom:12,color:"#1E293B"}}>{q.q}</p><div style={{display:"flex",flexDirection:"column",gap:4}}>{SCALE.map((l,i)=><button key={i} onClick={()=>answer(i)} style={{padding:"9px 12px",fontSize:12,fontWeight:ans[key]===i?700:500,border:`2px solid ${ans[key]===i?"#4338CA":"#E2E8F0"}`,borderRadius:8,cursor:"pointer",textAlign:"left",background:ans[key]===i?"#EEF2FF":"#fff",color:ans[key]===i?"#4338CA":"#374151",display:"flex",alignItems:"center",gap:8}}><span style={{width:20,height:20,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,background:ans[key]===i?"#4338CA":"#F1F5F9",color:ans[key]===i?"#fff":"#94A3B8",flexShrink:0}}>{i}</span>{l}</button>)}</div></Card><div style={{display:"flex",gap:8,marginTop:8}}><button onClick={()=>setQI(Math.max(0,qI-1))} disabled={qI===0} style={{flex:1,padding:10,border:"2px solid #E2E8F0",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:qI>0?"pointer":"not-allowed",color:qI>0?"#374151":"#CBD5E1"}}>←</button>{allD?<Btn onClick={finish} style={{flex:2}}>ดูผลลัพธ์ ✦</Btn>:<button onClick={()=>{if(ans[key]!==undefined&&qI<35)setQI(qI+1)}} style={{flex:2,padding:10,borderRadius:8,border:"none",background:ans[key]!==undefined?"linear-gradient(135deg,#4338CA,#6D28D9)":"#E2E8F0",color:ans[key]!==undefined?"#fff":"#94A3B8",fontSize:12,fontWeight:600,cursor:ans[key]!==undefined?"pointer":"not-allowed"}}>ถัดไป →</button>}</div></div>};
+  const Quiz=()=>{const q=ALL_Q[qI];const key=`${q.dim}-${q.qi}`;const pct=((qI+1)/36*100);const allD=Object.keys(ans).length>=36;const scale=t("quiz_scale");
+  return<div><div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:12,fontWeight:700,color:"#64748B"}}>{qI+1}/36</span><span style={{fontSize:10,color:"#94A3B8"}}>{q.dim}</span></div><div style={{height:4,background:"#E2E8F0",borderRadius:2,overflow:"hidden",marginBottom:12}}><div style={{height:"100%",width:`${pct}%`,background:"linear-gradient(90deg,#4338CA,#A78BFA)",borderRadius:2,transition:"width .3s"}}/></div><Card><div style={{display:"inline-flex",alignItems:"center",gap:4,padding:"2px 10px",borderRadius:10,background:`${q.c}15`,marginBottom:8,fontSize:10,fontWeight:600,color:q.c}}>{q.icon} {q.dim} · {q.pl}</div><p style={{fontSize:14,fontWeight:500,lineHeight:1.7,marginBottom:12,color:"#1E293B"}}>{q.q}</p><div style={{display:"flex",flexDirection:"column",gap:4}}>{scale.map((l,i)=><button key={i} onClick={()=>answer(i)} style={{padding:"9px 12px",fontSize:12,fontWeight:ans[key]===i?700:500,border:`2px solid ${ans[key]===i?"#4338CA":"#E2E8F0"}`,borderRadius:8,cursor:"pointer",textAlign:"left",background:ans[key]===i?"#EEF2FF":"#fff",color:ans[key]===i?"#4338CA":"#374151",display:"flex",alignItems:"center",gap:8}}><span style={{width:20,height:20,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,background:ans[key]===i?"#4338CA":"#F1F5F9",color:ans[key]===i?"#fff":"#94A3B8",flexShrink:0}}>{i}</span>{l}</button>)}</div></Card><div style={{display:"flex",gap:8,marginTop:8}}><button onClick={()=>setQI(Math.max(0,qI-1))} disabled={qI===0} style={{flex:1,padding:10,border:"2px solid #E2E8F0",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:qI>0?"pointer":"not-allowed",color:qI>0?"#374151":"#CBD5E1"}}>←</button>{allD?<Btn onClick={finish} style={{flex:2}}>{t("quiz_finish")}</Btn>:<button onClick={()=>{if(ans[key]!==undefined&&qI<35)setQI(qI+1)}} style={{flex:2,padding:10,borderRadius:8,border:"none",background:ans[key]!==undefined?"linear-gradient(135deg,#4338CA,#6D28D9)":"#E2E8F0",color:ans[key]!==undefined?"#fff":"#94A3B8",fontSize:12,fontWeight:600,cursor:ans[key]!==undefined?"pointer":"not-allowed"}}>{t("quiz_next")}</button>}</div></div>};
 
   // ─── TIMELINE MONTH COMPONENT ───
   const TimelineMonth=({m,i,typeColors,typeBg,typeBorder,defaultOpen})=>{
@@ -2102,7 +2102,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   const Results=()=>{if(!scores)return null;const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);const c5={"Cognitive Processing":scores["Cognitive Processing"],"Emotional Regulation":scores["Emotional Regulation"],"Identity Stability":scores["Identity Stability"],"Shadow Pattern":scores["Shadow Pattern"],"Growth Orientation":scores["Growth Orientation"]};
   return<div style={{paddingTop:STICKY_NAV_HEIGHT}}>
   <StickyNav/>
-  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:26,height:26,borderRadius:8,background:"linear-gradient(135deg,#4338CA,#6D28D9)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff"}}>✦</div><span style={{fontSize:14,fontWeight:800}}>{nick}</span></div><span style={{fontSize:10,color:"#94A3B8"}}>{PLANS[plan].name}{logged?` · ${user?.email?.split("@")[0]}`:""}</span></div><div style={{display:"flex",alignItems:"center",gap:4}}>{plan!=="free"&&<span style={{fontSize:10,fontWeight:700,color:"#fff",background:PLANS[plan].c,padding:"3px 10px",borderRadius:8}}>{PLANS[plan].name}</span>}{logged?<button onClick={doLogout} style={{fontSize:12,color:"#64748B",background:"#F8FAFC",border:"1px solid #E2E8F0",borderRadius:8,padding:"6px 14px",cursor:"pointer",minWidth:60,minHeight:36}}>ออกจากระบบ</button>:<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:12,color:"#4338CA",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:8,padding:"6px 14px",cursor:"pointer"}}>เข้าสู่ระบบ</button>}</div></div>
+  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:26,height:26,borderRadius:8,background:"linear-gradient(135deg,#4338CA,#6D28D9)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff"}}>✦</div><span style={{fontSize:14,fontWeight:800}}>{nick}</span></div><span style={{fontSize:10,color:"#94A3B8"}}>{PLANS[plan].name}{logged?` · ${user?.email?.split("@")[0]}`:""}</span></div><div style={{display:"flex",alignItems:"center",gap:6}}><button onClick={toggleLang} style={{fontSize:11,fontWeight:700,color:"#4F46E5",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:6,padding:"4px 8px",cursor:"pointer"}}>{t("lang_toggle")}</button>{plan!=="free"&&<span style={{fontSize:10,fontWeight:700,color:"#fff",background:PLANS[plan].c,padding:"3px 10px",borderRadius:8}}>{PLANS[plan].name}</span>}{logged?<button onClick={doLogout} style={{fontSize:12,color:"#64748B",background:"#F8FAFC",border:"1px solid #E2E8F0",borderRadius:8,padding:"6px 14px",cursor:"pointer",minWidth:60,minHeight:36}}>{t("nav_logout")}</button>:<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:12,color:"#4338CA",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:8,padding:"6px 14px",cursor:"pointer"}}>{t("nav_login")}</button>}</div></div>
 
   {(plan==="free"||plan==="quick")&&<Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1"}}><div style={{fontSize:12,fontWeight:700,color:"#4338CA",marginBottom:6}}>🔓 ปลดล็อกความเข้าใจตัวเอง</div><div style={{display:"flex",gap:6}}>{plan==="free"&&<button onClick={()=>tryUpgrade("quick")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #F59E0B",background:"#fff",color:"#92400E",fontSize:11,fontWeight:700,cursor:"pointer"}}>Quick ฿49</button>}<button onClick={()=>tryUpgrade("smart")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #3B82F6",background:"#EFF6FF",color:"#1D4ED8",fontSize:11,fontWeight:700,cursor:"pointer"}}>Smart ฿99</button><button onClick={()=>tryUpgrade("pro")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>Pro ฿259 ⭐</button></div></Card>}
 
