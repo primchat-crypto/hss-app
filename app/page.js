@@ -484,7 +484,7 @@ const Card=({children,style={}})=><div style={{background:"#fff",borderRadius:14
 const Btn=({children,ok=true,onClick,style={}})=><button onClick={ok?onClick:undefined} style={{padding:"12px 20px",fontSize:14,fontWeight:700,background:ok?"linear-gradient(135deg,#4338CA,#6D28D9)":"#E2E8F0",color:ok?"#fff":"#94A3B8",border:"none",borderRadius:10,cursor:ok?"pointer":"not-allowed",width:"100%",boxShadow:ok?"0 4px 14px rgba(79,70,229,.2)":"none",...style}}>{children}</button>;
 
 // ── Identity Snapshot Card (WHO / WHAT / WHEN) ──
-const IdentitySnapshotCard=({data,scores,hasMbti})=>{
+const IdentitySnapshotCard=({data,scores,hasMbti,t})=>{
   if(!data||!data.powerTitle)return null;
   const {powerTitle,who,what,when}=data;
   // Inject bestMatch from local data if missing (e.g. cached from DB)
@@ -504,7 +504,7 @@ const IdentitySnapshotCard=({data,scores,hasMbti})=>{
       <div style={{background:"linear-gradient(135deg,#4338CA,#6366F1)",padding:"10px 14px",display:"flex",alignItems:"center",gap:8}}>
         <span style={{fontSize:18}}>1️⃣</span>
         <div>
-          <div style={{fontSize:13,fontWeight:800,color:"#fff"}}>WHO – พลังแฝงของคุณ</div>
+          <div style={{fontSize:13,fontWeight:800,color:"#fff"}}>{t("id_who")}</div>
           <div style={{fontSize:10,color:"#C7D2FE"}}>Identity & Soul</div>
         </div>
         {who?.mbtiLabel&&<span style={{marginLeft:"auto",fontSize:10,fontWeight:700,color:"#fff",background:"rgba(255,255,255,.2)",padding:"3px 8px",borderRadius:8,whiteSpace:"nowrap"}}>{who.mbtiLabel}</span>}
@@ -515,25 +515,25 @@ const IdentitySnapshotCard=({data,scores,hasMbti})=>{
           <div style={{fontSize:12,lineHeight:1.7,color:"#374151"}}>{who?.mbtiCore}</div>
         </div>
         <div style={{marginBottom:10}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#6366F1",marginBottom:3}}>Vedic Soul (พลังดาวประจำตัว)</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#6366F1",marginBottom:3}}>{t("id_vedic_soul")}</div>
           <div style={{fontSize:12,lineHeight:1.7,color:"#374151"}}>{who?.vedicSoul}</div>
         </div>
         <div style={{background:"#EEF2FF",borderRadius:8,padding:"8px 10px",borderLeft:"3px solid #6366F1",marginBottom:who?.bestMatch?10:0}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>Hidden Power (พลังแฝงที่รอปลดล็อก)</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>{t("id_hidden_power")}</div>
           <div style={{fontSize:12,lineHeight:1.7,color:"#1E293B",fontWeight:500}}>{who?.hiddenPower}</div>
         </div>
         {who?.bestMatch&&hasMbti&&<div style={{background:"linear-gradient(135deg,#FDF2F8,#EEF2FF)",borderRadius:8,padding:"10px 12px",border:"1px solid #E0E7FF"}}>
           <div style={{fontSize:10,fontWeight:700,color:"#7C3AED",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>
-            <span style={{fontSize:14}}>💞</span> MBTI Matching (คุณเหมาะกับคนแบบไหน)
+            <span style={{fontSize:14}}>💞</span> {t("id_mbti_matching")}
           </div>
-          <div style={{fontSize:11,fontWeight:700,color:"#4338CA",marginBottom:4}}>Best Match — คู่ที่เติมเต็มที่สุด</div>
+          <div style={{fontSize:11,fontWeight:700,color:"#4338CA",marginBottom:4}}>{t("id_best_match")}</div>
           <div style={{display:"flex",flexDirection:"column",gap:4,marginBottom:8}}>
             {who.bestMatch.best?.map((m,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:6,background:"#fff",borderRadius:6,padding:"6px 8px",border:"1px solid #C4B5FD"}}>
               <span style={{fontSize:11,fontWeight:800,color:"#7C3AED",minWidth:40}}>{m.type}</span>
               <div><div style={{fontSize:11,fontWeight:600,color:"#1E293B"}}>{m.title}</div><div style={{fontSize:10,color:"#6B7280"}}>{m.th}</div></div>
             </div>)}
           </div>
-          <div style={{fontSize:11,fontWeight:700,color:"#6366F1",marginBottom:4}}>Good Match — เข้ากันได้ดี</div>
+          <div style={{fontSize:11,fontWeight:700,color:"#6366F1",marginBottom:4}}>{t("id_good_match")}</div>
           <div style={{display:"flex",flexDirection:"column",gap:4,marginBottom:8}}>
             {who.bestMatch.good?.map((m,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:6,background:"#fff",borderRadius:6,padding:"5px 8px",border:"1px solid #DDD6FE"}}>
               <span style={{fontSize:11,fontWeight:800,color:"#8B5CF6",minWidth:40}}>{m.type}</span>
@@ -552,7 +552,7 @@ const IdentitySnapshotCard=({data,scores,hasMbti})=>{
       <div style={{background:"linear-gradient(135deg,#059669,#10B981)",padding:"10px 14px",display:"flex",alignItems:"center",gap:8}}>
         <span style={{fontSize:18}}>2️⃣</span>
         <div>
-          <div style={{fontSize:13,fontWeight:800,color:"#fff"}}>WHAT – ทักษะทำเงิน</div>
+          <div style={{fontSize:13,fontWeight:800,color:"#fff"}}>{t("id_what")}</div>
           <div style={{fontSize:10,color:"#A7F3D0"}}>Wealth & Market Value</div>
         </div>
         {what?.marketValue&&<span style={{marginLeft:"auto",fontSize:10,fontWeight:700,color:"#fff",background:"rgba(255,255,255,.2)",padding:"3px 8px",borderRadius:8,whiteSpace:"nowrap"}}>{what.marketValue}</span>}
@@ -560,19 +560,19 @@ const IdentitySnapshotCard=({data,scores,hasMbti})=>{
       <div style={{padding:"12px 14px"}}>
         {what?.skillTitle&&<div style={{textAlign:"center",marginBottom:10,padding:"6px 10px",background:"#ECFDF5",borderRadius:8}}><div style={{fontSize:13,fontWeight:800,color:"#065F46"}}>{what.skillTitle}</div></div>}
         <div style={{marginBottom:8}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#059669",marginBottom:3}}>Skill Highlight (ทักษะเด่น)</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#059669",marginBottom:3}}>{t("id_skill_highlight")}</div>
           <div style={{fontSize:12,lineHeight:1.7,color:"#374151"}}>{what?.skillHighlight}</div>
         </div>
         <div style={{marginBottom:8}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#059669",marginBottom:3}}>Market Value (มูลค่าในตลาด)</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#059669",marginBottom:3}}>{t("id_market_value")}</div>
           <div style={{fontSize:12,lineHeight:1.7,color:"#374151"}}>{what?.marketValue}</div>
         </div>
         <div style={{marginBottom:8}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#059669",marginBottom:3}}>The Money Maker (วิธีทำเงินที่ดีที่สุดของคุณ)</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#059669",marginBottom:3}}>{t("id_money_maker")}</div>
           <div style={{fontSize:12,lineHeight:1.7,color:"#374151"}}>{what?.moneyMaker}</div>
         </div>
         <div style={{background:"#FFF7ED",borderRadius:8,padding:"8px 10px",borderLeft:"3px solid #F59E0B"}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#B45309",marginBottom:2}}>⚠️ Gap to Close (จุดที่ต้องพัฒนาเพื่อเพิ่มมูลค่า)</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#B45309",marginBottom:2}}>{t("id_gap")}</div>
           <div style={{fontSize:12,lineHeight:1.7,color:"#1E293B"}}>{what?.gapToClose}</div>
         </div>
       </div>
@@ -583,7 +583,7 @@ const IdentitySnapshotCard=({data,scores,hasMbti})=>{
       <div style={{background:"linear-gradient(135deg,#B45309,#D97706)",padding:"10px 14px",display:"flex",alignItems:"center",gap:8}}>
         <span style={{fontSize:18}}>3️⃣</span>
         <div>
-          <div style={{fontSize:13,fontWeight:800,color:"#fff"}}>WHEN – เวลาของคุณ</div>
+          <div style={{fontSize:13,fontWeight:800,color:"#fff"}}>{t("id_when")}</div>
           <div style={{fontSize:10,color:"#FDE68A"}}>The Golden Timing</div>
         </div>
         {when?.periodLabel&&<span style={{marginLeft:"auto",fontSize:9,fontWeight:700,color:"#fff",background:"rgba(255,255,255,.2)",padding:"3px 8px",borderRadius:8,whiteSpace:"nowrap"}}>{when.periodLabel}</span>}
@@ -598,16 +598,16 @@ const IdentitySnapshotCard=({data,scores,hasMbti})=>{
           </div>
         </div>
         {when?.goldenWindow&&<div style={{marginBottom:8}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#B45309",marginBottom:3}}>🪙 Golden Window (ช่วงทองที่ดีที่สุด)</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#B45309",marginBottom:3}}>{t("id_golden_window")}</div>
           <div style={{fontSize:13,fontWeight:800,color:"#92400E",marginBottom:2}}>{when.goldenWindow}</div>
           <div style={{fontSize:12,lineHeight:1.7,color:"#374151"}}>{when?.goldenDesc}</div>
         </div>}
         {when?.actionPlan&&<div style={{marginBottom:8,background:"#FFFBEB",borderRadius:8,padding:"8px 10px",borderLeft:"3px solid #D97706"}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#B45309",marginBottom:2}}>Action Plan (สิ่งที่ควรทำตอนนี้)</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#B45309",marginBottom:2}}>{t("id_action_plan")}</div>
           <div style={{fontSize:12,lineHeight:1.7,color:"#374151"}}>{when.actionPlan}</div>
         </div>}
         {when?.warning&&<div style={{background:"#FFF1F2",borderRadius:8,padding:"8px 10px",borderLeft:"3px solid #EF4444"}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#DC2626",marginBottom:2}}>⚠️ Warning (ข้อควรระวัง)</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#DC2626",marginBottom:2}}>{t("id_warning")}</div>
           <div style={{fontSize:12,lineHeight:1.7,color:"#374151"}}>{when.warning}</div>
         </div>}
       </div>
@@ -620,18 +620,18 @@ const SectionHeader=({label,icon,locked,onUpgrade,planNeeded})=><div style={{dis
 
 const Locked=({planNeeded,title,children,onUpgrade})=><Card style={{position:"relative",overflow:"hidden",minHeight:120}}><div style={{filter:"blur(3px)",pointerEvents:"none",userSelect:"none",opacity:.4,padding:"8px 0"}}>{children}</div><div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,.75)",backdropFilter:"blur(2px)",padding:16}}><div style={{fontSize:28,marginBottom:6}}>🔒</div><div style={{fontSize:13,fontWeight:700,color:"#4338CA",marginBottom:3,textAlign:"center"}}>{title}</div><div style={{fontSize:11,color:"#64748B",marginBottom:10}}>{PLAN_LABEL[planNeeded]||"Pro ฿259"}</div><button onClick={()=>onUpgrade(planNeeded)} style={{padding:"8px 24px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 12px rgba(79,70,229,.25)"}}>ปลดล็อก →</button></div></Card>;
 
-const DecideTextInput=({value,onChange})=><input value={value} onChange={onChange} placeholder="พิมพ์คำถามของคุณ..." maxLength={80} style={{width:"100%",padding:"10px 14px",borderRadius:10,border:"1px solid rgba(99,102,241,0.4)",background:"rgba(255,255,255,0.08)",color:"#fff",fontSize:13,outline:"none",boxSizing:"border-box"}}/>;
+const DecideTextInput=({value,onChange,placeholder})=><input value={value} onChange={onChange} placeholder={placeholder||"Type your question..."} maxLength={80} style={{width:"100%",padding:"10px 14px",borderRadius:10,border:"1px solid rgba(99,102,241,0.4)",background:"rgba(255,255,255,0.08)",color:"#fff",fontSize:13,outline:"none",boxSizing:"border-box"}}/>;
 
-const DecideCard=({c})=><div style={{borderRadius:10,border:`1px solid ${c.color}33`,background:"#fff",padding:"10px 12px",marginBottom:6}}>
+const DecideCard=({c,scoreLabel})=><div style={{borderRadius:10,border:`1px solid ${c.color}33`,background:"#fff",padding:"10px 12px",marginBottom:6}}>
   <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:4}}>
     <div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:16}}>{c.icon}</span><div><div style={{fontSize:11,fontWeight:700,color:"#475569"}}>{c.system}</div><div style={{fontSize:13,fontWeight:800,color:c.color}}>{c.answer}</div></div></div>
-    <div style={{textAlign:"right"}}><div style={{fontSize:9,color:"#94A3B8",marginBottom:2}}>คะแนน</div><div style={{fontSize:15,fontWeight:800,color:c.color}}>{c.score}/10</div></div>
+    <div style={{textAlign:"right"}}><div style={{fontSize:9,color:"#94A3B8",marginBottom:2}}>{scoreLabel||"Score"}</div><div style={{fontSize:15,fontWeight:800,color:c.color}}>{c.score}/10</div></div>
   </div>
   <div style={{fontSize:11,color:"#374151",lineHeight:1.6,marginBottom:6}}>{c.reason}</div>
   <div style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:10,fontWeight:700,color:"#fff",background:c.color,padding:"3px 10px",borderRadius:20}}>▶ {c.action}</div>
 </div>;
 
-const AskDecide=({plan,has,nick,bday,scores,tryUpgrade})=>{
+const AskDecide=({plan,has,nick,bday,scores,tryUpgrade,t,lang})=>{
   const[decQ,setDecQ]=useState("");
   const[decCat,setDecCat]=useState("work");
   const[decRes,setDecRes]=useState(null);
@@ -641,10 +641,10 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade})=>{
   const incDecide=()=>{const today=new Date().toDateString();ST.set("dec_day",{date:today,count:decideLimit()+1})};
   const askDecide=async()=>{
     const q=decQ.trim();if(!q)return;
-    const maxQ=plan==="free"?1:99;if(decideLimit()>=maxQ&&plan==="free"){alert("ใช้โควต้า 1 คำถาม/วันหมดแล้ว อัปเกรด Quick ฿49 เพื่อถามไม่จำกัด");return}
+    const maxQ=plan==="free"?1:99;if(decideLimit()>=maxQ&&plan==="free"){alert(t("dec_quota_alert"));return}
     setDecL(true);setDecRes(null);
     const catLabel=DEC_CATS[decCat].label;
-    const isOpen=!/ไหม/.test(q);
+    const isOpen=lang==="en"?!/^(Should |Is |Will |Are )/i.test(q):!/ไหม/.test(q);
     const prompt=isOpen
       ?`คุณคือที่ปรึกษาโหราศาสตร์และจิตวิทยาชีวิต วิเคราะห์จาก 4 ศาสตร์พร้อมกัน ตอบตรงคำถามที่ถาม
 ข้อมูลผู้ถาม: ชื่อ ${nick}, วันเกิด ${bday}, คะแนนจิตวิทยา: Cognitive=${scores?.["Cognitive Processing"]?.toFixed(1)||"N/A"}, Shadow=${scores?.["Shadow Pattern"]?.toFixed(1)||"N/A"}
@@ -695,73 +695,73 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade})=>{
   const freeCard=decRes?decRes.cards?.[0]:null;
   const showAllCards=plan!=="free";
   const showAI=has("decide_ai");
-  const vc={green:{bg:"#ECFDF5",border:"#10B981",color:"#059669",label:"✅ แนะนำ: ทำเลย"},red:{bg:"#FFF1F2",border:"#EF4444",color:"#DC2626",label:"❌ แนะนำ: หลีกเลี่ยง"},yellow:{bg:"#FFFBEB",border:"#F59E0B",color:"#92400E",label:"⏳ แนะนำ: รอก่อน"}}[decRes?.verdictColor||"yellow"]||{};
+  const vc={green:{bg:"#ECFDF5",border:"#10B981",color:"#059669",label:t("dec_verdict_yes")},red:{bg:"#FFF1F2",border:"#EF4444",color:"#DC2626",label:t("dec_verdict_no")},yellow:{bg:"#FFFBEB",border:"#F59E0B",color:"#92400E",label:t("dec_verdict_wait")}}[decRes?.verdictColor||"yellow"]||{};
   return<Card style={{background:"linear-gradient(135deg,#1E1B4B,#312E81)",border:"2px solid #6366F1",padding:"18px 16px",marginBottom:12}}>
     <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
       <div style={{width:32,height:32,borderRadius:10,background:"linear-gradient(135deg,#6366F1,#8B5CF6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0}}>🔮</div>
-      <div><div style={{fontSize:14,fontWeight:800,color:"#fff"}}>Ask & Decide AI</div><div style={{fontSize:10,color:"#A5B4FC"}}>วิเคราะห์ 4 ศาสตร์ → ตัดสินใจได้ทันที</div></div>
-      {plan==="free"&&<div style={{marginLeft:"auto",textAlign:"right"}}><div style={{fontSize:9,color:"#A5B4FC"}}>{usedToday}/1 คำถาม/วัน</div><div style={{width:40,height:3,borderRadius:2,background:"rgba(255,255,255,0.15)",marginTop:2}}><div style={{width:`${Math.min(100,usedToday*100)}%`,height:"100%",borderRadius:2,background:"#F59E0B"}}/></div><div style={{fontSize:8,color:"#A5B4FC",marginTop:2}}>Quick ฿49 = ไม่จำกัด</div></div>}
+      <div><div style={{fontSize:14,fontWeight:800,color:"#fff"}}>Ask & Decide AI</div><div style={{fontSize:10,color:"#A5B4FC"}}>{t("dec_widget_sub")}</div></div>
+      {plan==="free"&&<div style={{marginLeft:"auto",textAlign:"right"}}><div style={{fontSize:9,color:"#A5B4FC"}}>{usedToday}{t("dec_quota_info")}</div><div style={{width:40,height:3,borderRadius:2,background:"rgba(255,255,255,0.15)",marginTop:2}}><div style={{width:`${Math.min(100,usedToday*100)}%`,height:"100%",borderRadius:2,background:"#F59E0B"}}/></div><div style={{fontSize:8,color:"#A5B4FC",marginTop:2}}>{t("dec_unlimited")}</div></div>}
     </div>
     <div style={{display:"flex",gap:6,marginBottom:12,overflowX:"auto",paddingBottom:2}}>
-      {cats.map(([k,v])=><button key={k} onClick={()=>{setDecCat(k);setDecQ("");setDecCustom(false)}} style={{padding:"6px 12px",borderRadius:20,border:"none",background:decCat===k?"#6366F1":"rgba(255,255,255,0.1)",color:decCat===k?"#fff":"#A5B4FC",fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,whiteSpace:"nowrap"}}>{v.icon} {v.label}</button>)}
+      {cats.map(([k,v])=>{const tabLabel={work:t("dec_tab_work"),money:t("dec_tab_money"),love:t("dec_tab_love"),timing:t("dec_tab_timing")}[k]||v.label;return<button key={k} onClick={()=>{setDecCat(k);setDecQ("");setDecCustom(false)}} style={{padding:"6px 12px",borderRadius:20,border:"none",background:decCat===k?"#6366F1":"rgba(255,255,255,0.1)",color:decCat===k?"#fff":"#A5B4FC",fontSize:11,fontWeight:700,cursor:"pointer",flexShrink:0,whiteSpace:"nowrap"}}>{v.icon} {tabLabel}</button>})}
     </div>
     <div style={{marginBottom:10}}>
       <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:8}}>
-        {catData.q.map((q,i)=><button key={i} onClick={()=>{setDecQ(q);setDecCustom(false)}} style={{padding:"6px 12px",borderRadius:20,fontSize:11,fontWeight:600,border:`1px solid ${decQ===q?"#6366F1":"rgba(255,255,255,0.15)"}`,background:decQ===q?"rgba(99,102,241,0.25)":"rgba(255,255,255,0.07)",color:decQ===q?"#C7D2FE":"#CBD5E1",cursor:"pointer"}}>{q}</button>)}
-        <button onClick={()=>{setDecCustom(true);setDecQ("")}} style={{padding:"6px 12px",borderRadius:20,fontSize:11,fontWeight:600,border:`1px solid ${decCustom?"#6366F1":"rgba(255,255,255,0.15)"}`,background:decCustom?"rgba(99,102,241,0.25)":"rgba(255,255,255,0.07)",color:decCustom?"#C7D2FE":"#CBD5E1",cursor:"pointer"}}>✏️ พิมพ์เอง</button>
+        {(lang==="en"?t(`dec_qs_${decCat}`):catData.q).map((q,i)=><button key={i} onClick={()=>{setDecQ(q);setDecCustom(false)}} style={{padding:"6px 12px",borderRadius:20,fontSize:11,fontWeight:600,border:`1px solid ${decQ===q?"#6366F1":"rgba(255,255,255,0.15)"}`,background:decQ===q?"rgba(99,102,241,0.25)":"rgba(255,255,255,0.07)",color:decQ===q?"#C7D2FE":"#CBD5E1",cursor:"pointer"}}>{q}</button>)}
+        <button onClick={()=>{setDecCustom(true);setDecQ("")}} style={{padding:"6px 12px",borderRadius:20,fontSize:11,fontWeight:600,border:`1px solid ${decCustom?"#6366F1":"rgba(255,255,255,0.15)"}`,background:decCustom?"rgba(99,102,241,0.25)":"rgba(255,255,255,0.07)",color:decCustom?"#C7D2FE":"#CBD5E1",cursor:"pointer"}}>{t("dec_custom")}</button>
       </div>
-      {decCustom&&<DecideTextInput value={decQ} onChange={e=>setDecQ(e.target.value)}/>}
+      {decCustom&&<DecideTextInput value={decQ} onChange={e=>setDecQ(e.target.value)} placeholder={t("dec_placeholder")}/>}
     </div>
     <button onClick={askDecide} disabled={!decQ.trim()||decL||!canAsk} style={{width:"100%",padding:"11px",borderRadius:10,border:"none",background:decQ.trim()&&canAsk?"linear-gradient(135deg,#4F46E5,#7C3AED)":"rgba(255,255,255,0.1)",color:decQ.trim()&&canAsk?"#fff":"rgba(255,255,255,0.3)",fontSize:13,fontWeight:700,cursor:decQ.trim()&&canAsk?"pointer":"not-allowed",marginBottom:decRes||decL?12:0,boxShadow:decQ.trim()&&canAsk?"0 4px 14px rgba(79,70,229,0.4)":"none",transition:"all .2s"}}>
-      {decL?"🔮 กำลังวิเคราะห์...":!canAsk?"⏰ ใช้ครบโควต้าวันนี้แล้ว (Free = 1/วัน)":"🔮 วิเคราะห์เลย"}
+      {decL?t("dec_analyzing"):!canAsk?t("dec_quota_full"):t("dec_analyze")}
     </button>
-    {decL&&<div style={{textAlign:"center",padding:"20px 0"}}><div style={{width:24,height:24,margin:"0 auto 8px",borderRadius:"50%",border:"3px solid rgba(99,102,241,0.2)",borderTopColor:"#6366F1",animation:"hs .7s linear infinite"}}/><div style={{fontSize:12,color:"#A5B4FC"}}>AI กำลังเปรียบเทียบ 4 ศาสตร์...</div></div>}
+    {decL&&<div style={{textAlign:"center",padding:"20px 0"}}><div style={{width:24,height:24,margin:"0 auto 8px",borderRadius:"50%",border:"3px solid rgba(99,102,241,0.2)",borderTopColor:"#6366F1",animation:"hs .7s linear infinite"}}/><div style={{fontSize:12,color:"#A5B4FC"}}>{t("dec_loading")}</div></div>}
     {decRes&&!decL&&<>
       {decRes.isOpen
         ?<div style={{borderRadius:12,padding:"14px",marginBottom:12,background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #A5B4FC"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#6366F1",marginBottom:8}}>🤖 AI วิเคราะห์จากวันเดือนปีเกิดของคุณ</div>
+          <div style={{fontSize:11,fontWeight:700,color:"#6366F1",marginBottom:8}}>{t("dec_ai_title")}</div>
           <div style={{fontSize:13,color:"#1E293B",lineHeight:1.8,whiteSpace:"pre-line"}}>{decRes.narrative}</div>
         </div>
         :<div style={{borderRadius:12,padding:"12px 14px",marginBottom:12,background:vc.bg,border:`2px solid ${vc.border}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <div><div style={{fontSize:13,fontWeight:800,color:vc.color}}>{vc.label}</div><div style={{fontSize:10,color:"#64748B",marginTop:2}}>ความมั่นใจ: {decRes.confidence}% · วิเคราะห์จาก 4 ศาสตร์</div></div>
+          <div><div style={{fontSize:13,fontWeight:800,color:vc.color}}>{vc.label}</div><div style={{fontSize:10,color:"#64748B",marginTop:2}}>{t("dec_confidence")} {decRes.confidence}% {t("dec_from4")}</div></div>
           <div style={{textAlign:"right"}}><div style={{width:44,height:44,borderRadius:"50%",border:`3px solid ${vc.border}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:vc.color,background:"rgba(255,255,255,0.7)"}}>{decRes.confidence}%</div></div>
         </div>
       }
       <div style={{marginBottom:12}}>
-        <div style={{fontSize:10,fontWeight:700,color:"#A5B4FC",marginBottom:8,letterSpacing:1}}>📚 วิเคราะห์รายศาสตร์</div>
-        {showAllCards?decRes.cards?.map((c,i)=><DecideCard key={i} c={c}/>):<>
-          {freeCard&&<DecideCard c={freeCard}/>}
+        <div style={{fontSize:10,fontWeight:700,color:"#A5B4FC",marginBottom:8,letterSpacing:1}}>{t("dec_per_science")}</div>
+        {showAllCards?decRes.cards?.map((c,i)=><DecideCard key={i} c={c} scoreLabel={t("dec_score_label")}/>):<>
+          {freeCard&&<DecideCard c={freeCard} scoreLabel={t("dec_score_label")}/>}
           {decRes.cards?.slice(1).map((c,i)=><div key={i} style={{borderRadius:10,border:"1px solid #E2E8F0",marginBottom:6,overflow:"hidden",position:"relative"}}>
-            <div style={{filter:"blur(5px)",opacity:.55,pointerEvents:"none",userSelect:"none"}}><DecideCard c={c}/></div>
+            <div style={{filter:"blur(5px)",opacity:.55,pointerEvents:"none",userSelect:"none"}}><DecideCard c={c} scoreLabel={t("dec_score_label")}/></div>
             <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.78)",backdropFilter:"blur(1px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"12px 16px",textAlign:"center"}}>
               <div style={{fontSize:18,marginBottom:4}}>🔒</div>
-              <div style={{fontSize:12,fontWeight:800,color:"#1E293B",marginBottom:2}}>ปลดล็อกการวิเคราะห์ {c.system}</div>
-              <div style={{fontSize:10,color:"#64748B",marginBottom:8}}>คะแนน เหตุผล และคำแนะนำเฉพาะสำหรับคุณ</div>
-              <button onClick={()=>tryUpgrade("quick")} style={{padding:"5px 18px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer",boxShadow:"0 2px 8px rgba(79,70,229,.3)"}}>Quick ฿49 — ดูครบทุกศาสตร์</button>
+              <div style={{fontSize:12,fontWeight:800,color:"#1E293B",marginBottom:2}}>{t("dec_unlock")} {c.system}</div>
+              <div style={{fontSize:10,color:"#64748B",marginBottom:8}}>{t("dec_unlock_desc")}</div>
+              <button onClick={()=>tryUpgrade("quick")} style={{padding:"5px 18px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer",boxShadow:"0 2px 8px rgba(79,70,229,.3)"}}>{t("dec_unlock_btn")}</button>
             </div>
           </div>)}
         </>}
       </div>
       {showAI?<div style={{background:"#F8FAFC",borderRadius:10,padding:"12px 14px",marginBottom:10,border:"1px solid #E2E8F0"}}>
-        <div style={{fontSize:11,fontWeight:700,color:"#4338CA",marginBottom:6}}>🤖 AI Summary</div>
+        <div style={{fontSize:11,fontWeight:700,color:"#4338CA",marginBottom:6}}>{t("dec_ai_summary")}</div>
         <div style={{fontSize:12,color:"#374151",lineHeight:1.8}}>{decRes.ai_summary}</div>
-        <div style={{marginTop:10}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:6}}>⚡ Action Plan</div>
+        <div style={{marginTop:10}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:6}}>{t("dec_action_plan")}</div>
         {decRes.action_plan?.map((s,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:8,marginBottom:6}}><div style={{width:18,height:18,borderRadius:"50%",background:"#4338CA",color:"#fff",fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}>{i+1}</div><div style={{fontSize:12,color:"#374151",lineHeight:1.6}}>{s}</div></div>)}</div>
       </div>:<div style={{borderRadius:10,border:"1px solid #E2E8F0",overflow:"hidden",position:"relative"}}>
         <div style={{filter:"blur(5px)",opacity:.5,pointerEvents:"none",userSelect:"none",background:"#F8FAFC",padding:"12px 14px"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#4338CA",marginBottom:6}}>🤖 AI Summary</div>
-          <div style={{fontSize:12,color:"#374151",lineHeight:1.8,marginBottom:8}}>{decRes.ai_summary||"AI ได้วิเคราะห์ภาพรวมจากทุกศาสตร์และสรุปคำแนะนำเฉพาะสำหรับสถานการณ์ของคุณแล้ว"}</div>
-          <div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:6}}>⚡ Action Plan</div>
-          {(decRes.action_plan||["ขั้นตอนที่ 1","ขั้นตอนที่ 2","ขั้นตอนที่ 3"]).map((s,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:4}}><div style={{width:16,height:16,borderRadius:"50%",background:"#4338CA",color:"#fff",fontSize:8,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{i+1}</div><div style={{fontSize:11,color:"#374151"}}>{s}</div></div>)}
+          <div style={{fontSize:11,fontWeight:700,color:"#4338CA",marginBottom:6}}>{t("dec_ai_summary")}</div>
+          <div style={{fontSize:12,color:"#374151",lineHeight:1.8,marginBottom:8}}>{decRes.ai_summary||"..."}</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:6}}>{t("dec_action_plan")}</div>
+          {(decRes.action_plan||["Step 1","Step 2","Step 3"]).map((s,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:4}}><div style={{width:16,height:16,borderRadius:"50%",background:"#4338CA",color:"#fff",fontSize:8,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{i+1}</div><div style={{fontSize:11,color:"#374151"}}>{s}</div></div>)}
         </div>
         <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.82)",backdropFilter:"blur(2px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:16,textAlign:"center"}}>
           <div style={{fontSize:22,marginBottom:6}}>🔒</div>
-          <div style={{fontSize:13,fontWeight:800,color:"#1E293B",marginBottom:4}}>AI Summary + Action Plan</div>
-          <div style={{fontSize:11,color:"#64748B",marginBottom:10}}>สรุปภาพรวมจากทุกศาสตร์ + คำแนะนำ 3 ขั้นตอนที่ทำได้จริง</div>
-          <button onClick={()=>tryUpgrade("smart")} style={{padding:"8px 24px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 12px rgba(79,70,229,.25)"}}>Smart ฿99 — ปลดล็อก AI Summary →</button>
+          <div style={{fontSize:13,fontWeight:800,color:"#1E293B",marginBottom:4}}>{t("dec_locked_summary")}</div>
+          <div style={{fontSize:11,color:"#64748B",marginBottom:10}}>{t("dec_locked_summary_desc")}</div>
+          <button onClick={()=>tryUpgrade("smart")} style={{padding:"8px 24px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 12px rgba(79,70,229,.25)"}}>{t("dec_unlock_smart")}</button>
         </div>
       </div>}
-      <button onClick={()=>{setDecRes(null);setDecQ("");setDecCustom(false)}} style={{width:"100%",padding:8,borderRadius:8,border:"1px solid rgba(255,255,255,0.2)",background:"transparent",color:"#A5B4FC",fontSize:11,cursor:"pointer",marginTop:4}}>🔄 ถามคำถามใหม่</button>
+      <button onClick={()=>{setDecRes(null);setDecQ("");setDecCustom(false)}} style={{width:"100%",padding:8,borderRadius:8,border:"1px solid rgba(255,255,255,0.2)",background:"transparent",color:"#A5B4FC",fontSize:11,cursor:"pointer",marginTop:4}}>{t("dec_reset")}</button>
     </>}
   </Card>
 };
@@ -772,7 +772,7 @@ export default function App(){
   const t=k=>TRANSLATIONS[lang]?.[k]??TRANSLATIONS.th[k]??k;
   const[sc,setSc]=useState("landing");const[askMode,setAskMode]=useState(false);const[preAskQ,setPreAskQ]=useState("");const[preAskTab,setPreAskTab]=useState("work");const[aiStep,setAiStep]=useState(1);
   const[nick,setNick]=useState("");const[email,setEmail]=useState("");const[bday,setBday]=useState("--");
-  const[knowT,setKnowT]=useState(null);const[btime,setBtime]=useState("");const[tSlot,setTSlot]=useState("");const[prov,setProv]=useState("");
+  const[knowT,setKnowT]=useState(null);const[btime,setBtime]=useState("");const[tSlot,setTSlot]=useState("");const[prov,setProv]=useState("");const[country,setCountry]=useState("Thailand");
   const[qI,setQI]=useState(0);const[ans,setAns]=useState({});
   const[scores,setScores]=useState(null);const[vedic,setVedic]=useState(null);
   const[plan,setPlan]=useState("free");const[ai,setAi]=useState({});const[aiL,setAiL]=useState({});
@@ -1439,7 +1439,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
             })}
           </div>
           <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:20}}>
-            {DEC_CATS[preAskTab].q.map((q,i)=>(
+            {(lang==="en"?(t(`dec_qs_${preAskTab}`)||DEC_CATS[preAskTab].q):DEC_CATS[preAskTab].q).map((q,i)=>(
               <button key={i} onClick={()=>{setPreAskQ(q);setAiStep(2);}} style={{padding:"7px 14px",borderRadius:9999,fontSize:13,fontWeight:500,background:"rgba(30,41,59,0.6)",color:"#CBD5E1",border:"1px solid #334155",cursor:"pointer"}}>{q}</button>
             ))}
           </div>
@@ -1491,11 +1491,18 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
               </div>}
             </div>
             <div>
+              <label style={{display:"block",color:"#CBD5E1",fontSize:13,fontWeight:500,marginBottom:8}}>{t("sel_country")}</label>
+              <select value={country} onChange={e=>{setCountry(e.target.value);if(e.target.value!=="Thailand")setProv("");}} style={{width:"100%",background:"#1E293B",border:"1px solid #334155",color:"#fff",borderRadius:12,padding:"10px 8px",fontSize:13,outline:"none",appearance:"none"}}>
+                <option value="Thailand" style={{background:"#1E293B"}}>{t("sel_country_th")}</option>
+                <option value="Other" style={{background:"#1E293B"}}>{t("sel_country_other")}</option>
+              </select>
+            </div>
+            {country==="Thailand"&&<div>
               <label style={{display:"block",color:"#CBD5E1",fontSize:13,fontWeight:500,marginBottom:8}}>{t("widget_prov_label")}</label>
               <select value={prov} onChange={e=>setProv(e.target.value)} style={{width:"100%",background:"#1E293B",border:"1px solid #334155",color:prov?"#fff":"#64748B",borderRadius:12,padding:"10px 8px",fontSize:13,outline:"none",appearance:"none"}}>
                 <option value="" style={{background:"#1E293B"}}>Bangkok</option>{PV.map(p=><option key={p} value={p} style={{background:"#1E293B"}}>{p}</option>)}
               </select>
-            </div>
+            </div>}
             <button onClick={()=>{const q=(preAskInputRef.current?.value?.trim())||preAskQ;const bp=bday.split("-");const bdOk=bp[0]&&bp[1]&&bp[2]&&bp[0]!=="--"&&bp[0]!=="undefined";if(!bdOk){alert(t("alert_bday"));return;}if(!q){alert(t("alert_q"));return;}setPreAskQ(q);setAskMode(true);goAskResults();}} style={{width:"100%",marginTop:4,background:"linear-gradient(to right,#4338CA,#7C3AED)",color:"#fff",fontWeight:700,fontSize:16,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",boxShadow:"0 0 20px rgba(79,70,229,0.4)"}}>{t("widget_analyze_btn")}</button>
           </div>
         </div>}
@@ -1662,12 +1669,14 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   <div style={{marginBottom:12}}><label style={lbl}>{t("profile_email")}</label><input ref={emailRef} defaultValue={email} onBlur={e=>setEmail(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")e.target.blur()}} placeholder="your@email.com" type="email" style={inp}/></div>
   <div style={{marginBottom:12}}><label style={lbl}>{t("profile_bday")}</label><div style={{display:"flex",gap:6,marginBottom:6}}><select value={bp[2]||""} onChange={e=>setBday(`${bp[0]||"2000"}-${bp[1]||"01"}-${e.target.value}`)} style={{...inp,flex:1}}><option value="">{t("sel_day")}</option>{Array.from({length:31},(_,i)=>i+1).map(d=><option key={d} value={String(d).padStart(2,"0")}>{d}</option>)}</select><select value={bp[1]||""} onChange={e=>setBday(`${bp[0]||"2000"}-${e.target.value}-${bp[2]||"01"}`)} style={{...inp,flex:1.2}}><option value="">{t("sel_month")}</option>{t("months_short").map((m,i)=><option key={i} value={String(i+1).padStart(2,"0")}>{m}</option>)}</select><select value={bp[0]||""} onChange={e=>setBday(`${e.target.value}-${bp[1]||"01"}-${bp[2]||"01"}`)} style={{...inp,flex:1}}><option value="">{t("sel_year")}</option>{Array.from({length:80},(_,i)=>2026-i).map(y=><option key={y} value={String(y)}>{y}({y+543})</option>)}</select></div><button onClick={()=>{const t2=new Date();setBday(`${t2.getFullYear()}-${String(t2.getMonth()+1).padStart(2,"0")}-${String(t2.getDate()).padStart(2,"0")}`)}} style={{fontSize:11,color:"#6366F1",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:6,padding:"4px 10px",cursor:"pointer"}}>{t("profile_use_today")}</button></div>
   <div style={{marginBottom:12}}><label style={lbl}>{t("profile_time")}</label><div style={{display:"flex",gap:6,marginBottom:8}}><button onClick={()=>{setKnowT(true);setTSlot("")}} style={{flex:1,padding:8,borderRadius:8,border:`2px solid ${knowT===true?"#6366F1":"#E2E8F0"}`,background:knowT===true?"#EEF2FF":"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:knowT===true?"#4338CA":"#64748B"}}>{t("profile_know_time")}</button><button onClick={()=>{setKnowT(false);setBtime("")}} style={{flex:1,padding:8,borderRadius:8,border:`2px solid ${knowT===false?"#F59E0B":"#E2E8F0"}`,background:knowT===false?"#FFFBEB":"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:knowT===false?"#92400E":"#64748B"}}>{t("profile_no_time")}</button></div>{knowT===true&&<div style={{display:"flex",gap:6}}><select value={btime.split(":")[0]||""} onChange={e=>setBtime(`${e.target.value}:${btime.split(":")[1]||"00"}`)} style={{...inp,flex:1}}><option value="">{t("sel_hour")}</option>{Array.from({length:24},(_,i)=>i).map(h=><option key={h} value={String(h).padStart(2,"0")}>{String(h).padStart(2,"0")}น.</option>)}</select><select value={btime.split(":")[1]||""} onChange={e=>setBtime(`${btime.split(":")[0]||"00"}:${e.target.value}`)} style={{...inp,flex:1}}><option value="">{t("sel_minute")}</option>{[0,5,10,15,20,25,30,35,40,45,50,55].map(m=><option key={m} value={String(m).padStart(2,"0")}>{String(m).padStart(2,"0")}</option>)}</select></div>}{knowT===false&&<div style={{display:"flex",flexDirection:"column",gap:4}}>{TS.map(ts=><button key={ts.id} onClick={()=>setTSlot(ts.id)} style={{padding:"10px 12px",borderRadius:8,border:`2px solid ${tSlot===ts.id?"#F59E0B":"#E2E8F0"}`,background:tSlot===ts.id?"#FFFBEB":"#fff",textAlign:"left",cursor:"pointer"}}><div style={{fontSize:12,fontWeight:tSlot===ts.id?700:500,color:tSlot===ts.id?"#92400E":"#374151"}}>{ts.l}</div><div style={{fontSize:10,color:"#94A3B8"}}>{ts.d}</div></button>)}</div>}</div>
-  <div style={{marginBottom:14}}><label style={lbl}>{t("profile_prov")}</label><select value={prov} onChange={e=>setProv(e.target.value)} style={{...inp,appearance:"auto"}}><option value="">{t("profile_prov_ph")}</option>{PV.map(p=><option key={p} value={p}>{p}</option>)}</select></div>
+  <div style={{marginBottom:12}}><label style={lbl}>{t("sel_country")}</label><select value={country} onChange={e=>{setCountry(e.target.value);if(e.target.value!=="Thailand")setProv("");}} style={{...inp,appearance:"auto"}}><option value="Thailand">{t("sel_country_th")}</option><option value="Other">{t("sel_country_other")}</option></select></div>
+  {country==="Thailand"&&<div style={{marginBottom:14}}><label style={lbl}>{t("profile_prov")}</label><select value={prov} onChange={e=>setProv(e.target.value)} style={{...inp,appearance:"auto"}}><option value="">{t("profile_prov_ph")}</option>{PV.map(p=><option key={p} value={p}>{p}</option>)}</select></div>}
   {scores?<><Btn ok={ok} onClick={ok?()=>{ST.set("profile",{nick,email,bday,btime,tSlot,prov});saveProfile();setSc("results")}:undefined}>{t("profile_save")}</Btn><button onClick={()=>setSc("results")} style={{width:"100%",marginTop:8,padding:10,borderRadius:8,border:"2px solid #E2E8F0",background:"#fff",color:"#64748B",fontSize:12,fontWeight:600,cursor:"pointer"}}>{t("profile_back")}</button></>:askMode?<Btn ok={ok} onClick={ok?goAskResults:undefined}>{t("profile_analyze")}</Btn>:<Btn ok={ok} onClick={ok?goQuiz:undefined}>{t("profile_start_quiz")}</Btn>}</Card></div>};
 
   // ─── QUIZ ───
   const Quiz=()=>{const q=ALL_Q[qI];const key=`${q.dim}-${q.qi}`;const pct=((qI+1)/36*100);const allD=Object.keys(ans).length>=36;const scale=t("quiz_scale");
-  return<div><div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:12,fontWeight:700,color:"#64748B"}}>{qI+1}/36</span><span style={{fontSize:10,color:"#94A3B8"}}>{q.dim}</span></div><div style={{height:4,background:"#E2E8F0",borderRadius:2,overflow:"hidden",marginBottom:12}}><div style={{height:"100%",width:`${pct}%`,background:"linear-gradient(90deg,#4338CA,#A78BFA)",borderRadius:2,transition:"width .3s"}}/></div><Card><div style={{display:"inline-flex",alignItems:"center",gap:4,padding:"2px 10px",borderRadius:10,background:`${q.c}15`,marginBottom:8,fontSize:10,fontWeight:600,color:q.c}}>{q.icon} {q.dim} · {q.pl}</div><p style={{fontSize:14,fontWeight:500,lineHeight:1.7,marginBottom:12,color:"#1E293B"}}>{q.q}</p><div style={{display:"flex",flexDirection:"column",gap:4}}>{scale.map((l,i)=><button key={i} onClick={()=>answer(i)} style={{padding:"9px 12px",fontSize:12,fontWeight:ans[key]===i?700:500,border:`2px solid ${ans[key]===i?"#4338CA":"#E2E8F0"}`,borderRadius:8,cursor:"pointer",textAlign:"left",background:ans[key]===i?"#EEF2FF":"#fff",color:ans[key]===i?"#4338CA":"#374151",display:"flex",alignItems:"center",gap:8}}><span style={{width:20,height:20,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,background:ans[key]===i?"#4338CA":"#F1F5F9",color:ans[key]===i?"#fff":"#94A3B8",flexShrink:0}}>{i}</span>{l}</button>)}</div></Card><div style={{display:"flex",gap:8,marginTop:8}}><button onClick={()=>setQI(Math.max(0,qI-1))} disabled={qI===0} style={{flex:1,padding:10,border:"2px solid #E2E8F0",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:qI>0?"pointer":"not-allowed",color:qI>0?"#374151":"#CBD5E1"}}>←</button>{allD?<Btn onClick={finish} style={{flex:2}}>{t("quiz_finish")}</Btn>:<button onClick={()=>{if(ans[key]!==undefined&&qI<35)setQI(qI+1)}} style={{flex:2,padding:10,borderRadius:8,border:"none",background:ans[key]!==undefined?"linear-gradient(135deg,#4338CA,#6D28D9)":"#E2E8F0",color:ans[key]!==undefined?"#fff":"#94A3B8",fontSize:12,fontWeight:600,cursor:ans[key]!==undefined?"pointer":"not-allowed"}}>{t("quiz_next")}</button>}</div></div>};
+  const qText=lang==="en"?(t("quiz_questions")?.[q.dim]?.[q.qi]||q.q):q.q;
+  return<div><div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:12,fontWeight:700,color:"#64748B"}}>{qI+1}/36</span><span style={{fontSize:10,color:"#94A3B8"}}>{q.dim}</span></div><div style={{height:4,background:"#E2E8F0",borderRadius:2,overflow:"hidden",marginBottom:12}}><div style={{height:"100%",width:`${pct}%`,background:"linear-gradient(90deg,#4338CA,#A78BFA)",borderRadius:2,transition:"width .3s"}}/></div><Card><div style={{display:"inline-flex",alignItems:"center",gap:4,padding:"2px 10px",borderRadius:10,background:`${q.c}15`,marginBottom:8,fontSize:10,fontWeight:600,color:q.c}}>{q.icon} {q.dim} · {q.pl}</div><p style={{fontSize:14,fontWeight:500,lineHeight:1.7,marginBottom:12,color:"#1E293B"}}>{qText}</p><div style={{display:"flex",flexDirection:"column",gap:4}}>{scale.map((l,i)=><button key={i} onClick={()=>answer(i)} style={{padding:"9px 12px",fontSize:12,fontWeight:ans[key]===i?700:500,border:`2px solid ${ans[key]===i?"#4338CA":"#E2E8F0"}`,borderRadius:8,cursor:"pointer",textAlign:"left",background:ans[key]===i?"#EEF2FF":"#fff",color:ans[key]===i?"#4338CA":"#374151",display:"flex",alignItems:"center",gap:8}}><span style={{width:20,height:20,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,background:ans[key]===i?"#4338CA":"#F1F5F9",color:ans[key]===i?"#fff":"#94A3B8",flexShrink:0}}>{i}</span>{l}</button>)}</div></Card><div style={{display:"flex",gap:8,marginTop:8}}><button onClick={()=>setQI(Math.max(0,qI-1))} disabled={qI===0} style={{flex:1,padding:10,border:"2px solid #E2E8F0",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:qI>0?"pointer":"not-allowed",color:qI>0?"#374151":"#CBD5E1"}}>←</button>{allD?<Btn onClick={finish} style={{flex:2}}>{t("quiz_finish")}</Btn>:<button onClick={()=>{if(ans[key]!==undefined&&qI<35)setQI(qI+1)}} style={{flex:2,padding:10,borderRadius:8,border:"none",background:ans[key]!==undefined?"linear-gradient(135deg,#4338CA,#6D28D9)":"#E2E8F0",color:ans[key]!==undefined?"#fff":"#94A3B8",fontSize:12,fontWeight:600,cursor:ans[key]!==undefined?"pointer":"not-allowed"}}>{t("quiz_next")}</button>}</div></div>};
 
   // ─── TIMELINE MONTH COMPONENT ───
   const TimelineMonth=({m,i,typeColors,typeBg,typeBorder,defaultOpen})=>{
@@ -1787,7 +1796,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
 
   // ─── ASK & DECIDE RESULTS ───
   const AskResults=()=>{
-    const days=gen7Day(bday);const t=days[0];
+    const days=gen7Day(bday);const d0=days[0];
     const isPaid=plan!=="free";
     const[activeTab,setActiveTab]=useState("work");
     const[quotaUsed,setQuotaUsed]=useState(false);
@@ -1798,7 +1807,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const[aiLoading,setAiLoading]=useState(false);
     const[decRes,setDecRes]=useState(null);
     const customRef=useRef(null);
-    const isDecisionQ=(q)=>/ไหม/.test(q||"");
+    const isDecisionQ=(q)=>lang==="en"?/^(Should |Is |Will |Are )/i.test(q||""):/ไหม/.test(q||"");
     useEffect(()=>{
       const today=new Date().toISOString().slice(0,10);
       let quotaAlreadyUsed=false;
@@ -1831,12 +1840,13 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
       }
     };
     const submitCustom=()=>{const q=customRef.current?.value?.trim();if(q)askQ(q);};
-    const TABS=[{key:"work",icon:"💼",label:"งาน"},{key:"money",icon:"💰",label:"เงิน"},{key:"love",icon:"❤️",label:"ความรัก"},{key:"timing",icon:"⏱️",label:"Timing"}];
-    const CHIPS={work:["ลาออกดีไหม?","เปลี่ยนงานตอนนี้ไหม?","งานนี้เหมาะไหม?","ธุรกิจนี้จะสำเร็จไหม?","ควรรับงานใหม่ไหม?"],money:["ลงทุนตอนนี้ไหม?","ซื้อบ้านดีไหม?","กู้เงินได้ไหม?","ควรออมหรือลงทุน?","ธุรกิจคุ้มค่าไหม?"],love:["บอกรักไหม?","ความสัมพันธ์นี้ดีไหม?","ควรแยกทางไหม?","เขา/เธอใช่ไหม?","รอหรือก้าวต่อ?"],timing:["วันนี้เหมาะไหม?","เดือนนี้ดีไหม?","ควรรอหรือลุย?","ช่วงนี้ฤกษ์ดีไหม?","เวลาไหนดีที่สุด?"]};
-    const domTxt={work:t?.work,money:t?.money,love:t?.love,timing:t?.work};
-    const dScore=(txt)=>{if(!txt)return t?.ce||60;if(txt.includes("⚠️")||txt.includes("นิจ")||txt.includes("อ่อน"))return Math.max(30,(t?.ce||60)-12);if(txt.includes("อุจจ์")||txt.includes("โอกาส")||txt.includes("ดีเยี่ยม"))return Math.min(95,(t?.ce||60)+8);return t?.ce||60;};
+    const TABS=[{key:"work",icon:"💼",label:t("dec_tab_work")},{key:"money",icon:"💰",label:t("dec_tab_money")},{key:"love",icon:"❤️",label:t("dec_tab_love")},{key:"timing",icon:"⏱️",label:t("dec_tab_timing")}];
+    const CHIPS_TH={work:["ลาออกดีไหม?","เปลี่ยนงานตอนนี้ไหม?","งานนี้เหมาะไหม?","ธุรกิจนี้จะสำเร็จไหม?","ควรรับงานใหม่ไหม?"],money:["ลงทุนตอนนี้ไหม?","ซื้อบ้านดีไหม?","กู้เงินได้ไหม?","ควรออมหรือลงทุน?","ธุรกิจคุ้มค่าไหม?"],love:["บอกรักไหม?","ความสัมพันธ์นี้ดีไหม?","ควรแยกทางไหม?","เขา/เธอใช่ไหม?","รอหรือก้าวต่อ?"],timing:["วันนี้เหมาะไหม?","เดือนนี้ดีไหม?","ควรรอหรือลุย?","ช่วงนี้ฤกษ์ดีไหม?","เวลาไหนดีที่สุด?"]};
+    const CHIPS=lang==="en"?{work:t("dec_qs_work")||CHIPS_TH.work,money:t("dec_qs_money")||CHIPS_TH.money,love:t("dec_qs_love")||CHIPS_TH.love,timing:t("dec_qs_timing")||CHIPS_TH.timing}:CHIPS_TH;
+    const domTxt={work:d0?.work,money:d0?.money,love:d0?.love,timing:d0?.work};
+    const dScore=(txt)=>{if(!txt)return d0?.ce||60;if(txt.includes("⚠️")||txt.includes("นิจ")||txt.includes("อ่อน"))return Math.max(30,(d0?.ce||60)-12);if(txt.includes("อุจจ์")||txt.includes("โอกาส")||txt.includes("ดีเยี่ยม"))return Math.min(95,(d0?.ce||60)+8);return d0?.ce||60;};
     const cs=dScore(domTxt[activeTab]);const s10=Math.max(1,Math.min(10,Math.round(cs/10)));
-    const rec=cs>=72?"ลงมือเลย":cs>=52?"รอก่อน":"ระวัง";
+    const rec=cs>=72?t("dec_rec_go"):cs>=52?t("dec_rec_wait"):t("dec_rec_caution");
     const rI=cs>=72?"🚀":cs>=52?"⏱️":"⚠️";
     const rBg=cs>=72?"#ECFDF5":cs>=52?"#FFF7ED":"#FFF1F2";
     const rBd=cs>=72?"#6EE7B7":cs>=52?"#FED7AA":"#FECDD3";
@@ -1861,63 +1871,63 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
       {work:SCH_FRAME[2][`why_${lv}`]+" ด้านอาชีพ ชื่อเสียง และความสำเร็จในสังคม (官星)",money:SCH_FRAME[2][`why_${lv}`]+" ด้านทรัพย์สิน การค้า และดวงการเงิน (财星)",love:SCH_FRAME[2][`why_${lv}`]+" ด้านความรัก การพบเนื้อคู่ และพลังดอกท้อ (桃花)",timing:SCH_FRAME[2][`why_${lv}`]+" ด้านการเลือกวัน เวลา และทิศทางมงคล"},
       {work:SCH_FRAME[3][`why_${lv}`]+" ใน Career House (10th) และ Achievement",money:SCH_FRAME[3][`why_${lv}`]+" ใน 2nd/8th House เรื่องทรัพย์สินและการลงทุน",love:SCH_FRAME[3][`why_${lv}`]+" ใน 5th/7th House เรื่องความรักและคู่ครอง",timing:SCH_FRAME[3][`why_${lv}`]+" ตาม Lunar Cycle และ Planetary Timing"}
     ];
-    const SCHOOLS=[{name:"โหราศาสตร์พระเวท",icon:"🪐",grad:"linear-gradient(135deg,#4338CA,#6366F1)"},{name:"โหราศาสตร์ไทย",icon:"🌙",grad:"linear-gradient(135deg,#0369A1,#0EA5E9)"},{name:"โหราศาสตร์จีน",icon:"☯️",grad:"linear-gradient(135deg,#7C3AED,#8B5CF6)"},{name:"โหราศาสตร์สากล",icon:"⭐",grad:"linear-gradient(135deg,#065F46,#10B981)"}];
+    const SCHOOLS=[{name:t("dec_school_vedic"),icon:"🪐",grad:"linear-gradient(135deg,#4338CA,#6366F1)"},{name:t("dec_school_thai"),icon:"🌙",grad:"linear-gradient(135deg,#0369A1,#0EA5E9)"},{name:t("dec_school_chinese"),icon:"☯️",grad:"linear-gradient(135deg,#7C3AED,#8B5CF6)"},{name:t("dec_school_western"),icon:"⭐",grad:"linear-gradient(135deg,#065F46,#10B981)"}];
     return<div style={{margin:"-12px -16px"}}>
       <div style={{background:"linear-gradient(135deg,#0F172A,#1E1B4B)",padding:"14px 16px 0"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
           <div style={{display:"flex",alignItems:"center",gap:10}}>
             <button onClick={()=>setSc("landing")} style={{background:"none",border:"none",fontSize:16,cursor:"pointer",color:"#94A3B8",padding:0}}>←</button>
             <div style={{width:34,height:34,borderRadius:10,background:"linear-gradient(135deg,#6366F1,#8B5CF6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>🔮</div>
-            <div><div style={{fontSize:15,fontWeight:800,color:"#fff"}}>Ask & Decide AI</div><div style={{fontSize:10,color:"#A5B4FC"}}>{nick?`${nick} · `:""}วิเคราะห์ 4 ศาสตร์ → ตัดสินใจได้ทันที</div></div>
+            <div><div style={{fontSize:15,fontWeight:800,color:"#fff"}}>Ask & Decide AI</div><div style={{fontSize:10,color:"#A5B4FC"}}>{nick?`${nick} · `:""}{t("dec_widget_sub")}</div></div>
           </div>
-          <div style={{fontSize:10,fontWeight:700,color:"#F59E0B",background:"rgba(245,158,11,.15)",padding:"3px 10px",borderRadius:8,flexShrink:0}}>{isPaid?"∞":"1"}/1 คำถาม/วัน</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#F59E0B",background:"rgba(245,158,11,.15)",padding:"3px 10px",borderRadius:8,flexShrink:0}}>{isPaid?"∞":"1"}{t("dec_quota_info")}</div>
         </div>
         <div style={{display:"flex",gap:6,marginBottom:12,overflowX:"auto",paddingBottom:2}}>
           {TABS.map(tab=><button key={tab.key} onClick={()=>{setActiveTab(tab.key);setShowCustom(false);}} style={{flexShrink:0,padding:"6px 14px",borderRadius:20,border:"none",background:activeTab===tab.key?"#6366F1":"rgba(255,255,255,.08)",color:activeTab===tab.key?"#fff":"#A5B4FC",fontSize:12,fontWeight:600,cursor:"pointer"}}>{tab.icon} {tab.label}</button>)}
         </div>
         <div style={{display:"flex",flexWrap:"wrap",gap:6,paddingBottom:showCustom?8:14}}>
           {(CHIPS[activeTab]||[]).map((q,i)=><button key={i} onClick={()=>askQ(q)} style={{padding:"5px 12px",borderRadius:16,border:selectedQ===q?"2px solid #A5B4FC":"1px solid rgba(255,255,255,.15)",background:selectedQ===q?"rgba(99,102,241,.3)":"rgba(255,255,255,.06)",color:"#C7D2FE",fontSize:11,cursor:"pointer",fontWeight:selectedQ===q?700:400}}>{q}</button>)}
-          <button onClick={()=>setShowCustom(v=>!v)} style={{padding:"5px 12px",borderRadius:16,border:showCustom?"2px solid #A5B4FC":"1px dashed rgba(255,255,255,.25)",background:showCustom?"rgba(99,102,241,.2)":"transparent",color:showCustom?"#C7D2FE":"#94A3B8",fontSize:11,cursor:"pointer"}}>✏️ พิมพ์เอง</button>
+          <button onClick={()=>setShowCustom(v=>!v)} style={{padding:"5px 12px",borderRadius:16,border:showCustom?"2px solid #A5B4FC":"1px dashed rgba(255,255,255,.25)",background:showCustom?"rgba(99,102,241,.2)":"transparent",color:showCustom?"#C7D2FE":"#94A3B8",fontSize:11,cursor:"pointer"}}>{t("dec_custom")}</button>
         </div>
         {showCustom&&<div style={{paddingBottom:14,display:"flex",gap:8}}>
-          <input ref={customRef} defaultValue="" placeholder="พิมพ์คำถามของคุณ..." onKeyDown={e=>{if(e.key==="Enter")submitCustom();}} style={{flex:1,padding:"8px 12px",borderRadius:10,border:"1px solid rgba(255,255,255,.25)",background:"rgba(255,255,255,.08)",color:"#fff",fontSize:12,outline:"none"}} autoFocus/>
-          <button onClick={submitCustom} style={{padding:"8px 14px",borderRadius:10,border:"none",background:"#6366F1",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",flexShrink:0}}>ถาม</button>
+          <input ref={customRef} defaultValue="" placeholder={t("dec_placeholder")} onKeyDown={e=>{if(e.key==="Enter")submitCustom();}} style={{flex:1,padding:"8px 12px",borderRadius:10,border:"1px solid rgba(255,255,255,.25)",background:"rgba(255,255,255,.08)",color:"#fff",fontSize:12,outline:"none"}} autoFocus/>
+          <button onClick={submitCustom} style={{padding:"8px 14px",borderRadius:10,border:"none",background:"#6366F1",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",flexShrink:0}}>{t("dec_ask_btn")}</button>
         </div>}
       </div>
       <div style={{background:"#F8FAFC",borderRadius:"20px 20px 0 0",marginTop:-8,padding:"16px 16px 0"}}>
         {!resultShown&&<div style={{textAlign:"center",padding:"32px 16px 40px"}}>
           <div style={{fontSize:36,marginBottom:10}}>🔮</div>
-          <div style={{fontSize:14,fontWeight:700,color:"#1E293B",marginBottom:6}}>เลือกคำถามด้านบนเพื่อดูคำตอบ</div>
-          <div style={{fontSize:12,color:"#94A3B8",marginBottom:16}}>แตะที่คำถามหรือพิมพ์คำถามของคุณเอง</div>
-          {!isPaid&&quotaUsed&&<div style={{padding:"10px 14px",background:"#FFF7ED",border:"1px solid #FED7AA",borderRadius:10,fontSize:11,color:"#92400E",textAlign:"left"}}>⏰ ใช้ครบโควต้าวันนี้แล้ว (1/วัน) · <button onClick={()=>tryUpgrade("quick")} style={{background:"none",border:"none",color:"#4338CA",fontWeight:700,cursor:"pointer",fontSize:11,padding:0}}>ปลดล็อก Quick ฿49</button></div>}
+          <div style={{fontSize:14,fontWeight:700,color:"#1E293B",marginBottom:6}}>{t("dec_select_q")}</div>
+          <div style={{fontSize:12,color:"#94A3B8",marginBottom:16}}>{t("dec_tap_q")}</div>
+          {!isPaid&&quotaUsed&&<div style={{padding:"10px 14px",background:"#FFF7ED",border:"1px solid #FED7AA",borderRadius:10,fontSize:11,color:"#92400E",textAlign:"left"}}>⏰ {t("dec_quota_full")} · <button onClick={()=>tryUpgrade("quick")} style={{background:"none",border:"none",color:"#4338CA",fontWeight:700,cursor:"pointer",fontSize:11,padding:0}}>Quick ฿49</button></div>}
         </div>}
         {resultShown&&<>
-          {!isPaid&&<div style={{background:"#F1F5F9",borderRadius:10,padding:"10px 14px",marginBottom:12,display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:13}}>🔒</span><span style={{fontSize:11,color:"#64748B",fontWeight:600}}>ใช้ครบโควต้าวันนี้แล้ว (Free = 1/วัน)</span></div>}
+          {!isPaid&&<div style={{background:"#F1F5F9",borderRadius:10,padding:"10px 14px",marginBottom:12,display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:13}}>🔒</span><span style={{fontSize:11,color:"#64748B",fontWeight:600}}>{t("dec_quota_full")}</span></div>}
           <div style={{background:"#EEF2FF",borderRadius:10,padding:"9px 14px",marginBottom:12,fontSize:12,color:"#4338CA",fontWeight:600}}>💬 {selectedQ}</div>
           {aiLoading
             ?<div style={{background:"#EEF2FF",border:"1.5px solid #C7D2FE",borderRadius:12,padding:"16px 14px",marginBottom:14,textAlign:"center"}}>
-              <div style={{fontSize:13,color:"#4338CA",fontWeight:600}}>✦ AI กำลังวิเคราะห์จากดวงชาตาของคุณ...</div>
-              <div style={{fontSize:11,color:"#818CF8",marginTop:4}}>ใช้เวลาสักครู่</div>
+              <div style={{fontSize:13,color:"#4338CA",fontWeight:600}}>{t("dec_ai_analyzing")}</div>
+              <div style={{fontSize:11,color:"#818CF8",marginTop:4}}>{t("dec_ai_wait")}</div>
             </div>
             :<>
               {/* Section 1: AI narrative or Verdict */}
               {decRes?.isOpen
                 ?<div style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"1.5px solid #A5B4FC",borderRadius:12,padding:"14px",marginBottom:14}}>
-                  <div style={{fontSize:11,fontWeight:700,color:"#6366F1",marginBottom:8}}>🤖 AI วิเคราะห์จากวันเดือนปีเกิดของคุณ</div>
+                  <div style={{fontSize:11,fontWeight:700,color:"#6366F1",marginBottom:8}}>{t("dec_ai_title")}</div>
                   <div style={{fontSize:13,color:"#1E293B",lineHeight:1.8,whiteSpace:"pre-line"}}>{decRes.narrative||aiAnswer}</div>
                 </div>
                 :decRes?.verdict
                   ?<div style={{background:{green:"#ECFDF5",red:"#FFF1F2",yellow:"#FFFBEB"}[decRes.verdictColor]||rBg,border:`1.5px solid ${{green:"#6EE7B7",red:"#FECDD3",yellow:"#FED7AA"}[decRes.verdictColor]||rBd}`,borderRadius:12,padding:"12px 14px",marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
-                    <div><div style={{fontSize:14,fontWeight:800,color:{green:"#065F46",red:"#991B1B",yellow:"#92400E"}[decRes.verdictColor]||rC}}>{decRes.verdict==="ใช่"?"✅":decRes.verdict==="ไม่ใช่"?"❌":"⏳"} แนะนำ: {decRes.verdict}</div><div style={{fontSize:11,opacity:.75,marginTop:2}}>ความมั่นใจ: {decRes.confidence}% · วิเคราะห์จาก 4 ศาสตร์</div></div>
+                    <div><div style={{fontSize:14,fontWeight:800,color:{green:"#065F46",red:"#991B1B",yellow:"#92400E"}[decRes.verdictColor]||rC}}>{decRes.verdict==="ใช่"?"✅":decRes.verdict==="ไม่ใช่"?"❌":"⏳"} {t("dec_recommend")} {decRes.verdict}</div><div style={{fontSize:11,opacity:.75,marginTop:2}}>{t("dec_confidence")} {decRes.confidence}% {t("dec_from4")}</div></div>
                     <div style={{width:46,height:46,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:10,fontWeight:800,border:`2px solid ${{green:"#6EE7B7",red:"#FECDD3",yellow:"#FED7AA"}[decRes.verdictColor]||rBd}`}}>{decRes.confidence}%</div>
                   </div>
                 :aiAnswer
                   ?<div style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"1.5px solid #A5B4FC",borderRadius:12,padding:"14px",marginBottom:14}}>
-                    <div style={{fontSize:11,fontWeight:700,color:"#6366F1",marginBottom:8}}>🤖 AI วิเคราะห์จากวันเดือนปีเกิดของคุณ</div>
+                    <div style={{fontSize:11,fontWeight:700,color:"#6366F1",marginBottom:8}}>{t("dec_ai_title")}</div>
                     <div style={{fontSize:13,color:"#1E293B",lineHeight:1.8,whiteSpace:"pre-line"}}>{aiAnswer}</div>
                   </div>
                   :<div style={{background:rBg,border:`1.5px solid ${rBd}`,borderRadius:12,padding:"12px 14px",marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
-                    <div><div style={{fontSize:14,fontWeight:800,color:rC}}>{rI} พลังงานวันนี้: {cs}%</div><div style={{fontSize:11,color:rC,opacity:.75,marginTop:2}}>วิเคราะห์จาก 4 ศาสตร์</div></div>
+                    <div><div style={{fontSize:14,fontWeight:800,color:rC}}>{rI} {t("dec_energy_today")} {cs}%</div><div style={{fontSize:11,color:rC,opacity:.75,marginTop:2}}>{t("dec_from4")}</div></div>
                     <div style={{width:46,height:46,borderRadius:"50%",background:`conic-gradient(${rC} ${cs}%,#E2E8F0 0)`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
                       <div style={{width:34,height:34,borderRadius:"50%",background:rBg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:rC}}>{cs}%</div>
                     </div>
@@ -1925,19 +1935,19 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
               }
               {/* Section 2: School breakdown - always show when we have AI result or decision question */}
               {(decRes?.cards||isDecisionQ(selectedQ))&&<>
-                <div style={{fontSize:12,fontWeight:700,color:"#64748B",marginBottom:10}}>🔮 วิเคราะห์รายศาสตร์</div>
+                <div style={{fontSize:12,fontWeight:700,color:"#64748B",marginBottom:10}}>{t("dec_per_science")}</div>
                 {decRes?.cards
                   ?<>{isPaid
-                    ?decRes.cards.map((c,i)=><DecideCard key={i} c={c}/>)
+                    ?decRes.cards.map((c,i)=><DecideCard key={i} c={c} scoreLabel={t("dec_score_label")}/>)
                     :<>
-                      {decRes.cards[0]&&<DecideCard c={decRes.cards[0]}/>}
+                      {decRes.cards[0]&&<DecideCard c={decRes.cards[0]} scoreLabel={t("dec_score_label")}/>}
                       {decRes.cards.slice(1).map((c,i)=><div key={i} style={{borderRadius:10,border:"1px solid #E2E8F0",marginBottom:6,overflow:"hidden",position:"relative"}}>
-                        <div style={{filter:"blur(5px)",opacity:.55,pointerEvents:"none",userSelect:"none"}}><DecideCard c={c}/></div>
+                        <div style={{filter:"blur(5px)",opacity:.55,pointerEvents:"none",userSelect:"none"}}><DecideCard c={c} scoreLabel={t("dec_score_label")}/></div>
                         <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.78)",backdropFilter:"blur(1px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"12px 16px",textAlign:"center"}}>
                           <div style={{fontSize:18,marginBottom:4}}>🔒</div>
-                          <div style={{fontSize:12,fontWeight:800,color:"#1E293B",marginBottom:2}}>ปลดล็อกการวิเคราะห์ {c.system}</div>
-                          <div style={{fontSize:10,color:"#64748B",marginBottom:8}}>คะแนน เหตุผล และคำแนะนำเฉพาะสำหรับคุณ</div>
-                          <button onClick={()=>tryUpgrade("quick")} style={{padding:"5px 18px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer",boxShadow:"0 2px 8px rgba(79,70,229,.3)"}}>Quick ฿49 — ดูครบทุกศาสตร์</button>
+                          <div style={{fontSize:12,fontWeight:800,color:"#1E293B",marginBottom:2}}>{t("dec_unlock_analysis")} {c.system}</div>
+                          <div style={{fontSize:10,color:"#64748B",marginBottom:8}}>{t("dec_unlock_desc")}</div>
+                          <button onClick={()=>tryUpgrade("quick")} style={{padding:"5px 18px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer",boxShadow:"0 2px 8px rgba(79,70,229,.3)"}}>{t("dec_unlock_btn")}</button>
                         </div>
                       </div>)}
                     </>
@@ -1947,17 +1957,17 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
                     return<div key={i} style={{borderRadius:12,overflow:"hidden",marginBottom:8,border:"1px solid #E2E8F0"}}>
                       {ul?<><div style={{background:sch.grad,padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                         <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:26,height:26,borderRadius:8,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>{sch.icon}</div><span style={{fontSize:13,fontWeight:700,color:"#fff"}}>{sch.name}</span></div>
-                        <div style={{textAlign:"right"}}><div style={{fontSize:9,color:"rgba(255,255,255,.6)"}}>คะแนน</div><div style={{fontSize:14,fontWeight:800,color:"#fff"}}>{s10}/10</div></div>
+                        <div style={{textAlign:"right"}}><div style={{fontSize:9,color:"rgba(255,255,255,.6)"}}>{t("dec_score_label")}</div><div style={{fontSize:14,fontWeight:800,color:"#fff"}}>{s10}/10</div></div>
                       </div>
                       <div style={{background:"#fff",padding:"14px 16px"}}>
                         <div style={{fontSize:13,fontWeight:800,color:"#1E293B",marginBottom:10}}>{VT[activeTab]}</div>
                         {i===0&&domTxt[activeTab]&&<div style={{fontSize:12,color:"#4338CA",fontWeight:600,padding:"8px 12px",background:"#EEF2FF",borderRadius:8,marginBottom:12,lineHeight:1.6}}>{domTxt[activeTab]}</div>}
                         <div style={{marginBottom:10}}>
-                          <div style={{fontSize:10,fontWeight:700,color:"#94A3B8",textTransform:"uppercase",letterSpacing:.5,marginBottom:4}}>🔍 วิเคราะห์จากดวง</div>
+                          <div style={{fontSize:10,fontWeight:700,color:"#94A3B8",textTransform:"uppercase",letterSpacing:.5,marginBottom:4}}>{t("dec_analysis_label")}</div>
                           <div style={{fontSize:12,color:"#374151",lineHeight:1.7}}>{(SDET_WHAT[i]||{})[activeTab]||""}</div>
                         </div>
                         <div>
-                          <div style={{fontSize:10,fontWeight:700,color:"#94A3B8",textTransform:"uppercase",letterSpacing:.5,marginBottom:6}}>✅ ขั้นตอนที่แนะนำ</div>
+                          <div style={{fontSize:10,fontWeight:700,color:"#94A3B8",textTransform:"uppercase",letterSpacing:.5,marginBottom:6}}>{t("dec_steps_label")}</div>
                           {((TAB_HOW[activeTab]||{})[lv]||[]).map((step,si)=><div key={si} style={{display:"flex",gap:8,alignItems:"flex-start",padding:"6px 0",borderBottom:si<2?"1px solid #F1F5F9":"none"}}><span style={{width:20,height:20,borderRadius:"50%",background:"#EEF2FF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:"#4338CA",flexShrink:0}}>{si+1}</span><span style={{fontSize:12,color:"#374151",lineHeight:1.6}}>{step}</span></div>)}
                         </div>
                       </div></>
@@ -1971,24 +1981,24 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
                 {/* AI Summary section */}
                 <div style={{borderRadius:12,overflow:"hidden",marginBottom:12,border:"1px solid #E2E8F0"}}>
                   <div style={{background:"#F8FAFC",padding:"14px"}}>
-                    <div style={{textAlign:"center",marginBottom:has("decide_ai")?10:6}}><div style={{fontSize:13,fontWeight:700,color:has("decide_ai")?"#1E293B":"#94A3B8"}}>AI Summary + Action Plan</div><div style={{fontSize:10,color:"#94A3B8",marginTop:2}}>รวมคำแนะนำ 3 ขั้นตอน</div></div>
+                    <div style={{textAlign:"center",marginBottom:has("decide_ai")?10:6}}><div style={{fontSize:13,fontWeight:700,color:has("decide_ai")?"#1E293B":"#94A3B8"}}>{t("dec_ai_summary")} + {t("dec_action_plan")}</div><div style={{fontSize:10,color:"#94A3B8",marginTop:2}}>{t("dec_summary_steps")}</div></div>
                     {has("decide_ai")
                       ?<div style={{fontSize:11,color:"#475569",lineHeight:1.8}}>
                         {decRes?.ai_summary&&<div style={{marginBottom:8,padding:"8px 10px",background:"#EEF2FF",borderRadius:8,fontSize:12,color:"#374151",lineHeight:1.7}}>{decRes.ai_summary}</div>}
                         {(decRes?.action_plan||((TAB_HOW[activeTab]||{})[lv]||[])).map((s,si)=><div key={si} style={{marginTop:si>0?5:0}}>{["1️⃣","2️⃣","3️⃣"][si]} {s}</div>)}
-                        {!decRes&&<div style={{marginTop:8,padding:"7px 10px",background:"#EEF2FF",borderRadius:8,fontSize:11,fontWeight:600,color:"#4338CA"}}>⚡ พลังงานวันนี้ {cs}% — {cs>=72?"เหมาะลงมือทำและตัดสินใจ":cs>=52?"เลือกทำสิ่งสำคัญก่อน":"พักฟื้น อย่าตัดสินใจใหญ่"}</div>}
+                        {!decRes&&<div style={{marginTop:8,padding:"7px 10px",background:"#EEF2FF",borderRadius:8,fontSize:11,fontWeight:600,color:"#4338CA"}}>⚡ {t("dec_energy_today")} {cs}% — {rec}</div>}
                       </div>
                       :<div style={{position:"relative",overflow:"hidden",borderRadius:8}}>
                         <div style={{filter:"blur(5px)",opacity:.5,pointerEvents:"none",userSelect:"none",padding:"4px 0"}}>
-                          <div style={{fontSize:12,color:"#374151",lineHeight:1.8,marginBottom:6}}>{decRes?.ai_summary||"AI ได้วิเคราะห์ภาพรวมจากทุกศาสตร์และสรุปคำแนะนำเฉพาะสำหรับสถานการณ์ของคุณ"}</div>
-                          <div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:4}}>⚡ Action Plan</div>
+                          <div style={{fontSize:12,color:"#374151",lineHeight:1.8,marginBottom:6}}>{decRes?.ai_summary||(lang==="en"?"AI has analyzed your situation from all 4 astrology systems with personalized recommendations.":"AI ได้วิเคราะห์ภาพรวมจากทุกศาสตร์และสรุปคำแนะนำเฉพาะสำหรับสถานการณ์ของคุณ")}</div>
+                          <div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:4}}>⚡ {t("dec_action_plan")}</div>
                           {(decRes?.action_plan||["ดำเนินการตามลำดับ","ตรวจสอบความพร้อม","ติดตามผล"]).map((s,si)=><div key={si} style={{display:"flex",gap:6,marginBottom:3}}><div style={{width:14,height:14,borderRadius:"50%",background:"#4338CA",color:"#fff",fontSize:8,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{si+1}</div><div style={{fontSize:10,color:"#374151"}}>{s}</div></div>)}
                         </div>
                         <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,.82)",backdropFilter:"blur(2px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:12}}>
                           <div style={{fontSize:18,marginBottom:4}}>🔒</div>
                           <div style={{fontSize:12,fontWeight:800,color:"#1E293B",marginBottom:3}}>AI Summary + Action Plan</div>
-                          <div style={{fontSize:10,color:"#64748B",marginBottom:8}}>สรุปภาพรวมจากทุกศาสตร์ + คำแนะนำ 3 ขั้นตอนที่ทำได้จริง</div>
-                          <button onClick={()=>tryUpgrade("smart")} style={{padding:"6px 20px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer",boxShadow:"0 2px 8px rgba(79,70,229,.25)"}}>Smart ฿99 — ปลดล็อก AI Summary →</button>
+                          <div style={{fontSize:10,color:"#64748B",marginBottom:8}}>{t("dec_locked_summary_desc")}</div>
+                          <button onClick={()=>tryUpgrade("smart")} style={{padding:"6px 20px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer",boxShadow:"0 2px 8px rgba(79,70,229,.25)"}}>{t("dec_unlock_smart")}</button>
                         </div>
                       </div>}
                   </div>
@@ -1996,15 +2006,15 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
               </>}
             </>
           }
-          <button onClick={()=>{setResultShown(false);setSelectedQ(null);setShowCustom(false);setAiAnswer(null);setDecRes(null);if(customRef.current)customRef.current.value="";}} style={{width:"100%",padding:"12px 0",borderRadius:10,border:"none",background:"#1E293B",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",marginBottom:4,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>🔄 ถามคำถามใหม่</button>
+          <button onClick={()=>{setResultShown(false);setSelectedQ(null);setShowCustom(false);setAiAnswer(null);setDecRes(null);if(customRef.current)customRef.current.value="";}} style={{width:"100%",padding:"12px 0",borderRadius:10,border:"none",background:"#1E293B",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",marginBottom:4,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>{t("dec_reset")}</button>
           <div style={{margin:"16px 0",borderRadius:16,overflow:"hidden",background:"linear-gradient(135deg,#1E1B4B,#312E81)",padding:"24px 20px",textAlign:"center"}}>
           <div style={{fontSize:18,marginBottom:6}}>✨</div>
-          <div style={{fontSize:15,fontWeight:800,color:"#fff",marginBottom:6}}>ค้นพบตัวเองมากขึ้น</div>
-          <div style={{fontSize:12,color:"#C7D2FE",marginBottom:16,lineHeight:1.6}}>วิเคราะห์จิตวิทยาเชิงลึกจากคำถาม 36 ข้อ<br/>ผสานกับวันเดือนปีเกิด เพื่อ Dashboard ส่วนตัวของคุณ</div>
-          <button onClick={()=>{setAskMode(false);setSc("profile");}} style={{padding:"12px 28px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#6366F1,#8B5CF6)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(99,102,241,0.4)"}}>ค้นพบตัวเองมากขึ้นใน Dashboard ส่วนตัว →</button>
+          <div style={{fontSize:15,fontWeight:800,color:"#fff",marginBottom:6}}>{t("dec_discover_more")}</div>
+          <div style={{fontSize:12,color:"#C7D2FE",marginBottom:16,lineHeight:1.6}}>{t("dec_discover_desc").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div>
+          <button onClick={()=>{setAskMode(false);setSc("profile");}} style={{padding:"12px 28px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#6366F1,#8B5CF6)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(99,102,241,0.4)"}}>{t("dec_discover_btn")}</button>
         </div>
         </>}
-        <div style={{textAlign:"center",padding:"8px 0 40px"}}><button onClick={()=>setSc("landing")} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>← กลับหน้าหลัก</button></div>
+        <div style={{textAlign:"center",padding:"8px 0 40px"}}><button onClick={()=>setSc("landing")} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>{t("dec_back_home")}</button></div>
       </div>
     </div>
   };
@@ -2097,36 +2107,36 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     );
   };
 
-  const Sec=({fKey,planNeeded,title,icon,children})=>{const ok=has(fKey);const neededPlan=planNeeded||(PLANS.smart.f.includes(fKey)?"smart":"pro");return<Card style={{position:"relative"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:ok?8:4}}><div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:15}}>{icon}</span><span style={{fontSize:13,fontWeight:700}}>{title}</span></div>{!ok&&<span style={{fontSize:10,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"2px 8px",borderRadius:8}}>🔒</span>}</div>{ok?children:<><p style={{fontSize:11,color:"#94A3B8",marginBottom:6}}>ปลดล็อกเพื่อดู</p><div style={{display:"flex",gap:6}}>{(plan==="free"||plan==="quick")&&neededPlan==="smart"&&<button onClick={()=>tryUpgrade("smart")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #3B82F6",background:"#EFF6FF",color:"#1D4ED8",fontSize:11,fontWeight:700,cursor:"pointer"}}>Smart ฿99</button>}{plan!=="pro"&&<button onClick={()=>tryUpgrade(neededPlan==="smart"&&(plan==="free"||plan==="quick")?"smart":"pro")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>Pro ฿259 ⭐</button>}</div></>}</Card>};
+  const Sec=({fKey,planNeeded,title,icon,children})=>{const ok=has(fKey);const neededPlan=planNeeded||(PLANS.smart.f.includes(fKey)?"smart":"pro");return<Card style={{position:"relative"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:ok?8:4}}><div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:15}}>{icon}</span><span style={{fontSize:13,fontWeight:700}}>{title}</span></div>{!ok&&<span style={{fontSize:10,fontWeight:700,color:"#6366F1",background:"#EEF2FF",padding:"2px 8px",borderRadius:8}}>🔒</span>}</div>{ok?children:<><p style={{fontSize:11,color:"#94A3B8",marginBottom:6}}>{t("sec_locked_view")}</p><div style={{display:"flex",gap:6}}>{(plan==="free"||plan==="quick")&&neededPlan==="smart"&&<button onClick={()=>tryUpgrade("smart")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #3B82F6",background:"#EFF6FF",color:"#1D4ED8",fontSize:11,fontWeight:700,cursor:"pointer"}}>Smart ฿99</button>}{plan!=="pro"&&<button onClick={()=>tryUpgrade(neededPlan==="smart"&&(plan==="free"||plan==="quick")?"smart":"pro")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>Pro ฿259 ⭐</button>}</div></>}</Card>};
 
   const Results=()=>{if(!scores)return null;const so=Object.entries(scores).sort((a,b)=>b[1]-a[1]);const c5={"Cognitive Processing":scores["Cognitive Processing"],"Emotional Regulation":scores["Emotional Regulation"],"Identity Stability":scores["Identity Stability"],"Shadow Pattern":scores["Shadow Pattern"],"Growth Orientation":scores["Growth Orientation"]};
   return<div style={{paddingTop:STICKY_NAV_HEIGHT}}>
   <StickyNav/>
   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:26,height:26,borderRadius:8,background:"linear-gradient(135deg,#4338CA,#6D28D9)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff"}}>✦</div><span style={{fontSize:14,fontWeight:800}}>{nick}</span></div><span style={{fontSize:10,color:"#94A3B8"}}>{PLANS[plan].name}{logged?` · ${user?.email?.split("@")[0]}`:""}</span></div><div style={{display:"flex",alignItems:"center",gap:6}}><button onClick={toggleLang} style={{fontSize:11,fontWeight:700,color:"#4F46E5",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:6,padding:"4px 8px",cursor:"pointer"}}>{t("lang_toggle")}</button>{plan!=="free"&&<span style={{fontSize:10,fontWeight:700,color:"#fff",background:PLANS[plan].c,padding:"3px 10px",borderRadius:8}}>{PLANS[plan].name}</span>}{logged?<button onClick={doLogout} style={{fontSize:12,color:"#64748B",background:"#F8FAFC",border:"1px solid #E2E8F0",borderRadius:8,padding:"6px 14px",cursor:"pointer",minWidth:60,minHeight:36}}>{t("nav_logout")}</button>:<button onClick={()=>{setLoginModal(true);setAuthErr("");setAuthMode("login")}} style={{fontSize:12,color:"#4338CA",background:"#EEF2FF",border:"1px solid #C7D2FE",borderRadius:8,padding:"6px 14px",cursor:"pointer"}}>{t("nav_login")}</button>}</div></div>
 
-  {(plan==="free"||plan==="quick")&&<Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1"}}><div style={{fontSize:12,fontWeight:700,color:"#4338CA",marginBottom:6}}>🔓 ปลดล็อกความเข้าใจตัวเอง</div><div style={{display:"flex",gap:6}}>{plan==="free"&&<button onClick={()=>tryUpgrade("quick")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #F59E0B",background:"#fff",color:"#92400E",fontSize:11,fontWeight:700,cursor:"pointer"}}>Quick ฿49</button>}<button onClick={()=>tryUpgrade("smart")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #3B82F6",background:"#EFF6FF",color:"#1D4ED8",fontSize:11,fontWeight:700,cursor:"pointer"}}>Smart ฿99</button><button onClick={()=>tryUpgrade("pro")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>Pro ฿259 ⭐</button></div></Card>}
+  {(plan==="free"||plan==="quick")&&<Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1"}}><div style={{fontSize:12,fontWeight:700,color:"#4338CA",marginBottom:6}}>{t("res_unlock_title")}</div><div style={{display:"flex",gap:6}}>{plan==="free"&&<button onClick={()=>tryUpgrade("quick")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #F59E0B",background:"#fff",color:"#92400E",fontSize:11,fontWeight:700,cursor:"pointer"}}>Quick ฿49</button>}<button onClick={()=>tryUpgrade("smart")} style={{flex:1,padding:7,borderRadius:8,border:"2px solid #3B82F6",background:"#EFF6FF",color:"#1D4ED8",fontSize:11,fontWeight:700,cursor:"pointer"}}>Smart ฿99</button><button onClick={()=>tryUpgrade("pro")} style={{flex:1,padding:7,borderRadius:8,border:"none",background:"linear-gradient(135deg,#F97316,#EA580C)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer"}}>Pro ฿259 ⭐</button></div></Card>}
 
-  <SectionHeader icon="👉" label="คุณควรทำอะไร" locked={!has("decide_ai")} planNeeded="smart" onUpgrade={tryUpgrade}/>
-  <AskDecide plan={plan} has={has} nick={nick} bday={bday} scores={scores} tryUpgrade={tryUpgrade}/>
+  <SectionHeader icon="👉" label={t("sec_what_to_do")} locked={!has("decide_ai")} planNeeded="smart" onUpgrade={tryUpgrade}/>
+  <AskDecide plan={plan} has={has} nick={nick} bday={bday} scores={scores} tryUpgrade={tryUpgrade} t={t} lang={lang}/>
 
-  <div id="sec-understand" className="snav-anchor"/><SectionHeader icon="👉" label="เข้าใจตัวเอง" locked={false}/>
-  <div id="sec-identity" className="snav-anchor"/><Sec fKey="identity" planNeeded="free" title="Identity Snapshot" icon="✦">{ai.identity&&ai.identity.powerTitle?<IdentitySnapshotCard data={ai.identity} scores={scores} hasMbti={has("mbti")}/>:aiL.identity?<Spin t="กำลังถอดรหัสตัวตน..."/>:<Spin t="เชื่อม AI..."/>}</Sec>
-  <div id="sec-core5" className="snav-anchor"/><Sec fKey="core5" title="5 Core Scores" icon="📊">{Object.entries(c5).map(([d,sc])=>{const meta=C5_META[d]||{short:d,pl:"",high:{label:"",desc:""},mid:{label:"",desc:""},low:{label:"",desc:""}};const lv=sc>=7?meta.high:sc>=5?meta.mid:meta.low;const isLow=sc<5;const isMid=sc>=5&&sc<7;const lblColor=isLow?"#DC2626":isMid?"#64748B":"#059669";return<div key={d} style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><span style={{fontSize:11,fontWeight:600}}>{DM[d]?.icon} {meta.short} <span style={{fontSize:9,color:"#94A3B8"}}>({meta.pl})</span></span><span style={{fontSize:13,fontWeight:800,color:DM[d]?.c}}>{sc.toFixed(1)}</span></div><div style={{height:5,background:"#F1F5F9",borderRadius:3,overflow:"hidden",marginBottom:5}}><div style={{height:"100%",width:`${sc*10}%`,background:DM[d]?.c,borderRadius:3}}/></div><div style={{fontSize:10,lineHeight:1.6,color:lblColor}}><span style={{fontWeight:700}}>{lv.label}:</span> {lv.desc}</div></div>})}<div style={{marginTop:8,padding:8,background:"#F8FAFC",borderRadius:8}}>{aiL.core?<Spin/>:ai.core?<Typer text={ai.core}/>:<Spin t="รอ AI..."/>}</div></Sec>
+  <div id="sec-understand" className="snav-anchor"/><SectionHeader icon="👉" label={t("sec_understand")} locked={false}/>
+  <div id="sec-identity" className="snav-anchor"/><Sec fKey="identity" planNeeded="free" title="Identity Snapshot" icon="✦">{ai.identity&&ai.identity.powerTitle?<IdentitySnapshotCard data={ai.identity} scores={scores} hasMbti={has("mbti")} t={t}/>:aiL.identity?<Spin t={t("spin_identity")}/>:<Spin t={t("spin_ai")}/>}</Sec>
+  <div id="sec-core5" className="snav-anchor"/><Sec fKey="core5" title="5 Core Scores" icon="📊">{Object.entries(c5).map(([d,sc])=>{const meta=C5_META[d]||{short:d,pl:"",high:{label:"",desc:""},mid:{label:"",desc:""},low:{label:"",desc:""}};const lv=sc>=7?meta.high:sc>=5?meta.mid:meta.low;const isLow=sc<5;const isMid=sc>=5&&sc<7;const lblColor=isLow?"#DC2626":isMid?"#64748B":"#059669";return<div key={d} style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><span style={{fontSize:11,fontWeight:600}}>{DM[d]?.icon} {meta.short} <span style={{fontSize:9,color:"#94A3B8"}}>({meta.pl})</span></span><span style={{fontSize:13,fontWeight:800,color:DM[d]?.c}}>{sc.toFixed(1)}</span></div><div style={{height:5,background:"#F1F5F9",borderRadius:3,overflow:"hidden",marginBottom:5}}><div style={{height:"100%",width:`${sc*10}%`,background:DM[d]?.c,borderRadius:3}}/></div><div style={{fontSize:10,lineHeight:1.6,color:lblColor}}><span style={{fontWeight:700}}>{lv.label}:</span> {lv.desc}</div></div>})}<div style={{marginTop:8,padding:8,background:"#F8FAFC",borderRadius:8}}>{aiL.core?<Spin/>:ai.core?<Typer text={ai.core}/>:<Spin t={t("spin_wait")}/>}</div></Sec>
 
   <div id="sec-shadow" className="snav-anchor"/>{/* Locked preview: Shadow */}
-  {!has("shadow")?<Locked planNeeded="smart" title="Shadow Analysis" onUpgrade={tryUpgrade}><div style={{padding:12,borderRadius:10,background:"#1E293B",color:"#fff",marginBottom:8}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>🌑 Shadow Pattern: {scores["Shadow Pattern"]?.toFixed(1)}/10</div><div style={{fontSize:11,color:"#94A3B8"}}>Stress Response: {scores["Stress Response"]?.toFixed(1)} · Boundary: {scores["Boundary System"]?.toFixed(1)}</div></div><div style={{fontSize:12,lineHeight:1.8,color:"#374151"}}>⚡ Trigger หลัก: ราหูชี้ว่าคุณมักถูกกระตุ้นเมื่อ...<br/>🔄 Pattern ซ้ำ: เมื่อเจอ trigger คุณมักเลือก...<br/>💡 วิธีแก้: ฝึกจับสัญญาณร่างกาย...</div></Locked>:<Sec fKey="shadow" title="Shadow Analysis" icon="🌑"><div style={{background:"#0F172A",borderRadius:10,padding:"12px 14px",marginBottom:10}}><div style={{fontSize:12,fontWeight:800,color:"#E2E8F0",marginBottom:6}}>🌑 Shadow Pattern คืออะไร?</div><div style={{fontSize:12,color:"#94A3B8",lineHeight:1.8}}>เงามืดที่ขัดขวางความสำเร็จ — คือพฤติกรรมที่คุณมักจะเผลอทำเวลาเสียศูนย์ (เช่น การผลัดวันประกันพรุ่ง การใช้อารมณ์ หรือการหนีความจริง) แม้คุณจะมีศักยภาพดาวกำเนิดที่สูง แต่ถ้า "เงามืด" นี้ทำงานหนักเกินไป มันจะดึงให้คะแนนการใช้งานจริงของคุณต่ำลง</div><div style={{marginTop:8,padding:"8px 10px",background:"rgba(99,102,241,0.15)",borderRadius:8,borderLeft:"3px solid #6366F1"}}><div style={{fontSize:11,color:"#A5B4FC",lineHeight:1.7}}>💡 การรู้เท่าทันเงาของตัวเอง คือกุญแจสำคัญที่จะทำให้คุณกลับมาควบคุมชีวิตได้อีกครั้ง</div></div></div>{aiL.shadow?<Spin/>:ai.shadow?<Typer text={ai.shadow}/>:<Spin t="วิเคราะห์เงามืด..."/>}</Sec>}
+  {!has("shadow")?<Locked planNeeded="smart" title="Shadow Analysis" onUpgrade={tryUpgrade}><div style={{padding:12,borderRadius:10,background:"#1E293B",color:"#fff",marginBottom:8}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>🌑 Shadow Pattern: {scores["Shadow Pattern"]?.toFixed(1)}/10</div><div style={{fontSize:11,color:"#94A3B8"}}>Stress Response: {scores["Stress Response"]?.toFixed(1)} · Boundary: {scores["Boundary System"]?.toFixed(1)}</div></div><div style={{fontSize:12,lineHeight:1.8,color:"#374151"}}>⚡ Trigger: Rahu indicates you get triggered when...<br/>🔄 Pattern: When triggered, you tend to...<br/>💡 Fix: Practice noticing body signals...</div></Locked>:<Sec fKey="shadow" title="Shadow Analysis" icon="🌑"><div style={{background:"#0F172A",borderRadius:10,padding:"12px 14px",marginBottom:10}}><div style={{fontSize:12,fontWeight:800,color:"#E2E8F0",marginBottom:6}}>{t("shadow_what")}</div><div style={{fontSize:12,color:"#94A3B8",lineHeight:1.8}}>{t("shadow_desc")}</div><div style={{marginTop:8,padding:"8px 10px",background:"rgba(99,102,241,0.15)",borderRadius:8,borderLeft:"3px solid #6366F1"}}><div style={{fontSize:11,color:"#A5B4FC",lineHeight:1.7}}>{t("shadow_tip")}</div></div></div>{aiL.shadow?<Spin/>:ai.shadow?<Typer text={ai.shadow}/>:<Spin t={t("spin_wait")}/>}</Sec>}
 
-  <div id="sec-plan" className="snav-anchor"/><SectionHeader icon="👉" label="วางแผนสั้น" locked={!has("weekly")} planNeeded="smart" onUpgrade={tryUpgrade}/>
+  <div id="sec-plan" className="snav-anchor"/><SectionHeader icon="👉" label={t("sec_short_plan")} locked={!has("weekly")} planNeeded="smart" onUpgrade={tryUpgrade}/>
 
   <div id="sec-weekly" className="snav-anchor"/>{/* Locked preview: Weekly */}
-  {!has("weekly")?<Locked planNeeded="smart" title="Do & Don't สัปดาห์นี้" onUpgrade={tryUpgrade}><div style={{marginBottom:8}}><div style={{fontSize:12,fontWeight:700,color:"#10B981",marginBottom:4}}>✅ ควรทำ</div><div style={{padding:"6px 10px",borderRadius:6,background:"#ECFDF5",fontSize:11,marginBottom:3}}>ใช้จุดแข็งที่ดาวหนุนให้เต็มที่</div><div style={{padding:"6px 10px",borderRadius:6,background:"#ECFDF5",fontSize:11,marginBottom:3}}>ฝึกสังเกตอารมณ์ตัวเอง</div></div><div><div style={{fontSize:12,fontWeight:700,color:"#EF4444",marginBottom:4}}>❌ ควรเลี่ยง</div><div style={{padding:"6px 10px",borderRadius:6,background:"#FFF1F2",fontSize:11,marginBottom:3}}>หลีกเลี่ยงการตัดสินใจเร็วเกินไป</div><div style={{padding:"6px 10px",borderRadius:6,background:"#FFF1F2",fontSize:11}}>อย่ารับงานเกินกำลัง</div></div></Locked>:<Sec fKey="weekly" title="Do & Don't สัปดาห์นี้" icon="📋">{aiL.weekly?<Spin/>:ai.weekly&&typeof ai.weekly==="object"?<><div style={{fontSize:11,fontWeight:700,color:"#10B981",marginBottom:3}}>✅ ควรทำ</div>{(ai.weekly.do||[]).map((t,i)=><div key={i} style={{padding:"5px 8px",borderRadius:6,background:"#ECFDF5",border:"1px solid #A7F3D0",fontSize:11,marginBottom:2}}>{t}</div>)}<div style={{fontSize:11,fontWeight:700,color:"#EF4444",marginBottom:3,marginTop:6}}>❌ ควรเลี่ยง</div>{(ai.weekly.dont||[]).map((t,i)=><div key={i} style={{padding:"5px 8px",borderRadius:6,background:"#FFF1F2",border:"1px solid #FECDD3",fontSize:11,marginBottom:2}}>{t}</div>)}</>:<Spin/>}</Sec>}
+  {!has("weekly")?<Locked planNeeded="smart" title="Do & Don't This Week" onUpgrade={tryUpgrade}><div style={{marginBottom:8}}><div style={{fontSize:12,fontWeight:700,color:"#10B981",marginBottom:4}}>{t("weekly_do")}</div><div style={{padding:"6px 10px",borderRadius:6,background:"#ECFDF5",fontSize:11,marginBottom:3}}>{lang==="en"?"Maximize your star-supported strengths":"ใช้จุดแข็งที่ดาวหนุนให้เต็มที่"}</div><div style={{padding:"6px 10px",borderRadius:6,background:"#ECFDF5",fontSize:11,marginBottom:3}}>{lang==="en"?"Practice observing your emotions":"ฝึกสังเกตอารมณ์ตัวเอง"}</div></div><div><div style={{fontSize:12,fontWeight:700,color:"#EF4444",marginBottom:4}}>{t("weekly_dont")}</div><div style={{padding:"6px 10px",borderRadius:6,background:"#FFF1F2",fontSize:11,marginBottom:3}}>{lang==="en"?"Avoid rushing into decisions":"หลีกเลี่ยงการตัดสินใจเร็วเกินไป"}</div><div style={{padding:"6px 10px",borderRadius:6,background:"#FFF1F2",fontSize:11}}>{lang==="en"?"Don't take on more than you can handle":"อย่ารับงานเกินกำลัง"}</div></div></Locked>:<Sec fKey="weekly" title="Do & Don't This Week" icon="📋">{aiL.weekly?<Spin/>:ai.weekly&&typeof ai.weekly==="object"?<><div style={{fontSize:11,fontWeight:700,color:"#10B981",marginBottom:3}}>{t("weekly_do")}</div>{(ai.weekly.do||[]).map((item,i)=><div key={i} style={{padding:"5px 8px",borderRadius:6,background:"#ECFDF5",border:"1px solid #A7F3D0",fontSize:11,marginBottom:2}}>{item}</div>)}<div style={{fontSize:11,fontWeight:700,color:"#EF4444",marginBottom:3,marginTop:6}}>{t("weekly_dont")}</div>{(ai.weekly.dont||[]).map((item,i)=><div key={i} style={{padding:"5px 8px",borderRadius:6,background:"#FFF1F2",border:"1px solid #FECDD3",fontSize:11,marginBottom:2}}>{item}</div>)}</>:<Spin/>}</Sec>}
 
   <div id="sec-energy" className="snav-anchor"/>{/* Locked preview: Energy */}
   {!has("energy")?<Locked planNeeded="smart" title="7-Day Energy Forecast" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>🌙 พลังงาน 7 วัน — Moon + Mars + Day Lord</div>{["จันทร์ — 🌟 สดใส-เริ่มใหม่","อังคาร — 😊 สงบมั่นคง","พุธ — 🔥 กระตือรือร้น","พฤหัสบดี — 📚 ปัญญาเปิด","ศุกร์ — 💎 ผ่อนคลาย","เสาร์ — ⚙️ ต้องใช้วินัย","อาทิตย์ — ☀️ มีพลัง"].map((d,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 8px",borderRadius:6,background:i%2===0?"#F8FAFC":"#fff",fontSize:11,marginBottom:2}}><span>{d.split("—")[0]}</span><span style={{fontWeight:700}}>{d.split("—")[1]}</span></div>)}<div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>{['💼 งาน','💰 เงิน','❤️ ความรัก','🏃 สุขภาพ'].map((t,i)=><span key={i} style={{fontSize:10,padding:"2px 8px",borderRadius:8,background:"#EEF2FF",color:"#4338CA",fontWeight:600}}>{t}</span>)}</div><div style={{fontSize:10,color:"#6366F1",marginTop:6}}>🔮 คำนวณจาก Transit จันทร์+อังคาร+ศุกร์+พฤหัส+เจ้าวัน Vedic</div></Locked>:<Sec fKey="energy" title="7-Day Energy: รู้ก่อนรุ่ง พุ่งก่อนใคร" icon="🌙">{aiL.energy||!ai.energy?<Spin/>:Array.isArray(ai.energy)?<>{ai.energy.map((d,i)=>{const eColor=d.energy>=75?"#059669":d.energy>=55?"#6366F1":"#DC2626";const eBg=d.energy>=75?"#ECFDF5":d.energy>=55?"#EEF2FF":"#FFF1F2";return<div key={i} style={{padding:"10px 12px",borderRadius:10,marginBottom:4,background:i===0?"linear-gradient(135deg,#EEF2FF,#F5F3FF)":"#F8FAFC",border:i===0?"2px solid #6366F1":"1px solid #F1F5F9",boxShadow:i===0?"0 2px 8px rgba(99,102,241,0.08)":"none"}}>
   {/* Day header */}
   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
     <div style={{display:"flex",alignItems:"center",gap:6}}>
-      {i===0&&<span style={{fontSize:9,fontWeight:700,color:"#fff",background:"#6366F1",padding:"1px 6px",borderRadius:8}}>วันนี้</span>}
+      {i===0&&<span style={{fontSize:9,fontWeight:700,color:"#fff",background:"#6366F1",padding:"1px 6px",borderRadius:8}}>{t("energy_today")}</span>}
       <span style={{fontSize:13,fontWeight:700,color:"#1E293B"}}>{d.day}</span>
     </div>
     <div style={{display:"flex",alignItems:"center",gap:6}}>
@@ -2140,20 +2150,20 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   <div style={{fontSize:12,fontWeight:600,color:"#374151",marginBottom:6}}>{d.mood}</div>
   {/* Domain breakdown */}
   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4,marginBottom:6}}>
-    {[{icon:'💼',label:'งาน',text:d.work},{icon:'💰',label:'เงิน',text:d.money},{icon:'❤️',label:'ความรัก',text:d.love},{icon:'🏃',label:'สุขภาพ',text:d.health}].map(({icon,label,text},di)=>text?<div key={di} style={{background:"#fff",borderRadius:8,padding:"5px 8px",border:"1px solid #F1F5F9"}}>
-      <div style={{fontSize:9,fontWeight:700,color:"#64748B",marginBottom:2}}>{icon} {label}</div>
+    {[{icon:'💼',labelKey:'energy_work',text:d.work},{icon:'💰',labelKey:'energy_money',text:d.money},{icon:'❤️',labelKey:'energy_love',text:d.love},{icon:'🏃',labelKey:'energy_health',text:d.health}].map(({icon,labelKey,text},di)=>text?<div key={di} style={{background:"#fff",borderRadius:8,padding:"5px 8px",border:"1px solid #F1F5F9"}}>
+      <div style={{fontSize:9,fontWeight:700,color:"#64748B",marginBottom:2}}>{icon} {t(labelKey)}</div>
       <div style={{fontSize:10,color:"#374151",lineHeight:1.4}}>{text}</div>
     </div>:null)}
   </div>
   {/* Transit & tip */}
-  {d.goodFor&&<div style={{fontSize:10,color:"#059669",background:"#ECFDF5",borderRadius:6,padding:"3px 8px",marginBottom:3}}>✅ เหมาะสำหรับ: {d.goodFor}</div>}
+  {d.goodFor&&<div style={{fontSize:10,color:"#059669",background:"#ECFDF5",borderRadius:6,padding:"3px 8px",marginBottom:3}}>✅ {t("energy_good_for")} {d.goodFor}</div>}
   {d.tip&&<div style={{fontSize:10,color:"#374151",background:"#fff",borderRadius:6,padding:"3px 8px",border:"1px solid #F1F5F9"}}>💡 {d.tip}</div>}
 </div>})}<div style={{marginTop:6,padding:8,background:"#F5F3FF",borderRadius:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>🔮 Vedic Jyotish พระเวท — 5 ชั้น</div><div style={{fontSize:9,color:"#64748B"}}>จันทร์(40%) + อังคาร(25%) + เจ้าวัน(35%) + ศุกร์ + พฤหัส · วิเคราะห์งาน เงิน ความรัก สุขภาพ รายวัน</div></div></>:<Spin/>}</Sec>}
 
   <div id="sec-strategy" className="snav-anchor"/><SectionHeader icon="🧠" label="Strategy Layer" locked={!has("principle")} planNeeded="pro" onUpgrade={tryUpgrade}/>
 
   <div id="sec-principle" className="snav-anchor"/>{/* Life Principle */}
-  {!has("principle")?<Locked planNeeded="pro" title="Life Principle หลักการใช้ชีวิต" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#1E1B4B,#312E81)",color:"#C7D2FE",lineHeight:1.8,fontSize:12,fontStyle:"italic"}}>เมื่อดาวส่งแสง ชีวิตจะงดงามที่สุดในแบบของคุณ แต่เมื่อเข้าสู่ช่วงดำมืด ทุกครั้งที่ผ่านได้เพราะพลังจากดาวที่นำทางคุณเสมอ...</div></Locked>:<Sec fKey="principle" title="Life Principle หลักการใช้ชีวิต" icon="✨"><div style={{padding:"16px 18px",borderRadius:10,background:"linear-gradient(135deg,#1E1B4B,#312E81)"}}>{aiL.principle?<Spin/>:ai.principle?<div style={{fontSize:14,lineHeight:1.9,color:"#E0E7FF",fontStyle:"italic",textAlign:"center"}}>{ai.principle}</div>:<Spin t="วิเคราะห์หลักการชีวิต..."/>}</div></Sec>}
+  {!has("principle")?<Locked planNeeded="pro" title="Life Principle" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#1E1B4B,#312E81)",color:"#C7D2FE",lineHeight:1.8,fontSize:12,fontStyle:"italic"}}>{lang==="en"?"When the stars shine, life flourishes in your unique way. In dark times, their guidance has always carried you through...":"เมื่อดาวส่งแสง ชีวิตจะงดงามที่สุดในแบบของคุณ แต่เมื่อเข้าสู่ช่วงดำมืด ทุกครั้งที่ผ่านได้เพราะพลังจากดาวที่นำทางคุณเสมอ..."}</div></Locked>:<Sec fKey="principle" title="Life Principle" icon="✨"><div style={{padding:"16px 18px",borderRadius:10,background:"linear-gradient(135deg,#1E1B4B,#312E81)"}}>{aiL.principle?<Spin/>:ai.principle?<div style={{fontSize:14,lineHeight:1.9,color:"#E0E7FF",fontStyle:"italic",textAlign:"center"}}>{ai.principle}</div>:<Spin t={t("spin_wait")}/>}</div></Sec>}
 
   <div id="sec-money" className="snav-anchor"/>{/* Money Strategy */}
   {(()=>{
