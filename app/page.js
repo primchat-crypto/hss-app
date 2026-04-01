@@ -1530,12 +1530,12 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
           <h3 style={{fontSize:20,fontWeight:700,marginBottom:8,display:"flex",alignItems:"center",gap:8,margin:"0 0 8px"}}>
             <span style={{background:"rgba(244,63,94,0.2)",color:"#FB7185",padding:8,borderRadius:12}}>💕</span> Love & Match
           </h3>
-          <p style={{color:"#94A3B8",fontSize:14,marginBottom:24}}>เจาะลึก Attachment Style และ Timeline การเจอคู่ครองที่เสริมดวง</p>
+          <p style={{color:"#94A3B8",fontSize:14,marginBottom:24}}>{t("dash_love_desc")}</p>
           <div style={{background:"#0F172A",borderRadius:12,padding:16,border:"1px solid rgba(30,41,59,0.5)"}}>
             <div style={{height:8,width:"100%",background:"#1E293B",borderRadius:4,marginBottom:12,overflow:"hidden"}}>
               <div style={{height:"100%",background:"#F43F5E",width:"65%"}}/>
             </div>
-            <p style={{fontSize:12,color:"#CBD5E1",margin:0}}>รูปแบบการยึดติดที่ไม่มั่นคง (35%)</p>
+            <p style={{fontSize:12,color:"#CBD5E1",margin:0}}>{t("dash_love_sample")}</p>
           </div>
         </div>
         <div style={{background:"rgba(30,41,59,0.5)",border:"1px solid #1E293B",borderRadius:24,padding:24,position:"relative",overflow:"hidden"}}>
@@ -1543,7 +1543,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
           <h3 style={{fontSize:20,fontWeight:700,marginBottom:8,display:"flex",alignItems:"center",gap:8,margin:"0 0 8px"}}>
             <span style={{background:"rgba(16,185,129,0.2)",color:"#34D399",padding:8,borderRadius:12}}>💰</span> Wealth Strategy
           </h3>
-          <p style={{color:"#94A3B8",fontSize:14,marginBottom:24}}>วิเคราะห์จุดรั่วไหลทางการเงิน และจังหวะกอบโกย (Wealth Window)</p>
+          <p style={{color:"#94A3B8",fontSize:14,marginBottom:24}}>{t("dash_wealth_desc")}</p>
           <div style={{display:"flex",gap:8}}>
             <span style={{fontSize:10,fontWeight:700,textTransform:"uppercase",padding:"4px 8px",background:"rgba(16,185,129,0.2)",color:"#34D399",borderRadius:6,border:"1px solid rgba(16,185,129,0.3)"}}>Creative Spender</span>
             <span style={{fontSize:10,fontWeight:700,textTransform:"uppercase",padding:"4px 8px",background:"rgba(245,158,11,0.2)",color:"#FCD34D",borderRadius:6,border:"1px solid rgba(245,158,11,0.3)"}}>Impulsive</span>
@@ -1554,13 +1554,13 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
           <h3 style={{fontSize:20,fontWeight:700,marginBottom:8,display:"flex",alignItems:"center",gap:8,margin:"0 0 8px"}}>
             <span style={{background:"rgba(99,102,241,0.2)",color:"#818CF8",padding:8,borderRadius:12}}>⏳</span> Destiny Timeline
           </h3>
-          <p style={{color:"#94A3B8",fontSize:14,marginBottom:24}}>รู้ว่าช่วงนี้ควรลุย เปลี่ยนแปลง หรือรอให้จังหวะชัดขึ้น</p>
+          <p style={{color:"#94A3B8",fontSize:14,marginBottom:24}}>{t("dash_destiny_desc")}</p>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",fontSize:12,color:"#CBD5E1",background:"#0F172A",borderRadius:12,padding:12,border:"1px solid rgba(30,41,59,0.5)"}}>
-            <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{width:8,height:8,borderRadius:"50%",background:"#475569"}}/><span>อดีต</span></div>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{width:8,height:8,borderRadius:"50%",background:"#475569"}}/><span>{t("dash_past")}</span></div>
             <div style={{flex:1,borderTop:"1px dashed #1E293B",margin:"0 8px"}}/>
-            <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{width:12,height:12,borderRadius:"50%",background:"#6366F1",boxShadow:"0 0 10px rgba(99,102,241,0.5)"}}/><span style={{color:"#818CF8",fontWeight:700}}>ปัจจุบัน</span></div>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{width:12,height:12,borderRadius:"50%",background:"#6366F1",boxShadow:"0 0 10px rgba(99,102,241,0.5)"}}/><span style={{color:"#818CF8",fontWeight:700}}>{t("dash_present")}</span></div>
             <div style={{flex:1,borderTop:"1px dashed #1E293B",margin:"0 8px"}}/>
-            <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{width:8,height:8,borderRadius:"50%",background:"#F59E0B"}}/><span>ปี 2027</span></div>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{width:8,height:8,borderRadius:"50%",background:"#F59E0B"}}/><span>{t("year_prefix")} 2027</span></div>
           </div>
         </div>
       </div>
@@ -1596,7 +1596,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         <h2 style={{fontSize:"clamp(1.5rem,3vw,1.875rem)",fontWeight:700,color:"#0F172A",marginBottom:24,margin:"0 0 24px"}}>{t("ai_feature_title")}</h2>
         <p style={{color:"#475569",marginBottom:24,lineHeight:1.7}}>{t("ai_feature_sub")}</p>
         <ul style={{listStyle:"none",padding:0,margin:"0 0 32px",display:"flex",flexDirection:"column",gap:12}}>
-          {["คำตอบอิงจาก Timing ดวงปัจจุบัน","วิเคราะห์เจาะลึกจาก Shadow Pattern ของคุณ","ให้คำแนะนำที่นำไปใช้ได้จริง (Actionable)"].map((item,i)=>(
+          {(t("ai_features")||[]).map((item,i)=>(
             <li key={i} style={{display:"flex",alignItems:"center",gap:12,fontSize:14,fontWeight:500,color:"#374151"}}>
               <div style={{width:20,height:20,borderRadius:"50%",background:"#EEF2FF",display:"flex",alignItems:"center",justifyContent:"center",color:"#4338CA",flexShrink:0,fontSize:12,fontWeight:700}}>✓</div>
               {item}
@@ -1612,11 +1612,11 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
             <span style={{color:"#fff",fontWeight:700,fontSize:16}}>Ask & Decide AI</span>
           </div>
           <div style={{display:"flex",flexDirection:"column",gap:16}}>
-            <div style={{background:"#1E293B",color:"#CBD5E1",fontSize:14,padding:16,borderRadius:"16px 16px 4px 16px",marginLeft:"auto",width:"80%",border:"1px solid #334155"}}>มีเกณฑ์ได้เปลี่ยนงานช่วงนี้ไหม รู้สึกหมดไฟมากๆ</div>
+            <div style={{background:"#1E293B",color:"#CBD5E1",fontSize:14,padding:16,borderRadius:"16px 16px 4px 16px",marginLeft:"auto",width:"80%",border:"1px solid #334155"}}>{t("ai_demo_q")}</div>
             <div style={{background:"rgba(67,56,202,0.4)",color:"#C7D2FE",fontSize:14,padding:16,borderRadius:"16px 16px 16px 4px",marginRight:"auto",width:"90%",border:"1px solid rgba(99,102,241,0.3)"}}>
-              <p style={{marginBottom:8,margin:"0 0 8px"}}>จากการวิเคราะห์ Timeline ของคุณ:</p>
-              <p style={{margin:0}}>ช่วงนี้ดาวเสาร์กำลังทับเรือนการงาน ทำให้เกิดความรู้สึกกดดันและอยากหนี (The Avoider Pattern กำลังทำงาน) <strong>แต่อย่าเพิ่งรีบตัดสินใจครับ</strong></p>
-              <p style={{marginTop:8,color:"#A5B4FC",fontSize:12,margin:"8px 0 0"}}>⭐ รอจังหวะหน้าต่างเปิดในอีก 2 เดือนข้างหน้า จะมีโอกาสที่ดีกว่าเข้ามา</p>
+              <p style={{marginBottom:8,margin:"0 0 8px"}}>{t("ai_demo_reply1")}</p>
+              <p style={{margin:0}}>{t("ai_demo_reply2")}</p>
+              <p style={{marginTop:8,color:"#A5B4FC",fontSize:12,margin:"8px 0 0"}}>{t("ai_demo_reply3")}</p>
             </div>
           </div>
         </div>
@@ -2169,7 +2169,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   {/* Transit & tip */}
   {d.goodFor&&<div style={{fontSize:10,color:"#059669",background:"#ECFDF5",borderRadius:6,padding:"3px 8px",marginBottom:3}}>✅ {t("energy_good_for")} {d.goodFor}</div>}
   {d.tip&&<div style={{fontSize:10,color:"#374151",background:"#fff",borderRadius:6,padding:"3px 8px",border:"1px solid #F1F5F9"}}>💡 {d.tip}</div>}
-</div>})}<div style={{marginTop:6,padding:8,background:"#F5F3FF",borderRadius:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>🔮 Vedic Jyotish พระเวท — 5 ชั้น</div><div style={{fontSize:9,color:"#64748B"}}>จันทร์(40%) + อังคาร(25%) + เจ้าวัน(35%) + ศุกร์ + พฤหัส · วิเคราะห์งาน เงิน ความรัก สุขภาพ รายวัน</div></div></>:<Spin/>}</Sec>}
+</div>})}<div style={{marginTop:6,padding:8,background:"#F5F3FF",borderRadius:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>{t("energy_vedic_title")}</div><div style={{fontSize:9,color:"#64748B"}}>{t("energy_vedic_desc")}</div></div></>:<Spin/>}</Sec>}
 
   <div id="sec-strategy" className="snav-anchor"/><SectionHeader icon="🧠" label="Strategy Layer" locked={!has("principle")} planNeeded="pro" onUpgrade={tryUpgrade}/>
 
@@ -2188,17 +2188,19 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const vCog=vcr["Cognitive Processing"]||7;const vIdStab=vcr["Identity Stability"]||7;const vGrow=vcr["Growth Orientation"]||7;
     const rawC=Math.round(20+(cogSc/10)*15);const rawE=Math.round(35-(emotSc/10)*25);const rawK=Math.round(10+(growSc/10)*20);const rawG=Math.max(5,100-rawC-rawE-rawK);const rawT=rawC+rawE+rawK+rawG;
     const pC=Math.round(rawC/rawT*100);const pE=Math.round(rawE/rawT*100);const pK=Math.round(rawK/rawT*100);const pG=100-pC-pE-pK;
-    const segs=[{label:`Creative Spender (${domP.planet})`,pct:pC,color:"#10b981",desc:"รายได้จากไอเดียและการเจรจา"},{label:"Emotional Impulse",pct:pE,color:"#f59e0b",desc:"การใช้จ่ายตามอารมณ์ที่ยังควบคุมยาก"},{label:"Knowledge Investment",pct:pK,color:"#0ea5e9",desc:"โอกาสจากการเรียนรู้คอร์สใหม่ๆ"},{label:"Financial Gap",pct:pG,color:"#8b5cf6",desc:"จุดที่ขาดระเบียบการออม"}];
-    const radarD=[{label:"ความมั่นคง",sub:Math.round(idStab*10),ideal:Math.min(100,Math.round(vIdStab*10))},{label:"การสื่อสาร",sub:Math.round(cogSc*10),ideal:Math.min(100,Math.round(vCog*10))},{label:"อิสระ",sub:Math.min(95,Math.round(motDr*10+5)),ideal:60},{label:"ความตื่นเต้น",sub:Math.min(85,Math.round(emotSc*8+5)),ideal:30},{label:"การวางแผน",sub:Math.round(growSc*8),ideal:Math.min(100,Math.round(vGrow*10))}];
+    const moneyActionDescs=t("money_action_descs")||[];
+    const segs=[{label:`Creative Spender (${domP.planet})`,pct:pC,color:"#10b981",desc:lang==="en"?"Income from ideas and negotiation":"รายได้จากไอเดียและการเจรจา"},{label:"Emotional Impulse",pct:pE,color:"#f59e0b",desc:lang==="en"?"Emotional spending still hard to control":"การใช้จ่ายตามอารมณ์ที่ยังควบคุมยาก"},{label:"Knowledge Investment",pct:pK,color:"#0ea5e9",desc:lang==="en"?"Opportunities from learning new skills":"โอกาสจากการเรียนรู้คอร์สใหม่ๆ"},{label:"Financial Gap",pct:pG,color:"#8b5cf6",desc:lang==="en"?"Lack of savings discipline":"จุดที่ขาดระเบียบการออม"}];
+    const moneyRadarLabels=lang==="en"?["Stability","Communication","Freedom","Excitement","Planning"]:["ความมั่นคง","การสื่อสาร","อิสระ","ความตื่นเต้น","การวางแผน"];
+    const radarD=[{label:moneyRadarLabels[0],sub:Math.round(idStab*10),ideal:Math.min(100,Math.round(vIdStab*10))},{label:moneyRadarLabels[1],sub:Math.round(cogSc*10),ideal:Math.min(100,Math.round(vCog*10))},{label:moneyRadarLabels[2],sub:Math.min(95,Math.round(motDr*10+5)),ideal:60},{label:moneyRadarLabels[3],sub:Math.min(85,Math.round(emotSc*8+5)),ideal:30},{label:moneyRadarLabels[4],sub:Math.round(growSc*8),ideal:Math.min(100,Math.round(vGrow*10))}];
     const getRPt=(data,key,cx,cy,maxR)=>data.map((d,i)=>{const a=(Math.PI*2*i/data.length)-Math.PI/2;const val=(d[key]/100)*maxR;return`${(cx+val*Math.cos(a)).toFixed(1)},${(cy+val*Math.sin(a)).toFixed(1)}`;}).join(" ");
     const getGridPt=(n,gs,cx,cy,maxR)=>[...Array(n)].map((_,i)=>{const a=(Math.PI*2*i/n)-Math.PI/2;return`${(cx+maxR*gs*Math.cos(a)).toFixed(1)},${(cy+maxR*gs*Math.sin(a)).toFixed(1)}`;}).join(" ");
     return <Sec fKey="money" title="Money Strategy" icon="💰">
-      {aiL.money?<Spin t="วิเคราะห์กลยุทธ์การเงิน..."/>:
+      {aiL.money?<Spin t={t("spin_money")}/>:
       <div>
         {/* 1. Wealth Catalyst Diagnostic */}
         <div style={{background:"#fff",borderRadius:12,border:"1px solid #d1fae5",padding:"14px",marginBottom:10}}>
           <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}><div style={{width:4,height:20,background:"#10b981",borderRadius:2}}/><div style={{fontSize:13,fontWeight:800,color:"#1e293b"}}>1. Wealth Catalyst Diagnostic</div></div>
-          <div style={{fontSize:10,color:"#94a3b8",fontStyle:"italic",marginBottom:10}}>"วิเคราะห์ต้นตอของกระแสการเงินจากดวงชะตา"</div>
+          <div style={{fontSize:10,color:"#94a3b8",fontStyle:"italic",marginBottom:10}}>{t("money_catalyst_sub")}</div>
           <div style={{display:"flex",flexDirection:"row",gap:12,alignItems:"center"}}>
             <div style={{position:"relative",width:90,height:90,flexShrink:0}}>
               <svg viewBox="0 0 36 36" style={{width:"100%",height:"100%",transform:"rotate(-90deg)"}}>
@@ -2206,7 +2208,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
                 {segs.map((seg,i)=>{const prev=segs.slice(0,i).reduce((a,c)=>a+c.pct,0);return <circle key={i} cx="18" cy="18" r="15.9" fill="transparent" stroke={seg.color} strokeWidth="3.5" strokeDasharray={`${seg.pct} ${100-seg.pct}`} strokeDashoffset={-prev}/>;})}
               </svg>
               <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center"}}>
-                <div style={{fontSize:7,color:"#94a3b8",fontWeight:700,textTransform:"uppercase"}}>ขุมทรัพย์</div>
+                <div style={{fontSize:7,color:"#94a3b8",fontWeight:700,textTransform:"uppercase"}}>{t("money_treasure")}</div>
                 <div style={{fontSize:10,fontWeight:900,color:"#059669"}}>{domP.planet}</div>
               </div>
             </div>
@@ -2229,10 +2231,10 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         {/* 2. Wealth Destiny Timeline */}
         <div style={{background:"#fff",borderRadius:12,border:"1px solid #d1fae5",padding:"14px",marginBottom:10}}>
           <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}><div style={{width:4,height:20,background:"#0ea5e9",borderRadius:2}}/><div style={{fontSize:13,fontWeight:800,color:"#1e293b"}}>2. Wealth Destiny Timeline</div></div>
-          <div style={{fontSize:10,color:"#94a3b8",fontStyle:"italic",marginBottom:10}}>"กราฟระดับพลังงานความมั่งคั่ง (Destiny Timeline)"</div>
+          <div style={{fontSize:10,color:"#94a3b8",fontStyle:"italic",marginBottom:10}}>{t("money_tl_sub")}</div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
-            <div style={{background:"#f0fdf4",border:"1px solid #d1fae5",padding:"8px 10px",borderRadius:10,display:"flex",alignItems:"center",gap:8}}><div style={{background:"#fff",padding:"3px 5px",borderRadius:6,fontSize:13}}>⚠️</div><div><div style={{fontSize:8,fontWeight:700,color:"#059669",textTransform:"uppercase",letterSpacing:"0.05em"}}>Mercury Warning</div><div style={{fontSize:11,fontWeight:700}}>ระวังการจ่ายเกินตัว</div></div></div>
-            <div style={{background:"#fffbeb",border:"1px solid #fde68a",padding:"8px 10px",borderRadius:10,display:"flex",alignItems:"center",gap:8}}><div style={{background:"#fff",padding:"3px 5px",borderRadius:6,fontSize:13}}>⌛</div><div><div style={{fontSize:8,fontWeight:700,color:"#d97706",textTransform:"uppercase",letterSpacing:"0.05em"}}>Wealth Window</div><div style={{fontSize:11,fontWeight:700,fontStyle:"italic"}}>ปี {nowY+1}–{nowY+2}</div></div></div>
+            <div style={{background:"#f0fdf4",border:"1px solid #d1fae5",padding:"8px 10px",borderRadius:10,display:"flex",alignItems:"center",gap:8}}><div style={{background:"#fff",padding:"3px 5px",borderRadius:6,fontSize:13}}>⚠️</div><div><div style={{fontSize:8,fontWeight:700,color:"#059669",textTransform:"uppercase",letterSpacing:"0.05em"}}>Mercury Warning</div><div style={{fontSize:11,fontWeight:700}}>{t("money_mercury_warn")}</div></div></div>
+            <div style={{background:"#fffbeb",border:"1px solid #fde68a",padding:"8px 10px",borderRadius:10,display:"flex",alignItems:"center",gap:8}}><div style={{background:"#fff",padding:"3px 5px",borderRadius:6,fontSize:13}}>⌛</div><div><div style={{fontSize:8,fontWeight:700,color:"#d97706",textTransform:"uppercase",letterSpacing:"0.05em"}}>Wealth Window</div><div style={{fontSize:11,fontWeight:700,fontStyle:"italic"}}>{t("year_prefix")} {nowY+1}–{nowY+2}</div></div></div>
           </div>
           <div style={{background:"#f8fafc",borderRadius:10,padding:"10px",overflow:"visible"}}>
             <svg viewBox="0 0 400 100" style={{width:"100%",height:72,overflow:"visible"}}>
@@ -2240,22 +2242,22 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
               <circle cx="100" cy="30" r="5" fill="#f43f5e"/>
               <circle cx="200" cy="60" r="5" fill="#8b5cf6"/>
               <circle cx="400" cy="20" r="7" fill="#f59e0b"/>
-              <text x="100" y="20" fontSize="8" textAnchor="middle" fill="#94a3b8">{"อายุ "}{Math.max(20,age-3)}</text>
-              <text x="200" y="50" fontSize="8" textAnchor="middle" fill="#94a3b8">ปัจจุบัน</text>
-              <text x="400" y="10" fontSize="8" textAnchor="middle" fill="#f59e0b">{"ปี "}{nowY+2}</text>
+              <text x="100" y="20" fontSize="8" textAnchor="middle" fill="#94a3b8">{t("age_prefix")+" "}{Math.max(20,age-3)}</text>
+              <text x="200" y="50" fontSize="8" textAnchor="middle" fill="#94a3b8">{t("dash_present")}</text>
+              <text x="400" y="10" fontSize="8" textAnchor="middle" fill="#f59e0b">{t("year_prefix")+" "}{nowY+2}</text>
             </svg>
             <div style={{display:"flex",justifyContent:"space-between",fontSize:9,fontWeight:700,color:"#94a3b8",textTransform:"uppercase",letterSpacing:"0.04em",marginTop:4,paddingLeft:2,paddingRight:2}}>
-              <span>จุดเริ่มต้น</span>
-              <span style={{color:"#f43f5e"}}>• บทเรียนการเงิน</span>
-              <span style={{color:"#8b5cf6"}}>• จังหวะตั้งตัว</span>
-              <span style={{color:"#d97706"}}>• มั่งคั่งสูงสุด</span>
+              <span>{t("money_start")}</span>
+              <span style={{color:"#f43f5e"}}>• {t("money_lesson")}</span>
+              <span style={{color:"#8b5cf6"}}>• {t("money_timing")}</span>
+              <span style={{color:"#d97706"}}>• {t("money_peak")}</span>
             </div>
           </div>
         </div>
         {/* 3. Radar: ตัวตนภายใน vs แผนที่ควรเป็น */}
         <div style={{background:"#fff",borderRadius:12,border:"1px solid #d1fae5",padding:"14px",marginBottom:10}}>
-          <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}><div style={{width:4,height:20,background:"#8b5cf6",borderRadius:2}}/><div style={{fontSize:13,fontWeight:800,color:"#1e293b"}}>เปรียบเทียบ: ตัวตนภายใน vs แผนที่ควรเป็น</div></div>
-          <div style={{fontSize:10,color:"#94a3b8",fontStyle:"italic",marginBottom:10}}>"บ่อยครั้งที่โหยหาอิสระ แต่ดวงบอกว่าต้องการความมั่นคง"</div>
+          <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}><div style={{width:4,height:20,background:"#8b5cf6",borderRadius:2}}/><div style={{fontSize:13,fontWeight:800,color:"#1e293b"}}>{t("money_compare_title")}</div></div>
+          <div style={{fontSize:10,color:"#94a3b8",fontStyle:"italic",marginBottom:10}}>{t("money_compare_sub")}</div>
           <div style={{display:"flex",flexDirection:"row",gap:10,alignItems:"center"}}>
             <div style={{flexShrink:0}}>
               <svg viewBox="0 0 200 200" style={{width:150,height:150}}>
@@ -2268,19 +2270,19 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
             </div>
             <div style={{flex:1,display:"flex",flexDirection:"column",gap:8}}>
               <div style={{background:"#fff1f2",padding:"8px 10px",borderRadius:10,border:"1px solid #ffe4e6"}}>
-                <div style={{fontSize:10,fontWeight:700,color:"#f43f5e",marginBottom:3}}>Your Subconscious (สีชมพู)</div>
-                <div style={{fontSize:9,color:"#9f1239",lineHeight:1.6}}>เน้นอิสระและความสุขชั่วคราว ดึงดูดการใช้จ่ายตามอารมณ์สูง (Mercury Impulse)</div>
+                <div style={{fontSize:10,fontWeight:700,color:"#f43f5e",marginBottom:3}}>{t("money_subcon_label")}</div>
+                <div style={{fontSize:9,color:"#9f1239",lineHeight:1.6}}>{t("money_subcon_desc")}</div>
               </div>
               <div style={{background:"#f0f9ff",padding:"8px 10px",borderRadius:10,border:"1px solid #bae6fd"}}>
-                <div style={{fontSize:10,fontWeight:700,color:"#0ea5e9",marginBottom:3}}>Wealth Strategy (สีฟ้า)</div>
-                <div style={{fontSize:9,color:"#0c4a6e",lineHeight:1.6}}>เส้นทางที่ทำให้คุณรวยจริง คือการเปลี่ยน "ไอเดีย" ให้เป็น "สินทรัพย์" และความมั่นคงระยะยาว</div>
+                <div style={{fontSize:10,fontWeight:700,color:"#0ea5e9",marginBottom:3}}>{t("money_wealth_label")}</div>
+                <div style={{fontSize:9,color:"#0c4a6e",lineHeight:1.6}}>{t("money_wealth_desc")}</div>
               </div>
             </div>
           </div>
         </div>
         {/* 4. Action Cards */}
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:10}}>
-          {[{title:"Financial Budget",icon:"💼",bg:"#f0fdf4",border:"#d1fae5",desc:"สร้างระบบงบประมาณเพื่อควบคุมรายจ่ายตามอารมณ์"},{title:"Knowledge Asset",icon:"💡",bg:"#fffbeb",border:"#fde68a",desc:`ลงทุนในคอร์สเรียนเพิ่มทักษะ${domP.planet} (การสื่อสาร/การดีล)`},{title:"Clear Targets",icon:"🎯",bg:"#f0f9ff",border:"#bae6fd",desc:`ตั้งเป้าออมทองหรือลงทุนเพื่อรองรับช่วงปี ${nowY+2}`}].map((card,i)=>(
+          {[{title:"Financial Budget",icon:"💼",bg:"#f0fdf4",border:"#d1fae5",desc:moneyActionDescs[0]||"สร้างระบบงบประมาณเพื่อควบคุมรายจ่ายตามอารมณ์"},{title:"Knowledge Asset",icon:"💡",bg:"#fffbeb",border:"#fde68a",desc:moneyActionDescs[1]||(lang==="en"?`Invest in skill-building courses for ${domP.planet} energy (communication/negotiation)`:`ลงทุนในคอร์สเรียนเพิ่มทักษะ${domP.planet} (การสื่อสาร/การดีล)`)},{title:"Clear Targets",icon:"🎯",bg:"#f0f9ff",border:"#bae6fd",desc:moneyActionDescs[2]||(lang==="en"?`Set savings or investment goals to prepare for ${nowY+2}`:`ตั้งเป้าออมทองหรือลงทุนเพื่อรองรับช่วงปี ${nowY+2}`)}].map((card,i)=>(
             <div key={i} style={{padding:"10px",borderRadius:12,background:card.bg,border:`1px solid ${card.border}`}}>
               <div style={{background:"#fff",width:32,height:32,borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,marginBottom:6,boxShadow:"0 1px 3px rgba(0,0,0,0.08)"}}>{card.icon}</div>
               <div style={{fontSize:10,fontWeight:800,color:"#1e293b",marginBottom:3}}>{card.title}</div>
@@ -2290,7 +2292,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         </div>
         {/* AI Analysis */}
         {ai.money&&<div style={{background:"#f8fafc",borderRadius:12,padding:"10px 12px",border:"1px solid #e2e8f0",marginBottom:10}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#059669",marginBottom:5}}>🧠 การวิเคราะห์เชิงลึก</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#059669",marginBottom:5}}>{t("money_deep_label")}</div>
           <div style={{fontSize:11,lineHeight:1.8,color:"#334155",whiteSpace:"pre-wrap"}}>{ai.money}</div>
         </div>}
       </div>}
@@ -2301,34 +2303,34 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   {(()=>{
     const eS=scores["Emotional Regulation"]||5;const shS=scores["Shadow Pattern"]||5;const bS=scores["Boundary System"]||5;
     const w1=Math.max(1,(10-eS)*3.5),w2=Math.max(1,(10-shS)*2.5),w3=Math.max(1,(10-bS)*2.0),w4=7,wT=w1+w2+w3+w4;
-    const rcD=[{w:w1,c:"#F59E0B",l:"Attachment Style",s:"รูปแบบความผูกพัน"},{w:w2,c:"#6366F1",l:"Shadow / ปมวัยเด็ก",s:"Childhood Pattern"},{w:w3,c:"#22D3EE",l:"ดาวบาปเคราะห์",s:"Malefic Aspects"},{w:w4,c:"#8B5CF6",l:"ช่วงดวงตก",s:"Bad Transits"}];
+    const rcD=[{w:w1,c:"#F59E0B",l:"Attachment Style",s:lang==="en"?"Attachment Pattern":"รูปแบบความผูกพัน"},{w:w2,c:"#6366F1",l:lang==="en"?"Shadow / Childhood Wound":"Shadow / ปมวัยเด็ก",s:"Childhood Pattern"},{w:w3,c:"#22D3EE",l:lang==="en"?"Malefic Planets":"ดาวบาปเคราะห์",s:"Malefic Aspects"},{w:w4,c:"#8B5CF6",l:lang==="en"?"Low Transit Period":"ช่วงดวงตก",s:"Bad Transits"}];
     const dP=(cx,cy,ro,ri,sa,ea)=>{const r=d=>(d-90)*Math.PI/180;const c1=Math.cos(r(sa)),s1=Math.sin(r(sa)),c2=Math.cos(r(ea)),s2=Math.sin(r(ea));const lg=ea-sa>180?1:0;return `M${(cx+ro*c1).toFixed(1)},${(cy+ro*s1).toFixed(1)} A${ro},${ro} 0 ${lg},1 ${(cx+ro*c2).toFixed(1)},${(cy+ro*s2).toFixed(1)} L${(cx+ri*c2).toFixed(1)},${(cy+ri*s2).toFixed(1)} A${ri},${ri} 0 ${lg},0 ${(cx+ri*c1).toFixed(1)},${(cy+ri*s1).toFixed(1)}Z`;};
     let ang=0;const dSegs=rcD.map(s=>{const pct=s.w/wT;const sa=ang;const ea=ang+pct*360-2;ang+=pct*360;return{...s,pct,sa,ea};});
     const sub=[Math.min(100,eS*8+10),Math.min(100,eS*6+15),Math.min(100,bS*7+10),Math.min(100,(10-shS)*9+10),Math.min(100,(10-bS)*9+10)];
     const idl=[Math.min(100,(10-eS)*6+38),85,80,Math.max(20,shS*4+8),78];
-    const rlbls=["ความมั่นคง","การสื่อสาร","ความเข้าใจ","ความตื่นเต้น","อิสระ"];
+    const rlbls=lang==="en"?["Stability","Communication","Understanding","Excitement","Freedom"]:["ความมั่นคง","การสื่อสาร","ความเข้าใจ","ความตื่นเต้น","อิสระ"];
     const rPt=(i,v,r)=>{const a=(i*72-90)*Math.PI/180;return{x:(100+r*(v/100)*Math.cos(a)).toFixed(1),y:(100+r*(v/100)*Math.sin(a)).toFixed(1)};};
     const rAx=(i)=>{const a=(i*72-90)*Math.PI/180;return{x:(100+58*Math.cos(a)).toFixed(1),y:(100+58*Math.sin(a)).toFixed(1)};};
     const rLb=(i)=>{const a=(i*72-90)*Math.PI/180;return{x:(100+76*Math.cos(a)).toFixed(1),y:(100+76*Math.sin(a)).toFixed(1)};};
     const nowY=new Date().getFullYear();const bdY=parseInt((bday||"2000").split("-")[0])||2000;const age=nowY-bdY;
-    const tlPts=[{lbl:`อายุ ${Math.max(18,age-8)}`,e:45,t:"past"},{lbl:`อายุ ${Math.max(20,age-5)}\n(คู่กรรม 1)`,e:80,t:"karmic"},{lbl:`อายุ ${Math.max(22,age-2)}\n(คู่กรรม 2)`,e:25,t:"karmic"},{lbl:`ปัจจุบัน\n(อายุ ${age})`,e:52,t:"now"},{lbl:`ปี ${nowY+1}`,e:80,t:"future"},{lbl:`ปี ${nowY+2}\n(คู่แท้)`,e:97,t:"soulmate"}];
+    const tlPts=lang==="en"?[{lbl:`Age ${Math.max(18,age-8)}`,e:45,t:"past"},{lbl:`Age ${Math.max(20,age-5)}\n(Karmic 1)`,e:80,t:"karmic"},{lbl:`Age ${Math.max(22,age-2)}\n(Karmic 2)`,e:25,t:"karmic"},{lbl:`Present\n(Age ${age})`,e:52,t:"now"},{lbl:`${nowY+1}`,e:80,t:"future"},{lbl:`${nowY+2}\n(Soulmate)`,e:97,t:"soulmate"}]:[{lbl:`อายุ ${Math.max(18,age-8)}`,e:45,t:"past"},{lbl:`อายุ ${Math.max(20,age-5)}\n(คู่กรรม 1)`,e:80,t:"karmic"},{lbl:`อายุ ${Math.max(22,age-2)}\n(คู่กรรม 2)`,e:25,t:"karmic"},{lbl:`ปัจจุบัน\n(อายุ ${age})`,e:52,t:"now"},{lbl:`ปี ${nowY+1}`,e:80,t:"future"},{lbl:`ปี ${nowY+2}\n(คู่แท้)`,e:97,t:"soulmate"}];
     const TW=290,TH=70;const xs=tlPts.map((_,i)=>12+i*((TW-24)/(tlPts.length-1)));const ys=tlPts.map(p=>8+TH*(1-p.e/100)*0.9);
     let tlP=`M${xs[0].toFixed(1)},${ys[0].toFixed(1)}`;for(let i=1;i<tlPts.length;i++){const dx=(xs[i]-xs[i-1])/2.5;tlP+=` C${(xs[i-1]+dx).toFixed(1)},${ys[i-1].toFixed(1)} ${(xs[i]-dx).toFixed(1)},${ys[i].toFixed(1)} ${xs[i].toFixed(1)},${ys[i].toFixed(1)}`;}
     if(!has("love")) return <Locked planNeeded="pro" title="Love Strategy — ชะตาความรัก & ไทม์ไลน์คู่แท้" onUpgrade={tryUpgrade}><div style={{padding:12,borderRadius:10,background:"linear-gradient(135deg,#1E1035,#3B1054)",color:"#fff",marginBottom:8}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>💕 Love & Compatibility</div><div style={{fontSize:11,color:"#C4B5FD"}}>ทำไมถึงเจอแต่รักพังๆ? คู่ครองแบบไหนเสริมดวงจริงๆ?</div></div><div style={{fontSize:12,lineHeight:1.8,color:"#374151"}}>💔 Root Cause: รูปแบบความสัมพันธ์ที่ซ้ำซาก...<br/>💑 Ideal Partner: ลักษณะคู่ครองที่เสริมดวงคุณ...<br/>⏳ Destiny Timeline: ช่วงเวลาที่จะพบคู่แท้...</div></Locked>;
     return <Card style={{background:"#FFFFFF",border:"1px solid #C7D2FE",padding:"14px 16px"}}>
-      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><span style={{fontSize:18}}>💕</span><div><div style={{fontSize:14,fontWeight:800,color:"#4338CA"}}>Love & Compatibility</div><div style={{fontSize:10,color:"#7C3AED"}}>ชะตาความรัก & ไทม์ไลน์คู่แท้ · Vedic × Attachment Psychology</div></div></div>
-      {aiL.love?<Spin t="วิเคราะห์ชะตาความรัก..."/>:ai.love?<>
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><span style={{fontSize:18}}>💕</span><div><div style={{fontSize:14,fontWeight:800,color:"#4338CA"}}>Love & Compatibility</div><div style={{fontSize:10,color:"#7C3AED"}}>{t("love_subtitle")}</div></div></div>
+      {aiL.love?<Spin t={t("spin_love")}/>:ai.love?<>
       <div style={{marginBottom:14}}>
         <div style={{fontSize:12,fontWeight:800,color:"#F43F5E",borderLeft:"3px solid #F43F5E",paddingLeft:8,marginBottom:2}}>1. Root Cause Diagnostic</div>
-        <div style={{fontSize:10,color:"#BE185D",paddingLeft:11,marginBottom:10,fontStyle:"italic"}}>"ทำไมถึงเจอแต่รักพังๆ?"</div>
+        <div style={{fontSize:10,color:"#BE185D",paddingLeft:11,marginBottom:10,fontStyle:"italic"}}>{t("love_why_broken")}</div>
         <div style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:10}}>
           <div style={{flexShrink:0}}>
-            <div style={{fontSize:9,color:"#64748B",textAlign:"center",marginBottom:3}}>สัดส่วนสาเหตุ</div>
+            <div style={{fontSize:9,color:"#64748B",textAlign:"center",marginBottom:3}}>{t("love_cause_pct")}</div>
             <svg viewBox="0 0 140 140" style={{width:130}}>
               <rect width="140" height="140" fill="#F8FAFC" rx="8"/>
               {dSegs.map((s,i)=><path key={i} d={dP(70,70,54,32,s.sa,s.ea)} fill={s.c}/>)}
-              <text x="70" y="67" textAnchor="middle" fontSize="10" fill="#1E293B" fontWeight="bold">สาเหตุ</text>
-              <text x="70" y="80" textAnchor="middle" fontSize="8" fill="#94A3B8">หลัก</text>
+              <text x="70" y="67" textAnchor="middle" fontSize="10" fill="#1E293B" fontWeight="bold">{t("love_cause")}</text>
+              <text x="70" y="80" textAnchor="middle" fontSize="8" fill="#94A3B8">{t("love_main")}</text>
             </svg>
           </div>
           <div style={{flex:1}}>{dSegs.map((s,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:7}}><div style={{width:8,height:8,borderRadius:2,background:s.c,flexShrink:0,marginTop:3}}/><div><div style={{fontSize:10,fontWeight:600,color:"#1E293B"}}>{s.l}</div><div style={{fontSize:8,color:"#94A3B8",marginBottom:1}}>{s.s}</div><div style={{fontSize:11,fontWeight:700,color:s.c}}>{Math.round(s.pct*100)}%</div></div></div>)}</div>
@@ -2337,13 +2339,13 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
       </div>
       <div style={{marginBottom:14}}>
         <div style={{fontSize:12,fontWeight:800,color:"#0891B2",borderLeft:"3px solid #0891B2",paddingLeft:8,marginBottom:2}}>2. The Ideal Partner & Destiny Timeline</div>
-        <div style={{fontSize:10,color:"#0E7490",paddingLeft:11,marginBottom:10,fontStyle:"italic"}}>"คู่ครองลักษณะไหนเสริมดวง และจะเจอเมื่อไหร่?"</div>
+        <div style={{fontSize:10,color:"#0E7490",paddingLeft:11,marginBottom:10,fontStyle:"italic"}}>{t("love_ideal_q")}</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
-          <div style={{background:"#F5F3FF",borderRadius:8,padding:"10px 12px",border:"1px solid #DDD6FE"}}><div style={{fontSize:8,fontWeight:700,color:"#7C3AED",marginBottom:1}}>⚠️ วัฏจักรเสาร์</div><div style={{fontSize:11,fontWeight:800,color:"#1E293B"}}>บทเรียนผ่านมาแล้ว</div><div style={{fontSize:8,color:"#64748B",lineHeight:1.5,marginTop:2}}>เสาร์จรผ่านลัคนา ช่วงล้างความสัมพันธ์ที่ไม่เหมาะสม</div></div>
-          <div style={{background:"#ECFEFF",borderRadius:8,padding:"10px 12px",border:"2px solid #A5F3FC"}}><div style={{fontSize:8,fontWeight:700,color:"#0891B2",marginBottom:1}}>⏳ Soulmate Window</div><div style={{fontSize:13,fontWeight:800,color:"#0891B2"}}>{`ปี ${nowY+1}–${nowY+2}`}</div><div style={{fontSize:8,color:"#64748B",lineHeight:1.5,marginTop:2}}>พฤหัสบดีจรส่งผลเรือนคู่ครอง</div></div>
+          <div style={{background:"#F5F3FF",borderRadius:8,padding:"10px 12px",border:"1px solid #DDD6FE"}}><div style={{fontSize:8,fontWeight:700,color:"#7C3AED",marginBottom:1}}>{t("love_saturn_cycle")}</div><div style={{fontSize:11,fontWeight:800,color:"#1E293B"}}>{t("love_lesson_done")}</div><div style={{fontSize:8,color:"#64748B",lineHeight:1.5,marginTop:2}}>{t("love_saturn_desc")}</div></div>
+          <div style={{background:"#ECFEFF",borderRadius:8,padding:"10px 12px",border:"2px solid #A5F3FC"}}><div style={{fontSize:8,fontWeight:700,color:"#0891B2",marginBottom:1}}>⏳ Soulmate Window</div><div style={{fontSize:13,fontWeight:800,color:"#0891B2"}}>{t("year_prefix")} {nowY+1}–{nowY+2}</div><div style={{fontSize:8,color:"#64748B",lineHeight:1.5,marginTop:2}}>{t("love_jupiter_desc")}</div></div>
         </div>
         <div style={{background:"#F8FAFC",borderRadius:8,padding:"10px 8px",border:"1px solid #E2E8F0"}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#1E293B",marginBottom:4,paddingLeft:6}}>📈 กราฟระดับพลังงานความสัมพันธ์ (Destiny Timeline)</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#1E293B",marginBottom:4,paddingLeft:6}}>{t("love_tl_title")}</div>
           <svg viewBox={`0 0 ${TW} ${TH+20}`} style={{width:"100%"}}>
             <defs><linearGradient id="lvGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#0891B2" stopOpacity="0.2"/><stop offset="100%" stopColor="#0891B2" stopOpacity="0"/></linearGradient></defs>
             <line x1="12" y1={(TH*0.5+8).toFixed(1)} x2={(TW-12).toFixed(1)} y2={(TH*0.5+8).toFixed(1)} stroke="#E2E8F0" strokeWidth="0.8" strokeDasharray="3,3"/>
@@ -2353,15 +2355,15 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
             {tlPts.map((p,i)=><text key={i} x={xs[i].toFixed(1)} y={(TH+18).toFixed(1)} textAnchor="middle" fontSize="6" fill="#64748B">{p.lbl.split("\n")[0]}</text>)}
           </svg>
           <div style={{display:"flex",flexWrap:"wrap",gap:10,justifyContent:"center",marginTop:4}}>
-            <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#64748B"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#EC4899"}}/> คู่กรรม</div>
-            <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#64748B"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#7C3AED"}}/> ปัจจุบัน</div>
-            <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#64748B"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#F59E0B"}}/> คู่แท้</div>
+            <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#64748B"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#EC4899"}}/> {t("love_karma")}</div>
+            <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#64748B"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#7C3AED"}}/> {t("love_now_legend")}</div>
+            <div style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#64748B"}}><div style={{width:8,height:8,borderRadius:"50%",background:"#F59E0B"}}/> {t("love_soulmate")}</div>
           </div>
         </div>
       </div>
       <div>
-        <div style={{fontSize:12,fontWeight:800,color:"#6D28D9",borderLeft:"3px solid #7C3AED",paddingLeft:8,marginBottom:2}}>เปรียบเทียบ: สิ่งที่จิตใต้สำนึกเรียกร้อง VS สเปคเสริมดวง</div>
-        <div style={{fontSize:10,color:"#64748B",paddingLeft:11,marginBottom:10}}>บ่อยครั้งที่โหยหาความตื่นเต้น แต่ดวงบอกว่าต้องการความมั่นคง</div>
+        <div style={{fontSize:12,fontWeight:800,color:"#6D28D9",borderLeft:"3px solid #7C3AED",paddingLeft:8,marginBottom:2}}>{t("love_compare_title")}</div>
+        <div style={{fontSize:10,color:"#64748B",paddingLeft:11,marginBottom:10}}>{t("love_compare_sub")}</div>
         <div style={{display:"flex",gap:10,alignItems:"flex-start"}}>
           <div style={{flexShrink:0}}>
             <svg viewBox="0 0 200 200" style={{width:165}}>
@@ -2373,40 +2375,40 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
               {[0,1,2,3,4].map(i=>{const p=rPt(i,sub[i],58);return<circle key={i} cx={p.x} cy={p.y} r="2.5" fill="#EC4899"/>;})}{[0,1,2,3,4].map(i=>{const p=rPt(i,idl[i],58);return<circle key={i} cx={p.x} cy={p.y} r="2.5" fill="#22D3EE"/>;})}{rlbls.map((l,i)=><text key={i} x={rLb(i).x} y={rLb(i).y} textAnchor="middle" fontSize="7" fill="#475569" dominantBaseline="central">{l}</text>)}
             </svg>
             <div style={{display:"flex",flexDirection:"column",gap:4,marginTop:6}}>
-              <div style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"#64748B"}}><div style={{width:14,height:2,background:"#EC4899",borderRadius:1}}/> จิตใต้สำนึก</div>
-              <div style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"#64748B"}}><div style={{width:14,height:2,background:"#22D3EE",borderRadius:1}}/> สเปคเสริมดวง</div>
+              <div style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"#64748B"}}><div style={{width:14,height:2,background:"#EC4899",borderRadius:1}}/> {t("love_subcon_legend")}</div>
+              <div style={{display:"flex",alignItems:"center",gap:5,fontSize:9,color:"#64748B"}}><div style={{width:14,height:2,background:"#22D3EE",borderRadius:1}}/> {t("love_ideal_legend")}</div>
             </div>
           </div>
           <div style={{flex:1,paddingTop:4}}>
-            <div style={{background:"#FFF1F2",border:"1px solid #FECDD3",borderRadius:8,padding:"8px 10px",marginBottom:8}}><div style={{fontSize:9,fontWeight:700,color:"#BE185D",marginBottom:3}}>Your Subconscious (สีชมพู)</div><div style={{fontSize:9,color:"#374151",lineHeight:1.6}}>ต้องการความตื่นเต้นและอิสระสูง แต่อาจดึงดูดคนที่ไม่เสถียรทางอารมณ์</div></div>
-            <div style={{background:"#ECFEFF",border:"1px solid #A5F3FC",borderRadius:8,padding:"8px 10px"}}><div style={{fontSize:9,fontWeight:700,color:"#0891B2",marginBottom:3}}>Ideal Match (สีฟ้า)</div><div style={{fontSize:9,color:"#374151",lineHeight:1.6}}>คู่ที่เสริมดวงจริงคือคนที่มั่นคงทางอารมณ์ สื่อสารดี และเข้าใจอย่างลึกซึ้ง</div></div>
+            <div style={{background:"#FFF1F2",border:"1px solid #FECDD3",borderRadius:8,padding:"8px 10px",marginBottom:8}}><div style={{fontSize:9,fontWeight:700,color:"#BE185D",marginBottom:3}}>{t("love_subcon_label")}</div><div style={{fontSize:9,color:"#374151",lineHeight:1.6}}>{t("love_subcon_desc")}</div></div>
+            <div style={{background:"#ECFEFF",border:"1px solid #A5F3FC",borderRadius:8,padding:"8px 10px"}}><div style={{fontSize:9,fontWeight:700,color:"#0891B2",marginBottom:3}}>{t("love_ideal_label")}</div><div style={{fontSize:9,color:"#374151",lineHeight:1.6}}>{t("love_ideal_desc")}</div></div>
           </div>
         </div>
       </div>
-      </>:<Spin t="กำลังโหลด..."/>}
+      </>:<Spin t={t("spin_loading")}/>}
     </Card>;
   })()}
 
   <div id="sec-timeline" className="snav-anchor"/><SectionHeader icon="⏳" label="Timeline Layer" locked={!has("dasha")} planNeeded="pro" onUpgrade={tryUpgrade}/>
 
   {/* Life Phase Map (Dasha) */}
-  {!has("dasha")?<Locked planNeeded="pro" title="Life Phase Map (Dasha)" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:6}}>🗺 แผนที่ช่วงชีวิต — Vedic Dasha System</div>{["🌀 เกตุ — การค้นหาตัวเอง","💎 ศุกร์ — ความสัมพันธ์","☀️ อาทิตย์ — การสร้างตัวตน","🌙 จันทร์ — อารมณ์และจิตใจ"].map((d,i)=><div key={i} style={{fontSize:11,padding:"3px 0",color:"#374151"}}>{d}</div>)}<div style={{fontSize:10,color:"#6366F1",marginTop:6}}>🔮 คำนวณจากนักษัตร + มหาทศา Vedic Jyotish</div></Locked>:<Sec fKey="dasha" title="Life Phase Map" icon="🗺">{(()=>{try{
+  {!has("dasha")?<Locked planNeeded="pro" title="Life Phase Map (Dasha)" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:6}}>{t("dasha_locked_title")}</div>{(t("dasha_locked_phases")||[]).map((d,i)=><div key={i} style={{fontSize:11,padding:"3px 0",color:"#374151"}}>{d}</div>)}<div style={{fontSize:10,color:"#6366F1",marginTop:6}}>{t("dasha_locked_footer")}</div></Locked>:<Sec fKey="dasha" title="Life Phase Map" icon="🗺">{(()=>{try{
     let bd=bday;
     if(!bd||bd==="--"||bd.length<8){const p=ST.get("profile");if(p?.bday&&p.bday!=="--"&&p.bday.length>=8)bd=p.bday}
     const phases=calcDasha(bd);
     if(!phases||phases.length===0){
       return<div style={{padding:8,textAlign:"center"}}>
-        <div style={{fontSize:12,color:"#64748B",marginBottom:10}}>📅 ต้องระบุวันเกิดเพื่อคำนวณ Life Phase Map</div>
-        <button onClick={()=>setSc("profile")} style={{padding:"10px 24px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer"}}>✏️ ไปกรอกวันเกิด</button>
+        <div style={{fontSize:12,color:"#64748B",marginBottom:10}}>{t("dasha_no_bday")}</div>
+        <button onClick={()=>setSc("profile")} style={{padding:"10px 24px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#4338CA,#6D28D9)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer"}}>{t("dasha_enter_bday")}</button>
       </div>
     }
-    const current=phases.find(d=>d.isCurrent);return<>{current&&<Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1"}}><div style={{fontSize:14,fontWeight:800,color:"#4338CA",marginBottom:4}}>{current.icon} ตอนนี้คุณอยู่ในช่วง: {current.theme}</div><div style={{fontSize:11,color:"#64748B"}}>มหาทศา{current.p} (อายุ {current.startAge}–{current.endAge} ปี | พ.ศ.{current.startYear+543}–{current.endYear+543})</div><div style={{fontSize:12,color:"#374151",marginTop:4}}>{current.desc}</div><div style={{fontSize:11,color:"#059669",marginTop:4,background:"#ECFDF5",padding:"6px 8px",borderRadius:6}}>🎯 โฟกัส: {current.focus}</div><div style={{fontSize:11,color:"#374151",marginTop:6,background:"#FFF7ED",padding:"8px",borderRadius:6,lineHeight:1.7}}>{current.cheer}</div><div style={{fontSize:10,color:"#B45309",marginTop:4,background:"#FFFBEB",padding:"6px 8px",borderRadius:6,lineHeight:1.6}}>{current.warn}</div></Card>}{(()=>{const ns=natalPStr(bd);const pKey={"ศุกร์":"ve","อาทิตย์":"su","จันทร์":"mo","อังคาร":"ma","พฤหัส":"ju","เสาร์":"sa","พุธ":"me"};const getE=(p)=>{const k=pKey[p];return k&&ns[k]?Math.round(ns[k]*10):60};const getDig=(e)=>e>=80?"อุจจ์":e>=55?"ปกติ":"นิจ";const getDC=(e)=>e>=80?"#10B981":e>=55?"#6366F1":"#EF4444";const ads=current?calcAntardasha(current,current.startYear):[];const curAD=ads.find(a=>a.isCurrent);return<div style={{marginTop:8}}><div style={{fontSize:11,fontWeight:700,color:"#64748B",marginBottom:6}}>⚡ ทศาย่อย (Antardasha) — {current?.p}มหาทศา</div>{curAD&&<div style={{padding:"8px 10px",borderRadius:8,background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1",marginBottom:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>⭐ ทศาย่อยปัจจุบัน</div><div style={{fontSize:13,fontWeight:800,color:"#1E293B"}}>{curAD.icon} {curAD.p} — {curAD.theme}</div><div style={{fontSize:9,color:"#64748B",marginBottom:4}}>พ.ศ.{Math.round(curAD.startYear+543)}–{Math.round(curAD.endYear+543)}</div><div style={{display:"flex",alignItems:"center",gap:6,marginTop:2}}><span style={{fontSize:9,color:getDC(getE(curAD.p)),fontWeight:700,minWidth:28}}>{getDig(getE(curAD.p))}</span><div style={{flex:1,height:4,borderRadius:2,background:"#E2E8F0"}}><div style={{height:4,borderRadius:2,background:getDC(getE(curAD.p)),width:getE(curAD.p)+"%"}}/></div><span style={{fontSize:9,fontWeight:700,color:getDC(getE(curAD.p))}}>{getE(curAD.p)}%</span></div><div style={{fontSize:11,color:"#374151",marginTop:6,lineHeight:1.6}}>{curAD.cheer}</div></div>}{ads.map((a,i)=>{const e=getE(a.p);const dc=getDC(e);return<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 8px",borderRadius:8,marginBottom:2,background:a.isCurrent?"linear-gradient(135deg,#EEF2FF,#F5F3FF)":a.isPast?"#F8FAFC":"#FAFBFF",border:a.isCurrent?"2px solid #6366F1":a.isPast?"1px solid #F1F5F9":"1px solid #E8EEFF",opacity:a.isPast?0.65:1}}><span style={{fontSize:14}}>{a.icon}</span><div style={{flex:1}}><div style={{fontSize:11,fontWeight:a.isCurrent?700:500,color:a.isCurrent?"#4338CA":a.isPast?"#94A3B8":"#374151"}}>{a.p} — {a.theme}{a.isPast&&<span style={{fontSize:9,color:"#94A3B8",marginLeft:4}}>ผ่านมาแล้ว</span>}</div><div style={{display:"flex",alignItems:"center",gap:4,marginTop:2}}><div style={{width:36,height:3,borderRadius:2,background:"#E2E8F0"}}><div style={{height:3,borderRadius:2,background:dc,width:e+"%"}}/></div><span style={{fontSize:8,color:dc,fontWeight:600}}>{getDig(e)}</span></div></div><div style={{textAlign:"right",minWidth:60}}><div style={{fontSize:9,fontWeight:600,color:a.isCurrent?"#4338CA":"#94A3B8"}}>พ.ศ.{Math.round(a.startYear+543)}</div><div style={{fontSize:9,color:"#94A3B8"}}>–{Math.round(a.endYear+543)}</div></div></div>})}</div>})()}<div style={{marginTop:8,padding:8,background:"#F5F3FF",borderRadius:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>🔮 Vedic Dasha System</div><div style={{fontSize:9,color:"#64748B"}}>คำนวณจากนักษัตรเกิด ใช้ระบบวิมโศตตรีทศา 120 ปี ตามโหราศาสตร์พระเวท</div></div></>}catch(e){return<div style={{fontSize:11,color:"#94A3B8"}}>ไม่สามารถคำนวณ Dasha ได้ กรุณาตรวจสอบวันเกิด</div>}})()}</Sec>}
+    const current=phases.find(d=>d.isCurrent);return<>{current&&<Card style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1"}}><div style={{fontSize:14,fontWeight:800,color:"#4338CA",marginBottom:4}}>{current.icon} {t("dasha_now_phase")} {current.theme}</div><div style={{fontSize:11,color:"#64748B"}}>{t("dasha_mahadasha")}{current.p} ({t("age_prefix")} {current.startAge}–{current.endAge} | {lang==="th"?"พ.ศ.":""}{current.startYear+(lang==="th"?543:0)}–{current.endYear+(lang==="th"?543:0)})</div><div style={{fontSize:12,color:"#374151",marginTop:4}}>{current.desc}</div><div style={{fontSize:11,color:"#059669",marginTop:4,background:"#ECFDF5",padding:"6px 8px",borderRadius:6}}>{t("dasha_focus")} {current.focus}</div><div style={{fontSize:11,color:"#374151",marginTop:6,background:"#FFF7ED",padding:"8px",borderRadius:6,lineHeight:1.7}}>{current.cheer}</div><div style={{fontSize:10,color:"#B45309",marginTop:4,background:"#FFFBEB",padding:"6px 8px",borderRadius:6,lineHeight:1.6}}>{current.warn}</div></Card>}{(()=>{const ns=natalPStr(bd);const pKey={"ศุกร์":"ve","อาทิตย์":"su","จันทร์":"mo","อังคาร":"ma","พฤหัส":"ju","เสาร์":"sa","พุธ":"me"};const getE=(p)=>{const k=pKey[p];return k&&ns[k]?Math.round(ns[k]*10):60};const getDig=(e)=>e>=80?t("dasha_dignity_high"):e>=55?t("dasha_dignity_mid"):t("dasha_dignity_low");const getDC=(e)=>e>=80?"#10B981":e>=55?"#6366F1":"#EF4444";const ads=current?calcAntardasha(current,current.startYear):[];const curAD=ads.find(a=>a.isCurrent);return<div style={{marginTop:8}}><div style={{fontSize:11,fontWeight:700,color:"#64748B",marginBottom:6}}>⚡ {t("dasha_antardasha")} {current?.p}{t("dasha_mahadasha")}</div>{curAD&&<div style={{padding:"8px 10px",borderRadius:8,background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"2px solid #6366F1",marginBottom:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>{t("dasha_current_sub")}</div><div style={{fontSize:13,fontWeight:800,color:"#1E293B"}}>{curAD.icon} {curAD.p} — {curAD.theme}</div><div style={{fontSize:9,color:"#64748B",marginBottom:4}}>{lang==="th"?"พ.ศ.":""}{Math.round(curAD.startYear+(lang==="th"?543:0))}–{Math.round(curAD.endYear+(lang==="th"?543:0))}</div><div style={{display:"flex",alignItems:"center",gap:6,marginTop:2}}><span style={{fontSize:9,color:getDC(getE(curAD.p)),fontWeight:700,minWidth:28}}>{getDig(getE(curAD.p))}</span><div style={{flex:1,height:4,borderRadius:2,background:"#E2E8F0"}}><div style={{height:4,borderRadius:2,background:getDC(getE(curAD.p)),width:getE(curAD.p)+"%"}}/></div><span style={{fontSize:9,fontWeight:700,color:getDC(getE(curAD.p))}}>{getE(curAD.p)}%</span></div><div style={{fontSize:11,color:"#374151",marginTop:6,lineHeight:1.6}}>{curAD.cheer}</div></div>}{ads.map((a,i)=>{const e=getE(a.p);const dc=getDC(e);return<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 8px",borderRadius:8,marginBottom:2,background:a.isCurrent?"linear-gradient(135deg,#EEF2FF,#F5F3FF)":a.isPast?"#F8FAFC":"#FAFBFF",border:a.isCurrent?"2px solid #6366F1":a.isPast?"1px solid #F1F5F9":"1px solid #E8EEFF",opacity:a.isPast?0.65:1}}><span style={{fontSize:14}}>{a.icon}</span><div style={{flex:1}}><div style={{fontSize:11,fontWeight:a.isCurrent?700:500,color:a.isCurrent?"#4338CA":a.isPast?"#94A3B8":"#374151"}}>{a.p} — {a.theme}{a.isPast&&<span style={{fontSize:9,color:"#94A3B8",marginLeft:4}}>{t("dasha_past")}</span>}</div><div style={{display:"flex",alignItems:"center",gap:4,marginTop:2}}><div style={{width:36,height:3,borderRadius:2,background:"#E2E8F0"}}><div style={{height:3,borderRadius:2,background:dc,width:e+"%"}}/></div><span style={{fontSize:8,color:dc,fontWeight:600}}>{getDig(e)}</span></div></div><div style={{textAlign:"right",minWidth:60}}><div style={{fontSize:9,fontWeight:600,color:a.isCurrent?"#4338CA":"#94A3B8"}}>{lang==="th"?"พ.ศ.":""}{Math.round(a.startYear+(lang==="th"?543:0))}</div><div style={{fontSize:9,color:"#94A3B8"}}>–{Math.round(a.endYear+(lang==="th"?543:0))}</div></div></div>})}</div>})()}<div style={{marginTop:8,padding:8,background:"#F5F3FF",borderRadius:8}}><div style={{fontSize:10,fontWeight:700,color:"#4338CA",marginBottom:2}}>{t("dasha_system_title")}</div><div style={{fontSize:9,color:"#64748B"}}>{t("dasha_system_desc")}</div></div></>}catch(e){return<div style={{fontSize:11,color:"#94A3B8"}}>{t("dasha_error")}</div>}})()}</Sec>}
 
   {/* Career Timeline */}
-  {!has("timeline")?<Locked planNeeded="pro" title="กราฟชีวิต จังหวะขึ้น/ลง" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>📅 กราฟชีวิตการงานรายเดือน — โหราศาสตร์ไทย × จิตวิทยา</div><div style={{display:"flex",gap:4,marginBottom:6,flexWrap:"wrap"}}>{['🌟 เดือนทอง ×3','⚠️ เดือนระวัง ×2','💼 งานเสริม ×4'].map((t,i)=><span key={i} style={{fontSize:10,padding:"3px 8px",borderRadius:8,background:i===0?"#FFF8E1":i===1?"#FFF1F2":"#E4EEFF",fontWeight:600,color:i===0?"#C88A10":i===1?"#C04040":"#3A7AC0"}}>{t}</span>)}</div>{['ม.ค. 🌟 เดือนแห่งโอกาส','ก.พ. ⚠️ Saturn กดทับ','มี.ค. 💼 งานเสริมเข้ามา'].map((d,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 8px",borderRadius:6,background:"#F8FAFC",marginBottom:2,fontSize:11}}><span>{d}</span><span style={{fontSize:10}}>⭐⭐⭐{i===0?"⭐⭐":"☆☆"}</span></div>)}<div style={{fontSize:10,color:"#7B6FA0",marginTop:6}}>🔮 Golden Days + Black Days + คำแนะนำจิตวิทยาเฉพาะดวงคุณ</div></Locked>:
-  <Sec fKey="timeline" title="กราฟชีวิตการงาน: รู้ก่อนรุ่ง พุ่งก่อนใคร" icon="📅">{(()=>{
+  {!has("timeline")?<Locked planNeeded="pro" title={t("tl_section_title")} onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>{t("tl_vedic_title")}</div><div style={{display:"flex",gap:4,marginBottom:6,flexWrap:"wrap"}}>{[`🌟 ${t("tl_golden")} ×3`,`⚠️ ${t("tl_danger")} ×2`,`💼 ${t("tl_side")} ×4`].map((lbl,i)=><span key={i} style={{fontSize:10,padding:"3px 8px",borderRadius:8,background:i===0?"#FFF8E1":i===1?"#FFF1F2":"#E4EEFF",fontWeight:600,color:i===0?"#C88A10":i===1?"#C04040":"#3A7AC0"}}>{lbl}</span>)}</div>{(lang==="en"?[`Jan 🌟 Month of Opportunity`,`Feb ⚠️ Saturn pressure`,`Mar 💼 Side work arrives`]:[`ม.ค. 🌟 เดือนแห่งโอกาส`,`ก.พ. ⚠️ Saturn กดทับ`,`มี.ค. 💼 งานเสริมเข้ามา`]).map((d,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 8px",borderRadius:6,background:"#F8FAFC",marginBottom:2,fontSize:11}}><span>{d}</span><span style={{fontSize:10}}>⭐⭐⭐{i===0?"⭐⭐":"☆☆"}</span></div>)}<div style={{fontSize:10,color:"#7B6FA0",marginTop:6}}>{lang==="en"?"🔮 Golden Days + Black Days + Personalized psychology tips":"🔮 Golden Days + Black Days + คำแนะนำจิตวิทยาเฉพาะดวงคุณ"}</div></Locked>:
+  <Sec fKey="timeline" title={t("tl_section_title")} icon="📅">{(()=>{
     const tl=ai.timeline;
-    if(aiL.timeline||!tl)return<Spin t="กำลังคำนวณ Timeline..."/>;
+    if(aiL.timeline||!tl)return<Spin t={t("spin_tl")}/>;
     const months=tl.months||[];
     const year=tl.year||new Date().getFullYear()+543;
     const goldenC=months.filter(m=>m.stars===5).length;
@@ -2417,19 +2419,19 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
     const typeBorder={golden:'#F5A623',good:'#4CAF7D',danger:'#E05C5C',side:'#5C9BE0',neutral:'#C0B8D0'};
     return<div>
     {/* Year label */}
-    <div style={{textAlign:"center",marginBottom:10}}><span style={{fontSize:16,fontWeight:700,color:"#1E293B",letterSpacing:1}}>พ.ศ. {year}</span><div style={{fontSize:11,color:"#8A8090"}}>กราฟชีวิตการงานรายเดือน · โหราศาสตร์ไทย × จิตวิทยา</div></div>
+    <div style={{textAlign:"center",marginBottom:10}}><span style={{fontSize:16,fontWeight:700,color:"#1E293B",letterSpacing:1}}>{lang==="th"?"พ.ศ. ":""}{year}</span><div style={{fontSize:11,color:"#8A8090"}}>{t("tl_year_sub")}</div></div>
 
     {/* Summary pills */}
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:12}}>
-      <div style={{background:"#FFF8E1",borderRadius:10,padding:"8px 6px",textAlign:"center"}}><div style={{fontSize:16}}>⭐</div><div style={{fontSize:18,fontWeight:700,color:"#C88A10"}}>{goldenC}</div><div style={{fontSize:9,color:"#8A8090",fontWeight:500}}>เดือนทอง</div></div>
-      <div style={{background:"#FFF1F2",borderRadius:10,padding:"8px 6px",textAlign:"center"}}><div style={{fontSize:16}}>⚠️</div><div style={{fontSize:18,fontWeight:700,color:"#C04040"}}>{dangerC}</div><div style={{fontSize:9,color:"#8A8090",fontWeight:500}}>เดือนระวัง</div></div>
-      <div style={{background:"#E4EEFF",borderRadius:10,padding:"8px 6px",textAlign:"center"}}><div style={{fontSize:16}}>💼</div><div style={{fontSize:18,fontWeight:700,color:"#3A7AC0"}}>{sideC}</div><div style={{fontSize:9,color:"#8A8090",fontWeight:500}}>งานเสริม</div></div>
+      <div style={{background:"#FFF8E1",borderRadius:10,padding:"8px 6px",textAlign:"center"}}><div style={{fontSize:16}}>⭐</div><div style={{fontSize:18,fontWeight:700,color:"#C88A10"}}>{goldenC}</div><div style={{fontSize:9,color:"#8A8090",fontWeight:500}}>{t("tl_golden")}</div></div>
+      <div style={{background:"#FFF1F2",borderRadius:10,padding:"8px 6px",textAlign:"center"}}><div style={{fontSize:16}}>⚠️</div><div style={{fontSize:18,fontWeight:700,color:"#C04040"}}>{dangerC}</div><div style={{fontSize:9,color:"#8A8090",fontWeight:500}}>{t("tl_danger")}</div></div>
+      <div style={{background:"#E4EEFF",borderRadius:10,padding:"8px 6px",textAlign:"center"}}><div style={{fontSize:16}}>💼</div><div style={{fontSize:18,fontWeight:700,color:"#3A7AC0"}}>{sideC}</div><div style={{fontSize:9,color:"#8A8090",fontWeight:500}}>{t("tl_side")}</div></div>
     </div>
 
     {/* Energy Chart (SVG) */}
     <div style={{background:"#fff",borderRadius:12,padding:"12px 8px",marginBottom:12,border:"1px solid #F1F5F9"}}>
-      <div style={{fontSize:12,fontWeight:700,color:"#1E293B",marginBottom:2}}>📈 กราฟพลังงานการงาน</div>
-      <div style={{fontSize:10,color:"#8A8090",marginBottom:8}}>แตะที่เดือนเพื่อดูรายละเอียด</div>
+      <div style={{fontSize:12,fontWeight:700,color:"#1E293B",marginBottom:2}}>{t("tl_chart_title")}</div>
+      <div style={{fontSize:10,color:"#8A8090",marginBottom:8}}>{t("tl_chart_hint")}</div>
       <svg viewBox="0 0 480 100" style={{width:"100%",height:80}} preserveAspectRatio="none">
         <line x1="0" y1="25" x2="480" y2="25" stroke="#F0ECF8" strokeWidth="0.5"/>
         <line x1="0" y1="50" x2="480" y2="50" stroke="#F0ECF8" strokeWidth="0.8"/>
@@ -2449,44 +2451,44 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         {months.map((m,i)=><span key={i} style={{fontSize:8,color:"#B0A8C0",fontWeight:500}}>{m.monthShort}</span>)}
       </div>
       <div style={{display:"flex",gap:10,marginTop:8,flexWrap:"wrap"}}>
-        {[['#F5A623','เดือนทอง'],['#4CAF7D','เดือนดี'],['#E05C5C','ระวัง'],['#5C9BE0','งานเสริม']].map(([c,l],i)=><div key={i} style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#8A8090"}}><div style={{width:6,height:6,borderRadius:"50%",background:c}}/>{l}</div>)}
+        {[[`#F5A623`,t("tl_legend_golden")],[`#4CAF7D`,t("tl_legend_good")],[`#E05C5C`,t("tl_legend_danger")],[`#5C9BE0`,t("tl_legend_side")]].map(([c,l],i)=><div key={i} style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#8A8090"}}><div style={{width:6,height:6,borderRadius:"50%",background:c}}/>{l}</div>)}
       </div>
     </div>
 
     {/* Month cards */}
     <div style={{marginBottom:10}}>
-      <div style={{fontSize:12,fontWeight:700,color:"#1E293B",marginBottom:4}}>🗓️ ทุกเดือนในปีนี้</div>
+      <div style={{fontSize:12,fontWeight:700,color:"#1E293B",marginBottom:4}}>{t("tl_months_title")}</div>
       <div style={{fontSize:10,color:"#8A8090",background:"#F5F3FF",borderRadius:8,padding:"6px 10px",display:"flex",alignItems:"center",gap:6}}>
         <span style={{fontSize:13}}>👆</span>
-        <span>แตะที่การ์ดรายเดือนเพื่อดูรายละเอียด — งาน เงิน ความรัก สุขภาพ + คำแนะนำตัดสินใจ<br/>
-        <span style={{color:"#6366F1",fontWeight:600}}>ม.ค. เปิดไว้ให้ดูตัวอย่าง · แตะอีกครั้งเพื่อปิด</span></span>
+        <span>{t("tl_months_hint")}<br/>
+        <span style={{color:"#6366F1",fontWeight:600}}>{t("tl_months_hint2")}</span></span>
       </div>
     </div>
     {months.map((m,i)=><TimelineMonth key={i} m={m} i={i} typeColors={typeColors} typeBg={typeBg} typeBorder={typeBorder} defaultOpen={i===0}/>)}
 
     <div style={{marginTop:8,padding:8,background:"#F5F3FF",borderRadius:8}}>
-      <div style={{fontSize:10,fontWeight:700,color:"#7B6FA0",marginBottom:2}}>🔮 Vedic Jyotish พระเวท × โหราศาสตร์ไทย</div>
-      <div style={{fontSize:9,color:"#64748B"}}>คำนวณจากราศีเกิด Sidereal + มหาทศา Dasha + ดาวจร 8 ดวง + เรือน 12 + สภาพดาว (อุจจ์/นิจ/เกษตร) · วิเคราะห์งาน เงิน ความรัก สุขภาพ รายเดือน</div>
+      <div style={{fontSize:10,fontWeight:700,color:"#7B6FA0",marginBottom:2}}>{t("tl_vedic_title")}</div>
+      <div style={{fontSize:9,color:"#64748B"}}>{t("tl_vedic_desc")}</div>
     </div>
     </div>})()}</Sec>}
 
   <div id="sec-execution" className="snav-anchor"/><SectionHeader icon="🎯" label="Execution Layer" locked={!has("job")} planNeeded="pro" onUpgrade={tryUpgrade}/>
 
   <div id="sec-job" className="snav-anchor"/>{/* Locked preview: Job */}
-  {!has("job")?<Locked planNeeded="pro" title="Job Matching AI" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>💼 AI แนะนำอาชีพจาก 12D Profile + Vedic</div>{[{t:"Data Analyst",m:88},{t:"Project Manager",m:82},{t:"UX Researcher",m:78}].map((j,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 10px",borderRadius:6,background:"#F8FAFC",marginBottom:3,fontSize:12}}><span>{i+1}. {j.t}</span><span style={{fontWeight:700,color:"#4338CA"}}>Match {j.m}%</span></div>)}<div style={{display:"flex",gap:4,marginTop:4}}><div style={{padding:"5px 10px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:10,fontWeight:700}}>🔍 ค้นหาใน LinkedIn</div></div></Locked>:<Sec fKey="job" title="Job Matching AI" icon="💼">{aiL.job||!ai.job?<Spin/>:Array.isArray(ai.job)?ai.job.map((j,i)=><div key={i} style={{padding:10,borderRadius:8,background:"#F8FAFC",marginBottom:4}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}><span style={{fontSize:13,fontWeight:700}}>{j.titleTH||j.title}</span><span style={{fontSize:10,fontWeight:700,color:"#4338CA",background:"#EEF2FF",padding:"2px 6px",borderRadius:6}}>{j.match}%</span></div>{j.dims&&<div style={{fontSize:10,color:"#6366F1",marginBottom:2}}>📊 {j.dims}</div>}<div style={{fontSize:11,color:"#64748B",lineHeight:1.5}}>{j.reason}</div><a href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(j.title)}&location=Thailand`} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:6,padding:"5px 12px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:11,fontWeight:700,textDecoration:"none"}}>🔍 ค้นหางานในไทย — LinkedIn</a></div>):<Spin/>}</Sec>}
+  {!has("job")?<Locked planNeeded="pro" title="Job Matching AI" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>{t("job_locked_title")}</div>{[{t:"Data Analyst",m:88},{t:"Project Manager",m:82},{t:"UX Researcher",m:78}].map((j,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 10px",borderRadius:6,background:"#F8FAFC",marginBottom:3,fontSize:12}}><span>{i+1}. {j.t}</span><span style={{fontWeight:700,color:"#4338CA"}}>Match {j.m}%</span></div>)}<div style={{display:"flex",gap:4,marginTop:4}}><div style={{padding:"5px 10px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:10,fontWeight:700}}>{t("job_search_btn")}</div></div></Locked>:<Sec fKey="job" title="Job Matching AI" icon="💼">{aiL.job||!ai.job?<Spin/>:Array.isArray(ai.job)?ai.job.map((j,i)=><div key={i} style={{padding:10,borderRadius:8,background:"#F8FAFC",marginBottom:4}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}><span style={{fontSize:13,fontWeight:700}}>{j.titleTH||j.title}</span><span style={{fontSize:10,fontWeight:700,color:"#4338CA",background:"#EEF2FF",padding:"2px 6px",borderRadius:6}}>{j.match}%</span></div>{j.dims&&<div style={{fontSize:10,color:"#6366F1",marginBottom:2}}>📊 {j.dims}</div>}<div style={{fontSize:11,color:"#64748B",lineHeight:1.5}}>{j.reason}</div><a href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(j.title)}&location=Thailand`} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:6,padding:"5px 12px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:11,fontWeight:700,textDecoration:"none"}}>{t("job_link_text")}</a></div>):<Spin/>}</Sec>}
 
   <div id="sec-decision" className="snav-anchor"/><div id="sec-decision-roadmap" className="snav-anchor"/>{/* Decision Roadmap */}
-  {!has("decision_roadmap")?<Locked planNeeded="pro" title="Decision Roadmap — แผนการตัดสินใจจาก 4 ศาสตร์" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#0f172a,#1e1b4b)",color:"#A5B4FC",lineHeight:1.8,fontSize:12}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>🎯 Decision Roadmap</div><div style={{fontSize:11}}>Next step ต้องทำอะไรตามโหราศาสตร์ 4 ศาสตร์</div></div></Locked>:<Sec fKey="decision_roadmap" planNeeded="pro" title="Decision Roadmap" icon="🎯"><div style={{background:"#EEF2FF",borderRadius:10,padding:"12px 14px",border:"1px solid #C7D2FE"}}>{aiL.decision_roadmap?<Spin t="สร้าง Roadmap..."/>:ai.decision_roadmap?<div style={{fontSize:12,lineHeight:1.9,color:"#1E293B",whiteSpace:"pre-wrap"}}>{ai.decision_roadmap}</div>:<Spin t="กำลังโหลด..."/>}</div></Sec>}
+  {!has("decision_roadmap")?<Locked planNeeded="pro" title="Decision Roadmap" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#0f172a,#1e1b4b)",color:"#A5B4FC",lineHeight:1.8,fontSize:12}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>🎯 Decision Roadmap</div><div style={{fontSize:11}}>{t("roadmap_locked_sub")}</div></div></Locked>:<Sec fKey="decision_roadmap" planNeeded="pro" title="Decision Roadmap" icon="🎯"><div style={{background:"#EEF2FF",borderRadius:10,padding:"12px 14px",border:"1px solid #C7D2FE"}}>{aiL.decision_roadmap?<Spin t={t("spin_roadmap_now")}/>:ai.decision_roadmap?<div style={{fontSize:12,lineHeight:1.9,color:"#1E293B",whiteSpace:"pre-wrap"}}>{ai.decision_roadmap}</div>:<Spin t={t("spin_loading")}/>}</div></Sec>}
 
   <div id="sec-deep" className="snav-anchor"/><SectionHeader icon="📊" label="Deep Insight" locked={!has("12d")} planNeeded="pro" onUpgrade={tryUpgrade}/>
 
   <div id="sec-12d" className="snav-anchor"/>{/* Locked preview: 12D */}
-  {!has("12d")?<Locked planNeeded="pro" title="12D Spider Web + จุดแข็ง/จุดพัฒนา" onUpgrade={tryUpgrade}><div style={{textAlign:"center",padding:16}}><Spider scores={scores}/></div><div style={{padding:"8px 0"}}><div style={{fontSize:12,marginBottom:4}}>💪 จุดแข็ง: {so.slice(0,3).map(([k,v])=>`${DM[k]?.icon}${k}(${v.toFixed(1)})`).join(" · ")}</div><div style={{fontSize:12}}>⚠️ จุดพัฒนา: {so.slice(-3).map(([k,v])=>`${DM[k]?.icon}${k}(${v.toFixed(1)})`).join(" · ")}</div></div></Locked>:<Sec fKey="12d" title="12D Spider Web" icon="🕸️"><div style={{display:"flex",justifyContent:"center",marginBottom:8}}><Spider scores={scores}/></div><div style={{marginBottom:6}}><div style={{fontSize:11,fontWeight:700,color:"#10B981",marginBottom:3}}>💪 จุดแข็ง</div>{so.slice(0,4).map(([d,s])=><div key={d} style={{padding:"4px 8px",borderRadius:6,background:"#ECFDF5",border:"1px solid #A7F3D0",marginBottom:2,display:"flex",justifyContent:"space-between",fontSize:11}}><span>{DM[d]?.icon} {d}</span><span style={{fontWeight:700,color:"#059669"}}>{s.toFixed(1)}</span></div>)}</div><div><div style={{fontSize:11,fontWeight:700,color:"#EF4444",marginBottom:3}}>⚠️ จุดพัฒนา</div>{so.slice(-4).map(([d,s])=><div key={d} style={{padding:"4px 8px",borderRadius:6,background:"#FFF1F2",border:"1px solid #FECDD3",marginBottom:2,display:"flex",justifyContent:"space-between",fontSize:11}}><span>{DM[d]?.icon} {d}</span><span style={{fontWeight:700,color:"#EF4444"}}>{s.toFixed(1)}</span></div>)}</div>{aiL["12d"]?<Spin/>:ai["12d"]?<div style={{marginTop:8,padding:8,background:"#F8FAFC",borderRadius:8}}><Typer text={ai["12d"]}/></div>:null}</Sec>}
+  {!has("12d")?<Locked planNeeded="pro" title="12D Spider Web" onUpgrade={tryUpgrade}><div style={{textAlign:"center",padding:16}}><Spider scores={scores}/></div><div style={{padding:"8px 0"}}><div style={{fontSize:12,marginBottom:4}}>{t("strength_label")}: {so.slice(0,3).map(([k,v])=>`${DM[k]?.icon}${k}(${v.toFixed(1)})`).join(" · ")}</div><div style={{fontSize:12}}>{t("develop_label")}: {so.slice(-3).map(([k,v])=>`${DM[k]?.icon}${k}(${v.toFixed(1)})`).join(" · ")}</div></div></Locked>:<Sec fKey="12d" title="12D Spider Web" icon="🕸️"><div style={{display:"flex",justifyContent:"center",marginBottom:8}}><Spider scores={scores}/></div><div style={{marginBottom:6}}><div style={{fontSize:11,fontWeight:700,color:"#10B981",marginBottom:3}}>{t("strength_label")}</div>{so.slice(0,4).map(([d,s])=><div key={d} style={{padding:"4px 8px",borderRadius:6,background:"#ECFDF5",border:"1px solid #A7F3D0",marginBottom:2,display:"flex",justifyContent:"space-between",fontSize:11}}><span>{DM[d]?.icon} {d}</span><span style={{fontWeight:700,color:"#059669"}}>{s.toFixed(1)}</span></div>)}</div><div><div style={{fontSize:11,fontWeight:700,color:"#EF4444",marginBottom:3}}>{t("develop_label")}</div>{so.slice(-4).map(([d,s])=><div key={d} style={{padding:"4px 8px",borderRadius:6,background:"#FFF1F2",border:"1px solid #FECDD3",marginBottom:2,display:"flex",justifyContent:"space-between",fontSize:11}}><span>{DM[d]?.icon} {d}</span><span style={{fontWeight:700,color:"#EF4444"}}>{s.toFixed(1)}</span></div>)}</div>{aiL["12d"]?<Spin/>:ai["12d"]?<div style={{marginTop:8,padding:8,background:"#F8FAFC",borderRadius:8}}><Typer text={ai["12d"]}/></div>:null}</Sec>}
 
   <div id="sec-shadow-deep" className="snav-anchor"/>{/* Shadow Deep */}
-  {!has("shadow_deep")?<Locked planNeeded="pro" title="Shadow Analysis เชิงลึก — ระดับ Deep" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#0a0a0a,#1a1a2e)",color:"#94A3B8",lineHeight:1.8,fontSize:12}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>🌑 Shadow Analysis เชิงลึก</div><div style={{fontSize:11}}>Core Shadow Identity · Integration Map · เส้นทาง Integration</div></div></Locked>:<Sec fKey="shadow_deep" planNeeded="pro" title="Shadow Analysis เชิงลึก" icon="🌑"><div style={{background:"#0F172A",borderRadius:10,padding:"12px 14px"}}>{aiL.shadow_deep?<Spin t="วิเคราะห์ Shadow เชิงลึก..."/>:ai.shadow_deep?<div style={{fontSize:12,lineHeight:1.9,color:"#E2E8F0",whiteSpace:"pre-wrap"}}>{ai.shadow_deep}</div>:<Spin t="กำลังโหลด..."/>}</div></Sec>}
+  {!has("shadow_deep")?<Locked planNeeded="pro" title="Shadow Analysis Deep" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#0a0a0a,#1a1a2e)",color:"#94A3B8",lineHeight:1.8,fontSize:12}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>{t("shadow_deep_locked_title")}</div><div style={{fontSize:11}}>{t("shadow_deep_locked_desc")}</div></div></Locked>:<Sec fKey="shadow_deep" planNeeded="pro" title="Shadow Analysis Deep" icon="🌑"><div style={{background:"#0F172A",borderRadius:10,padding:"12px 14px"}}>{aiL.shadow_deep?<Spin t={t("spin_shadow_deep")}/>:ai.shadow_deep?<div style={{fontSize:12,lineHeight:1.9,color:"#E2E8F0",whiteSpace:"pre-wrap"}}>{ai.shadow_deep}</div>:<Spin t={t("spin_loading")}/>}</div></Sec>}
 
-  <div id="sec-pdf-sec" className="snav-anchor"/>{!has("pdf")?<Locked planNeeded="pro" title="PDF Report ดาวน์โหลด" onUpgrade={tryUpgrade}><div style={{fontSize:12,lineHeight:1.8}}>📄 รายงานฉบับเต็ม ประกอบด้วย:<br/>• 12 Dimension Scores + Spider Chart<br/>• Identity + Shadow + 5 Core Analysis<br/>• Do & Don't + 7-Day Energy + transit<br/>• Job Matching + Life Phase Map</div></Locked>:<Sec fKey="pdf" title="PDF Report" icon="📄"><Btn onClick={exportPDF} style={{fontSize:12,padding:8}}>📄 ดาวน์โหลด PDF</Btn></Sec>}
+  <div id="sec-pdf-sec" className="snav-anchor"/>{!has("pdf")?<Locked planNeeded="pro" title={t("pdf_locked_title")} onUpgrade={tryUpgrade}><div style={{fontSize:12,lineHeight:1.8,whiteSpace:"pre-line"}}>{t("pdf_locked_contents")}</div></Locked>:<Sec fKey="pdf" title="PDF Report" icon="📄"><Btn onClick={exportPDF} style={{fontSize:12,padding:8}}>{t("pdf_download_btn")}</Btn></Sec>}
 
   <Sec fKey="share" title="Social Share Card" icon="📸"><div style={{fontSize:11,color:"#64748B",marginBottom:6}}>{plan==="all"?"การ์ด Full — Radar Chart 12 ด้าน + จุดแข็ง + Shadow + คำแนะนำ":"การ์ด Free — 5 Core + จุดแข็ง/Shadow + CTA อัปเกรด"}</div><Btn onClick={shareProfile} style={{fontSize:12,padding:8,background:"linear-gradient(135deg,#7C3AED,#5B21B6)"}}>📸 ดาวน์โหลดการ์ดแชร์</Btn></Sec>
 
