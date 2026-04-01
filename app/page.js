@@ -105,7 +105,9 @@ const calcAntardasha=(mahadasha,startYear)=>{if(!mahadasha)return[];const mdI=DA
 
 // Career Timeline — โหราศาสตร์ไทย (Thai Sidereal Astrology) Monthly Energy
 const TL_MONTHS_TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const TL_MONTHS_EN_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const TL_MONTHS_FULL=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const TL_MONTHS_EN_FULL=['January','February','March','April','May','June','July','August','September','October','November','December'];
 // ราศีไทย (Sidereal / สุริยาตร์) — ใช้ระบบ Sidereal ไม่ใช่ Tropical
 const TL_RASHI_TH=['เมษ','พฤษภ','มิถุน','กรกฎ','สิงห์','กันย์','ตุลย์','พิจิก','ธนู','มกร','กุมภ์','มีน'];
 const TL_RASHI_LORDS=['อังคาร','ศุกร์','พุธ','จันทร์','อาทิตย์','พุธ','ศุกร์','อังคาร','พฤหัส','เสาร์','เสาร์','พฤหัส'];
@@ -393,6 +395,9 @@ const genTimeline=(bd,year)=>{
 const starsFromEnergy=(e)=>{if(e>=85)return 5;if(e>=70)return 4;if(e>=52)return 3;if(e>=35)return 2;return 1};
 const starStr=(n)=>{let s='';for(let i=0;i<n;i++)s+='⭐';for(let i=n;i<5;i++)s+='☆';return s};
 const starLabel=(n)=>['','เดือนยาก','เดือนระวัง','เดือนปกติ','เดือนดี','เดือนทอง'][n]||'';
+const starLabelEN=(n)=>['','Hard Month','Caution Month','Normal Month','Good Month','Golden Month'][n]||'';
+const TL_HEADLINE_EN={golden:'Golden Month of Opportunity',good:'Good Month — Build Momentum',danger:'Caution Month — Stay Defensive',side:'Side Income Month — Extra Revenue',neutral:'Planning Month — Steady Pace'};
+const TL_TAG_EN={'เดือนทอง':'Golden Month','โอกาสสูง':'High Opportunity','เดือนดี':'Good Month','งานเสริม':'Side Income','เดือนระวัง':'Caution','เดือนยาก':'Challenging','ปานกลาง':'Moderate','กาลกินี':'Adverse Day','เสาร์ทับ':'Saturn Pressure'};
 
 // ── MBTI + Vedic Identity Helpers ──
 const calcMBTI=(s)=>{const ei=((s["Energy Management"]||5)+(s["Motivation Driver"]||5))/2>=5.5?"E":"I";const ns=((s["Cognitive Processing"]||5)+(s["Integration Level"]||5)+(s["Growth Orientation"]||5))/3>=5.5?"N":"S";const tf=(s["Decision System"]||5)>=(s["Emotional Regulation"]||5)?"T":"F";const jp=((s["Identity Stability"]||5)+(s["Responsibility Load"]||5))/2>=5.5?"J":"P";return ei+ns+tf+jp};
@@ -981,7 +986,7 @@ export default function App(){
     if(type==="love"){const mbti=calcMBTI(s);const domP=calcDomPlanet(v);const emotLow=s["Emotional Regulation"]<5;const boundLow=s["Boundary System"]<5;const shadowSc=s["Shadow Pattern"]?.toFixed(1);const emotSc=s["Emotional Regulation"]?.toFixed(1);const boundSc=s["Boundary System"]?.toFixed(1);const motSc=s["Motivation Driver"]?.toFixed(1);r=await GPT.call(`${lang==="en"?"IMPORTANT: Respond entirely in English. All content, labels, and descriptions must be in English only.\n":""}วิเคราะห์ Love & Compatibility ชะตาความรักของ"${nn}"\nข้อมูล:\n- MBTI: ${mbti}\n- ดาวเด่น: ${domP.icon}${domP.planet}(${domP.en})\n- Shadow Score: ${shadowSc}/10, Emotional Regulation: ${emotSc}/10, Boundary System: ${boundSc}/10, Motivation Driver: ${motSc}/10\n- Emotional ต่ำ: ${emotLow}, Boundary ต่ำ: ${boundLow}\n\nเขียนตามรูปแบบนี้เป๊ะๆ (แทนที่วงเล็บด้วยข้อมูลจริง ห้าม **text** ใส่บรรทัดว่างระหว่างหัวข้อ):\n---\nLove & Compatibility — ชะตาความรักและไทม์ไลน์คู่แท้\n\n💔 Root Cause Diagnostic — ทำไมถึงเจอแต่รักพังๆ?\n\n[สัดส่วนสาเหตุ 3-4 ข้อ อ้างอิงดาว+จิตวิทยา เช่น Attachment Style, Shadow Pattern, ราหู/เกตุ บอกเป็นเปอร์เซ็นต์หรือลำดับ]\n\n🔍 รูปแบบความสัมพันธ์ที่เกิดซ้ำ\n\n[1 ย่อหน้า อธิบาย pattern ความรักที่ซ้ำซาก อ้างดาวและจิตวิทยา Attachment Style ใช้ภาษาอบอุ่น]\n\n⚠️ Warning Insight\n\n[1-2 ประโยค สิ่งที่ควรหยุดทำในความสัมพันธ์]\n\n💑 The Ideal Partner Persona — คู่ครองที่เสริมดวงและจิตวิทยา\n\n[3-4 ข้อ ลักษณะคู่แท้ที่เข้ากันและเสริมดวง: บุคลิก, สาขาอาชีพ, ลักษณะทางจิตใจ, MBTI ที่แนะนำ]\n\n📊 เปรียบเทียบ — สิ่งที่คุณต้องการ VS สเปคเสริมดวง\n\n   สิ่งที่จิตใต้สำนึกโหยหา: [2-3 คุณสมบัติที่ดึงดูดแต่อาจไม่เหมาะ]\n   สเปคเสริมดวงที่แท้จริง: [2-3 คุณสมบัติที่ดาวและจิตวิทยาบอกว่าต้องการจริงๆ]\n\n⏳ Destiny Timeline — จะพบคู่แท้เมื่อไหร่?\n\n   ช่วงที่มีโอกาสสูงสุด: [ระบุปี พ.ศ. หรือไตรมาส อ้างอิงจากดาวศุกร์+พฤหัสจร]\n   สัญญาณที่บ่งบอกว่าพบคนที่ใช่: [2-3 ข้อ]\n   เตรียมตัวอย่างไร: [1-2 ประโยค ทำได้จริง]\n---`,`lv_${nn}`,undefined,sys)}
     if(type==="principle"){const domP=calcDomPlanet(v);const mbti=calcMBTI(s);r=await GPT.call(`${lang==="en"?"IMPORTANT: Respond entirely in English. All content must be in English only.\n":""}เขียนหลักการใช้ชีวิต (Life Principle) ของ"${nn}" เป็น 1 ประโยคที่กระชับ ลึก จำได้ทันที ห้ามใช้ * หรือ ** เด็ดขาด ไม่ต้องมี header\nดาวเด่น: ${domP.icon}${domP.planet}(${domP.en}) — ${domP.power}\nMBTI: ${mbti}\nดาวแข็งพื้นดวง (top 2): ${Object.entries(v).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([k,val])=>(k)+"("+(val.toFixed(1))+")").join(",")}\nด้านท้าทาย (bottom 2): ${Object.entries(s).sort((a,b)=>a[1]-b[1]).slice(0,2).map(([k,val])=>(k)+"("+(val.toFixed(1))+")").join(",")}\n\nประโยคต้องครอบคลุม: ช่วงสวยงามที่สุดในชีวิตเกิดขึ้นเมื่อใด / ช่วงดำมืดที่สุดรู้สึกอย่างไร / ทุกครั้งที่ผ่านได้เพราะอะไร และพลังดาว${domP.planet}ช่วยอย่างไร\nตอบเป็นข้อความธรรมดา 1 ประโยคเดียว ไม่ขึ้นบรรทัดใหม่ ไม่มีหมายเลข`,`pr_${nn}_${domP.planet}`,undefined,sys)}
     if(type==="money"){const domP=calcDomPlanet(v);const mbti=calcMBTI(s);const so2=Object.entries(s).sort((a,b)=>b[1]-a[1]);r=await GPT.call(`${lang==="en"?"IMPORTANT: Respond entirely in English. All content, labels, and descriptions must be in English only.\n":""}วิเคราะห์ Money Strategy ของ"${nn}"\nดาวเด่น: ${domP.icon}${domP.planet}(${domP.en}) — ${domP.power}\nMBTI: ${mbti}\nคะแนนเด่น: ${so2.slice(0,3).map(([k,v2])=>k+"("+v2.toFixed(1)+")").join(",")}\nจุดพัฒนา: ${so2.slice(-2).map(([k,v2])=>k+"("+v2.toFixed(1)+")").join(",")}\n\nเขียนตามรูปแบบนี้เป๊ะๆ (ห้าม **text**):\n---\nMoney Strategy — กลยุทธ์การเงินเฉพาะตัวคุณ\n\n💰 นิสัยทางการเงินของคุณ\n\n[1-2 ย่อหน้า อธิบายนิสัยการเงินตามบุคลิก ${mbti} + ดาว${domP.planet} เช่น ใช้จ่ายอย่างไร วางแผนอย่างไร จุดแข็งและจุดอ่อนด้านการเงิน]\n\n🪐 สถานการณ์การเงินตามดาว\n\n[1-2 ย่อหน้า อธิบายแนวโน้มการเงินตามดาวปัจจุบัน โอกาส และช่วงเวลาที่ดี]\n\n🔧 วิธีแก้ไขและเพิ่มพูนทรัพย์\n\n   1. [วิธีที่ 1]: [อธิบาย 1-2 ประโยค]\n   2. [วิธีที่ 2]: [อธิบาย 1-2 ประโยค]\n   3. [วิธีที่ 3]: [อธิบาย 1-2 ประโยค]\n---`,`money_${nn}`,undefined,sys)}
-    if(type==="decision_roadmap"){const domP=calcDomPlanet(v);const mbti=calcMBTI(s);const so2=Object.entries(s).sort((a,b)=>b[1]-a[1]);r=await GPT.call(`${lang==="en"?"IMPORTANT: Respond entirely in English. All content, labels, and descriptions must be in English only.\n":""}สร้าง Decision Roadmap สำหรับ"${nn}"\nดาวเด่น: ${domP.icon}${domP.planet}(${domP.en})\nMBTI: ${mbti}\nคะแนนเด่น: ${so2.slice(0,3).map(([k,v2])=>k+"("+v2.toFixed(1)+")").join(",")}\nจุดพัฒนา: ${so2.slice(-2).map(([k,v2])=>k+"("+v2.toFixed(1)+")").join(",")}\n\nเขียนตามรูปแบบนี้เป๊ะๆ (ห้าม **text**):\n---\nDecision Roadmap — แผนการตัดสินใจจาก 4 ศาสตร์\n\n🎯 สรุปภาพรวม (4 ศาสตร์)\n\n   Vedic: [สิ่งที่โหราศาสตร์พระเวทบอกให้ทำตอนนี้ 1-2 ประโยค]\n   Western: [สิ่งที่โหราศาสตร์ตะวันตกบอก 1-2 ประโยค]\n   Chinese: [สิ่งที่โหราศาสตร์จีนบอก 1-2 ประโยค]\n   Thai: [สิ่งที่โหราศาสตร์ไทยบอก 1-2 ประโยค]\n\n📋 Next Steps — ต้องทำอะไรตามลำดับ\n\n   Step 1 (สัปดาห์นี้): [การกระทำที่เป็นรูปธรรม]\n   Step 2 (เดือนนี้): [การกระทำที่เป็นรูปธรรม]\n   Step 3 (3 เดือน): [การกระทำที่เป็นรูปธรรม]\n\n⚡ Priority การตัดสินใจ\n\n[1 ย่อหน้า บอกว่าควรโฟกัสอะไรมากที่สุดตอนนี้ และทำไม]\n---`,`roadmap_${nn}`,undefined,sys)}
+    if(type==="decision_roadmap"){const domP=calcDomPlanet(v);const mbti=calcMBTI(s);const so2=Object.entries(s).sort((a,b)=>b[1]-a[1]);const roadmapPrompt=lang==="en"?`Create a personalized Decision Roadmap for "${nn}"\nDominant Planet: ${domP.icon}${domP.en} (${domP.power})\nMBTI: ${mbti}\nTop Strengths: ${so2.slice(0,3).map(([k,v2])=>k+"("+v2.toFixed(1)+")").join(",")}\nDevelopment Areas: ${so2.slice(-2).map(([k,v2])=>k+"("+v2.toFixed(1)+")").join(",")}\n\nWrite in this exact format (no **bold** markers):\n---\nDecision Roadmap — Your 4-System Action Plan\n\n🎯 Overview (4 Systems)\n\n   Vedic: [What Vedic Astrology says to do right now — 1-2 sentences]\n   Western: [What Western Astrology advises — 1-2 sentences]\n   Chinese: [What Chinese Astrology suggests — 1-2 sentences]\n   Thai: [What Thai Astrology recommends — 1-2 sentences]\n\n📋 Next Steps — In Order of Priority\n\n   Step 1 (This week): [A concrete action you can take now]\n   Step 2 (This month): [A concrete action for this month]\n   Step 3 (Next 3 months): [A concrete action for the longer term]\n\n⚡ Decision Priority\n\n[1 paragraph explaining what to focus on most right now, and why, referencing your dominant planet and MBTI]\n---`:`สร้าง Decision Roadmap สำหรับ"${nn}"\nดาวเด่น: ${domP.icon}${domP.planet}(${domP.en})\nMBTI: ${mbti}\nคะแนนเด่น: ${so2.slice(0,3).map(([k,v2])=>k+"("+v2.toFixed(1)+")").join(",")}\nจุดพัฒนา: ${so2.slice(-2).map(([k,v2])=>k+"("+v2.toFixed(1)+")").join(",")}\n\nเขียนตามรูปแบบนี้เป๊ะๆ (ห้าม **text**):\n---\nDecision Roadmap — แผนการตัดสินใจจาก 4 ศาสตร์\n\n🎯 สรุปภาพรวม (4 ศาสตร์)\n\n   Vedic: [สิ่งที่โหราศาสตร์พระเวทบอกให้ทำตอนนี้ 1-2 ประโยค]\n   Western: [สิ่งที่โหราศาสตร์ตะวันตกบอก 1-2 ประโยค]\n   Chinese: [สิ่งที่โหราศาสตร์จีนบอก 1-2 ประโยค]\n   Thai: [สิ่งที่โหราศาสตร์ไทยบอก 1-2 ประโยค]\n\n📋 Next Steps — ต้องทำอะไรตามลำดับ\n\n   Step 1 (สัปดาห์นี้): [การกระทำที่เป็นรูปธรรม]\n   Step 2 (เดือนนี้): [การกระทำที่เป็นรูปธรรม]\n   Step 3 (3 เดือน): [การกระทำที่เป็นรูปธรรม]\n\n⚡ Priority การตัดสินใจ\n\n[1 ย่อหน้า บอกว่าควรโฟกัสอะไรมากที่สุดตอนนี้ และทำไม]\n---`;r=await GPT.call(roadmapPrompt,`roadmap_${nn}`,undefined,sys)}
     if(type==="weekly"){const t=await GPT.call(`${lang==="en"?"IMPORTANT: Respond entirely in English. All content must be in English only.\n":""}เขียนเหมือนพี่ที่ปรึกษาที่ห่วงใย อบอุ่น ฮีลใจ\nคำแนะนำสัปดาห์นี้สำหรับ"${nn}":\nเด่น:${so.slice(0,3).map(([k])=>k).join(",")} ต้องดูแลเพิ่ม:${so.slice(-2).map(([k])=>k).join(",")}\nตอบJSONไม่มีbacktick:{"do":["สิ่งดีๆที่ควรทำ1(ให้กำลังใจ)","ควรทำ2(อบอุ่น)","ควรทำ3(เป็นกันเอง)"],"dont":["สิ่งที่ควรระวัง1(พูดเบาๆไม่ตำหนิ)","ควรระวัง2(แนะทางออก)","ควรระวัง3(ห่วงใย)"]}`,`wk_${nn}`,undefined,sys);r=pJ(t)}
     // Energy: show smart fallback FIRST then try GPT
     if(type==="energy"){try{const tr=gen7Day(bd);const MOODS=lang==="en"?["🌟 Bright","😊 Calm","🔥 Energized","🧠 Analytical","📚 Open-minded","💎 Relaxed","⚙️ Needs Discipline"]:["🌟 สดใส","😊 สงบ","🔥 กระตือรือร้น","🧠 คิดวิเคราะห์","📚 ปัญญาเปิด","💎 ผ่อนคลาย","⚙️ ต้องใช้วินัย"];
@@ -1010,8 +1015,8 @@ export default function App(){
     // Job: show smart fallback FIRST then try GPT
     if(type==="job"){try{const top3=so.slice(0,3).map(([k])=>k);const bot2=so.slice(-2).map(([k])=>k);
       const JOB_MAP={"Cognitive Processing":[{t:"Data Analyst",th:"นักวิเคราะห์ข้อมูล"},{t:"Software Engineer",th:"วิศวกรซอฟต์แวร์"}],"Energy Management":[{t:"Project Manager",th:"ผู้จัดการโปรเจกต์"},{t:"Sales Manager",th:"ผู้จัดการฝ่ายขาย"}],"Emotional Regulation":[{t:"UX Researcher",th:"นักวิจัย UX"},{t:"Counselor",th:"ที่ปรึกษา"}],"Decision System":[{t:"Financial Planner",th:"นักวางแผนการเงิน"},{t:"Strategy Consultant",th:"ที่ปรึกษากลยุทธ์"}],"Growth Orientation":[{t:"Product Manager",th:"ผู้จัดการผลิตภัณฑ์"},{t:"Researcher",th:"นักวิจัย"}],"Motivation Driver":[{t:"Entrepreneur",th:"ผู้ประกอบการ"},{t:"Marketing Manager",th:"ผู้จัดการการตลาด"}],"Responsibility Load":[{t:"Operations Manager",th:"ผู้จัดการปฏิบัติการ"},{t:"Quality Assurance",th:"QA Engineer"}]};
-      const picks=[];const seen=new Set();top3.forEach(dim=>{(JOB_MAP[dim]||JOB_MAP["Cognitive Processing"]).forEach(j=>{if(!seen.has(j.t)&&picks.length<3){seen.add(j.t);picks.push({title:j.t,titleTH:j.th,match:Math.round(85-picks.length*5+s[dim]),dims:top3.slice(0,3).join(" + "),reason:`${DM[dim]?.icon}${dim}(${s[dim]?.toFixed(1)})ที่แข็งหนุนงานนี้ ดาว${DM[dim]?.pl}ส่งพลัง`})}})});
-      while(picks.length<3)picks.push({title:"Business Analyst",titleTH:"นักวิเคราะห์ธุรกิจ",match:75,dims:top3.join(" + "),reason:"ทักษะรอบด้านเหมาะกับการวิเคราะห์"});
+      const picks=[];const seen=new Set();top3.forEach(dim=>{(JOB_MAP[dim]||JOB_MAP["Cognitive Processing"]).forEach(j=>{if(!seen.has(j.t)&&picks.length<3){seen.add(j.t);picks.push({title:j.t,titleTH:j.th,match:Math.round(85-picks.length*5+s[dim]),dims:top3.slice(0,3).join(" + "),reason:lang==="en"?`${DM[dim]?.icon}${dim}(${s[dim]?.toFixed(1)}) is your star-powered strength for this career`:`${DM[dim]?.icon}${dim}(${s[dim]?.toFixed(1)})ที่แข็งหนุนงานนี้ ดาว${DM[dim]?.pl}ส่งพลัง`})}})});
+      while(picks.length<3)picks.push({title:"Business Analyst",titleTH:"นักวิเคราะห์ธุรกิจ",match:75,dims:top3.join(" + "),reason:lang==="en"?"Well-rounded skills suited for analytical work":"ทักษะรอบด้านเหมาะกับการวิเคราะห์"});
       setAi(p=>({...p,job:picks}));setAiL(p=>({...p,job:false}));clearTimeout(safetyTm);
       // Try GPT upgrade in background — delayed 4s so identity/core get queue priority
       const jobTopStr=so.slice(0,4).map(function(e){return e[0]+"="+e[1].toFixed(1)}).join(",");
@@ -1706,16 +1711,16 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         <span style={{fontSize:22,minWidth:28,textAlign:"center"}}>{m.icon}</span>
         <div style={{flex:1,minWidth:0}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}>
-            <span style={{fontSize:13,fontWeight:700,color:"#1E293B"}}>{m.monthFull}</span>
+            <span style={{fontSize:13,fontWeight:700,color:"#1E293B"}}>{lang==="en"?(TL_MONTHS_EN_FULL[m.month]||m.monthFull):m.monthFull}</span>
             <span style={{fontSize:12,letterSpacing:1}}>{starStr(m.stars)}</span>
           </div>
-          <div style={{fontSize:11,fontWeight:600,color:headlineC,marginBottom:2}}>{m.headline}</div>
+          <div style={{fontSize:11,fontWeight:600,color:headlineC,marginBottom:2}}>{lang==="en"?(TL_HEADLINE_EN[m.type]||m.headline):m.headline}</div>
           <div style={{fontSize:10,color:"#8A8090"}}>🔭 {m.planetEmoji} {m.planet} · {m.planetEffect}</div>
           <div style={{display:"flex",gap:3,marginTop:4,flexWrap:"wrap"}}>
             {m.tags.map(([label,tagType],ti)=>{
               const tagBg={golden:'#FFF3D4',danger:'#FFE8E8',good:'#E4F5EC',side:'#E4EEFF',neutral:'#F0ECF8'}[tagType]||'#F0ECF8';
               const tagFg={golden:'#C88A10',danger:'#C04040',good:'#2E8A58',side:'#3A7AC0',neutral:'#7060A0'}[tagType]||'#7060A0';
-              return<span key={ti} style={{fontSize:9,padding:"1px 6px",borderRadius:10,fontWeight:600,background:tagBg,color:tagFg}}>{label}</span>})}
+              return<span key={ti} style={{fontSize:9,padding:"1px 6px",borderRadius:10,fontWeight:600,background:tagBg,color:tagFg}}>{lang==="en"?(TL_TAG_EN[label]||label):label}</span>})}
           </div>
         </div>
         <span style={{color:"#C0B8D0",fontSize:14,transition:"transform 0.2s",transform:open?"rotate(90deg)":"none"}}>›</span>
@@ -1724,51 +1729,51 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         {/* Header */}
         <div style={{padding:"12px 14px",borderBottom:"1px solid #F0ECF8",display:"flex",justifyContent:"space-between"}}>
           <div>
-            <div style={{fontSize:16,fontWeight:700,color:"#1E293B"}}>{m.icon} {m.monthFull}</div>
-            <div style={{fontSize:12,fontWeight:600,color:headlineC,margin:"2px 0"}}>{m.headline}</div>
+            <div style={{fontSize:16,fontWeight:700,color:"#1E293B"}}>{m.icon} {lang==="en"?(TL_MONTHS_EN_FULL[m.month]||m.monthFull):m.monthFull}</div>
+            <div style={{fontSize:12,fontWeight:600,color:headlineC,margin:"2px 0"}}>{lang==="en"?(TL_HEADLINE_EN[m.type]||m.headline):m.headline}</div>
             <div style={{fontSize:10,color:"#8A8090"}}>🔭 {m.planetEmoji} {m.planet} · {m.planetEffect}</div>
           </div>
           <div style={{textAlign:"right"}}>
             <div style={{fontSize:16}}>{starStr(m.stars)}</div>
-            <div style={{fontSize:9,color:"#8A8090",fontWeight:600}}>{starLabel(m.stars)}</div>
+            <div style={{fontSize:9,color:"#8A8090",fontWeight:600}}>{lang==="en"?starLabelEN(m.stars):starLabel(m.stars)}</div>
           </div>
         </div>
 
         {/* Golden Days */}
         <div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#C88A10",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>✦ Golden Days — นัดได้เลย</div>
+          <div style={{fontSize:11,fontWeight:700,color:"#C88A10",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>{lang==="en"?"✦ Golden Days — Book Now":"✦ Golden Days — นัดได้เลย"}</div>
           {m.goldenDays.map((d,di)=><div key={di} style={{background:"#FFFBF0",borderRadius:8,padding:"7px 10px",marginBottom:4,display:"flex",alignItems:"flex-start",gap:8}}>
             <span style={{fontSize:14,fontWeight:700,color:"#C88A10",minWidth:24}}>{d.day}</span>
             <div>
               <div style={{fontSize:11,fontWeight:600,color:"#1E293B"}}>{d.action}</div>
               <div style={{fontSize:10,color:"#8A8090"}}>🔭 {d.reason}</div>
-              <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:600,padding:"1px 8px",borderRadius:10,marginTop:3,background:"#E4F5EC",color:"#2E8A58"}}>✅ ทำได้เลย</span>
+              <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:600,padding:"1px 8px",borderRadius:10,marginTop:3,background:"#E4F5EC",color:"#2E8A58"}}>{lang==="en"?"✅ Go for it":"✅ ทำได้เลย"}</span>
             </div>
           </div>)}
         </div>
 
         {/* Black Days */}
         <div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#C04040",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>⚑ Black Days — ระวัง</div>
+          <div style={{fontSize:11,fontWeight:700,color:"#C04040",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>{lang==="en"?"⚑ Black Days — Caution":"⚑ Black Days — ระวัง"}</div>
           {m.blackDays.map((d,di)=><div key={di} style={{background:"#FFF5F5",borderRadius:8,padding:"7px 10px",marginBottom:4,display:"flex",alignItems:"flex-start",gap:8}}>
             <span style={{fontSize:14,fontWeight:700,color:"#C04040",minWidth:24}}>{d.day}</span>
             <div>
               <div style={{fontSize:11,fontWeight:600,color:"#1E293B"}}>{d.action}</div>
               <div style={{fontSize:10,color:"#8A8090"}}>🔭 {d.reason}</div>
-              <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:600,padding:"1px 8px",borderRadius:10,marginTop:3,background:"#FFE8E8",color:"#C04040"}}>⚠️ ระวัง</span>
+              <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:600,padding:"1px 8px",borderRadius:10,marginTop:3,background:"#FFE8E8",color:"#C04040"}}>{lang==="en"?"⚠️ Be careful":"⚠️ ระวัง"}</span>
             </div>
           </div>)}
         </div>
 
         {/* Domain breakdown: งาน เงิน ความรัก สุขภาพ */}
         {m.domainScores&&<div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#1E293B",marginBottom:8,display:"flex",alignItems:"center",gap:4}}>📊 เรื่องเด่นประจำเดือน — Vedic Transit</div>
+          <div style={{fontSize:11,fontWeight:700,color:"#1E293B",marginBottom:8,display:"flex",alignItems:"center",gap:4}}>{lang==="en"?"📊 Month Highlights — Vedic Transit":"📊 เรื่องเด่นประจำเดือน — Vedic Transit"}</div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-            {[{key:'work',icon:'💼',label:'การงาน',text:m.workFocus,score:m.domainScores.work,bg:'#EEF2FF',fg:'#4338CA',brd:'#C7D2FE'},{key:'money',icon:'💰',label:'การเงิน',text:m.moneyFocus,score:m.domainScores.money,bg:'#FFFBEB',fg:'#92400E',brd:'#FDE68A'},{key:'love',icon:'❤️',label:'ความรัก',text:m.loveFocus,score:m.domainScores.love,bg:'#FFF1F2',fg:'#BE185D',brd:'#FECDD3'},{key:'health',icon:'🏃',label:'สุขภาพ',text:m.healthFocus,score:m.domainScores.health,bg:'#ECFDF5',fg:'#065F46',brd:'#A7F3D0'}].map(({key,icon,label,text,score,bg,fg,brd})=>{
+            {[{key:'work',icon:'💼',label:lang==="en"?'Work':'การงาน',text:m.workFocus,score:m.domainScores.work,bg:'#EEF2FF',fg:'#4338CA',brd:'#C7D2FE'},{key:'money',icon:'💰',label:lang==="en"?'Finance':'การเงิน',text:m.moneyFocus,score:m.domainScores.money,bg:'#FFFBEB',fg:'#92400E',brd:'#FDE68A'},{key:'love',icon:'❤️',label:lang==="en"?'Love':'ความรัก',text:m.loveFocus,score:m.domainScores.love,bg:'#FFF1F2',fg:'#BE185D',brd:'#FECDD3'},{key:'health',icon:'🏃',label:lang==="en"?'Health':'สุขภาพ',text:m.healthFocus,score:m.domainScores.health,bg:'#ECFDF5',fg:'#065F46',brd:'#A7F3D0'}].map(({key,icon,label,text,score,bg,fg,brd})=>{
               const isHighlight=key===m.dominantTopic;
               const scoreColor=score>=75?'#059669':score>=55?fg:'#DC2626';
               return<div key={key} style={{background:bg,borderRadius:10,padding:"8px 10px",border:`1px solid ${brd}`,boxShadow:isHighlight?"0 2px 8px rgba(0,0,0,0.08)":"none",position:"relative"}}>
-                {isHighlight&&<span style={{position:"absolute",top:6,right:6,fontSize:8,fontWeight:700,color:"#fff",background:"#6366F1",padding:"1px 5px",borderRadius:6}}>เด่น</span>}
+                {isHighlight&&<span style={{position:"absolute",top:6,right:6,fontSize:8,fontWeight:700,color:"#fff",background:"#6366F1",padding:"1px 5px",borderRadius:6}}>{lang==="en"?"Top":"เด่น"}</span>}
                 <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:4}}>
                   <span style={{fontSize:14}}>{icon}</span>
                   <span style={{fontSize:10,fontWeight:700,color:fg}}>{label}</span>
@@ -1785,7 +1790,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
 
         {/* Decision advice */}
         {m.decisionAdvice&&<div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#1E293B",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>🎯 คำแนะนำการตัดสินใจเดือนนี้</div>
+          <div style={{fontSize:11,fontWeight:700,color:"#1E293B",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>{lang==="en"?"🎯 Decision Advice This Month":"🎯 คำแนะนำการตัดสินใจเดือนนี้"}</div>
           <div style={{background:m.type==='golden'?"linear-gradient(135deg,#FFFBEB,#FEF3C7)":m.type==='danger'?"linear-gradient(135deg,#FFF1F2,#FFE4E6)":m.type==='good'?"linear-gradient(135deg,#ECFDF5,#D1FAE5)":"#F8F7FC",borderRadius:10,padding:"10px 12px",border:`1px solid ${m.type==='golden'?"#FDE68A":m.type==='danger'?"#FECDD3":m.type==='good'?"#A7F3D0":"#E2E8F0"}`}}>
             <div style={{fontSize:11,lineHeight:1.8,color:"#1E293B",fontWeight:500}}>{m.decisionAdvice}</div>
           </div>
@@ -1793,7 +1798,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
 
         {/* Psychology × Astrology */}
         <div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#7B6FA0",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>🧠 วิเคราะห์ดาว × จิตวิทยา</div>
+          <div style={{fontSize:11,fontWeight:700,color:"#7B6FA0",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>{lang==="en"?"🧠 Planetary × Psychology":"🧠 วิเคราะห์ดาว × จิตวิทยา"}</div>
           <div style={{background:"#F8F7FC",borderRadius:10,padding:"10px 12px"}}>
             <div style={{fontSize:11,lineHeight:1.8,color:"#3A3050",marginBottom:8}}>{m.psychText}</div>
             <div style={{background:"#fff",borderRadius:8,padding:"8px 10px",borderLeft:"3px solid #7B6FA0"}}>
@@ -1804,7 +1809,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
 
         {/* Planets */}
         <div style={{padding:"10px 14px"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#5A4A70",marginBottom:6}}>🔭 ดาวที่มีอิทธิพล</div>
+          <div style={{fontSize:11,fontWeight:700,color:"#5A4A70",marginBottom:6}}>{lang==="en"?"🔭 Influential Planets":"🔭 ดาวที่มีอิทธิพล"}</div>
           <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
             {m.planets.map((p,pi)=><span key={pi} style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:500,padding:"3px 8px",borderRadius:10,background:"#F0ECF8",color:"#5A4A70"}}>{p}</span>)}
           </div>
@@ -2464,7 +2469,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
           </>})()}
       </svg>
       <div style={{display:"grid",gridTemplateColumns:"repeat(12,1fr)",textAlign:"center",marginTop:4}}>
-        {months.map((m,i)=><span key={i} style={{fontSize:8,color:"#B0A8C0",fontWeight:500}}>{m.monthShort}</span>)}
+        {months.map((m,i)=><span key={i} style={{fontSize:8,color:"#B0A8C0",fontWeight:500}}>{lang==="en"?(TL_MONTHS_EN_SHORT[m.month]||m.monthShort):m.monthShort}</span>)}
       </div>
       <div style={{display:"flex",gap:10,marginTop:8,flexWrap:"wrap"}}>
         {[[`#F5A623`,t("tl_legend_golden")],[`#4CAF7D`,t("tl_legend_good")],[`#E05C5C`,t("tl_legend_danger")],[`#5C9BE0`,t("tl_legend_side")]].map(([c,l],i)=><div key={i} style={{display:"flex",alignItems:"center",gap:4,fontSize:9,color:"#8A8090"}}><div style={{width:6,height:6,borderRadius:"50%",background:c}}/>{l}</div>)}
@@ -2491,7 +2496,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   <div id="sec-execution" className="snav-anchor"/><SectionHeader icon="🎯" label="Execution Layer" locked={!has("job")} planNeeded="pro" onUpgrade={tryUpgrade}/>
 
   <div id="sec-job" className="snav-anchor"/>{/* Locked preview: Job */}
-  {!has("job")?<Locked planNeeded="pro" title="Job Matching AI" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>{t("job_locked_title")}</div>{[{t:"Data Analyst",m:88},{t:"Project Manager",m:82},{t:"UX Researcher",m:78}].map((j,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 10px",borderRadius:6,background:"#F8FAFC",marginBottom:3,fontSize:12}}><span>{i+1}. {j.t}</span><span style={{fontWeight:700,color:"#4338CA"}}>Match {j.m}%</span></div>)}<div style={{display:"flex",gap:4,marginTop:4}}><div style={{padding:"5px 10px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:10,fontWeight:700}}>{t("job_search_btn")}</div></div></Locked>:<Sec fKey="job" title="Job Matching AI" icon="💼">{aiL.job||!ai.job?<Spin/>:Array.isArray(ai.job)?ai.job.map((j,i)=><div key={i} style={{padding:10,borderRadius:8,background:"#F8FAFC",marginBottom:4}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}><span style={{fontSize:13,fontWeight:700}}>{j.titleTH||j.title}</span><span style={{fontSize:10,fontWeight:700,color:"#4338CA",background:"#EEF2FF",padding:"2px 6px",borderRadius:6}}>{j.match}%</span></div>{j.dims&&<div style={{fontSize:10,color:"#6366F1",marginBottom:2}}>📊 {j.dims}</div>}<div style={{fontSize:11,color:"#64748B",lineHeight:1.5}}>{j.reason}</div><a href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(j.title)}&location=Thailand`} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:6,padding:"5px 12px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:11,fontWeight:700,textDecoration:"none"}}>{t("job_link_text")}</a></div>):<Spin/>}</Sec>}
+  {!has("job")?<Locked planNeeded="pro" title="Job Matching AI" onUpgrade={tryUpgrade}><div style={{fontSize:12,fontWeight:700,marginBottom:8}}>{t("job_locked_title")}</div>{[{t:"Data Analyst",m:88},{t:"Project Manager",m:82},{t:"UX Researcher",m:78}].map((j,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 10px",borderRadius:6,background:"#F8FAFC",marginBottom:3,fontSize:12}}><span>{i+1}. {j.t}</span><span style={{fontWeight:700,color:"#4338CA"}}>Match {j.m}%</span></div>)}<div style={{display:"flex",gap:4,marginTop:4}}><div style={{padding:"5px 10px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:10,fontWeight:700}}>{t("job_search_btn")}</div></div></Locked>:<Sec fKey="job" title="Job Matching AI" icon="💼">{aiL.job||!ai.job?<Spin/>:Array.isArray(ai.job)?ai.job.map((j,i)=><div key={i} style={{padding:10,borderRadius:8,background:"#F8FAFC",marginBottom:4}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}><span style={{fontSize:13,fontWeight:700}}>{lang==="en"?j.title:(j.titleTH||j.title)}</span><span style={{fontSize:10,fontWeight:700,color:"#4338CA",background:"#EEF2FF",padding:"2px 6px",borderRadius:6}}>{j.match}%</span></div>{j.dims&&<div style={{fontSize:10,color:"#6366F1",marginBottom:2}}>📊 {j.dims}</div>}<div style={{fontSize:11,color:"#64748B",lineHeight:1.5}}>{j.reason}</div><a href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(j.title)}&location=Thailand`} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:6,padding:"5px 12px",borderRadius:6,background:"#0A66C2",color:"#fff",fontSize:11,fontWeight:700,textDecoration:"none"}}>{t("job_link_text")}</a></div>):<Spin/>}</Sec>}
 
   <div id="sec-decision" className="snav-anchor"/><div id="sec-decision-roadmap" className="snav-anchor"/>{/* Decision Roadmap */}
   {!has("decision_roadmap")?<Locked planNeeded="pro" title="Decision Roadmap" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#0f172a,#1e1b4b)",color:"#A5B4FC",lineHeight:1.8,fontSize:12}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>🎯 Decision Roadmap</div><div style={{fontSize:11}}>{t("roadmap_locked_sub")}</div></div></Locked>:<Sec fKey="decision_roadmap" planNeeded="pro" title="Decision Roadmap" icon="🎯"><div style={{background:"#EEF2FF",borderRadius:10,padding:"12px 14px",border:"1px solid #C7D2FE"}}>{aiL.decision_roadmap?<Spin t={t("spin_roadmap_now")}/>:ai.decision_roadmap?<div style={{fontSize:12,lineHeight:1.9,color:"#1E293B",whiteSpace:"pre-wrap"}}>{ai.decision_roadmap}</div>:<Spin t={t("spin_loading")}/>}</div></Sec>}
