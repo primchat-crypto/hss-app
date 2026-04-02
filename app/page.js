@@ -693,7 +693,9 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade,t,lang})=>{
   const[decL,setDecL]=useState(false);
   const[decCustom,setDecCustom]=useState(false);
   const decideLimit=()=>{const today=new Date().toDateString();const s=ST.get("dec_day");return s?.date===today?s.count||0:0};
-  const incDecide=()=>{const today=new Date().toDateString();ST.set("dec_day",{date:today,count:decideLimit()+1})};
+  const incDecide=()=>{const today=new Date().toDateString();ST.set("dec_day",{date:today,count:decideLimit()+1});setUsedToday(decideLimit()+1)};
+  const[usedToday,setUsedToday]=useState(0);
+  useEffect(()=>{setUsedToday(decideLimit())},[]);
   const askDecide=async()=>{
     const q=decQ.trim();if(!q)return;
     const maxQ=plan==="free"?1:99;if(decideLimit()>=maxQ&&plan==="free"){alert(t("dec_quota_alert"));return}
@@ -745,7 +747,6 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade,t,lang})=>{
   };
   const cats=Object.entries(DEC_CATS);
   const catData=DEC_CATS[decCat];
-  const usedToday=decideLimit();
   const canAsk=plan!=="free"||(usedToday<1);
   const freeCard=decRes?decRes.cards?.[0]:null;
   const showAllCards=plan!=="free";
@@ -1752,7 +1753,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
           <div style={{fontSize:11,fontWeight:600,color:headlineC,marginBottom:2}}>{lang==="en"?(TL_HEADLINE_EN[m.type]||m.headline):m.headline}</div>
           <div style={{fontSize:10,color:"#8A8090"}}>🔭 {m.planetEmoji} {m.planet} · {m.planetEffect}</div>
           <div style={{display:"flex",gap:3,marginTop:4,flexWrap:"wrap"}}>
-            {m.tags.map(([label,tagType],ti)=>{
+            {(m.tags||[]).map(([label,tagType],ti)=>{
               const tagBg={golden:'#FFF3D4',danger:'#FFE8E8',good:'#E4F5EC',side:'#E4EEFF',neutral:'#F0ECF8'}[tagType]||'#F0ECF8';
               const tagFg={golden:'#C88A10',danger:'#C04040',good:'#2E8A58',side:'#3A7AC0',neutral:'#7060A0'}[tagType]||'#7060A0';
               return<span key={ti} style={{fontSize:9,padding:"1px 6px",borderRadius:10,fontWeight:600,background:tagBg,color:tagFg}}>{lang==="en"?(TL_TAG_EN[label]||label):label}</span>})}
@@ -1777,7 +1778,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         {/* Golden Days */}
         <div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
           <div style={{fontSize:11,fontWeight:700,color:"#C88A10",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>{lang==="en"?"✦ Golden Days — Book Now":"✦ Golden Days — นัดได้เลย"}</div>
-          {m.goldenDays.map((d,di)=><div key={di} style={{background:"#FFFBF0",borderRadius:8,padding:"7px 10px",marginBottom:4,display:"flex",alignItems:"flex-start",gap:8}}>
+          {(m.goldenDays||[]).map((d,di)=><div key={di} style={{background:"#FFFBF0",borderRadius:8,padding:"7px 10px",marginBottom:4,display:"flex",alignItems:"flex-start",gap:8}}>
             <span style={{fontSize:14,fontWeight:700,color:"#C88A10",minWidth:24}}>{d.day}</span>
             <div>
               <div style={{fontSize:11,fontWeight:600,color:"#1E293B"}}>{d.action}</div>
@@ -1790,7 +1791,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         {/* Black Days */}
         <div style={{padding:"10px 14px",borderBottom:"1px solid #F0ECF8"}}>
           <div style={{fontSize:11,fontWeight:700,color:"#C04040",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>{lang==="en"?"⚑ Black Days — Caution":"⚑ Black Days — ระวัง"}</div>
-          {m.blackDays.map((d,di)=><div key={di} style={{background:"#FFF5F5",borderRadius:8,padding:"7px 10px",marginBottom:4,display:"flex",alignItems:"flex-start",gap:8}}>
+          {(m.blackDays||[]).map((d,di)=><div key={di} style={{background:"#FFF5F5",borderRadius:8,padding:"7px 10px",marginBottom:4,display:"flex",alignItems:"flex-start",gap:8}}>
             <span style={{fontSize:14,fontWeight:700,color:"#C04040",minWidth:24}}>{d.day}</span>
             <div>
               <div style={{fontSize:11,fontWeight:600,color:"#1E293B"}}>{d.action}</div>
@@ -1846,7 +1847,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         <div style={{padding:"10px 14px"}}>
           <div style={{fontSize:11,fontWeight:700,color:"#5A4A70",marginBottom:6}}>{lang==="en"?"🔭 Influential Planets":"🔭 ดาวที่มีอิทธิพล"}</div>
           <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-            {m.planets.map((p,pi)=><span key={pi} style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:500,padding:"3px 8px",borderRadius:10,background:"#F0ECF8",color:"#5A4A70"}}>{p}</span>)}
+            {(m.planets||[]).map((p,pi)=><span key={pi} style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:10,fontWeight:500,padding:"3px 8px",borderRadius:10,background:"#F0ECF8",color:"#5A4A70"}}>{p}</span>)}
           </div>
         </div>
       </div>}
