@@ -658,7 +658,9 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade,t,lang})=>{
   const[decL,setDecL]=useState(false);
   const[decCustom,setDecCustom]=useState(false);
   const decideLimit=()=>{const today=new Date().toDateString();const s=ST.get("dec_day");return s?.date===today?s.count||0:0};
-  const incDecide=()=>{const today=new Date().toDateString();ST.set("dec_day",{date:today,count:decideLimit()+1})};
+  const incDecide=()=>{const today=new Date().toDateString();ST.set("dec_day",{date:today,count:decideLimit()+1});setUsedToday(decideLimit()+1)};
+  const[usedToday,setUsedToday]=useState(0);
+  useEffect(()=>{setUsedToday(decideLimit())},[]);
   const askDecide=async()=>{
     const q=decQ.trim();if(!q)return;
     const maxQ=plan==="free"?1:99;if(decideLimit()>=maxQ&&plan==="free"){alert(t("dec_quota_alert"));return}
@@ -710,7 +712,6 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade,t,lang})=>{
   };
   const cats=Object.entries(DEC_CATS);
   const catData=DEC_CATS[decCat];
-  const usedToday=decideLimit();
   const canAsk=plan!=="free"||(usedToday<1);
   const freeCard=decRes?decRes.cards?.[0]:null;
   const showAllCards=plan!=="free";
