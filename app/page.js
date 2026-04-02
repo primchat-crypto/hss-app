@@ -787,7 +787,8 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade,t,lang})=>{
 };
 
 export default function App(){
-  const[lang,setLang]=useState(()=>{if(typeof window!=="undefined")return localStorage.getItem("hss_lang")||"th";return"th"});
+  const[lang,setLang]=useState("th");
+  useEffect(()=>{const saved=localStorage.getItem("hss_lang");if(saved&&saved!=="th")setLang(saved)},[]);
   const toggleLang=()=>{const nl=lang==="th"?"en":"th";setLang(nl);if(typeof window!=="undefined")localStorage.setItem("hss_lang",nl);
   // Clear AI text content so it regenerates in the new language
   setAi(p=>({...p,identity:null,core:null,shadow:null,love:null,principle:null,money:null,weekly:null,decision_roadmap:null}));};
@@ -2459,8 +2460,9 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
         <line x1="0" y1="75" x2="480" y2="75" stroke="#F0ECF8" strokeWidth="0.5"/>
         {(()=>{
           const pts=months.map((m,i)=>({x:20+i*(440/11),y:10+(1-m.energy/100)*80}));
+          if(pts.length<2)return null;
           const pathD=pts.map((p,i)=>i===0?`M ${p.x},${p.y}`:`L ${p.x},${p.y}`).join(' ');
-          const areaD=pathD+` L ${pts[11].x},95 L ${pts[0].x},95 Z`;
+          const areaD=pathD+` L ${pts[pts.length-1].x},95 L ${pts[0].x},95 Z`;
           return<>
             <defs><linearGradient id="tlAreaG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#7B6FA0" stopOpacity="0.15"/><stop offset="100%" stopColor="#7B6FA0" stopOpacity="0.01"/></linearGradient></defs>
             <path d={areaD} fill="url(#tlAreaG)"/>
