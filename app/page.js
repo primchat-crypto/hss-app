@@ -931,7 +931,7 @@ export default function App(){
   useEffect(()=>{
     if(scores&&nick&&vedic&&!aiTriggered.current){
       aiTriggered.current=true;
-      const fs=PLANS[plan].f;
+      const fs=(PLANS[plan]||PLANS["free"]).f;
       // Energy & job use instant smart fallback — always refresh (energy is date-sensitive)
       if(fs.includes("energy"))loadAI("energy",scores,vedic,nick,bday);
       if(fs.includes("job"))loadAI("job",scores,vedic,nick,bday);
@@ -957,7 +957,7 @@ export default function App(){
   const savePlan=async(p)=>{if(!sb||!user)return;await sb.from("profiles").update({plan:p,updated_at:new Date().toISOString()}).eq("id",user.id)};
 
   const logged=!!user;
-  const has=f=>PLANS[plan].f.includes(f);
+  const has=f=>(PLANS[plan]||PLANS["free"]).f.includes(f);
 
   // ── Ask & Decide AI ──
   const goQuiz=()=>{ST.set("profile",{nick,email,bday,btime,tSlot,prov});saveProfile();setSc("quiz")};
