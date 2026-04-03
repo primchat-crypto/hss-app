@@ -788,6 +788,7 @@ const AskDecide=({plan,has,nick,bday,scores,tryUpgrade,t,lang})=>{
 };
 
 export default function App(){
+  const[mounted,setMounted]=useState(false);
   const[lang,setLang]=useState("th");
   useEffect(()=>{const saved=localStorage.getItem("hss_lang");if(saved&&saved!=="th")setLang(saved)},[]);
   const toggleLang=()=>{const nl=lang==="th"?"en":"th";setLang(nl);if(typeof window!=="undefined")localStorage.setItem("hss_lang",nl);
@@ -950,6 +951,7 @@ export default function App(){
       if(fs.includes("12d")&&!ai["12d"])setTimeout(()=>loadAI("12d",scores,vedic,nick,bday),900);
     }
   },[scores,nick,vedic,plan,ai]);
+  useEffect(()=>{setMounted(true)},[]);
 
   // Save to Supabase DB
   const saveProfile=async()=>{if(!sb||!user)return;await sb.from("profiles").upsert({id:user.id,nick,email:user.email,bday,btime,time_slot:tSlot,province:prov,plan,updated_at:new Date().toISOString()})};
@@ -957,6 +959,7 @@ export default function App(){
   const saveAI=async(aiData)=>{if(!sb||!user)return;const{data:ex}=await sb.from("assessments").select("id").eq("user_id",user.id).order("created_at",{ascending:false}).limit(1).single();if(ex)await sb.from("assessments").update({ai_results:aiData,updated_at:new Date().toISOString()}).eq("id",ex.id)};
   const savePlan=async(p)=>{if(!sb||!user)return;await sb.from("profiles").update({plan:p,updated_at:new Date().toISOString()}).eq("id",user.id)};
 
+  if(!mounted)return<div style={{minHeight:"100vh",background:"#F8FAFC"}}/>;
   const logged=!!user;
   const has=f=>(PLANS[plan]||PLANS["free"]).f.includes(f);
 
