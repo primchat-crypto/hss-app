@@ -504,7 +504,7 @@ const Card=({children,style={}})=><div style={{background:"#fff",borderRadius:14
 const Btn=({children,ok=true,onClick,style={}})=><button onClick={ok?onClick:undefined} style={{padding:"12px 20px",fontSize:14,fontWeight:700,background:ok?"linear-gradient(135deg,#4338CA,#6D28D9)":"#E2E8F0",color:ok?"#fff":"#94A3B8",border:"none",borderRadius:10,cursor:ok?"pointer":"not-allowed",width:"100%",boxShadow:ok?"0 4px 14px rgba(79,70,229,.2)":"none",...style}}>{children}</button>;
 
 // ── Identity Snapshot Card (WHO / WHAT / WHEN) ──
-const IdentitySnapshotCard=({data,scores,hasMbti,t})=>{
+const IdentitySnapshotCard=({data,scores,hasMbti,t,lang})=>{
   if(!data||!data.powerTitle)return null;
   const {powerTitle,who,what,when}=data;
   // Inject bestMatch from local data if missing (e.g. cached from DB)
@@ -2157,7 +2157,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   <AskDecide plan={plan} has={has} nick={nick} bday={bday} scores={scores} tryUpgrade={tryUpgrade} t={t} lang={lang}/>
 
   <div id="sec-understand" className="snav-anchor"/><SectionHeader icon="👉" label={t("sec_understand")} locked={false}/>
-  <div id="sec-identity" className="snav-anchor"/><Sec fKey="identity" planNeeded="free" title="Identity Snapshot" icon="✦">{ai.identity&&ai.identity.powerTitle?<IdentitySnapshotCard data={ai.identity} scores={scores} hasMbti={has("mbti")} t={t}/>:aiL.identity?<Spin t={t("spin_identity")}/>:<Spin t={t("spin_ai")}/>}</Sec>
+  <div id="sec-identity" className="snav-anchor"/><Sec fKey="identity" planNeeded="free" title="Identity Snapshot" icon="✦">{ai.identity&&ai.identity.powerTitle?<IdentitySnapshotCard data={ai.identity} scores={scores} hasMbti={has("mbti")} t={t} lang={lang}/>:aiL.identity?<Spin t={t("spin_identity")}/>:<Spin t={t("spin_ai")}/>}</Sec>
   <div id="sec-core5" className="snav-anchor"/><Sec fKey="core5" title="5 Core Scores" icon="📊">{Object.entries(c5).map(([d,sc])=>{const meta=C5_META[d]||{short:d,pl:"",high:{label:"",desc:""},mid:{label:"",desc:""},low:{label:"",desc:""}};const safeScore=sc||0;const lv=safeScore>=7?meta.high:safeScore>=5?meta.mid:meta.low;const isLow=safeScore<5;const isMid=safeScore>=5&&safeScore<7;const lblColor=isLow?"#DC2626":isMid?"#64748B":"#059669";return<div key={d} style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}><span style={{fontSize:11,fontWeight:600}}>{DM[d]?.icon} {meta.short} <span style={{fontSize:9,color:"#94A3B8"}}>({lang==="en"?(meta.pl_en||meta.pl):meta.pl})</span></span><span style={{fontSize:13,fontWeight:800,color:DM[d]?.c}}>{safeScore.toFixed(1)}</span></div><div style={{height:5,background:"#F1F5F9",borderRadius:3,overflow:"hidden",marginBottom:5}}><div style={{height:"100%",width:`${safeScore*10}%`,background:DM[d]?.c,borderRadius:3}}/></div><div style={{fontSize:10,lineHeight:1.6,color:lblColor}}><span style={{fontWeight:700}}>{lang==="en"?(lv.en_label||lv.label):lv.label}:</span> {lang==="en"?(lv.en_desc||lv.desc):lv.desc}</div></div>})}<div style={{marginTop:8,padding:8,background:"#F8FAFC",borderRadius:8}}>{aiL.core?<Spin/>:ai.core?<Typer text={ai.core}/>:<Spin t={t("spin_wait")}/>}</div></Sec>
 
   <div id="sec-shadow" className="snav-anchor"/>{/* Locked preview: Shadow */}
