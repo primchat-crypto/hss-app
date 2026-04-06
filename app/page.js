@@ -69,6 +69,8 @@ const DAY_LORD_EN_NAME=["Sun","Moon","Mars","Mercury","Jupiter","Venus","Saturn"
 const DAY_LORD_EN_GF=["Make decisions, start new things","Self-care, creative work","Take action, solve problems","Meetings, writing, negotiations","Long-term planning, consulting","Build relationships, relax","Complete pending tasks, build discipline"];
 const TL_RASHI_EN=["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
 const PLANET_EN={su:"Sun",mo:"Moon",ma:"Mars",me:"Mercury",ju:"Jupiter",ve:"Venus",sa:"Saturn",ra:"Rahu"};
+const ASPECT_EN_MAP={"ร่วมราศี":"Conjunction","ร่วม":"Conjunction","ตรีโกณ":"Trine","ตรีโกณรอง":"Minor Trine","จตุโกณ":"Square","ตรงข้าม":"Opposition","สนับสนุน":"Sextile","ลาภะ":"11th House","กัมมะ":"10th House","ปกติ":"Neutral","กดดัน":"Tense","ตึง":"Tense","ดีมาก":"Strong Trine","ดี":"Good","กลาง":"Neutral"};
+const DIGNITY_EN_MAP={"อุจจ์":"Exalted","นิจ":"Debilitated","เกษตร":"Domicile","ปกติ":"Normal"};
 const DAY_LORD=[{day:0,lord:"อาทิตย์",icon:"☀️",planet:"su",gf:"ตัดสินใจ เริ่มสิ่งใหม่"},{day:1,lord:"จันทร์",icon:"🌙",planet:"mo",gf:"ดูแลตัวเอง งานสร้างสรรค์"},{day:2,lord:"อังคาร",icon:"🔥",planet:"ma",gf:"ลงมือทำ แก้ปัญหา"},{day:3,lord:"พุธ",icon:"🧠",planet:"me",gf:"ประชุม เขียนงาน เจรจา"},{day:4,lord:"พฤหัส",icon:"📚",planet:"ju",gf:"วางแผนระยะยาว ปรึกษาผู้รู้"},{day:5,lord:"ศุกร์",icon:"💎",planet:"ve",gf:"สร้างสัมพันธ์ ผ่อนคลาย"},{day:6,lord:"เสาร์",icon:"⚙️",planet:"sa",gf:"ทำงานค้าง สร้างวินัย"}];
 
 const natalPStr=(bd)=>{const m=parseInt(bd?.split("-")?.[1])||6;const d=parseInt(bd?.split("-")?.[2])||15;const s=(m*31+d)%100;return{su:Math.min(10,(22+((s*7)%18))/4),mo:Math.min(10,(18+((s*3)%22))/4),ma:Math.min(10,(19+((s*11)%21))/4),me:Math.min(10,(20+(s%20))/4),ju:Math.min(10,(21+((s*13)%19))/4),ve:Math.min(10,(20+((s*5)%20))/4),sa:Math.min(10,(17+((s*17)%23))/4)}};
@@ -175,7 +177,7 @@ const gen7Day=(bd,lang="th")=>{
       null
     );
     const dnLabel=en?DAYNAME_EN[dt.getDay()]:DAYNAME[dt.getDay()];
-    days.push({date:`${dt.getDate()}/${dt.getMonth()+1}`,dn:dnLabel,moonR:RASHI[mr],nak:getNak(mr,i),marsR:RASHI[mar],satR:RASHI[sat],veR:RASHI[ve],juR:RASHI[ju],ma,md,nmR:RASHI[nm],dl,dlNameEN,dlGfEN,ce,work:workTxt,money:moneyTxt,love:loveTxt,health:healthTxt,featuredLabel,featuredGood,specialEvent,satMarConj});
+    days.push({date:`${dt.getDate()}/${dt.getMonth()+1}`,dn:dnLabel,moonR:RASHI[mr],moonREN:TL_RASHI_EN[mr],marsR:RASHI[mar],satR:RASHI[sat],veR:RASHI[ve],juR:RASHI[ju],ma,md,nmR:RASHI[nm],dl,dlNameEN,dlGfEN,ce,work:workTxt,money:moneyTxt,love:loveTxt,health:healthTxt,featuredLabel,featuredGood,specialEvent,satMarConj});
   }
   return days;
 };
@@ -529,10 +531,10 @@ const genTimeline=(bd,year,lang="th")=>{
       month:mi,monthFull:TL_MONTHS_FULL[mi],monthShort:TL_MONTHS_TH[mi],
       stars,energy,type,icon,headline,tags,
       planet:tlen?(PLANET_EN[dominant.p]||domP.name):domP.name,planetEmoji:domP.emoji,
-      planetEffect:tlen?`Dasha ${dashaNameEN}(${dashaDig.d}) · ${dominant.asp.q} H10 · ${TL_RASHI_EN[tr[dominant.p]]}`:`ทศา${currentDasha.p}(${dashaDig.d}) · ${dominant.asp.q} H10 · ${TL_RASHI_TH[tr[dominant.p]]}`,
+      planetEffect:tlen?`Dasha ${dashaNameEN}(${DIGNITY_EN_MAP[dashaDig.d]||dashaDig.d}) · ${ASPECT_EN_MAP[dominant.asp.q]||dominant.asp.q} H10 · ${TL_RASHI_EN[tr[dominant.p]]}`:`ทศา${currentDasha.p}(${dashaDig.d}) · ${dominant.asp.q} H10 · ${TL_RASHI_TH[tr[dominant.p]]}`,
       natalRashi:tlen?TL_RASHI_EN[natalR]:TL_RASHI_TH[natalR],natalRashiIcon:TL_RASHI_ICONS[natalR],
-      transitInfo:tlen?`Dasha ${dashaNameEN}(${dashaDig.d}) Jupiter in ${TL_RASHI_EN[tr.ju]} Saturn in ${TL_RASHI_EN[tr.sa]}${h.sa===1?' ⚠️on Asc':''}${h.ra===1?' ⚠️Rahu on Asc':''}`:`ทศา${currentDasha.p}(${dashaDig.d}) พฤหัสจร${TL_RASHI_TH[tr.ju]} เสาร์จร${TL_RASHI_TH[tr.sa]}${h.sa===1?' ⚠️ทับลัคน์':''}${h.ra===1?' ⚠️ราหูทับลัคน์':''}`,
-      dashaInfo:{planet:tlen?dashaNameEN:currentDasha.p,icon:currentDasha.icon,theme:tlen?(currentDasha.theme_en||currentDasha.theme):currentDasha.theme,dignity:dashaDig.d,house:dashaHouse},
+      transitInfo:tlen?`Dasha ${dashaNameEN}(${DIGNITY_EN_MAP[dashaDig.d]||dashaDig.d}) Jupiter in ${TL_RASHI_EN[tr.ju]} Saturn in ${TL_RASHI_EN[tr.sa]}${h.sa===1?' ⚠️on Asc':''}${h.ra===1?' ⚠️Rahu on Asc':''}`:`ทศา${currentDasha.p}(${dashaDig.d}) พฤหัสจร${TL_RASHI_TH[tr.ju]} เสาร์จร${TL_RASHI_TH[tr.sa]}${h.sa===1?' ⚠️ทับลัคน์':''}${h.ra===1?' ⚠️ราหูทับลัคน์':''}`,
+      dashaInfo:{planet:tlen?dashaNameEN:currentDasha.p,icon:currentDasha.icon,theme:tlen?(currentDasha.theme_en||currentDasha.theme):currentDasha.theme,dignity:tlen?(DIGNITY_EN_MAP[dashaDig.d]||dashaDig.d):dashaDig.d,house:dashaHouse},
       balanceType,balanceText,stressors,
       goldenDays,blackDays,
       psychText,psychTip:psychTips[type]||psychTips.neutral,
@@ -1147,7 +1149,7 @@ export default function App(){
     // Energy: show smart fallback FIRST then try GPT
     if(type==="energy"){try{const tr=gen7Day(bd,lang);const MOODS=lang==="en"?["🌟 Bright","😊 Calm","🔥 Energized","🧠 Analytical","📚 Open-minded","💎 Relaxed","⚙️ Needs Discipline"]:["🌟 สดใส","😊 สงบ","🔥 กระตือรือร้น","🧠 คิดวิเคราะห์","📚 ปัญญาเปิด","💎 ผ่อนคลาย","⚙️ ต้องใช้วินัย"];
       const today=new Date();
-      const smartFB=tr.map((d,i)=>{const dt=new Date(today);dt.setDate(dt.getDate()+i);const dateStr=`${dt.getDate()}/${dt.getMonth()+1}`;const dayLabel=`${d.dn} ${dateStr}`;const tipEN=`Day Lord ${d.dl.icon}${d.dlNameEN} · Moon in ${d.moonR}(${d.ma.r})`;const tipTH=`เจ้าวัน${d.dl.icon}${d.dl.lord} ${d.dl.q} จันทร์จรราศี${d.moonR}(${d.ma.r})`;return{day:dayLabel,date:dateStr,energy:d.ce,mood:d.ce>75?MOODS[0]:d.ce>65?MOODS[1]:d.ce>55?MOODS[3]:MOODS[6],tip:lang==="en"?tipEN:tipTH,transit:lang==="en"?`Day Lord ${d.dl.icon}${d.dlNameEN} + Moon ${d.moonR} + Mars ${d.marsR} + Venus ${d.veR} + Jupiter ${d.juR}`:`เจ้าวัน${d.dl.icon}${d.dl.lord} + จันทร์${d.moonR} + อังคาร${d.marsR} + ศุกร์${d.veR} + พฤหัส${d.juR}`,goodFor:lang==="en"?d.dlGfEN:d.dl.gf,work:d.work,money:d.money,love:d.love,health:d.health,featured:d.featuredLabel,featuredGood:d.featuredGood,specialEvent:d.specialEvent}});
+      const smartFB=tr.map((d,i)=>{const dt=new Date(today);dt.setDate(dt.getDate()+i);const dateStr=`${dt.getDate()}/${dt.getMonth()+1}`;const dayLabel=`${d.dn} ${dateStr}`;const tipEN=`Day Lord ${d.dl.icon}${d.dlNameEN} · Moon in ${d.moonREN||d.moonR}(${ASPECT_EN_MAP[d.ma.r]||d.ma.r})`;const tipTH=`เจ้าวัน${d.dl.icon}${d.dl.lord} ${d.dl.q} จันทร์จรราศี${d.moonR}(${d.ma.r})`;return{day:dayLabel,date:dateStr,energy:d.ce,mood:d.ce>75?MOODS[0]:d.ce>65?MOODS[1]:d.ce>55?MOODS[3]:MOODS[6],tip:lang==="en"?tipEN:tipTH,transit:lang==="en"?`Day Lord ${d.dl.icon}${d.dlNameEN} + Moon ${d.moonR} + Mars ${d.marsR} + Venus ${d.veR} + Jupiter ${d.juR}`:`เจ้าวัน${d.dl.icon}${d.dl.lord} + จันทร์${d.moonR} + อังคาร${d.marsR} + ศุกร์${d.veR} + พฤหัส${d.juR}`,goodFor:lang==="en"?d.dlGfEN:d.dl.gf,work:d.work,money:d.money,love:d.love,health:d.health,featured:d.featuredLabel,featuredGood:d.featuredGood,specialEvent:d.specialEvent}});
       setAi(p=>({...p,energy:smartFB}));setAiL(p=>({...p,energy:false}));clearTimeout(safetyTm);
       // Try GPT upgrade in background (non-blocking) — delayed 4s so identity/core get queue priority
       const dateLabels=tr.map((d,i)=>{const dt=new Date(today);dt.setDate(dt.getDate()+i);return`${d.dn} ${dt.getDate()}/${dt.getMonth()+1}`});
