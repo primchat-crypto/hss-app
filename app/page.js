@@ -656,6 +656,21 @@ const Spider=({scores,size=260})=>{const keys=Object.keys(scores);const vals=Obj
 const Card=({children,style={}})=><div style={{background:"#fff",borderRadius:14,padding:"16px 18px",marginBottom:10,boxShadow:"0 1px 3px rgba(0,0,0,.04)",border:"1px solid #F1F5F9",...style}}>{children}</div>;
 const Btn=({children,ok=true,onClick,style={}})=><button onClick={ok?onClick:undefined} style={{padding:"12px 20px",fontSize:14,fontWeight:700,background:ok?"linear-gradient(135deg,#4338CA,#6D28D9)":"#E2E8F0",color:ok?"#fff":"#94A3B8",border:"none",borderRadius:10,cursor:ok?"pointer":"not-allowed",width:"100%",boxShadow:ok?"0 4px 14px rgba(79,70,229,.2)":"none",...style}}>{children}</button>;
 
+// ── Deep Shadow Analysis — module-level constants (never recreated) ──
+const RASHI_ELEMENT={0:"fire",1:"earth",2:"air",3:"water",4:"fire",5:"earth",6:"air",7:"water",8:"fire",9:"earth",10:"air",11:"water"};
+const RAHU_DATA={
+  fire:{th:["ความกลัวสูญเสียการยอมรับและการมองเห็น","ความอยากสร้างตัวตนที่โดดเด่นและมีอำนาจ","บทเรียนราหู: เรียนรู้ความถ่อมตนและการรับใช้"],en:["Fear of losing recognition and being unseen","Drive to build a powerful, standout identity","Rahu lesson: Learning humility and service"]},
+  earth:{th:["ความกลัวความไม่มั่นคงทางวัตถุและสถานะ","ความยึดติดกับความปลอดภัยจนไม่กล้าเสี่ยง","บทเรียนราหู: ยอมรับความไม่แน่นอนและเชื่อมั่นชีวิต"],en:["Fear of material instability and loss of status","Clinging to security prevents meaningful risk","Rahu lesson: Embrace uncertainty and trust life"]},
+  air:{th:["ความกลัวถูกมองว่าไม่ฉลาดหรือไม่มีคุณค่า","ความอยากรู้อยากเห็นที่กลายเป็นความวิตกกังวล","บทเรียนราหู: ยอมรับความไม่รู้และหยุดคิดมาก"],en:["Fear of appearing unintelligent or irrelevant","Restless curiosity that becomes chronic anxiety","Rahu lesson: Accept not knowing, quiet the mind"]},
+  water:{th:["ความกลัวการถูกทอดทิ้งและโดดเดี่ยว","ความอยากควบคุมอารมณ์และพื้นที่ความรู้สึก","บทเรียนราหู: ปล่อยให้สิ่งต่างๆ ไหลตามธรรมชาติ"],en:["Fear of abandonment and deep loneliness","Need to control emotional space around you","Rahu lesson: Let things flow — release control"]}
+};
+const KETU_DATA={
+  fire:{th:["ความภาคภูมิใจเกินขอบเขตที่สะสมมาจากอดีต","รูปแบบการครอบงำและควบคุมที่ต้องปล่อยวาง","การปล่อยวาง: ยอมรับว่าไม่ต้องเก่งที่สุดในทุกเรื่อง"],en:["Excessive pride and ego carried from the past","Controlling patterns that no longer serve you","Release: You don't need to dominate every room"]},
+  earth:{th:["การยึดติดกับทรัพย์สินและสถานะทางสังคม","ความกลัวการเปลี่ยนแปลงที่ฝังรากลึกในจิตใจ","การปล่อยวาง: เชื่อมั่นในกระบวนการของชีวิต"],en:["Deep attachment to possessions and social status","Fear of change rooted deep in the subconscious","Release: Trust the process — growth needs movement"]},
+  air:{th:["การวิเคราะห์มากเกินจนตัดสินใจไม่ได้","หลีกเลี่ยงความรู้สึกด้วยการใช้ความคิดปิดกั้น","การปล่อยวาง: รับฟังสัญชาตญาณมากกว่าตรรกะ"],en:["Over-analysis that leads to decision paralysis","Avoiding feelings by intellectualizing everything","Release: Trust instincts over endless analysis"]},
+  water:{th:["ความเจ็บปวดอดีตที่ยังหลอกหลอนและดึงกลับ","รูปแบบการเสียสละตนเองมากเกินจนหมดแรง","การปล่อยวาง: กำหนดขอบเขตและดูแลตัวเองก่อน"],en:["Past pain that still haunts and pulls you back","Patterns of over-sacrifice until burnout","Release: Set boundaries — self-care isn't selfish"]}
+};
+
 // ── Deep Shadow Analysis Component ──
 const ShadowDeepComponent=({bday,scores,vedic,ai,aiL,nick,lang,t})=>{
   const [completedSteps,setCompletedSteps]=useState([]);
@@ -664,20 +679,7 @@ const ShadowDeepComponent=({bday,scores,vedic,ai,aiL,nick,lang,t})=>{
   const natalRashi=bdayToRashiThai(bday);
   const rashiIcon=TL_RASHI_ICONS[natalRashi];
   const rashiName=lang==="en"?TL_RASHI_EN[natalRashi]:TL_RASHI_TH[natalRashi];
-  const element=[0,4,8].includes(natalRashi)?"fire":[1,5,9].includes(natalRashi)?"earth":[2,6,10].includes(natalRashi)?"air":"water";
-
-  const RAHU_DATA={
-    fire:{th:["ความกลัวสูญเสียการยอมรับและการมองเห็น","ความอยากสร้างตัวตนที่โดดเด่นและมีอำนาจ","บทเรียนราหู: เรียนรู้ความถ่อมตนและการรับใช้"],en:["Fear of losing recognition and being unseen","Drive to build a powerful, standout identity","Rahu lesson: Learning humility and service"]},
-    earth:{th:["ความกลัวความไม่มั่นคงทางวัตถุและสถานะ","ความยึดติดกับความปลอดภัยจนไม่กล้าเสี่ยง","บทเรียนราหู: ยอมรับความไม่แน่นอนและเชื่อมั่นชีวิต"],en:["Fear of material instability and loss of status","Clinging to security prevents meaningful risk","Rahu lesson: Embrace uncertainty and trust life"]},
-    air:{th:["ความกลัวถูกมองว่าไม่ฉลาดหรือไม่มีคุณค่า","ความอยากรู้อยากเห็นที่กลายเป็นความวิตกกังวล","บทเรียนราหู: ยอมรับความไม่รู้และหยุดคิดมาก"],en:["Fear of appearing unintelligent or irrelevant","Restless curiosity that becomes chronic anxiety","Rahu lesson: Accept not knowing, quiet the mind"]},
-    water:{th:["ความกลัวการถูกทอดทิ้งและโดดเดี่ยว","ความอยากควบคุมอารมณ์และพื้นที่ความรู้สึก","บทเรียนราหู: ปล่อยให้สิ่งต่างๆ ไหลตามธรรมชาติ"],en:["Fear of abandonment and deep loneliness","Need to control emotional space around you","Rahu lesson: Let things flow — release control"]}
-  };
-  const KETU_DATA={
-    fire:{th:["ความภาคภูมิใจเกินขอบเขตที่สะสมมาจากอดีต","รูปแบบการครอบงำและควบคุมที่ต้องปล่อยวาง","การปล่อยวาง: ยอมรับว่าไม่ต้องเก่งที่สุดในทุกเรื่อง"],en:["Excessive pride and ego carried from the past","Controlling patterns that no longer serve you","Release: You don't need to dominate every room"]},
-    earth:{th:["การยึดติดกับทรัพย์สินและสถานะทางสังคม","ความกลัวการเปลี่ยนแปลงที่ฝังรากลึกในจิตใจ","การปล่อยวาง: เชื่อมั่นในกระบวนการของชีวิต"],en:["Deep attachment to possessions and social status","Fear of change rooted deep in the subconscious","Release: Trust the process — growth needs movement"]},
-    air:{th:["การวิเคราะห์มากเกินจนตัดสินใจไม่ได้","หลีกเลี่ยงความรู้สึกด้วยการใช้ความคิดปิดกั้น","การปล่อยวาง: รับฟังสัญชาตญาณมากกว่าตรรกะ"],en:["Over-analysis that leads to decision paralysis","Avoiding feelings by intellectualizing everything","Release: Trust instincts over endless analysis"]},
-    water:{th:["ความเจ็บปวดอดีตที่ยังหลอกหลอนและดึงกลับ","รูปแบบการเสียสละตนเองมากเกินจนหมดแรง","การปล่อยวาง: กำหนดขอบเขตและดูแลตัวเองก่อน"],en:["Past pain that still haunts and pulls you back","Patterns of over-sacrifice until burnout","Release: Set boundaries — self-care isn't selfish"]}
-  };
+  const element=RASHI_ELEMENT[natalRashi]||"water";
 
   const rahuFocus=lang==="en"?RAHU_DATA[element].en:RAHU_DATA[element].th;
   const ketuFocus=lang==="en"?KETU_DATA[element].en:KETU_DATA[element].th;
