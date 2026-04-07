@@ -656,6 +656,176 @@ const Spider=({scores,size=260})=>{const keys=Object.keys(scores);const vals=Obj
 const Card=({children,style={}})=><div style={{background:"#fff",borderRadius:14,padding:"16px 18px",marginBottom:10,boxShadow:"0 1px 3px rgba(0,0,0,.04)",border:"1px solid #F1F5F9",...style}}>{children}</div>;
 const Btn=({children,ok=true,onClick,style={}})=><button onClick={ok?onClick:undefined} style={{padding:"12px 20px",fontSize:14,fontWeight:700,background:ok?"linear-gradient(135deg,#4338CA,#6D28D9)":"#E2E8F0",color:ok?"#fff":"#94A3B8",border:"none",borderRadius:10,cursor:ok?"pointer":"not-allowed",width:"100%",boxShadow:ok?"0 4px 14px rgba(79,70,229,.2)":"none",...style}}>{children}</button>;
 
+// ── Deep Shadow Analysis Component ──
+const ShadowDeepComponent=({bday,scores,vedic,ai,aiL,nick,lang,t})=>{
+  const [completedSteps,setCompletedSteps]=useState([]);
+  const [reflection,setReflection]=useState("");
+
+  const natalRashi=bdayToRashiThai(bday);
+  const rashiIcon=TL_RASHI_ICONS[natalRashi];
+  const rashiName=lang==="en"?TL_RASHI_EN[natalRashi]:TL_RASHI_TH[natalRashi];
+  const element=[0,4,8].includes(natalRashi)?"fire":[1,5,9].includes(natalRashi)?"earth":[2,6,10].includes(natalRashi)?"air":"water";
+
+  const RAHU_DATA={
+    fire:{th:["ความกลัวสูญเสียการยอมรับและการมองเห็น","ความอยากสร้างตัวตนที่โดดเด่นและมีอำนาจ","บทเรียนราหู: เรียนรู้ความถ่อมตนและการรับใช้"],en:["Fear of losing recognition and being unseen","Drive to build a powerful, standout identity","Rahu lesson: Learning humility and service"]},
+    earth:{th:["ความกลัวความไม่มั่นคงทางวัตถุและสถานะ","ความยึดติดกับความปลอดภัยจนไม่กล้าเสี่ยง","บทเรียนราหู: ยอมรับความไม่แน่นอนและเชื่อมั่นชีวิต"],en:["Fear of material instability and loss of status","Clinging to security prevents meaningful risk","Rahu lesson: Embrace uncertainty and trust life"]},
+    air:{th:["ความกลัวถูกมองว่าไม่ฉลาดหรือไม่มีคุณค่า","ความอยากรู้อยากเห็นที่กลายเป็นความวิตกกังวล","บทเรียนราหู: ยอมรับความไม่รู้และหยุดคิดมาก"],en:["Fear of appearing unintelligent or irrelevant","Restless curiosity that becomes chronic anxiety","Rahu lesson: Accept not knowing, quiet the mind"]},
+    water:{th:["ความกลัวการถูกทอดทิ้งและโดดเดี่ยว","ความอยากควบคุมอารมณ์และพื้นที่ความรู้สึก","บทเรียนราหู: ปล่อยให้สิ่งต่างๆ ไหลตามธรรมชาติ"],en:["Fear of abandonment and deep loneliness","Need to control emotional space around you","Rahu lesson: Let things flow — release control"]}
+  };
+  const KETU_DATA={
+    fire:{th:["ความภาคภูมิใจเกินขอบเขตที่สะสมมาจากอดีต","รูปแบบการครอบงำและควบคุมที่ต้องปล่อยวาง","การปล่อยวาง: ยอมรับว่าไม่ต้องเก่งที่สุดในทุกเรื่อง"],en:["Excessive pride and ego carried from the past","Controlling patterns that no longer serve you","Release: You don't need to dominate every room"]},
+    earth:{th:["การยึดติดกับทรัพย์สินและสถานะทางสังคม","ความกลัวการเปลี่ยนแปลงที่ฝังรากลึกในจิตใจ","การปล่อยวาง: เชื่อมั่นในกระบวนการของชีวิต"],en:["Deep attachment to possessions and social status","Fear of change rooted deep in the subconscious","Release: Trust the process — growth needs movement"]},
+    air:{th:["การวิเคราะห์มากเกินจนตัดสินใจไม่ได้","หลีกเลี่ยงความรู้สึกด้วยการใช้ความคิดปิดกั้น","การปล่อยวาง: รับฟังสัญชาตญาณมากกว่าตรรกะ"],en:["Over-analysis that leads to decision paralysis","Avoiding feelings by intellectualizing everything","Release: Trust instincts over endless analysis"]},
+    water:{th:["ความเจ็บปวดอดีตที่ยังหลอกหลอนและดึงกลับ","รูปแบบการเสียสละตนเองมากเกินจนหมดแรง","การปล่อยวาง: กำหนดขอบเขตและดูแลตัวเองก่อน"],en:["Past pain that still haunts and pulls you back","Patterns of over-sacrifice until burnout","Release: Set boundaries — self-care isn't selfish"]}
+  };
+
+  const rahuFocus=lang==="en"?RAHU_DATA[element].en:RAHU_DATA[element].th;
+  const ketuFocus=lang==="en"?KETU_DATA[element].en:KETU_DATA[element].th;
+
+  const shadowSc=scores?.["Shadow Pattern"]||5;
+  const stressSc=scores?.["Stress Response"]||5;
+  const boundarySc=scores?.["Boundary System"]||5;
+  const emotSc=scores?.["Emotional Regulation"]||5;
+  const growthSc=scores?.["Growth Orientation"]||5;
+  const integSc=scores?.["Integration Level"]||5;
+
+  const isEN=lang==="en";
+  const denied=shadowSc<4
+    ?(isEN?["Anger and deep frustration","Need for love and validation","Fear of rejection and abandonment"]:["ความโกรธและความคับแค้นที่ซ่อนลึก","ความต้องการความรักและการยืนยันคุณค่า","ความกลัวการถูกปฏิเสธและทอดทิ้ง"])
+    :shadowSc<6.5
+    ?(isEN?["Fear of failure and appearing weak","Need to control situations and outcomes","Hidden insecurity beneath surface confidence"]:["ความกลัวความล้มเหลวและถูกมองว่าอ่อนแอ","ความต้องการควบคุมสถานการณ์และผลลัพธ์","ความไม่มั่นใจที่ซ่อนอยู่ใต้ความมั่นใจภายนอก"])
+    :(isEN?["Perfectionism used as a defense mechanism","Suppressed need for rest and vulnerability","Quiet longing for deeper authentic connection"]:["ความสมบูรณ์แบบในฐานะกลไกป้องกันตัว","ความต้องการพักผ่อนและความเปราะบางที่ถูกกด","ความโหยหาความสัมพันธ์ที่ลึกซึ้งและแท้จริง"]);
+
+  const projected=(stressSc<5||emotSc<5)
+    ?(isEN?["Judging others as 'too sensitive' or weak","Distrust of people's true intentions","Seeing in others the weakness you hide in yourself"]:["ตัดสินคนอื่นว่า 'อ่อนแอ' หรือ 'อารมณ์มาก'","ไม่ไว้วางใจเจตนาที่แท้จริงของผู้อื่น","มองเห็นในคนอื่นสิ่งที่ตัวเองซ่อนไว้"])
+    :boundarySc<5
+    ?(isEN?["Criticizing others for lacking limits","Frustration with people who 'give too much'","Seeing codependency patterns in relationships"]:["วิจารณ์คนอื่นว่าไม่มีขอบเขตในตัวเอง","หงุดหงิดกับคนที่ 'ให้มากเกินไป'","มองเห็นรูปแบบพึ่งพาในความสัมพันธ์รอบข้าง"])
+    :(isEN?["Expecting perfection from people around you","Impatience with others' different pace","Projecting self-judgment onto close relationships"]:["คาดหวังความสมบูรณ์แบบจากคนรอบข้าง","ความไม่อดทนกับจังหวะและวิธีของคนอื่น","ฉายความตัดสินตัวเองออกไปในความสัมพันธ์"]);
+
+  const integration=(growthSc>=7&&integSc>=7)
+    ?(isEN?["Channel intensity into purposeful creation","Build trust through consistent vulnerability","Lead with both strength and compassion"]:["นำความเข้มข้นมาสร้างสรรค์อย่างมีจุดมุ่งหมาย","สร้างความไว้วางใจผ่านความเปราะบางที่สม่ำเสมอ","นำทางด้วยทั้งความแข็งแกร่งและความเมตตา"])
+    :(isEN?["Embrace imperfection as part of growth","Trust feelings as valid and important data","Open to receive as much as you give"]:["โอบรับความไม่สมบูรณ์ในฐานะส่วนหนึ่งของการเติบโต","เชื่อมั่นในความรู้สึกว่ามีคุณค่าและความหมาย","เปิดรับการรับพอๆ กับการที่คุณให้ผู้อื่น"]);
+
+  const steps=[
+    {id:1,title:t("sd_step1_title"),desc:t("sd_step1_desc"),icon:"👁️"},
+    {id:2,title:t("sd_step2_title"),desc:t("sd_step2_desc"),icon:"✨"},
+    {id:3,title:t("sd_step3_title"),desc:t("sd_step3_desc"),icon:"🔄"}
+  ];
+  const toggleStep=id=>setCompletedSteps(prev=>prev.includes(id)?prev.filter(s=>s!==id):[...prev,id]);
+  const pct=Math.round((completedSteps.length/3)*100);
+  const divL={flex:1,height:1,background:"linear-gradient(to right,transparent,#1e2040)"};
+  const divR={flex:1,height:1,background:"linear-gradient(to left,transparent,#1e2040)"};
+  const divTxt={fontSize:10,fontWeight:700,color:"#475569",letterSpacing:"0.18em",textTransform:"uppercase",whiteSpace:"nowrap"};
+  const divRow={display:"flex",alignItems:"center",gap:10,marginBottom:20};
+  const focusRow={display:"flex",alignItems:"center",gap:10,background:"rgba(255,255,255,0.03)",padding:"9px 12px",borderRadius:12,border:"1px solid rgba(255,255,255,0.05)",marginBottom:7};
+
+  return(
+    <div style={{background:"#07070f",borderRadius:12,padding:"20px 14px",color:"#E2E8F0"}}>
+      {/* Header */}
+      <div style={{position:"relative",overflow:"hidden",borderRadius:12,marginBottom:22}}>
+        <div style={{position:"absolute",top:"-20%",left:"-10%",width:"50%",height:"80%",background:"rgba(99,102,241,0.07)",filter:"blur(60px)",borderRadius:"50%",pointerEvents:"none"}}/>
+        <div style={{position:"absolute",bottom:"-20%",right:"-5%",width:"40%",height:"70%",background:"rgba(168,85,247,0.07)",filter:"blur(60px)",borderRadius:"50%",pointerEvents:"none"}}/>
+        <div style={{position:"relative",textAlign:"center",padding:"24px 12px 18px"}}>
+          <div style={{display:"inline-flex",alignItems:"center",gap:6,color:"#818CF8",fontWeight:600,fontSize:9,letterSpacing:"0.2em",textTransform:"uppercase",background:"rgba(99,102,241,0.08)",padding:"4px 14px",borderRadius:20,border:"1px solid rgba(99,102,241,0.15)",marginBottom:12}}>
+            <span>✦</span><span>{t("sd_astro_label")}</span>
+          </div>
+          <div style={{fontSize:24,fontWeight:800,background:"linear-gradient(180deg,#fff 0%,#64748B 100%)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.2,marginBottom:8,letterSpacing:"-0.5px"}}>{t("sd_report_title")}</div>
+          <div style={{fontSize:11,color:"#64748B",lineHeight:1.7,maxWidth:340,margin:"0 auto 12px"}}>{t("sd_report_sub")}</div>
+          <div style={{display:"inline-flex",alignItems:"center",gap:6,fontSize:11,color:"#94A3B8",background:"rgba(255,255,255,0.04)",padding:"5px 12px",borderRadius:10,border:"1px solid rgba(255,255,255,0.06)"}}>
+            <span style={{fontSize:16}}>{rashiIcon}</span>
+            <span style={{fontWeight:600,color:"#C4B5FD"}}>{t("sd_birth_label")}: {rashiName}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 01 — Rahu & Ketu */}
+      <div style={divRow}><div style={divL}/><span style={divTxt}>{t("sd_sec01")}</span><div style={divR}/></div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:22}}>
+        <div style={{background:"linear-gradient(145deg,rgba(99,102,241,0.1),transparent)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"14px 12px"}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+            <div style={{padding:7,background:"rgba(99,102,241,0.12)",borderRadius:9,fontSize:15,lineHeight:1}}>🌑</div>
+            <div style={{fontSize:11,fontWeight:700,color:"#A5B4FC",lineHeight:1.3}}>{t("sd_rahu_title")}</div>
+          </div>
+          <div style={{fontSize:10,color:"#475569",lineHeight:1.6,fontStyle:"italic",marginBottom:10}}>"{t("sd_rahu_sub")}"</div>
+          <div style={{fontSize:8,fontWeight:700,color:"#6366F1",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:7}}>{t("sd_shadow_focus")}</div>
+          {rahuFocus.map((item,i)=><div key={i} style={focusRow}><div style={{width:6,height:6,borderRadius:"50%",background:"#818CF8",flexShrink:0,boxShadow:"0 0 7px #818CF899"}}/><span style={{fontSize:10,color:"#CBD5E1"}}>{item}</span></div>)}
+        </div>
+        <div style={{background:"linear-gradient(145deg,rgba(168,85,247,0.1),transparent)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"14px 12px"}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+            <div style={{padding:7,background:"rgba(168,85,247,0.12)",borderRadius:9,fontSize:15,lineHeight:1}}>☽</div>
+            <div style={{fontSize:11,fontWeight:700,color:"#D8B4FE",lineHeight:1.3}}>{t("sd_ketu_title")}</div>
+          </div>
+          <div style={{fontSize:10,color:"#475569",lineHeight:1.6,fontStyle:"italic",marginBottom:10}}>"{t("sd_ketu_sub")}"</div>
+          <div style={{fontSize:8,fontWeight:700,color:"#A855F7",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:7}}>{t("sd_shadow_focus")}</div>
+          {ketuFocus.map((item,i)=><div key={i} style={focusRow}><div style={{width:6,height:6,borderRadius:"50%",background:"#C084FC",flexShrink:0,boxShadow:"0 0 7px #C084FC99"}}/><span style={{fontSize:10,color:"#CBD5E1"}}>{item}</span></div>)}
+        </div>
+      </div>
+
+      {/* Section 02 — Shadow Map from 36 questions */}
+      <div style={divRow}><div style={divL}/><span style={divTxt}>{t("sd_sec02")}</span><div style={divR}/></div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:22}}>
+        <div style={{background:"rgba(15,23,42,0.6)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,padding:"12px 11px"}}>
+          <div style={{fontSize:8,fontWeight:700,color:"rgba(239,68,68,0.8)",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:12}}>{t("sd_denied_label")}</div>
+          {denied.map((item,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:7,marginBottom:9}}><div style={{marginTop:5,width:4,height:4,borderRadius:"50%",background:"rgba(239,68,68,0.6)",flexShrink:0}}/><span style={{fontSize:10,color:"#94A3B8",lineHeight:1.5}}>{item}</span></div>)}
+        </div>
+        <div style={{background:"rgba(15,23,42,0.6)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,padding:"12px 11px"}}>
+          <div style={{fontSize:8,fontWeight:700,color:"rgba(245,158,11,0.8)",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:12}}>{t("sd_projected_label")}</div>
+          {projected.map((item,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:7,marginBottom:9}}><div style={{marginTop:5,width:4,height:4,borderRadius:"50%",background:"rgba(245,158,11,0.6)",flexShrink:0}}/><span style={{fontSize:10,color:"#94A3B8",lineHeight:1.5}}>{item}</span></div>)}
+        </div>
+        <div style={{background:"rgba(99,102,241,0.05)",border:"1px solid rgba(99,102,241,0.2)",borderRadius:14,padding:"12px 11px"}}>
+          <div style={{fontSize:8,fontWeight:700,color:"#6366F1",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:12}}>{t("sd_integration_label")}</div>
+          {integration.map((item,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:7,marginBottom:9}}><span style={{fontSize:11,color:"#6366F1",flexShrink:0,marginTop:-1}}>✓</span><span style={{fontSize:10,color:"#E2E8F0",lineHeight:1.5,fontWeight:500}}>{item}</span></div>)}
+        </div>
+      </div>
+
+      {/* Daily Shadow Journal */}
+      <div style={{background:"rgba(15,23,42,0.7)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,padding:"14px 13px",marginBottom:22,position:"relative",overflow:"hidden"}}>
+        <div style={{position:"absolute",top:0,right:0,padding:12,opacity:0.04,fontSize:54,pointerEvents:"none"}}>📖</div>
+        <div style={{position:"relative"}}>
+          <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:5}}><span style={{fontSize:13}}>📖</span><span style={{fontSize:12,fontWeight:700,color:"#fff"}}>{t("sd_log_title")}</span></div>
+          <div style={{fontSize:10,color:"#475569",lineHeight:1.6,marginBottom:10,maxWidth:360}}>{t("sd_log_sub")}</div>
+          <textarea value={reflection} onChange={e=>setReflection(e.target.value)} placeholder={t("sd_log_placeholder")} style={{width:"100%",background:"rgba(0,0,0,0.5)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:10,padding:"10px 12px",color:"#CBD5E1",fontSize:11,lineHeight:1.7,height:90,resize:"none",outline:"none",fontFamily:"inherit",boxSizing:"border-box"}}/>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:8}}>
+            <span style={{fontSize:9,color:"#334155",fontStyle:"italic"}}>{t("sd_log_private")}</span>
+            <button style={{background:"#4F46E5",color:"#fff",border:"none",borderRadius:7,padding:"6px 18px",fontSize:10,fontWeight:700,cursor:"pointer"}}>{t("sd_log_save")}</button>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 03 — Transformation Journey */}
+      <div style={divRow}><div style={divL}/><span style={divTxt}>{t("sd_sec03")}</span><div style={divR}/></div>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:14}}>
+        <div><div style={{fontSize:16,fontWeight:800,color:"#fff",letterSpacing:"-0.3px",marginBottom:3}}>{t("sd_journey_title")}</div><div style={{fontSize:10,color:"#64748B",lineHeight:1.6,maxWidth:260}}>{t("sd_journey_sub")}</div></div>
+        <div style={{textAlign:"right"}}><div style={{fontSize:26,fontWeight:900,color:"#6366F1",letterSpacing:"-1px"}}>{pct}%</div><div style={{fontSize:8,color:"#475569",textTransform:"uppercase",letterSpacing:"0.15em"}}>{t("sd_progress_label")}</div></div>
+      </div>
+      <div style={{position:"relative",marginBottom:22}}>
+        <div style={{position:"absolute",left:25,top:28,bottom:28,width:1,background:"linear-gradient(to bottom,rgba(99,102,241,0.3),rgba(168,85,247,0.2),transparent)"}}/>
+        {steps.map(step=>{const done=completedSteps.includes(step.id);return(
+          <div key={step.id} onClick={()=>toggleStep(step.id)} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 12px",borderRadius:14,border:`1px solid ${done?"rgba(99,102,241,0.35)":"rgba(255,255,255,0.05)"}`,background:done?"rgba(99,102,241,0.07)":"rgba(255,255,255,0.02)",cursor:"pointer",marginBottom:9,position:"relative",zIndex:1,transition:"all .3s"}}>
+            <div style={{width:32,height:32,borderRadius:10,background:done?"#4F46E5":"#0f1120",border:`1px solid ${done?"transparent":"rgba(255,255,255,0.08)"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:done?14:13,flexShrink:0,boxShadow:done?"0 0 14px rgba(99,102,241,0.4)":"none",transition:"all .5s"}}>
+              {done?"✓":step.icon}
+            </div>
+            <div style={{flex:1}}>
+              <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:2}}>
+                <span style={{fontSize:8,fontWeight:700,color:"#6366F1",letterSpacing:"0.15em",textTransform:"uppercase"}}>{t("sd_step_prefix")} 0{step.id}</span>
+                <span style={{fontSize:12,fontWeight:700,color:done?"#fff":"#64748B"}}>{step.title}</span>
+              </div>
+              <div style={{fontSize:10,color:"#475569",lineHeight:1.5}}>{step.desc}</div>
+            </div>
+            <span style={{fontSize:14,color:done?"#6366F1":"#1e2040",transition:"all .3s"}}>›</span>
+          </div>
+        );})}
+      </div>
+
+      {/* AI Insight */}
+      {(ai||aiL)&&<div style={{background:"rgba(99,102,241,0.05)",border:"1px solid rgba(99,102,241,0.15)",borderRadius:12,padding:"12px 14px"}}>
+        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:7}}><span style={{fontSize:12}}>🤖</span><span style={{fontSize:11,fontWeight:700,color:"#818CF8"}}>{t("sd_ai_insight")}</span></div>
+        {aiL?<div style={{display:"flex",alignItems:"center",gap:7,padding:"6px 0"}}><div style={{width:13,height:13,borderRadius:"50%",border:"2px solid rgba(99,102,241,0.3)",borderTopColor:"#6366F1",animation:"hs .7s linear infinite"}}/><span style={{fontSize:11,color:"#6366F1"}}>{t("spin_shadow_deep")}</span></div>:ai?<div style={{fontSize:11,lineHeight:1.9,color:"#94A3B8",whiteSpace:"pre-wrap"}}>{ai}</div>:null}
+      </div>}
+    </div>
+  );
+};
+
 // ── Identity Snapshot Card (WHO / WHAT / WHEN) ──
 const IdentitySnapshotCard=({data,scores,hasMbti,t,lang})=>{
   if(!data||!data.powerTitle)return null;
@@ -2665,7 +2835,7 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
   {!has("12d")?<Locked planNeeded="pro" title="12D Spider Web" onUpgrade={tryUpgrade}><div style={{textAlign:"center",padding:16}}><Spider scores={scores}/></div><div style={{padding:"8px 0"}}><div style={{fontSize:12,marginBottom:4}}>{t("strength_label")}: {so.slice(0,3).map(([k,v])=>`${DM[k]?.icon}${k}(${(v||0).toFixed(1)})`).join(" · ")}</div><div style={{fontSize:12}}>{t("develop_label")}: {so.slice(-3).map(([k,v])=>`${DM[k]?.icon}${k}(${(v||0).toFixed(1)})`).join(" · ")}</div></div></Locked>:<Sec fKey="12d" title="12D Spider Web" icon="🕸️"><div style={{display:"flex",justifyContent:"center",marginBottom:8}}><Spider scores={scores}/></div><div style={{marginBottom:6}}><div style={{fontSize:11,fontWeight:700,color:"#10B981",marginBottom:3}}>{t("strength_label")}</div>{so.slice(0,4).map(([d,s])=><div key={d} style={{padding:"4px 8px",borderRadius:6,background:"#ECFDF5",border:"1px solid #A7F3D0",marginBottom:2,display:"flex",justifyContent:"space-between",fontSize:11}}><span>{DM[d]?.icon} {d}</span><span style={{fontWeight:700,color:"#059669"}}>{(s||0).toFixed(1)}</span></div>)}</div><div><div style={{fontSize:11,fontWeight:700,color:"#EF4444",marginBottom:3}}>{t("develop_label")}</div>{so.slice(-4).map(([d,s])=><div key={d} style={{padding:"4px 8px",borderRadius:6,background:"#FFF1F2",border:"1px solid #FECDD3",marginBottom:2,display:"flex",justifyContent:"space-between",fontSize:11}}><span>{DM[d]?.icon} {d}</span><span style={{fontWeight:700,color:"#EF4444"}}>{(s||0).toFixed(1)}</span></div>)}</div>{aiL["12d"]?<Spin/>:ai["12d"]?<div style={{marginTop:8,padding:8,background:"#F8FAFC",borderRadius:8}}><Typer text={ai["12d"]}/></div>:null}</Sec>}
 
   <div id="sec-shadow-deep" className="snav-anchor"/>{/* Shadow Deep */}
-  {!has("shadow_deep")?<Locked planNeeded="pro" title="Shadow Analysis Deep" onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#0a0a0a,#1a1a2e)",color:"#94A3B8",lineHeight:1.8,fontSize:12}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>{t("shadow_deep_locked_title")}</div><div style={{fontSize:11}}>{t("shadow_deep_locked_desc")}</div></div></Locked>:<Sec fKey="shadow_deep" planNeeded="pro" title="Shadow Analysis Deep" icon="🌑"><div style={{background:"#0F172A",borderRadius:10,padding:"12px 14px"}}>{aiL.shadow_deep?<Spin t={t("spin_shadow_deep")}/>:ai.shadow_deep?<div style={{fontSize:12,lineHeight:1.9,color:"#E2E8F0",whiteSpace:"pre-wrap"}}>{ai.shadow_deep}</div>:<Spin t={t("spin_loading")}/>}</div></Sec>}
+  {!has("shadow_deep")?<Locked planNeeded="pro" title={t("shadow_deep_locked_title")} onUpgrade={tryUpgrade}><div style={{padding:"14px 16px",borderRadius:10,background:"linear-gradient(135deg,#0a0a0a,#1a1a2e)",color:"#94A3B8",lineHeight:1.8,fontSize:12}}><div style={{fontSize:13,fontWeight:700,marginBottom:4}}>{t("shadow_deep_locked_title")}</div><div style={{fontSize:11}}>{t("shadow_deep_locked_desc")}</div></div></Locked>:<Sec fKey="shadow_deep" planNeeded="pro" title={lang==="en"?"Shadow Analysis Deep":"Shadow Analysis เชิงลึก"} icon="🌑"><ShadowDeepComponent bday={bday} scores={scores} vedic={vedic} ai={ai.shadow_deep} aiL={aiL.shadow_deep} nick={nick} lang={lang} t={t}/></Sec>}
 
   <div id="sec-pdf-sec" className="snav-anchor"/>{!has("pdf")?<Locked planNeeded="pro" title={t("pdf_locked_title")} onUpgrade={tryUpgrade}><div style={{fontSize:12,lineHeight:1.8,whiteSpace:"pre-line"}}>{t("pdf_locked_contents")}</div></Locked>:<Sec fKey="pdf" title="PDF Report" icon="📄"><Btn onClick={exportPDF} style={{fontSize:12,padding:8}}>{t("pdf_download_btn")}</Btn></Sec>}
 
