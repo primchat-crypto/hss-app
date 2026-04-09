@@ -1380,11 +1380,12 @@ export default function App(){
     try{const r=await fetch("/api/stripe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:p,userId:user?.id||"",email:user?.email||email})});const d=await r.json();if(d.url)window.location.href=d.url;else alert(d.error||"เกิดข้อผิดพลาด")}catch{alert("ไม่สามารถเชื่อมต่อ Stripe ได้")}};
 
   // Real Supabase Auth
-  const doSignup=async()=>{const ae=authEmailRef.current?.value||"";const ap=authPwRef.current?.value||"";if(!ae||!ap){setAuthErr("กรุณากรอกอีเมลและรหัสผ่าน");return}if(ap.length<6){setAuthErr("รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร");return}setAuthLoading(true);setAuthErr("");
-    const{data,error}=await sb.auth.signUp({email:ae,password:ap,options:{data:{},emailRedirectTo:undefined}});
+  const doSignup=async()=>{const ae=authEmailRef.current?.value||"";const ap=authPwRef.current?.value||"";if(!ae||!ap){setAuthErr("กรุณากรอกอีเมลและรหัสผ่าน");return}if(ap.length<6){setAuthErr("รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร");return}if(!sb){setAuthErr("ระบบยืนยันตัวตนไม่พร้อมใช้งาน กรุณาติดต่อผู้ดูแลระบบ");return}setAuthLoading(true);setAuthErr("");
+    let data,error;try{{const r=await sb.auth.signUp({email:ae,password:ap,options:{data:{},emailRedirectTo:undefined}});data=r.data;error=r.error}}catch(e){setAuthErr("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่");setAuthLoading(false);return}
     if(error){
       // If "email rate limit exceeded" or similar, try login instead
       if(error.message?.includes("rate limit")){setAuthErr("ระบบอีเมลเต็ม กรุณาใช้ 'เข้าสู่ระบบ' แทน หรือเข้าด้วย Google");setAuthLoading(false);return}
+      if(error.message==="Failed to fetch"||error.message?.includes("fetch failed")){setAuthErr("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่");setAuthLoading(false);return}
       setAuthErr(error.message);setAuthLoading(false);return}
     // Check if email confirmation is required (session will be null)
     if(data?.session){
@@ -1405,11 +1406,12 @@ export default function App(){
       }
     }setAuthLoading(false)};
 
-  const doLogin=async()=>{const ae=authEmailRef.current?.value||"";const ap=authPwRef.current?.value||"";if(!ae||!ap){setAuthErr("กรุณากรอกอีเมลและรหัสผ่าน");return}setAuthLoading(true);setAuthErr("");
-    const{data,error}=await sb.auth.signInWithPassword({email:ae,password:ap});
+  const doLogin=async()=>{const ae=authEmailRef.current?.value||"";const ap=authPwRef.current?.value||"";if(!ae||!ap){setAuthErr("กรุณากรอกอีเมลและรหัสผ่าน");return}if(!sb){setAuthErr("ระบบยืนยันตัวตนไม่พร้อมใช้งาน กรุณาติดต่อผู้ดูแลระบบ");return}setAuthLoading(true);setAuthErr("");
+    let data,error;try{{const r=await sb.auth.signInWithPassword({email:ae,password:ap});data=r.data;error=r.error}}catch(e){setAuthErr("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่");setAuthLoading(false);return}
     if(error){
       if(error.message==="Invalid login credentials")setAuthErr("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
       else if(error.message?.includes("Email not confirmed"))setAuthErr("กรุณายืนยันอีเมลก่อน หรือลองสมัครใหม่ด้วย Google");
+      else if(error.message==="Failed to fetch"||error.message?.includes("fetch failed"))setAuthErr("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่");
       else setAuthErr(error.message);
       setAuthLoading(false);return}
     if(data?.user){setUser(data.user);setEmail(ae);setLoginModal(false);
@@ -1457,8 +1459,8 @@ export default function App(){
       }
     }setAuthLoading(false)};
 
-  const doGoogle=async()=>{if(!sb)return;setAuthLoading(true);
-    await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin}})};
+  const doGoogle=async()=>{if(!sb){setAuthErr("ระบบยืนยันตัวตนไม่พร้อมใช้งาน กรุณาติดต่อผู้ดูแลระบบ");return}setAuthLoading(true);setAuthErr("");
+    try{const{error}=await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:`${window.location.origin}/auth/callback`}});if(error){setAuthErr(error.message==="Failed to fetch"||error.message?.includes("fetch failed")?"ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่":error.message);setAuthLoading(false)}}catch(e){setAuthErr("ไม่สามารถเชื่อมต่อ Google ได้ กรุณาลองใหม่");setAuthLoading(false)}};
 
   const doLogout=()=>{
     // Update UI immediately — don't block on async signOut
