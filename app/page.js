@@ -673,8 +673,6 @@ const KETU_DATA={
 
 // ── Deep Shadow Analysis Component ──
 const ShadowDeepComponent=({bday,scores,vedic,ai,aiL,nick,lang,t})=>{
-  const [completedSteps,setCompletedSteps]=useState([]);
-  const [reflection,setReflection]=useState("");
 
   const natalRashi=bdayToRashiThai(bday);
   const rashiIcon=TL_RASHI_ICONS[natalRashi];
@@ -708,13 +706,6 @@ const ShadowDeepComponent=({bday,scores,vedic,ai,aiL,nick,lang,t})=>{
     ?(isEN?["Channel intensity into purposeful creation","Build trust through consistent vulnerability","Lead with both strength and compassion"]:["นำความเข้มข้นมาสร้างสรรค์อย่างมีจุดมุ่งหมาย","สร้างความไว้วางใจผ่านความเปราะบางที่สม่ำเสมอ","นำทางด้วยทั้งความแข็งแกร่งและความเมตตา"])
     :(isEN?["Embrace imperfection as part of growth","Trust feelings as valid and important data","Open to receive as much as you give"]:["โอบรับความไม่สมบูรณ์ในฐานะส่วนหนึ่งของการเติบโต","เชื่อมั่นในความรู้สึกว่ามีคุณค่าและความหมาย","เปิดรับการรับพอๆ กับการที่คุณให้ผู้อื่น"]);
 
-  const steps=[
-    {id:1,title:t("sd_step1_title"),desc:t("sd_step1_desc"),icon:"👁️"},
-    {id:2,title:t("sd_step2_title"),desc:t("sd_step2_desc"),icon:"✨"},
-    {id:3,title:t("sd_step3_title"),desc:t("sd_step3_desc"),icon:"🔄"}
-  ];
-  const toggleStep=id=>setCompletedSteps(prev=>prev.includes(id)?prev.filter(s=>s!==id):[...prev,id]);
-  const pct=Math.round((completedSteps.length/3)*100);
   const divL={flex:1,height:1,background:"linear-gradient(to right,transparent,#1e2040)"};
   const divR={flex:1,height:1,background:"linear-gradient(to left,transparent,#1e2040)"};
   const divTxt={fontSize:10,fontWeight:700,color:"#475569",letterSpacing:"0.18em",textTransform:"uppercase",whiteSpace:"nowrap"};
@@ -778,45 +769,6 @@ const ShadowDeepComponent=({bday,scores,vedic,ai,aiL,nick,lang,t})=>{
           <div style={{fontSize:8,fontWeight:700,color:"#6366F1",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:12}}>{t("sd_integration_label")}</div>
           {integration.map((item,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:7,marginBottom:9}}><span style={{fontSize:11,color:"#6366F1",flexShrink:0,marginTop:-1}}>✓</span><span style={{fontSize:10,color:"#E2E8F0",lineHeight:1.5,fontWeight:500}}>{item}</span></div>)}
         </div>
-      </div>
-
-      {/* Daily Shadow Journal */}
-      <div style={{background:"rgba(15,23,42,0.7)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,padding:"14px 13px",marginBottom:22,position:"relative",overflow:"hidden"}}>
-        <div style={{position:"absolute",top:0,right:0,padding:12,opacity:0.04,fontSize:54,pointerEvents:"none"}}>📖</div>
-        <div style={{position:"relative"}}>
-          <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:5}}><span style={{fontSize:13}}>📖</span><span style={{fontSize:12,fontWeight:700,color:"#fff"}}>{t("sd_log_title")}</span></div>
-          <div style={{fontSize:10,color:"#475569",lineHeight:1.6,marginBottom:10,maxWidth:360}}>{t("sd_log_sub")}</div>
-          <textarea value={reflection} onChange={e=>setReflection(e.target.value)} placeholder={t("sd_log_placeholder")} style={{width:"100%",background:"rgba(0,0,0,0.5)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:10,padding:"10px 12px",color:"#CBD5E1",fontSize:11,lineHeight:1.7,height:90,resize:"none",outline:"none",fontFamily:"inherit",boxSizing:"border-box"}}/>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:8}}>
-            <span style={{fontSize:9,color:"#334155",fontStyle:"italic"}}>{t("sd_log_private")}</span>
-            <button style={{background:"#4F46E5",color:"#fff",border:"none",borderRadius:7,padding:"6px 18px",fontSize:10,fontWeight:700,cursor:"pointer"}}>{t("sd_log_save")}</button>
-          </div>
-        </div>
-      </div>
-
-      {/* Section 03 — Transformation Journey */}
-      <div style={divRow}><div style={divL}/><span style={divTxt}>{t("sd_sec03")}</span><div style={divR}/></div>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:14}}>
-        <div><div style={{fontSize:16,fontWeight:800,color:"#fff",letterSpacing:"-0.3px",marginBottom:3}}>{t("sd_journey_title")}</div><div style={{fontSize:10,color:"#64748B",lineHeight:1.6,maxWidth:260}}>{t("sd_journey_sub")}</div></div>
-        <div style={{textAlign:"right"}}><div style={{fontSize:26,fontWeight:900,color:"#6366F1",letterSpacing:"-1px"}}>{pct}%</div><div style={{fontSize:8,color:"#475569",textTransform:"uppercase",letterSpacing:"0.15em"}}>{t("sd_progress_label")}</div></div>
-      </div>
-      <div style={{position:"relative",marginBottom:22}}>
-        <div style={{position:"absolute",left:25,top:28,bottom:28,width:1,background:"linear-gradient(to bottom,rgba(99,102,241,0.3),rgba(168,85,247,0.2),transparent)"}}/>
-        {steps.map(step=>{const done=completedSteps.includes(step.id);return(
-          <div key={step.id} onClick={()=>toggleStep(step.id)} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 12px",borderRadius:14,border:`1px solid ${done?"rgba(99,102,241,0.35)":"rgba(255,255,255,0.05)"}`,background:done?"rgba(99,102,241,0.07)":"rgba(255,255,255,0.02)",cursor:"pointer",marginBottom:9,position:"relative",zIndex:1,transition:"all .3s"}}>
-            <div style={{width:32,height:32,borderRadius:10,background:done?"#4F46E5":"#0f1120",border:`1px solid ${done?"transparent":"rgba(255,255,255,0.08)"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:done?14:13,flexShrink:0,boxShadow:done?"0 0 14px rgba(99,102,241,0.4)":"none",transition:"all .5s"}}>
-              {done?"✓":step.icon}
-            </div>
-            <div style={{flex:1}}>
-              <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:2}}>
-                <span style={{fontSize:8,fontWeight:700,color:"#6366F1",letterSpacing:"0.15em",textTransform:"uppercase"}}>{t("sd_step_prefix")} 0{step.id}</span>
-                <span style={{fontSize:12,fontWeight:700,color:done?"#fff":"#64748B"}}>{step.title}</span>
-              </div>
-              <div style={{fontSize:10,color:"#475569",lineHeight:1.5}}>{step.desc}</div>
-            </div>
-            <span style={{fontSize:14,color:done?"#6366F1":"#1e2040",transition:"all .3s"}}>›</span>
-          </div>
-        );})}
       </div>
 
       {/* AI Insight */}
