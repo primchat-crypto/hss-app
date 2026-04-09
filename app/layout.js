@@ -1,6 +1,7 @@
 // app/layout.js
 import { Analytics } from '@vercel/analytics/next';
 import Script from 'next/script';
+import './globals.css';
 
 export const metadata = {
   title: "Holistic Self Score — รู้จักตัวเองผ่านดวงดาวและจิตวิทยา",
@@ -12,7 +13,7 @@ export default function RootLayout({ children }) {
     <html lang="th">
       <head>
         <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Anuphan:wght@300;400;500;600&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
@@ -28,12 +29,6 @@ export default function RootLayout({ children }) {
             gtag('config', 'G-90KWXQTB76');
           `}
         </Script>
-        <style>{`
-          * { margin: 0; padding: 0; box-sizing: border-box; }
-          body { font-family: 'Noto Sans Thai', 'DM Sans', -apple-system, sans-serif; background: #F8FAFC; color: #1E293B; -webkit-font-smoothing: antialiased; }
-          @keyframes hss-spin { to { transform: rotate(360deg) } }
-          @keyframes hss-blink { 50% { opacity: 0 } }
-        `}</style>
       </head>
       <body>
         {children}
