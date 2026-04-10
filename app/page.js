@@ -1,5 +1,6 @@
 "use client";
 import{useState,useEffect,useRef,useCallback}from"react";
+import Dashboard from"./components/Dashboard";
 import{TRANSLATIONS}from"../lib/translations";
 import{createClient}from"@supabase/supabase-js";
 import{BRAND,PLANS,DEC_CATS,FT,QG,ALL_Q,SCALE,DM,DIMS,C5_META,TS,PV,COUNTRY_PROVINCES,COUNTRY_GROUPS,COUNTRY_FLAGS,RASHI,NAKSHATRA,DAYNAME,DAYNAME_EN,DAY_LORD_EN_NAME,DAY_LORD_EN_GF,TL_RASHI_EN,PLANET_EN,ASPECT_EN_MAP,DIGNITY_EN_MAP,DAY_LORD,DASHA_SEQ,TL_HEADLINE_EN,TL_TAG_EN,MBTI_META,MBTI_MATCH,VEDIC_SYS,VEDIC_SYS_EN,STICKY_NAV_HEIGHT,NAV_ITEMS}from"../lib/constants";
@@ -2179,5 +2180,6 @@ ${wk} ${en} ${timelineHTML} ${jb} ${dashaHTML}
 
   <div style={{textAlign:"center",padding:"14px 0 40px"}}><button onClick={()=>{aiTriggered.current=false;setSc("landing");setScores(null);setVedic(null);setAns({});setAi({});setQI(0)}} style={{fontSize:11,color:"#94A3B8",background:"none",border:"none",cursor:"pointer"}}>🔄 ทำแบบทดสอบใหม่</button></div></div>};
 
-  return<div style={{fontFamily:"'Noto Sans Thai','DM Sans',-apple-system,sans-serif",minHeight:"100vh",background:"#F8FAFC",color:"#1E293B"}}><style>{css}</style>{loginModalJSX}<div style={{maxWidth:sc==="landing"?undefined:520,margin:"0 auto",padding:sc==="landing"?"0":"12px 16px 40px"}}>{sc==="landing"&&<Landing/>}{sc==="profile"&&<Profile/>}{sc==="quiz"&&<Quiz/>}{sc==="ask-results"&&<AskResults/>}{sc==="results"&&<Results/>}</div></div>;
+  if(sc==="results")return<><style>{css}</style>{loginModalJSX}<Dashboard nick={nick} bday={bday} scores={scores} vedic={vedic} ai={ai} aiL={aiL} plan={plan} lang={lang} t={t} has={has} tryUpgrade={tryUpgrade} setSc={setSc} user={user} logged={logged} toggleLang={toggleLang} doLogout={doLogout}/></>;
+  return<div style={{fontFamily:"'Noto Sans Thai','DM Sans',-apple-system,sans-serif",minHeight:"100vh",background:"#F8FAFC",color:"#1E293B"}}><style>{css}</style>{loginModalJSX}<div style={{maxWidth:sc==="landing"?undefined:520,margin:"0 auto",padding:sc==="landing"?"0":"12px 16px 40px"}}>{sc==="landing"&&<Landing/>}{sc==="profile"&&<Profile/>}{sc==="quiz"&&<Quiz/>}{sc==="ask-results"&&<AskResults/>}</div></div>;
 }
