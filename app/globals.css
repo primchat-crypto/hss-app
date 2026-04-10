@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-deep: #020617;
+  --divine-gold: #FFD700;
+  --indigo-psych: #818cf8;
+  --rose-crisis: #f43f5e;
+  --emerald-success: #10b981;
+  --glass: rgba(15, 23, 42, 0.9);
+}
+
+@layer base {
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-[2rem] transition-all duration-300;
+  }
+  .glass-panel:hover {
+    @apply border-yellow-400/30 -translate-y-1;
+  }
+  .pro-glow {
+    border-color: rgba(255, 215, 0, 0.4) !important;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);
+  }
+  .crisis-glow {
+    border-color: rgba(244, 63, 94, 0.4) !important;
+    box-shadow: 0 0 30px rgba(244, 63, 94, 0.1);
+  }
+  .divine-glow {
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+  }
+  .plan-badge {
+    @apply text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-wider;
+  }
+  .badge-quick { @apply bg-slate-600 text-white; }
+  .badge-smart { @apply bg-indigo-400 text-white; }
+  .badge-pro   { @apply bg-yellow-400 text-slate-950; }
+  .nav-item {
+    @apply flex items-center gap-3 px-4 py-3 mx-3 rounded-2xl text-slate-400 font-semibold text-xs transition-all duration-200;
+  }
+  .nav-item:hover, .nav-item.active {
+    @apply text-yellow-400 bg-yellow-400/10;
+  }
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+
+@keyframes hs  { to { transform: rotate(360deg) } }
+@keyframes hb  { 50% { opacity: 0 } }
+@keyframes pulse-slow { 0%,100% { opacity:0.6 } 50% { opacity:1 } }
