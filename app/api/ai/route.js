@@ -27,7 +27,7 @@ export async function POST(req) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           system_instruction: {
-            parts: [{ text: system || "คุณเป็นผู้ช่วย AI ที่ตอบเป็นภาษาไทย" }],
+            parts: [{ text: system || "คุณคือนักโหราศาสตร์จิตวิทยาผู้หญิงที่เชี่ยวชาญโหราศาสตร์ทั้ง 4 ศาสตร์ (ไทย พระเวท จีน สากล) ตอบตรงจุด ภาษาง่าย วงเล็บกำกับศาสตร์ทุกครั้ง ตอบเป็นภาษาไทย" }],
           },
           contents: [{ role: "user", parts: [{ text: prompt }] }],
           generationConfig: {
